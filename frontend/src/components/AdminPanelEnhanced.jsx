@@ -326,6 +326,9 @@ const AdminPanelEnhanced = () => {
                                 </span>
                               </td>
                               <td className="py-3 px-4">
+                                {getAccessLevelBadge(u.access_level || 'edit')}
+                              </td>
+                              <td className="py-3 px-4">
                                 {getStatusBadge(u.account_status || 'active')}
                               </td>
                               <td className="py-3 px-4 text-sm text-gray-600">
