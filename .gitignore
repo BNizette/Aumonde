@@ -83,3 +83,7 @@ android-sdk/
 # They will be auto-updated with production values during deployment
 # *.env
 # *.env.*
+-e 
+# Environment files
+*.env
+*.env.*
