@@ -1109,14 +1109,37 @@ class AMSASMSAPITester:
         print(f"Testing against: {self.base_url}")
         print("=" * 60)
         
-        # Authentication Tests
-        print("\n📋 Authentication Tests:")
-        if not self.test_user_registration():
-            # If registration fails, try login
-            self.test_user_login()
+        # Admin Authentication Tests (Priority for admin panel testing)
+        print("\n🔐 Admin Authentication Tests:")
+        admin_login_success = self.test_admin_login_owner()
+        if admin_login_success:
+            self.test_admin_login_master()
+            self.test_last_login_timestamp_update()
         
-        if self.token:
-            self.test_get_current_user()
+        # Admin Panel Enhancement Tests (High Priority)
+        if admin_login_success:
+            print("\n👑 Admin Panel Enhancement Tests:")
+            self.test_user_activity_logging_login()
+            self.test_user_activity_logging_logout()
+            self.test_get_all_users_admin()
+            self.test_account_status_management_suspend()
+            self.test_account_status_management_reactivate()
+            self.test_audit_trail_logs()
+            self.test_session_management_get_sessions()
+            self.test_session_management_get_user_sessions()
+            self.test_session_management_force_logout()
+            self.test_non_owner_admin_access_denied()
+            self.test_integration_password_reset_audit()
+        
+        # Standard Authentication Tests (if admin login failed)
+        if not admin_login_success:
+            print("\n📋 Standard Authentication Tests:")
+            if not self.test_user_registration():
+                # If registration fails, try login
+                self.test_user_login()
+            
+            if self.token:
+                self.test_get_current_user()
         
         # Vessel Management Tests
         print("\n🚢 Vessel Management Tests:")
