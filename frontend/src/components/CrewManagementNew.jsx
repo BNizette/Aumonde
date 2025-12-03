@@ -12,8 +12,6 @@ import CrewForm from '@/components/CrewForm';
 
 const CrewManagementNew = () => {
   const { user } = useContext(AuthContext);
-  const [vessels, setVessels] = useState([]);
-  const [selectedVessel, setSelectedVessel] = useState(null);
   const [crew, setCrew] = useState([]);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
@@ -23,37 +21,17 @@ const CrewManagementNew = () => {
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    fetchVessels();
+    fetchCrew();
   }, []);
 
-  useEffect(() => {
-    if (selectedVessel) {
-      fetchCrew();
-    }
-  }, [selectedVessel]);
-
-  const fetchVessels = async () => {
-    try {
-      const response = await axios.get(`${API}/vessels`);
-      setVessels(response.data);
-      if (response.data.length > 0) {
-        setSelectedVessel(response.data[0]);
-      }
-    } catch (error) {
-      toast.error('Failed to fetch vessels');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const fetchCrew = async () => {
-    if (!selectedVessel) return;
-    
     try {
-      const response = await axios.get(`${API}/crew/vessel/${selectedVessel.id}`);
+      const response = await axios.get(`${API}/crew`);
       setCrew(response.data);
     } catch (error) {
       toast.error('Failed to fetch crew');
+    } finally {
+      setLoading(false);
     }
   };
 
