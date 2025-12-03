@@ -170,8 +170,35 @@ select:focus {
 /* Responsive grid */
 .grid-responsive {
   display: grid;
-  gap: 1.5rem;
+  gap: 1rem;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+@media (min-width: 768px) {
+  .grid-responsive {
+    gap: 1.5rem;
+  }
+}
+
+/* Mobile-first utility classes */
+.mobile-padding {
+  padding: 1rem;
+}
+
+@media (min-width: 768px) {
+  .mobile-padding {
+    padding: 1.5rem;
+  }
+}
+
+.mobile-text {
+  font-size: 0.875rem;
+}
+
+@media (min-width: 768px) {
+  .mobile-text {
+    font-size: 1rem;
+  }
 }
 
 /* Mobile optimizations */
