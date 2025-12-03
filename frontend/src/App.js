@@ -1,54 +1,96 @@
-import { useEffect } from "react";
-import "@/App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import axios from "axios";
+import { useState, useEffect } from 'react';
+import '@/App.css';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import axios from 'axios';
+import Login from '@/components/Login';
+import Dashboard from '@/components/Dashboard';
+import VesselManagement from '@/components/VesselManagement';
+import DocumentManagement from '@/components/DocumentManagement';
+import RiskAssessment from '@/components/RiskAssessment';
+import CrewManagement from '@/components/CrewManagement';
+import MaintenanceManagement from '@/components/MaintenanceManagement';
+import IncidentReporting from '@/components/IncidentReporting';
+import EmergencyProcedures from '@/components/EmergencyProcedures';
+import ComplianceCheck from '@/components/ComplianceCheck';
+import AIAssistant from '@/components/AIAssistant';
+import { Toaster } from '@/components/ui/sonner';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+export const API = `${BACKEND_URL}/api`;
 
-const Home = () => {
-  const helloWorldApi = async () => {
+export const AuthContext = React.createContext();
+
+function App() {
+  const [user, setUser] = useState(null);
+  const [token, setToken] = useState(localStorage.getItem('token'));
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (token) {
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      fetchUser();
+    } else {
+      setLoading(false);
+    }
+  }, [token]);
+
+  const fetchUser = async () => {
     try {
-      const response = await axios.get(`${API}/`);
-      console.log(response.data.message);
-    } catch (e) {
-      console.error(e, `errored out requesting / api`);
+      const response = await axios.get(`${API}/auth/me`);
+      setUser(response.data);
+    } catch (error) {
+      console.error('Failed to fetch user:', error);
+      logout();
+    } finally {
+      setLoading(false);
     }
   };
 
-  useEffect(() => {
-    helloWorldApi();
-  }, []);
+  const login = (newToken, userData) => {
+    setToken(newToken);
+    setUser(userData);
+    localStorage.setItem('token', newToken);
+    axios.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
+  };
+
+  const logout = () => {
+    setToken(null);
+    setUser(null);
+    localStorage.removeItem('token');
+    delete axios.defaults.headers.common['Authorization'];
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-400"></div>
+      </div>
+    );
+  }
 
   return (
-    <div>
-      <header className="App-header">
-        <a
-          className="App-link"
-          href="https://emergent.sh"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src="https://avatars.githubusercontent.com/in/1201222?s=120&u=2686cf91179bbafbc7a71bfbc43004cf9ae1acea&v=4" />
-        </a>
-        <p className="mt-5">Building something incredible ~!</p>
-      </header>
-    </div>
-  );
-};
-
-function App() {
-  return (
-    <div className="App">
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />}>
-            <Route index element={<Home />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </div>
+    <AuthContext.Provider value={{ user, login, logout }}>
+      <div className="App">
+        <BrowserRouter>
+          <Routes>
+            <Route path="/login" element={!user ? <Login /> : <Navigate to="/" />} />
+            <Route path="/" element={user ? <Dashboard /> : <Navigate to="/login" />} />
+            <Route path="/vessels" element={user ? <VesselManagement /> : <Navigate to="/login" />} />
+            <Route path="/documents" element={user ? <DocumentManagement /> : <Navigate to="/login" />} />
+            <Route path="/risk-assessment" element={user ? <RiskAssessment /> : <Navigate to="/login" />} />
+            <Route path="/crew" element={user ? <CrewManagement /> : <Navigate to="/login" />} />
+            <Route path="/maintenance" element={user ? <MaintenanceManagement /> : <Navigate to="/login" />} />
+            <Route path="/incidents" element={user ? <IncidentReporting /> : <Navigate to="/login" />} />
+            <Route path="/emergency" element={user ? <EmergencyProcedures /> : <Navigate to="/login" />} />
+            <Route path="/compliance" element={user ? <ComplianceCheck /> : <Navigate to="/login" />} />
+            <Route path="/ai-assistant" element={user ? <AIAssistant /> : <Navigate to="/login" />} />
+          </Routes>
+        </BrowserRouter>
+        <Toaster position="top-right" richColors />
+      </div>
+    </AuthContext.Provider>
   );
 }
 
+import React from 'react';
 export default App;
