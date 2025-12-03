@@ -549,11 +549,22 @@ async def register(user_data: UserRegister):
     
     doc = user_obj.model_dump()
     doc['created_at'] = doc['created_at'].isoformat()
+    if doc.get('last_login'):
+        doc['last_login'] = doc['last_login'].isoformat()
+    if doc.get('last_active'):
+        doc['last_active'] = doc['last_active'].isoformat()
     doc['password'] = user_dict['password']
     
     await db.users.insert_one(doc)
     
+    # Log registration activity
+    await log_activity(user_obj.id, "register", "User registered")
+    
     token = create_access_token({"sub": user_obj.id})
+    
+    # Create session
+    await create_session(user_obj.id, token)
+    
     return {"user": user_obj, "token": token}
 
 @api_router.post("/auth/login")
@@ -562,12 +573,37 @@ async def login(credentials: UserLogin):
     if not user or not verify_password(credentials.password, user['password']):
         raise HTTPException(status_code=401, detail="Invalid credentials")
     
+    # Check account status
+    account_status = user.get('account_status', 'active')
+    if account_status == 'disabled':
+        raise HTTPException(status_code=403, detail="Account is disabled. Contact administrator.")
+    elif account_status == 'suspended':
+        raise HTTPException(status_code=403, detail="Account is suspended. Contact administrator.")
+    
+    # Update last login
+    now = datetime.now(timezone.utc).isoformat()
+    await db.users.update_one(
+        {"id": user['id']},
+        {"$set": {"last_login": now, "last_active": now}}
+    )
+    
     user.pop('password')
     user.pop('_id', None)
     if isinstance(user.get('created_at'), str):
         user['created_at'] = datetime.fromisoformat(user['created_at'])
+    if isinstance(user.get('last_login'), str):
+        user['last_login'] = datetime.fromisoformat(user['last_login'])
+    if isinstance(user.get('last_active'), str):
+        user['last_active'] = datetime.fromisoformat(user['last_active'])
+    
+    # Log login activity
+    await log_activity(user['id'], "login", "User logged in")
     
     token = create_access_token({"sub": user['id']})
+    
+    # Create session
+    await create_session(user['id'], token)
+    
     return {"user": User(**user), "token": token}
 
 @api_router.get("/auth/me")
