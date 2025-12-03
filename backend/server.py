@@ -512,9 +512,9 @@ async def delete_user(user_id: str, current_user: User = Depends(get_current_use
 
 @api_router.post("/admin/users/{user_id}/reset-password")
 async def admin_reset_password(user_id: str, new_password: str, current_user: User = Depends(get_current_user)):
-    """Reset user password - Admin only"""
-    if current_user.role not in [UserRole.OWNER, UserRole.INSPECTOR]:
-        raise HTTPException(status_code=403, detail="Admin access required")
+    """Reset user password - Owner only"""
+    if current_user.role != UserRole.OWNER:
+        raise HTTPException(status_code=403, detail="Owner access required")
     
     user = await db.users.find_one({"id": user_id})
     if not user:
