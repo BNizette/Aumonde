@@ -87,6 +87,7 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/login" element={!user ? <Login /> : <Navigate to="/" />} />
+            <Route path="/password-reset" element={<PasswordReset />} />
             <Route path="/" element={user ? <Dashboard /> : <Navigate to="/login" />} />
             <Route path="/vessels" element={user ? <VesselManagement /> : <Navigate to="/login" />} />
             <Route path="/documents" element={user ? <DocumentManagement /> : <Navigate to="/login" />} />
@@ -97,6 +98,7 @@ function App() {
             <Route path="/emergency" element={user ? <EmergencyProcedures /> : <Navigate to="/login" />} />
             <Route path="/compliance" element={user ? <ComplianceCheck /> : <Navigate to="/login" />} />
             <Route path="/ai-assistant" element={user ? <AIAssistant /> : <Navigate to="/login" />} />
+            <Route path="/admin" element={user ? <AdminPanel /> : <Navigate to="/login" />} />
           </Routes>
         </BrowserRouter>
         <Toaster position="top-right" richColors />
