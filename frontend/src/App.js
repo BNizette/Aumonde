@@ -7,7 +7,7 @@ import Dashboard from '@/components/Dashboard';
 import VesselManagement from '@/components/VesselManagement';
 import DocumentManagement from '@/components/DocumentManagement';
 import RiskAssessment from '@/components/RiskAssessment';
-import CrewManagement from '@/components/CrewManagement';
+import CrewManagement from '@/components/CrewManagementNew';
 import MaintenanceManagement from '@/components/MaintenanceManagement';
 import IncidentReporting from '@/components/IncidentReporting';
 import EmergencyProcedures from '@/components/EmergencyProcedures';
