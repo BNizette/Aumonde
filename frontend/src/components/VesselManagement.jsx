@@ -186,6 +186,17 @@ const VesselManagement = () => {
                       Eligible for Simplified SMS
                     </div>
                   )}
+                  <div className="mt-4 pt-4 border-t border-gray-200">
+                    <Button 
+                      onClick={() => handleViewVessel(vessel)}
+                      variant="outline"
+                      size="sm"
+                      className="w-full text-gray-700 border-gray-300 hover:bg-gray-50"
+                    >
+                      <Eye className="w-4 h-4 mr-2" />
+                      View Details
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
             ))}
