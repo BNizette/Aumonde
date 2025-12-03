@@ -135,7 +135,7 @@ const AdminPanel = () => {
           <CardHeader>
             <CardTitle className="text-gray-900 flex items-center gap-2">
               <Users className="w-5 h-5 text-teal-500" />
-              User Management
+              {isOwner ? 'User Management' : 'Profile Information'}
             </CardTitle>
           </CardHeader>
           <CardContent>
