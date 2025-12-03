@@ -1476,8 +1476,7 @@ async def delete_crew_member(crew_id: str, current_user: User = Depends(get_curr
         target_id=crew_id,
         target_name=crew.get('full_name', 'Unknown'),
         details={
-            "position": crew.get('position'),
-            "vessel_id": crew.get('vessel_id')
+            "position": crew.get('position')
         }
     )
     
