@@ -76,6 +76,7 @@ class UserUpdate(BaseModel):
     email: Optional[EmailStr] = None
     role: Optional[str] = None
     organization: Optional[str] = None
+    access_level: Optional[str] = None
 
 class UserStatusUpdate(BaseModel):
     status: str  # "active", "disabled", "suspended"
