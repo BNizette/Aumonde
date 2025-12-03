@@ -288,14 +288,25 @@ const CrewForm = ({ initialData = {}, onSubmit, onCancel, loading, isEdit = fals
             </div>
 
             <div>
-              <Label htmlFor="qualifications_text">Qualifications Details</Label>
+              <Label htmlFor="qualifications_date">Qualifications Date</Label>
+              <Input
+                id="qualifications_date"
+                type="date"
+                value={formData.qualifications_date}
+                onChange={(e) => setFormData({ ...formData, qualifications_date: e.target.value })}
+                className="bg-white border-gray-300"
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="qualifications_text">Qualifications Comment</Label>
               <Textarea
                 id="qualifications_text"
                 value={formData.qualifications_text}
                 onChange={(e) => setFormData({ ...formData, qualifications_text: e.target.value })}
                 rows={3}
                 className="bg-white border-gray-300"
-                placeholder="Additional details about qualifications"
+                placeholder="Additional comments about qualifications"
               />
             </div>
 
