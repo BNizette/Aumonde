@@ -464,15 +464,26 @@ async def get_all_users(current_user: User = Depends(get_current_user)):
 
 @api_router.put("/admin/users/{user_id}")
 async def update_user(user_id: str, update: UserUpdate, current_user: User = Depends(get_current_user)):
-    """Update user details - Admin only"""
-    if current_user.role not in [UserRole.OWNER, UserRole.INSPECTOR]:
-        raise HTTPException(status_code=403, detail="Admin access required")
-    
+    """Update user details - Owner can update anyone, others can only update themselves with limited fields"""
     user = await db.users.find_one({"id": user_id})
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     
-    update_data = {k: v for k, v in update.model_dump().items() if v is not None}
+    # If not owner, can only edit own profile with limited fields
+    if current_user.role != UserRole.OWNER:
+        if user_id != current_user.id:
+            raise HTTPException(status_code=403, detail="You can only edit your own profile")
+        
+        # Only allow full_name and email for non-owners
+        update_data = {}
+        if update.full_name is not None:
+            update_data['full_name'] = update.full_name
+        if update.email is not None:
+            update_data['email'] = update.email
+    else:
+        # Owner can update all fields
+        update_data = {k: v for k, v in update.model_dump().items() if v is not None}
+    
     if update_data:
         await db.users.update_one(
             {"id": user_id},
