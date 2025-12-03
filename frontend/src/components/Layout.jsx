@@ -9,7 +9,7 @@ import {
 import { useState } from 'react';
 
 const Layout = ({ children }) => {
-  const { user, logout } = useContext(AuthContext);
+  const { user, logout, config } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(true);
