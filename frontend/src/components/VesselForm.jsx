@@ -616,6 +616,379 @@ const VesselForm = ({ initialData = {}, onSubmit, onCancel, loading }) => {
             </div>
           </div>
         </TabsContent>
+
+        {/* Certificate Record Tab */}
+        <TabsContent value="certificates" className="space-y-4 mt-4 max-h-[60vh] overflow-y-auto">
+          <h3 className="font-semibold text-lg text-gray-900">Statutory Certificates</h3>
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border border-gray-200 rounded-lg">
+              <div className="font-medium text-gray-700">Certificate of Survey or Approval</div>
+              <div>
+                <Label htmlFor="cert_survey_issue">Issue Date</Label>
+                <Input
+                  id="cert_survey_issue"
+                  type="date"
+                  value={formData.cert_survey_issue}
+                  onChange={(e) => setFormData({ ...formData, cert_survey_issue: e.target.value })}
+                  className="bg-white border-gray-300"
+                />
+              </div>
+              <div>
+                <Label htmlFor="cert_survey_expiry">Expiry Date</Label>
+                <Input
+                  id="cert_survey_expiry"
+                  type="date"
+                  value={formData.cert_survey_expiry}
+                  onChange={(e) => setFormData({ ...formData, cert_survey_expiry: e.target.value })}
+                  className="bg-white border-gray-300"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border border-gray-200 rounded-lg">
+              <div className="font-medium text-gray-700">Certificate of Operation</div>
+              <div>
+                <Label htmlFor="cert_operation_issue">Issue Date</Label>
+                <Input
+                  id="cert_operation_issue"
+                  type="date"
+                  value={formData.cert_operation_issue}
+                  onChange={(e) => setFormData({ ...formData, cert_operation_issue: e.target.value })}
+                  className="bg-white border-gray-300"
+                />
+              </div>
+              <div>
+                <Label htmlFor="cert_operation_expiry">Expiry Date</Label>
+                <Input
+                  id="cert_operation_expiry"
+                  type="date"
+                  value={formData.cert_operation_expiry}
+                  onChange={(e) => setFormData({ ...formData, cert_operation_expiry: e.target.value })}
+                  className="bg-white border-gray-300"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border border-gray-200 rounded-lg">
+              <div className="font-medium text-gray-700">Load Line Certificate</div>
+              <div>
+                <Label htmlFor="cert_loadline_issue">Issue Date</Label>
+                <Input
+                  id="cert_loadline_issue"
+                  type="date"
+                  value={formData.cert_loadline_issue}
+                  onChange={(e) => setFormData({ ...formData, cert_loadline_issue: e.target.value })}
+                  className="bg-white border-gray-300"
+                />
+              </div>
+              <div>
+                <Label htmlFor="cert_loadline_expiry">Expiry Date</Label>
+                <Input
+                  id="cert_loadline_expiry"
+                  type="date"
+                  value={formData.cert_loadline_expiry}
+                  onChange={(e) => setFormData({ ...formData, cert_loadline_expiry: e.target.value })}
+                  className="bg-white border-gray-300"
+                />
+              </div>
+            </div>
+          </div>
+
+          <h3 className="font-semibold text-lg text-gray-900 mt-6">Operational Documentation</h3>
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border border-gray-200 rounded-lg">
+              <div className="font-medium text-gray-700">Stability Book/Information</div>
+              <div>
+                <Label htmlFor="cert_stability_issue">Issue Date</Label>
+                <Input
+                  id="cert_stability_issue"
+                  type="date"
+                  value={formData.cert_stability_issue}
+                  onChange={(e) => setFormData({ ...formData, cert_stability_issue: e.target.value })}
+                  className="bg-white border-gray-300"
+                />
+              </div>
+              <div>
+                <Label htmlFor="cert_stability_date">Date</Label>
+                <Input
+                  id="cert_stability_date"
+                  type="date"
+                  value={formData.cert_stability_date}
+                  onChange={(e) => setFormData({ ...formData, cert_stability_date: e.target.value })}
+                  className="bg-white border-gray-300"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border border-gray-200 rounded-lg">
+              <div className="font-medium text-gray-700">Safety Management System</div>
+              <div>
+                <Label htmlFor="cert_sms_issue">Issue Date</Label>
+                <Input
+                  id="cert_sms_issue"
+                  type="date"
+                  value={formData.cert_sms_issue}
+                  onChange={(e) => setFormData({ ...formData, cert_sms_issue: e.target.value })}
+                  className="bg-white border-gray-300"
+                />
+              </div>
+              <div>
+                <Label htmlFor="cert_sms_date">Date</Label>
+                <Input
+                  id="cert_sms_date"
+                  type="date"
+                  value={formData.cert_sms_date}
+                  onChange={(e) => setFormData({ ...formData, cert_sms_date: e.target.value })}
+                  className="bg-white border-gray-300"
+                />
+              </div>
+            </div>
+          </div>
+
+          <h3 className="font-semibold text-lg text-gray-900 mt-6">Third Party Certificates/Documents</h3>
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border border-gray-200 rounded-lg">
+              <div className="font-medium text-gray-700">Classification Certificate</div>
+              <div>
+                <Label htmlFor="cert_classification_issue">Issue Date</Label>
+                <Input
+                  id="cert_classification_issue"
+                  type="date"
+                  value={formData.cert_classification_issue}
+                  onChange={(e) => setFormData({ ...formData, cert_classification_issue: e.target.value })}
+                  className="bg-white border-gray-300"
+                />
+              </div>
+              <div>
+                <Label htmlFor="cert_classification_expiry">Expiry Date</Label>
+                <Input
+                  id="cert_classification_expiry"
+                  type="date"
+                  value={formData.cert_classification_expiry}
+                  onChange={(e) => setFormData({ ...formData, cert_classification_expiry: e.target.value })}
+                  className="bg-white border-gray-300"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border border-gray-200 rounded-lg">
+              <div className="font-medium text-gray-700">Lifting Gear Annual Test Certificate</div>
+              <div>
+                <Label htmlFor="cert_lifting_gear_issue">Issue Date</Label>
+                <Input
+                  id="cert_lifting_gear_issue"
+                  type="date"
+                  value={formData.cert_lifting_gear_issue}
+                  onChange={(e) => setFormData({ ...formData, cert_lifting_gear_issue: e.target.value })}
+                  className="bg-white border-gray-300"
+                />
+              </div>
+              <div>
+                <Label htmlFor="cert_lifting_gear_expiry">Expiry Date</Label>
+                <Input
+                  id="cert_lifting_gear_expiry"
+                  type="date"
+                  value={formData.cert_lifting_gear_expiry}
+                  onChange={(e) => setFormData({ ...formData, cert_lifting_gear_expiry: e.target.value })}
+                  className="bg-white border-gray-300"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border border-gray-200 rounded-lg">
+              <div className="font-medium text-gray-700">Life Raft Certificate of Inspection</div>
+              <div>
+                <Label htmlFor="cert_liferaft_issue">Issue Date</Label>
+                <Input
+                  id="cert_liferaft_issue"
+                  type="date"
+                  value={formData.cert_liferaft_issue}
+                  onChange={(e) => setFormData({ ...formData, cert_liferaft_issue: e.target.value })}
+                  className="bg-white border-gray-300"
+                />
+              </div>
+              <div>
+                <Label htmlFor="cert_liferaft_expiry">Expiry Date</Label>
+                <Input
+                  id="cert_liferaft_expiry"
+                  type="date"
+                  value={formData.cert_liferaft_expiry}
+                  onChange={(e) => setFormData({ ...formData, cert_liferaft_expiry: e.target.value })}
+                  className="bg-white border-gray-300"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border border-gray-200 rounded-lg">
+              <div className="font-medium text-gray-700">EPIRB/PLB Registration</div>
+              <div>
+                <Label htmlFor="cert_epirb_issue">Issue Date</Label>
+                <Input
+                  id="cert_epirb_issue"
+                  type="date"
+                  value={formData.cert_epirb_issue}
+                  onChange={(e) => setFormData({ ...formData, cert_epirb_issue: e.target.value })}
+                  className="bg-white border-gray-300"
+                />
+              </div>
+              <div>
+                <Label htmlFor="cert_epirb_expiry">Expiry Date</Label>
+                <Input
+                  id="cert_epirb_expiry"
+                  type="date"
+                  value={formData.cert_epirb_expiry}
+                  onChange={(e) => setFormData({ ...formData, cert_epirb_expiry: e.target.value })}
+                  className="bg-white border-gray-300"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border border-gray-200 rounded-lg">
+              <div className="font-medium text-gray-700">Fire Extinguisher Fixed System Inspection/Test Certificate</div>
+              <div>
+                <Label htmlFor="cert_fire_extinguisher_issue">Issue Date</Label>
+                <Input
+                  id="cert_fire_extinguisher_issue"
+                  type="date"
+                  value={formData.cert_fire_extinguisher_issue}
+                  onChange={(e) => setFormData({ ...formData, cert_fire_extinguisher_issue: e.target.value })}
+                  className="bg-white border-gray-300"
+                />
+              </div>
+              <div>
+                <Label htmlFor="cert_fire_extinguisher_expiry">Expiry Date</Label>
+                <Input
+                  id="cert_fire_extinguisher_expiry"
+                  type="date"
+                  value={formData.cert_fire_extinguisher_expiry}
+                  onChange={(e) => setFormData({ ...formData, cert_fire_extinguisher_expiry: e.target.value })}
+                  className="bg-white border-gray-300"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border border-gray-200 rounded-lg">
+              <div className="font-medium text-gray-700">Inflatable Lifejacket Inspection/Test Certificate</div>
+              <div>
+                <Label htmlFor="cert_lifejacket_issue">Issue Date</Label>
+                <Input
+                  id="cert_lifejacket_issue"
+                  type="date"
+                  value={formData.cert_lifejacket_issue}
+                  onChange={(e) => setFormData({ ...formData, cert_lifejacket_issue: e.target.value })}
+                  className="bg-white border-gray-300"
+                />
+              </div>
+              <div>
+                <Label htmlFor="cert_lifejacket_expiry">Expiry Date</Label>
+                <Input
+                  id="cert_lifejacket_expiry"
+                  type="date"
+                  value={formData.cert_lifejacket_expiry}
+                  onChange={(e) => setFormData({ ...formData, cert_lifejacket_expiry: e.target.value })}
+                  className="bg-white border-gray-300"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border border-gray-200 rounded-lg">
+              <div className="font-medium text-gray-700">Gas Certificate</div>
+              <div>
+                <Label htmlFor="cert_gas_issue">Issue Date</Label>
+                <Input
+                  id="cert_gas_issue"
+                  type="date"
+                  value={formData.cert_gas_issue}
+                  onChange={(e) => setFormData({ ...formData, cert_gas_issue: e.target.value })}
+                  className="bg-white border-gray-300"
+                  placeholder="N/A if not applicable"
+                />
+              </div>
+              <div>
+                <Label htmlFor="cert_gas_expiry">Expiry Date</Label>
+                <Input
+                  id="cert_gas_expiry"
+                  type="date"
+                  value={formData.cert_gas_expiry}
+                  onChange={(e) => setFormData({ ...formData, cert_gas_expiry: e.target.value })}
+                  className="bg-white border-gray-300"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border border-gray-200 rounded-lg">
+              <div className="font-medium text-gray-700">Electrical Report (incl. RCDs, Megger test)</div>
+              <div>
+                <Label htmlFor="cert_electrical_issue">Issue Date</Label>
+                <Input
+                  id="cert_electrical_issue"
+                  type="date"
+                  value={formData.cert_electrical_issue}
+                  onChange={(e) => setFormData({ ...formData, cert_electrical_issue: e.target.value })}
+                  className="bg-white border-gray-300"
+                />
+              </div>
+              <div>
+                <Label htmlFor="cert_electrical_expiry">Expiry Date</Label>
+                <Input
+                  id="cert_electrical_expiry"
+                  type="date"
+                  value={formData.cert_electrical_expiry}
+                  onChange={(e) => setFormData({ ...formData, cert_electrical_expiry: e.target.value })}
+                  className="bg-white border-gray-300"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border border-gray-200 rounded-lg">
+              <div className="font-medium text-gray-700">Compass Deviation Card</div>
+              <div>
+                <Label htmlFor="cert_compass_issue">Issue Date</Label>
+                <Input
+                  id="cert_compass_issue"
+                  type="date"
+                  value={formData.cert_compass_issue}
+                  onChange={(e) => setFormData({ ...formData, cert_compass_issue: e.target.value })}
+                  className="bg-white border-gray-300"
+                />
+              </div>
+              <div>
+                <Label htmlFor="cert_compass_expiry">Expiry Date</Label>
+                <Input
+                  id="cert_compass_expiry"
+                  type="date"
+                  value={formData.cert_compass_expiry}
+                  onChange={(e) => setFormData({ ...formData, cert_compass_expiry: e.target.value })}
+                  className="bg-white border-gray-300"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border border-gray-200 rounded-lg">
+              <div className="font-medium text-gray-700">EIAPP Certificate and Technical File</div>
+              <div>
+                <Label htmlFor="cert_eiapp_issue">Issue Date</Label>
+                <Input
+                  id="cert_eiapp_issue"
+                  type="date"
+                  value={formData.cert_eiapp_issue}
+                  onChange={(e) => setFormData({ ...formData, cert_eiapp_issue: e.target.value })}
+                  className="bg-white border-gray-300"
+                />
+              </div>
+              <div>
+                <Label htmlFor="cert_eiapp_expiry">Expiry Date</Label>
+                <Input
+                  id="cert_eiapp_expiry"
+                  type="date"
+                  value={formData.cert_eiapp_expiry}
+                  onChange={(e) => setFormData({ ...formData, cert_eiapp_expiry: e.target.value })}
+                  className="bg-white border-gray-300"
+                />
+              </div>
+            </div>
+          </div>
+        </TabsContent>
       </Tabs>
 
       <div className="flex gap-2 pt-4 border-t">
