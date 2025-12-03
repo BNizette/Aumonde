@@ -147,27 +147,44 @@ const CrewManagementNew = () => {
         </div>
 
         {/* Vessel Selector */}
-        <Card className="bg-white border-gray-200">
-          <CardContent className="pt-6">
-            <div className="flex items-center gap-4">
-              <Label className="text-gray-700 font-medium">Select Vessel:</Label>
-              <select
-                value={selectedVessel?.id || ''}
-                onChange={(e) => {
-                  const vessel = vessels.find(v => v.id === e.target.value);
-                  setSelectedVessel(vessel);
-                }}
-                className="flex-1 p-2 rounded-md bg-white border-gray-300 text-gray-900 border"
-              >
-                {vessels.map(vessel => (
-                  <option key={vessel.id} value={vessel.id}>
-                    {vessel.name} - {vessel.registration_number}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </CardContent>
-        </Card>
+        {vessels.length === 0 ? (
+          <Card className="bg-white border-gray-200">
+            <CardContent className="pt-6">
+              <div className="text-center py-8">
+                <Ship className="w-12 h-12 mx-auto text-gray-400 mb-2" />
+                <p className="text-gray-600 mb-4">No vessels found. Please add a vessel first.</p>
+                <Button
+                  onClick={() => window.location.href = '/vessels'}
+                  className="bg-teal-500 hover:bg-teal-600 text-white"
+                >
+                  Go to Vessel Management
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        ) : (
+          <>
+            <Card className="bg-white border-gray-200">
+              <CardContent className="pt-6">
+                <div className="flex items-center gap-4">
+                  <Label className="text-gray-700 font-medium">Select Vessel:</Label>
+                  <select
+                    value={selectedVessel?.id || ''}
+                    onChange={(e) => {
+                      const vessel = vessels.find(v => v.id === e.target.value);
+                      setSelectedVessel(vessel);
+                    }}
+                    className="flex-1 p-2 rounded-md bg-white border-gray-300 text-gray-900 border"
+                  >
+                    {vessels.map(vessel => (
+                      <option key={vessel.id} value={vessel.id}>
+                        {vessel.name} - {vessel.registration_number}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </CardContent>
+            </Card>
 
         {/* Crew List */}
         <Card className="bg-white border-gray-200">
