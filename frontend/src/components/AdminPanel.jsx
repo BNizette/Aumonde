@@ -335,31 +335,33 @@ const AdminPanel = () => {
           </CardContent>
         </Card>
 
-        <Card className="bg-white border-gray-200">
-          <CardHeader>
-            <CardTitle className="text-gray-900">System Statistics</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="p-4 bg-teal-50 rounded-lg">
-                <p className="text-sm text-teal-700 font-medium">Total Users</p>
-                <p className="text-2xl font-bold text-teal-900">{users.length}</p>
+        {isOwner && (
+          <Card className="bg-white border-gray-200">
+            <CardHeader>
+              <CardTitle className="text-gray-900">System Statistics</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="p-4 bg-teal-50 rounded-lg">
+                  <p className="text-sm text-teal-700 font-medium">Total Users</p>
+                  <p className="text-2xl font-bold text-teal-900">{users.length}</p>
+                </div>
+                <div className="p-4 bg-blue-50 rounded-lg">
+                  <p className="text-sm text-blue-700 font-medium">Owners</p>
+                  <p className="text-2xl font-bold text-blue-900">{users.filter(u => u.role === 'owner').length}</p>
+                </div>
+                <div className="p-4 bg-purple-50 rounded-lg">
+                  <p className="text-sm text-purple-700 font-medium">Masters</p>
+                  <p className="text-2xl font-bold text-purple-900">{users.filter(u => u.role === 'master').length}</p>
+                </div>
+                <div className="p-4 bg-amber-50 rounded-lg">
+                  <p className="text-sm text-amber-700 font-medium">Crew</p>
+                  <p className="text-2xl font-bold text-amber-900">{users.filter(u => u.role === 'crew').length}</p>
+                </div>
               </div>
-              <div className="p-4 bg-blue-50 rounded-lg">
-                <p className="text-sm text-blue-700 font-medium">Owners</p>
-                <p className="text-2xl font-bold text-blue-900">{users.filter(u => u.role === 'owner').length}</p>
-              </div>
-              <div className="p-4 bg-purple-50 rounded-lg">
-                <p className="text-sm text-purple-700 font-medium">Masters</p>
-                <p className="text-2xl font-bold text-purple-900">{users.filter(u => u.role === 'master').length}</p>
-              </div>
-              <div className="p-4 bg-amber-50 rounded-lg">
-                <p className="text-sm text-amber-700 font-medium">Crew</p>
-                <p className="text-2xl font-bold text-amber-900">{users.filter(u => u.role === 'crew').length}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        )}
       </div>
     </Layout>
   );
