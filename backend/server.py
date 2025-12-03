@@ -710,6 +710,10 @@ async def get_all_users(current_user: User = Depends(get_current_user)):
     for u in users:
         if isinstance(u.get('created_at'), str):
             u['created_at'] = datetime.fromisoformat(u['created_at'])
+        if isinstance(u.get('last_login'), str):
+            u['last_login'] = datetime.fromisoformat(u['last_login'])
+        if isinstance(u.get('last_active'), str):
+            u['last_active'] = datetime.fromisoformat(u['last_active'])
     return users
 
 @api_router.put("/admin/users/{user_id}")
