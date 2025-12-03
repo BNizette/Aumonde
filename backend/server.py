@@ -122,6 +122,7 @@ class User(BaseModel):
     role: str
     organization: Optional[str] = None
     account_status: str = "active"  # "active", "disabled", "suspended"
+    access_level: str = "edit"  # "view", "edit", "full"
     last_login: Optional[datetime] = None
     last_active: Optional[datetime] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
