@@ -116,7 +116,7 @@ const CrewForm = ({ vesselId, initialData = {}, onSubmit, onCancel, loading, isE
         <TabsContent value="details" className="space-y-4 mt-4 max-h-[60vh] overflow-y-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="md:col-span-2">
-              <Label htmlFor="full_name">Staff Member's Name *</Label>
+              <Label htmlFor="full_name">Staff Member&apos;s Name *</Label>
               <Input
                 id="full_name"
                 value={formData.full_name}
