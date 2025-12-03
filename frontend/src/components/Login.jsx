@@ -105,7 +105,7 @@ const Login = () => {
             )}
             
             <div>
-              <Label htmlFor="email" className="text-slate-200">Email</Label>
+              <Label htmlFor="email" className="text-gray-700">Email</Label>
               <Input
                 id="email"
                 data-testid="email-input"
@@ -113,12 +113,12 @@ const Login = () => {
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 required
-                className="bg-slate-800 border-slate-700 text-white"
+                className="bg-white border-gray-300 text-gray-900"
               />
             </div>
             
             <div>
-              <Label htmlFor="password" className="text-slate-200">Password</Label>
+              <Label htmlFor="password" className="text-gray-700">Password</Label>
               <Input
                 id="password"
                 data-testid="password-input"
@@ -126,14 +126,15 @@ const Login = () => {
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                 required
-                className="bg-slate-800 border-slate-700 text-white"
+                className="bg-white border-gray-300 text-gray-900"
               />
             </div>
             
             <Button 
               type="submit" 
               data-testid="submit-button"
-              className="w-full bg-gradient-to-r from-blue-600 to-teal-600 hover:from-blue-700 hover:to-teal-700 text-white font-semibold"
+              className="w-full text-white font-semibold"
+              style={{ background: 'linear-gradient(135deg, #1dd1a1 0%, #00bcd4 100%)', border: 'none' }}
               disabled={loading}
             >
               {loading ? 'Processing...' : (isLogin ? 'Sign In' : 'Create Account')}
@@ -144,7 +145,7 @@ const Login = () => {
                 type="button"
                 data-testid="toggle-auth-button"
                 onClick={() => setIsLogin(!isLogin)}
-                className="text-blue-400 hover:text-blue-300 text-sm"
+                className="text-teal-600 hover:text-teal-700 text-sm font-medium"
               >
                 {isLogin ? "Don't have an account? Register" : 'Already have an account? Sign in'}
               </button>
