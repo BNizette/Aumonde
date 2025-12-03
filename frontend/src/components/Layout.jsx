@@ -30,16 +30,16 @@ const Layout = ({ children }) => {
   const isActive = (path) => location.pathname === path;
 
   return (
-    <div className="min-h-screen bg-slate-950">
+    <div className="min-h-screen bg-gray-50">
       {/* Top Navigation */}
-      <nav className="bg-slate-900 border-b border-slate-800 px-6 py-4 sticky top-0 z-50">
+      <nav className="bg-white border-b border-gray-200 px-6 py-4 sticky top-0 z-50 shadow-sm" style={{ backgroundColor: '#1a3a52' }}>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Button 
               variant="ghost" 
               size="icon" 
               onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="text-slate-300 hover:text-white"
+              className="text-white hover:text-teal-300"
               data-testid="sidebar-toggle"
             >
               <Menu className="w-5 h-5" />
@@ -50,13 +50,13 @@ const Layout = ({ children }) => {
           <div className="flex items-center gap-4">
             <div className="text-right">
               <p className="text-sm font-semibold text-white">{user?.full_name}</p>
-              <p className="text-xs text-slate-400 capitalize">{user?.role?.replace('_', ' ')}</p>
+              <p className="text-xs text-teal-200 capitalize">{user?.role?.replace('_', ' ')}</p>
             </div>
             <Button 
               variant="ghost" 
               size="icon" 
               onClick={logout}
-              className="text-slate-300 hover:text-red-400"
+              className="text-white hover:text-red-300"
               data-testid="logout-button"
             >
               <LogOut className="w-5 h-5" />
