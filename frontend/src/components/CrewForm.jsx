@@ -253,12 +253,19 @@ const CrewForm = ({ initialData = {}, onSubmit, onCancel, loading, isEdit = fals
               <Label>Qualifications</Label>
               <div className="space-y-2">
                 {formData.qualifications.map((qual, index) => (
-                  <div key={index} className="flex gap-2">
+                  <div key={index} className="grid grid-cols-1 md:grid-cols-12 gap-2">
                     <Input
-                      value={qual}
-                      onChange={(e) => updateQualification(index, e.target.value)}
+                      value={qual.name}
+                      onChange={(e) => updateQualification(index, 'name', e.target.value)}
                       placeholder="Enter qualification"
-                      className="bg-white border-gray-300 flex-1"
+                      className="bg-white border-gray-300 md:col-span-7"
+                    />
+                    <Input
+                      type="date"
+                      value={qual.date}
+                      onChange={(e) => updateQualification(index, 'date', e.target.value)}
+                      placeholder="Date"
+                      className="bg-white border-gray-300 md:col-span-4"
                     />
                     {formData.qualifications.length > 1 && (
                       <Button
@@ -266,7 +273,7 @@ const CrewForm = ({ initialData = {}, onSubmit, onCancel, loading, isEdit = fals
                         variant="outline"
                         size="sm"
                         onClick={() => removeQualification(index)}
-                        className="text-red-600"
+                        className="text-red-600 md:col-span-1"
                       >
                         <Trash2 className="w-4 h-4" />
                       </Button>
@@ -284,17 +291,6 @@ const CrewForm = ({ initialData = {}, onSubmit, onCancel, loading, isEdit = fals
                   Add Qualification
                 </Button>
               </div>
-            </div>
-
-            <div>
-              <Label htmlFor="qualifications_date">Qualifications Date</Label>
-              <Input
-                id="qualifications_date"
-                type="date"
-                value={formData.qualifications_date}
-                onChange={(e) => setFormData({ ...formData, qualifications_date: e.target.value })}
-                className="bg-white border-gray-300"
-              />
             </div>
 
             <div>
