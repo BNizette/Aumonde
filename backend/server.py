@@ -77,6 +77,43 @@ class UserUpdate(BaseModel):
     role: Optional[str] = None
     organization: Optional[str] = None
 
+class UserStatusUpdate(BaseModel):
+    status: str  # "active", "disabled", "suspended"
+    reason: Optional[str] = None
+
+class ActivityLog(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    activity_type: str  # "login", "logout", "action"
+    ip_address: Optional[str] = None
+    user_agent: Optional[str] = None
+    details: Optional[str] = None
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class AuditLog(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    admin_id: str
+    admin_name: str
+    action: str  # "create_user", "update_user", "delete_user", "reset_password", "change_status"
+    target_type: str  # "user", "vessel", "system"
+    target_id: Optional[str] = None
+    target_name: Optional[str] = None
+    details: Dict[str, Any]
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class Session(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    token: str
+    ip_address: Optional[str] = None
+    user_agent: Optional[str] = None
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    expires_at: datetime
+    last_active: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
 class User(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
