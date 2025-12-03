@@ -27,7 +27,7 @@ const Layout = ({ children }) => {
     return () => window.removeEventListener('resize', handleResize);
   }, [sidebarOpen]);
 
-  const menuItems = [
+  const baseMenuItems = [
     { path: '/', icon: LayoutDashboard, label: 'Dashboard' },
     { path: '/vessels', icon: Ship, label: 'Vessels' },
     { path: '/documents', icon: FileText, label: 'Documents' },
@@ -39,6 +39,12 @@ const Layout = ({ children }) => {
     { path: '/compliance', icon: Clipboard, label: 'Compliance' },
     { path: '/ai-assistant', icon: Bot, label: 'AI Assistant' },
   ];
+
+  const adminMenuItem = { path: '/admin', icon: UserCog, label: 'Admin Panel' };
+  
+  const menuItems = user && (user.role === 'owner' || user.role === 'inspector') 
+    ? [...baseMenuItems, adminMenuItem]
+    : baseMenuItems;
 
   const isActive = (path) => location.pathname === path;
 
