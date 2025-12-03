@@ -413,6 +413,7 @@ class CrewMemberCreate(BaseModel):
     
     # Qualifications
     qualifications: List[str]
+    qualifications_date: Optional[str] = None
     qualifications_text: Optional[str] = None
     experience: Optional[str] = None
     master_class5_proof: Optional[bool] = None
