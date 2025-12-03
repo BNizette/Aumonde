@@ -460,6 +460,28 @@ async def get_all_users(current_user: User = Depends(get_current_user)):
             u['created_at'] = datetime.fromisoformat(u['created_at'])
     return users
 
+@api_router.put("/admin/users/{user_id}")
+async def update_user(user_id: str, update: UserUpdate, current_user: User = Depends(get_current_user)):
+    """Update user details - Admin only"""
+    if current_user.role not in [UserRole.OWNER, UserRole.INSPECTOR]:
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    user = await db.users.find_one({"id": user_id})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    update_data = {k: v for k, v in update.model_dump().items() if v is not None}
+    if update_data:
+        await db.users.update_one(
+            {"id": user_id},
+            {"$set": update_data}
+        )
+    
+    updated_user = await db.users.find_one({"id": user_id}, {"_id": 0, "password": 0})
+    if isinstance(updated_user.get('created_at'), str):
+        updated_user['created_at'] = datetime.fromisoformat(updated_user['created_at'])
+    return User(**updated_user)
+
 @api_router.delete("/admin/users/{user_id}")
 async def delete_user(user_id: str, current_user: User = Depends(get_current_user)):
     """Delete user - Admin only"""
