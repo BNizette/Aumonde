@@ -306,6 +306,7 @@ const AdminPanelEnhanced = () => {
                             <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">Name</th>
                             <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">Email</th>
                             <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">Role</th>
+                            <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">Access Level</th>
                             <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">Status</th>
                             <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">Last Login</th>
                             <th className="text-right py-3 px-4 text-sm font-semibold text-gray-700">Actions</th>
