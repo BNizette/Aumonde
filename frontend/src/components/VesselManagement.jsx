@@ -34,20 +34,23 @@ const VesselManagement = () => {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (formData) => {
+    setSubmitting(true);
     try {
-      await axios.post(`${API}/vessels`, {
-        ...formData,
-        length: parseFloat(formData.length)
-      });
+      await axios.post(`${API}/vessels`, formData);
       toast.success('Vessel added successfully');
       setOpen(false);
-      setFormData({ name: '', vessel_class: 'class_1', registration_number: '', length: '', sms_type: 'standard' });
       fetchVessels();
     } catch (error) {
       toast.error(error.response?.data?.detail || 'Failed to add vessel');
+    } finally {
+      setSubmitting(false);
     }
+  };
+
+  const handleViewVessel = (vessel) => {
+    setSelectedVessel(vessel);
+    setViewOpen(true);
   };
 
   return (
