@@ -44,7 +44,7 @@ const Layout = ({ children }) => {
             >
               <Menu className="w-5 h-5" />
             </Button>
-            <h1 className="text-2xl font-bold text-white">AMSA SMS</h1>
+            <h1 className="text-2xl font-bold text-white">{config?.organization_name || 'AMSA'} SMS</h1>
           </div>
           
           <div className="flex items-center gap-4">
