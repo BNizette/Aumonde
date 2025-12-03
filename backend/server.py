@@ -432,6 +432,62 @@ def create_access_token(data: dict) -> str:
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, JWT_SECRET_KEY, algorithm=JWT_ALGORITHM)
 
+async def log_activity(user_id: str, activity_type: str, details: Optional[str] = None, ip_address: Optional[str] = None, user_agent: Optional[str] = None):
+    """Log user activity"""
+    log = ActivityLog(
+        user_id=user_id,
+        activity_type=activity_type,
+        details=details,
+        ip_address=ip_address,
+        user_agent=user_agent
+    )
+    doc = log.model_dump()
+    doc['timestamp'] = doc['timestamp'].isoformat()
+    await db.activity_logs.insert_one(doc)
+
+async def log_audit(admin_id: str, admin_name: str, action: str, target_type: str, target_id: Optional[str] = None, target_name: Optional[str] = None, details: Dict[str, Any] = None):
+    """Log admin action for audit trail"""
+    log = AuditLog(
+        admin_id=admin_id,
+        admin_name=admin_name,
+        action=action,
+        target_type=target_type,
+        target_id=target_id,
+        target_name=target_name,
+        details=details or {}
+    )
+    doc = log.model_dump()
+    doc['timestamp'] = doc['timestamp'].isoformat()
+    await db.audit_logs.insert_one(doc)
+
+async def create_session(user_id: str, token: str, ip_address: Optional[str] = None, user_agent: Optional[str] = None):
+    """Create a new session"""
+    expire = datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    session = Session(
+        user_id=user_id,
+        token=token,
+        ip_address=ip_address,
+        user_agent=user_agent,
+        expires_at=expire
+    )
+    doc = session.model_dump()
+    doc['created_at'] = doc['created_at'].isoformat()
+    doc['expires_at'] = doc['expires_at'].isoformat()
+    doc['last_active'] = doc['last_active'].isoformat()
+    await db.sessions.insert_one(doc)
+    return session
+
+async def update_session_activity(token: str):
+    """Update session last active time"""
+    await db.sessions.update_one(
+        {"token": token},
+        {"$set": {"last_active": datetime.now(timezone.utc).isoformat()}}
+    )
+
+async def delete_session(token: str):
+    """Delete a session (logout)"""
+    await db.sessions.delete_one({"token": token})
+
 async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
     token = credentials.credentials
     try:
