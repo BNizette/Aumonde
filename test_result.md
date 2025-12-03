@@ -246,3 +246,5 @@ test_plan:
 agent_communication:
   - agent: "main"
     message: "Implemented 4 major admin panel enhancements: 1) User Activity Logs - tracks login/logout/actions, 2) Account Status Management - enable/disable/suspend accounts with audit trail, 3) Audit Trail - logs all admin actions with details, 4) Session Management - view and force logout active sessions. Backend has 8 new endpoints, frontend has new tabbed interface with full functionality. Ready for comprehensive testing."
+  - agent: "main"
+    message: "Added Access Level management system: Added access_level field (View/Edit/Full) to User model with role-based defaults (Owner=Full, Master/Crew=Edit, Designated/Inspector=View). Updated admin panel with access level column, badges, and dropdown in edit dialog. Ran migration script to update existing users. Frontend compiled successfully and ready for testing."
