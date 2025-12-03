@@ -73,6 +73,8 @@ class PasswordChange(BaseModel):
 
 class UserUpdate(BaseModel):
     full_name: Optional[str] = None
+    email: Optional[EmailStr] = None
+    role: Optional[str] = None
     organization: Optional[str] = None
 
 class User(BaseModel):
