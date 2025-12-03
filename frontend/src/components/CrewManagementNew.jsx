@@ -46,6 +46,8 @@ const CrewManagementNew = () => {
   };
 
   const fetchCrew = async () => {
+    if (!selectedVessel) return;
+    
     try {
       const response = await axios.get(`${API}/crew/vessel/${selectedVessel.id}`);
       setCrew(response.data);
