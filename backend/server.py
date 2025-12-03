@@ -916,7 +916,7 @@ async def get_all_sessions(current_user: User = Depends(get_current_user)):
     
     # Enrich with user data
     for session in sessions:
-        user = await db.users.find_one({"id": session['user_id']}, {"_id": 0, "password": 0, "full_name": 1, "email": 1, "role": 1})
+        user = await db.users.find_one({"id": session['user_id']}, {"_id": 0, "password": 0})
         if user:
             session['user'] = {
                 "full_name": user.get('full_name'),
