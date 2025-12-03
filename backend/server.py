@@ -739,6 +739,18 @@ async def update_user(user_id: str, update: UserUpdate, current_user: User = Dep
             {"id": user_id},
             {"$set": update_data}
         )
+        
+        # Log audit trail (only for owner actions)
+        if current_user.role == UserRole.OWNER:
+            await log_audit(
+                admin_id=current_user.id,
+                admin_name=current_user.full_name,
+                action="update_user",
+                target_type="user",
+                target_id=user_id,
+                target_name=user['full_name'],
+                details={"changes": update_data}
+            )
     
     updated_user = await db.users.find_one({"id": user_id}, {"_id": 0, "password": 0})
     if isinstance(updated_user.get('created_at'), str):
