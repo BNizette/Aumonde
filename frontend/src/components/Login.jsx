@@ -140,15 +140,27 @@ const Login = () => {
               {loading ? 'Processing...' : (isLogin ? 'Sign In' : 'Create Account')}
             </Button>
             
-            <div className="text-center">
-              <button
-                type="button"
-                data-testid="toggle-auth-button"
-                onClick={() => setIsLogin(!isLogin)}
-                className="text-teal-600 hover:text-teal-700 text-sm font-medium"
-              >
-                {isLogin ? "Don't have an account? Register" : 'Already have an account? Sign in'}
-              </button>
+            <div className="text-center space-y-2">
+              {isLogin && (
+                <div>
+                  <a
+                    href="/password-reset"
+                    className="text-gray-600 hover:text-teal-600 text-sm"
+                  >
+                    Forgot password?
+                  </a>
+                </div>
+              )}
+              <div>
+                <button
+                  type="button"
+                  data-testid="toggle-auth-button"
+                  onClick={() => setIsLogin(!isLogin)}
+                  className="text-teal-600 hover:text-teal-700 text-sm font-medium"
+                >
+                  {isLogin ? "Don't have an account? Register" : 'Already have an account? Sign in'}
+                </button>
+              </div>
             </div>
           </form>
         </CardContent>
