@@ -610,6 +610,14 @@ async def login(credentials: UserLogin):
 async def get_me(current_user: User = Depends(get_current_user)):
     return current_user
 
+@api_router.post("/auth/logout")
+async def logout(credentials: HTTPAuthorizationCredentials = Depends(security), current_user: User = Depends(get_current_user)):
+    """Logout user and delete session"""
+    token = credentials.credentials
+    await delete_session(token)
+    await log_activity(current_user.id, "logout", "User logged out")
+    return {"message": "Logged out successfully"}
+
 @api_router.post("/auth/password-reset-request")
 async def request_password_reset(request: PasswordResetRequest):
     """Request password reset - generates a token"""
