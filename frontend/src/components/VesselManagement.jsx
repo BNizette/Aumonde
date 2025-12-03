@@ -50,6 +50,50 @@ const VesselManagement = () => {
     }
   };
 
+  const handleUpdate = async (formData) => {
+    setSubmitting(true);
+    try {
+      await axios.put(`${API}/vessels/${selectedVessel.id}`, formData);
+      toast.success('Vessel updated successfully');
+      setEditOpen(false);
+      setSelectedVessel(null);
+      fetchVessels();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Failed to update vessel');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleDelete = async (vesselId, vesselName) => {
+    if (!window.confirm(`Are you sure you want to delete vessel "${vesselName}"? This action cannot be undone.`)) {
+      return;
+    }
+
+    try {
+      await axios.delete(`${API}/vessels/${vesselId}`);
+      toast.success('Vessel deleted successfully');
+      fetchVessels();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Failed to delete vessel');
+    }
+  };
+
+  const canEdit = () => {
+    const accessLevel = user?.access_level || 'edit';
+    return accessLevel === 'edit' || accessLevel === 'full';
+  };
+
+  const canDelete = () => {
+    const accessLevel = user?.access_level || 'edit';
+    return accessLevel === 'full' || user?.role === 'owner';
+  };
+
+  const openEditDialog = (vessel) => {
+    setSelectedVessel(vessel);
+    setEditOpen(true);
+  };
+
   const handleViewVessel = (vessel) => {
     setSelectedVessel(vessel);
     setViewOpen(true);
