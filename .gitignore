@@ -77,11 +77,9 @@ agenthub/agents/youtube/db
 .cache/
 
 # Mobile development
-android-sdk/ -e 
-# Environment files
-*.env
-*.env.*
--e 
-# Environment files
-*.env
-*.env.*
+android-sdk/
+
+# Environment files are needed for Emergent deployment
+# They will be auto-updated with production values during deployment
+# *.env
+# *.env.*
