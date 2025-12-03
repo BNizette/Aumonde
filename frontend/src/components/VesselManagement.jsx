@@ -69,86 +69,71 @@ const VesselManagement = () => {
                 Add Vessel
               </Button>
             </DialogTrigger>
-            <DialogContent className="bg-white border-gray-300 text-gray-900">
+            <DialogContent className="bg-white border-gray-200 text-gray-900 max-w-4xl max-h-[90vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle>Add New Vessel</DialogTitle>
+                <p className="text-sm text-gray-600">Complete the vessel master file with all required details</p>
               </DialogHeader>
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                  <Label htmlFor="name">Vessel Name</Label>
-                  <Input
-                    id="name"
-                    data-testid="vessel-name-input"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    required
-                    className="bg-gray-50 border-gray-300"
-                  />
+              <VesselForm 
+                onSubmit={handleSubmit}
+                onCancel={() => setOpen(false)}
+                loading={submitting}
+              />
+            </DialogContent>
+          </Dialog>
+          
+          {/* View Vessel Dialog */}
+          <Dialog open={viewOpen} onOpenChange={setViewOpen}>
+            <DialogContent className="bg-white border-gray-200 text-gray-900 max-w-4xl max-h-[90vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle>Vessel Details: {selectedVessel?.name}</DialogTitle>
+              </DialogHeader>
+              {selectedVessel && (
+                <div className="space-y-6">
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <span className="font-semibold text-gray-700">Registration:</span>
+                      <p className="text-gray-900">{selectedVessel.registration_number}</p>
+                    </div>
+                    <div>
+                      <span className="font-semibold text-gray-700">Class:</span>
+                      <p className="text-gray-900">{selectedVessel.vessel_class?.replace('_', ' ').toUpperCase()}</p>
+                    </div>
+                    <div>
+                      <span className="font-semibold text-gray-700">Length:</span>
+                      <p className="text-gray-900">{selectedVessel.length}m</p>
+                    </div>
+                    <div>
+                      <span className="font-semibold text-gray-700">SMS Type:</span>
+                      <p className="text-gray-900 capitalize">{selectedVessel.sms_type}</p>
+                    </div>
+                    {selectedVessel.vessel_type && (
+                      <div>
+                        <span className="font-semibold text-gray-700">Type:</span>
+                        <p className="text-gray-900">{selectedVessel.vessel_type}</p>
+                      </div>
+                    )}
+                    {selectedVessel.year_of_build && (
+                      <div>
+                        <span className="font-semibold text-gray-700">Year Built:</span>
+                        <p className="text-gray-900">{selectedVessel.year_of_build}</p>
+                      </div>
+                    )}
+                    {selectedVessel.hull_material && (
+                      <div>
+                        <span className="font-semibold text-gray-700">Hull Material:</span>
+                        <p className="text-gray-900">{selectedVessel.hull_material}</p>
+                      </div>
+                    )}
+                    {selectedVessel.company_name && (
+                      <div>
+                        <span className="font-semibold text-gray-700">Company:</span>
+                        <p className="text-gray-900">{selectedVessel.company_name}</p>
+                      </div>
+                    )}
+                  </div>
                 </div>
-                
-                <div>
-                  <Label htmlFor="registration_number">Registration Number</Label>
-                  <Input
-                    id="registration_number"
-                    data-testid="registration-number-input"
-                    value={formData.registration_number}
-                    onChange={(e) => setFormData({ ...formData, registration_number: e.target.value })}
-                    required
-                    className="bg-gray-50 border-gray-300"
-                  />
-                </div>
-                
-                <div>
-                  <Label htmlFor="vessel_class">Vessel Class</Label>
-                  <select
-                    id="vessel_class"
-                    data-testid="vessel-class-select"
-                    value={formData.vessel_class}
-                    onChange={(e) => setFormData({ ...formData, vessel_class: e.target.value })}
-                    className="w-full p-2 rounded-md bg-gray-50 border-gray-300 text-white border"
-                  >
-                    <option value="class_1">Class 1 (Passenger)</option>
-                    <option value="class_2">Class 2 (Non-passenger)</option>
-                    <option value="class_3">Class 3 (Fishing)</option>
-                    <option value="class_4">Class 4 (Hire and Drive)</option>
-                  </select>
-                </div>
-                
-                <div>
-                  <Label htmlFor="length">Length (meters)</Label>
-                  <Input
-                    id="length"
-                    data-testid="vessel-length-input"
-                    type="number"
-                    step="0.1"
-                    value={formData.length}
-                    onChange={(e) => setFormData({ ...formData, length: e.target.value })}
-                    required
-                    className="bg-gray-50 border-gray-300"
-                  />
-                </div>
-                
-                <div>
-                  <Label htmlFor="sms_type">SMS Type</Label>
-                  <select
-                    id="sms_type"
-                    data-testid="sms-type-select"
-                    value={formData.sms_type}
-                    onChange={(e) => setFormData({ ...formData, sms_type: e.target.value })}
-                    className="w-full p-2 rounded-md bg-gray-50 border-gray-300 text-white border"
-                  >
-                    <option value="standard">Standard SMS</option>
-                    <option value="simplified">Simplified SMS</option>
-                  </select>
-                  <p className="text-xs text-gray-600 mt-1">
-                    Vessels under 7.5m in Class 2, 3, or 4 are eligible for simplified SMS
-                  </p>
-                </div>
-                
-                <Button type="submit" data-testid="submit-vessel-button" className="w-full bg-teal-500 hover:bg-teal-600">
-                  Add Vessel
-                </Button>
-              </form>
+              )}
             </DialogContent>
           </Dialog>
         </div>
