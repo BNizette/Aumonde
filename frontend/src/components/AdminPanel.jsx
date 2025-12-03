@@ -84,13 +84,17 @@ const AdminPanel = () => {
 
   const handleEditUser = async () => {
     try {
-      await axios.put(`${API}/admin/users/${selectedUser.id}`, editFormData);
-      toast.success('User updated successfully');
+      const updateData = user.role === 'owner' 
+        ? editFormData 
+        : { full_name: editFormData.full_name, email: editFormData.email };
+      
+      await axios.put(`${API}/admin/users/${selectedUser.id}`, updateData);
+      toast.success('Profile updated successfully');
       setEditDialogOpen(false);
       setSelectedUser(null);
       fetchUsers();
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Failed to update user');
+      toast.error(error.response?.data?.detail || 'Failed to update profile');
     }
   };
 
