@@ -241,8 +241,6 @@ const CrewManagementNew = () => {
             )}
           </CardContent>
         </Card>
-          </>
-        )}
 
         {/* Edit Dialog */}
         <Dialog open={editOpen} onOpenChange={setEditOpen}>
