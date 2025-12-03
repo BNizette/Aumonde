@@ -76,6 +76,29 @@ const AdminPanel = () => {
     }
   };
 
+  const handleEditUser = async () => {
+    try {
+      await axios.put(`${API}/admin/users/${selectedUser.id}`, editFormData);
+      toast.success('User updated successfully');
+      setEditDialogOpen(false);
+      setSelectedUser(null);
+      fetchUsers();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Failed to update user');
+    }
+  };
+
+  const openEditDialog = (u) => {
+    setSelectedUser(u);
+    setEditFormData({
+      full_name: u.full_name,
+      email: u.email,
+      role: u.role,
+      organization: u.organization || ''
+    });
+    setEditDialogOpen(true);
+  };
+
   if (loading) {
     return (
       <Layout>
