@@ -265,53 +265,55 @@ const AdminPanel = () => {
                               </DialogContent>
                             </Dialog>
 
-                            {/* Reset Password Dialog */}
-                            <Dialog open={resetDialogOpen && selectedUser?.id === u.id} onOpenChange={(open) => {
-                              setResetDialogOpen(open);
-                              if (!open) {
-                                setSelectedUser(null);
-                                setNewPassword('');
-                              }
-                            }}>
-                              <DialogTrigger asChild>
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  data-testid={`reset-password-${u.id}`}
-                                  onClick={() => setSelectedUser(u)}
-                                  className="text-teal-600 border-teal-600 hover:bg-teal-50"
-                                >
-                                  <KeyRound className="w-4 h-4" />
-                                </Button>
-                              </DialogTrigger>
-                              <DialogContent className="bg-white border-gray-200 text-gray-900">
-                                <DialogHeader>
-                                  <DialogTitle>Reset Password for {u.full_name}</DialogTitle>
-                                </DialogHeader>
-                                <div className="space-y-4">
-                                  <div>
-                                    <Label htmlFor="newPassword">New Password</Label>
-                                    <Input
-                                      id="newPassword"
-                                      type="password"
-                                      value={newPassword}
-                                      onChange={(e) => setNewPassword(e.target.value)}
-                                      placeholder="Enter new password"
-                                      className="bg-white border-gray-300"
-                                    />
-                                  </div>
+                            {/* Reset Password Dialog - Owner only */}
+                            {isOwner && (
+                              <Dialog open={resetDialogOpen && selectedUser?.id === u.id} onOpenChange={(open) => {
+                                setResetDialogOpen(open);
+                                if (!open) {
+                                  setSelectedUser(null);
+                                  setNewPassword('');
+                                }
+                              }}>
+                                <DialogTrigger asChild>
                                   <Button
-                                    onClick={handleResetPassword}
-                                    className="w-full bg-teal-500 hover:bg-teal-600 text-white"
+                                    size="sm"
+                                    variant="outline"
+                                    data-testid={`reset-password-${u.id}`}
+                                    onClick={() => setSelectedUser(u)}
+                                    className="text-teal-600 border-teal-600 hover:bg-teal-50"
                                   >
-                                    Reset Password
+                                    <KeyRound className="w-4 h-4" />
                                   </Button>
-                                </div>
-                              </DialogContent>
-                            </Dialog>
+                                </DialogTrigger>
+                                <DialogContent className="bg-white border-gray-200 text-gray-900">
+                                  <DialogHeader>
+                                    <DialogTitle>Reset Password for {u.full_name}</DialogTitle>
+                                  </DialogHeader>
+                                  <div className="space-y-4">
+                                    <div>
+                                      <Label htmlFor="newPassword">New Password</Label>
+                                      <Input
+                                        id="newPassword"
+                                        type="password"
+                                        value={newPassword}
+                                        onChange={(e) => setNewPassword(e.target.value)}
+                                        placeholder="Enter new password"
+                                        className="bg-white border-gray-300"
+                                      />
+                                    </div>
+                                    <Button
+                                      onClick={handleResetPassword}
+                                      className="w-full bg-teal-500 hover:bg-teal-600 text-white"
+                                    >
+                                      Reset Password
+                                    </Button>
+                                  </div>
+                                </DialogContent>
+                              </Dialog>
+                            )}
                             
-                            {/* Delete User Button */}
-                            {u.id !== user.id && (
+                            {/* Delete User Button - Owner only and not self */}
+                            {isOwner && u.id !== user.id && (
                               <Button
                                 size="sm"
                                 variant="outline"
