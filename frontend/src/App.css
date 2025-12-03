@@ -162,9 +162,9 @@ select:focus {
 
 /* Glass morphism effect for modals */
 .glass {
-  background: rgba(30, 41, 59, 0.8);
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(148, 163, 184, 0.1);
+  border: 1px solid rgba(224, 224, 224, 0.5);
 }
 
 /* Responsive grid */
