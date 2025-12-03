@@ -267,6 +267,42 @@ class VesselCreate(BaseModel):
     designated_person_contact: Optional[str] = None
     master_name: Optional[str] = None
     master_contact: Optional[str] = None
+    
+    # Certificate Record - Statutory Certificates
+    cert_survey_issue: Optional[str] = None
+    cert_survey_expiry: Optional[str] = None
+    cert_operation_issue: Optional[str] = None
+    cert_operation_expiry: Optional[str] = None
+    cert_loadline_issue: Optional[str] = None
+    cert_loadline_expiry: Optional[str] = None
+    
+    # Certificate Record - Operational Documentation
+    cert_stability_issue: Optional[str] = None
+    cert_stability_date: Optional[str] = None
+    cert_sms_issue: Optional[str] = None
+    cert_sms_date: Optional[str] = None
+    
+    # Certificate Record - Third Party Certificates
+    cert_classification_issue: Optional[str] = None
+    cert_classification_expiry: Optional[str] = None
+    cert_lifting_gear_issue: Optional[str] = None
+    cert_lifting_gear_expiry: Optional[str] = None
+    cert_liferaft_issue: Optional[str] = None
+    cert_liferaft_expiry: Optional[str] = None
+    cert_epirb_issue: Optional[str] = None
+    cert_epirb_expiry: Optional[str] = None
+    cert_fire_extinguisher_issue: Optional[str] = None
+    cert_fire_extinguisher_expiry: Optional[str] = None
+    cert_lifejacket_issue: Optional[str] = None
+    cert_lifejacket_expiry: Optional[str] = None
+    cert_gas_issue: Optional[str] = None
+    cert_gas_expiry: Optional[str] = None
+    cert_electrical_issue: Optional[str] = None
+    cert_electrical_expiry: Optional[str] = None
+    cert_compass_issue: Optional[str] = None
+    cert_compass_expiry: Optional[str] = None
+    cert_eiapp_issue: Optional[str] = None
+    cert_eiapp_expiry: Optional[str] = None
 
 class Document(BaseModel):
     model_config = ConfigDict(extra="ignore")
