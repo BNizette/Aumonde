@@ -127,8 +127,8 @@ const AdminPanel = () => {
     <Layout>
       <div data-testid="admin-panel" className="space-y-4 md:space-y-6">
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Admin Panel</h1>
-          <p className="text-sm md:text-base text-gray-600">Manage users and system settings</p>
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">{pageTitle}</h1>
+          <p className="text-sm md:text-base text-gray-600">{pageDescription}</p>
         </div>
 
         <Card className="bg-white border-gray-200">
