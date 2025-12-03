@@ -128,6 +128,28 @@ const VesselManagement = () => {
             </DialogContent>
           </Dialog>
           
+          {/* Edit Vessel Dialog */}
+          <Dialog open={editOpen} onOpenChange={setEditOpen}>
+            <DialogContent className="bg-white border-gray-200 text-gray-900 max-w-4xl max-h-[90vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle>Edit Vessel: {selectedVessel?.name}</DialogTitle>
+                <p className="text-sm text-gray-600">Update vessel master file details</p>
+              </DialogHeader>
+              {selectedVessel && (
+                <VesselForm 
+                  initialData={selectedVessel}
+                  onSubmit={handleUpdate}
+                  onCancel={() => {
+                    setEditOpen(false);
+                    setSelectedVessel(null);
+                  }}
+                  loading={submitting}
+                  isEdit={true}
+                />
+              )}
+            </DialogContent>
+          </Dialog>
+          
           {/* View Vessel Dialog */}
           <Dialog open={viewOpen} onOpenChange={setViewOpen}>
             <DialogContent className="bg-white border-gray-200 text-gray-900 max-w-4xl max-h-[90vh] overflow-y-auto">
