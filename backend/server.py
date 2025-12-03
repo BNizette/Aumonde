@@ -366,6 +366,133 @@ async def login(credentials: UserLogin):
 async def get_me(current_user: User = Depends(get_current_user)):
     return current_user
 
+@api_router.post("/auth/password-reset-request")
+async def request_password_reset(request: PasswordResetRequest):
+    """Request password reset - generates a token"""
+    user = await db.users.find_one({"email": request.email})
+    if not user:
+        # Don't reveal if user exists or not
+        return {"message": "If the email exists, a reset link has been sent"}
+    
+    # Generate reset token (valid for 1 hour)
+    reset_token = create_access_token({
+        "sub": user['id'],
+        "type": "password_reset",
+        "exp": datetime.now(timezone.utc) + timedelta(hours=1)
+    })
+    
+    # In production, you would send this via email
+    # For now, we'll return it in the response
+    return {
+        "message": "Password reset token generated",
+        "token": reset_token,
+        "note": "In production, this would be sent via email"
+    }
+
+@api_router.post("/auth/password-reset")
+async def reset_password(reset: PasswordReset):
+    """Reset password using token"""
+    try:
+        payload = jwt.decode(reset.token, JWT_SECRET_KEY, algorithms=[JWT_ALGORITHM])
+        if payload.get("type") != "password_reset":
+            raise HTTPException(status_code=400, detail="Invalid token type")
+        
+        user_id = payload.get("sub")
+        user = await db.users.find_one({"id": user_id})
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+        
+        # Update password
+        hashed = hash_password(reset.new_password)
+        await db.users.update_one(
+            {"id": user_id},
+            {"$set": {"password": hashed}}
+        )
+        
+        return {"message": "Password reset successfully"}
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=400, detail="Reset token expired")
+    except jwt.PyJWTError:
+        raise HTTPException(status_code=400, detail="Invalid token")
+
+@api_router.post("/auth/change-password")
+async def change_password(password_change: PasswordChange, current_user: User = Depends(get_current_user)):
+    """Change password for authenticated user"""
+    user = await db.users.find_one({"id": current_user.id})
+    if not user or not verify_password(password_change.old_password, user['password']):
+        raise HTTPException(status_code=400, detail="Invalid current password")
+    
+    # Update password
+    hashed = hash_password(password_change.new_password)
+    await db.users.update_one(
+        {"id": current_user.id},
+        {"$set": {"password": hashed}}
+    )
+    
+    return {"message": "Password changed successfully"}
+
+@api_router.put("/auth/profile")
+async def update_profile(update: UserUpdate, current_user: User = Depends(get_current_user)):
+    """Update user profile"""
+    update_data = {k: v for k, v in update.model_dump().items() if v is not None}
+    if update_data:
+        await db.users.update_one(
+            {"id": current_user.id},
+            {"$set": update_data}
+        )
+    
+    updated_user = await db.users.find_one({"id": current_user.id}, {"_id": 0, "password": 0})
+    if isinstance(updated_user.get('created_at'), str):
+        updated_user['created_at'] = datetime.fromisoformat(updated_user['created_at'])
+    return User(**updated_user)
+
+# ============ ADMIN ROUTES ============
+
+@api_router.get("/admin/users")
+async def get_all_users(current_user: User = Depends(get_current_user)):
+    """Get all users - Admin only"""
+    if current_user.role not in [UserRole.OWNER, UserRole.INSPECTOR]:
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    users = await db.users.find({}, {"_id": 0, "password": 0}).to_list(1000)
+    for u in users:
+        if isinstance(u.get('created_at'), str):
+            u['created_at'] = datetime.fromisoformat(u['created_at'])
+    return users
+
+@api_router.delete("/admin/users/{user_id}")
+async def delete_user(user_id: str, current_user: User = Depends(get_current_user)):
+    """Delete user - Admin only"""
+    if current_user.role not in [UserRole.OWNER, UserRole.INSPECTOR]:
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    if user_id == current_user.id:
+        raise HTTPException(status_code=400, detail="Cannot delete your own account")
+    
+    result = await db.users.delete_one({"id": user_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    return {"message": "User deleted successfully"}
+
+@api_router.post("/admin/users/{user_id}/reset-password")
+async def admin_reset_password(user_id: str, new_password: str, current_user: User = Depends(get_current_user)):
+    """Reset user password - Admin only"""
+    if current_user.role not in [UserRole.OWNER, UserRole.INSPECTOR]:
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    user = await db.users.find_one({"id": user_id})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    hashed = hash_password(new_password)
+    await db.users.update_one(
+        {"id": user_id},
+        {"$set": {"password": hashed}}
+    )
+    
+    return {"message": "Password reset successfully"}
+
 # ============ VESSEL ROUTES ============
 
 @api_router.post("/vessels", response_model=Vessel)
