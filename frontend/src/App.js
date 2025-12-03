@@ -14,7 +14,7 @@ import EmergencyProcedures from '@/components/EmergencyProcedures';
 import ComplianceCheck from '@/components/ComplianceCheck';
 import AIAssistant from '@/components/AIAssistant';
 import PasswordReset from '@/components/PasswordReset';
-import AdminPanel from '@/components/AdminPanel';
+import AdminPanel from '@/components/AdminPanelEnhanced';
 import { Toaster } from '@/components/ui/sonner';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
