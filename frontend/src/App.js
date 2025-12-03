@@ -24,8 +24,10 @@ function App() {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(localStorage.getItem('token'));
   const [loading, setLoading] = useState(true);
+  const [config, setConfig] = useState({ organization_name: 'AMSA' });
 
   useEffect(() => {
+    fetchConfig();
     if (token) {
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       fetchUser();
@@ -33,6 +35,15 @@ function App() {
       setLoading(false);
     }
   }, [token]);
+
+  const fetchConfig = async () => {
+    try {
+      const response = await axios.get(`${API}/config`);
+      setConfig(response.data);
+    } catch (error) {
+      console.error('Failed to fetch config:', error);
+    }
+  };
 
   const fetchUser = async () => {
     try {
