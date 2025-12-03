@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@400;500;600&display=swap');
 
 * {
   margin: 0;
@@ -7,36 +7,37 @@
 }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background: #0f172a;
-  color: #e2e8f0;
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: #ffffff;
+  color: #2c3e50;
   line-height: 1.6;
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-weight: 600;
 }
 
 .App {
   min-height: 100vh;
-  background: linear-gradient(to bottom right, #0f172a, #1e293b);
+  background: #f8f9fa;
 }
 
-/* Maritime theme colors */
+/* AuMonde inspired colors */
 :root {
-  --maritime-blue: #0ea5e9;
-  --maritime-navy: #1e40af;
-  --maritime-teal: #14b8a6;
+  --primary-navy: #1a3a52;
+  --primary-teal: #1dd1a1;
+  --accent-cyan: #00bcd4;
   --danger-red: #ef4444;
   --warning-amber: #f59e0b;
   --success-green: #10b981;
-  --bg-dark: #0f172a;
-  --bg-darker: #020617;
-  --bg-card: #1e293b;
-  --border-color: #334155;
-  --text-primary: #e2e8f0;
-  --text-secondary: #94a3b8;
+  --bg-light: #ffffff;
+  --bg-lighter: #f8f9fa;
+  --bg-card: #ffffff;
+  --border-color: #e0e0e0;
+  --text-primary: #2c3e50;
+  --text-secondary: #7f8c8d;
+  --text-light: #ffffff;
 }
 
 /* Scrollbar styling */
