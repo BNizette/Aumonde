@@ -47,16 +47,16 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--bg-darker);
+  background: var(--bg-lighter);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--maritime-blue);
+  background: var(--primary-teal);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--maritime-teal);
+  background: var(--accent-cyan);
 }
 
 /* Button hover effects */
