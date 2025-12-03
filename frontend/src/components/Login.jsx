@@ -39,22 +39,22 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4" style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%)' }}>
+    <div className="min-h-screen flex items-center justify-center p-4" style={{ background: 'linear-gradient(135deg, #1a3a52 0%, #2c5f7f 100%)' }}>
       <div className="absolute inset-0 opacity-10">
-        <Waves className="absolute top-20 left-10 w-32 h-32 text-blue-400" />
-        <Anchor className="absolute bottom-20 right-20 w-24 h-24 text-teal-400" />
-        <Shield className="absolute top-1/2 right-10 w-28 h-28 text-blue-300" />
+        <Waves className="absolute top-20 left-10 w-32 h-32 text-teal-300" />
+        <Anchor className="absolute bottom-20 right-20 w-24 h-24 text-cyan-300" />
+        <Shield className="absolute top-1/2 right-10 w-28 h-28 text-teal-200" />
       </div>
       
-      <Card data-testid="login-card" className="w-full max-w-md relative z-10 bg-slate-900/80 backdrop-blur-xl border-slate-700">
+      <Card data-testid="login-card" className="w-full max-w-md relative z-10 bg-white shadow-2xl border-gray-200">
         <CardHeader className="text-center">
-          <div className="mx-auto mb-4 w-16 h-16 bg-gradient-to-br from-blue-500 to-teal-500 rounded-full flex items-center justify-center">
+          <div className="mx-auto mb-4 w-16 h-16 bg-gradient-to-br from-teal-400 to-cyan-500 rounded-full flex items-center justify-center">
             <Anchor className="w-8 h-8 text-white" />
           </div>
-          <CardTitle className="text-3xl font-bold text-white">
+          <CardTitle className="text-3xl font-bold" style={{ color: '#1a3a52' }}>
             {config?.organization_name || 'AMSA'} SMS
           </CardTitle>
-          <CardDescription className="text-slate-300">
+          <CardDescription className="text-gray-600">
             Safety Management System
           </CardDescription>
         </CardHeader>
