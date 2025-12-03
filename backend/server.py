@@ -1383,6 +1383,110 @@ async def get_vessel_crew(vessel_id: str, current_user: User = Depends(get_curre
             c['medical_expiry'] = datetime.fromisoformat(c['medical_expiry'])
     return crew
 
+@api_router.get("/crew/{crew_id}", response_model=CrewMember)
+async def get_crew_member(crew_id: str, current_user: User = Depends(get_current_user)):
+    crew = await db.crew.find_one({"id": crew_id}, {"_id": 0})
+    if not crew:
+        raise HTTPException(status_code=404, detail="Crew member not found")
+    
+    if isinstance(crew.get('created_at'), str):
+        crew['created_at'] = datetime.fromisoformat(crew['created_at'])
+    if isinstance(crew.get('license_expiry'), str):
+        crew['license_expiry'] = datetime.fromisoformat(crew['license_expiry'])
+    if isinstance(crew.get('medical_expiry'), str):
+        crew['medical_expiry'] = datetime.fromisoformat(crew['medical_expiry'])
+    
+    return CrewMember(**crew)
+
+@api_router.put("/crew/{crew_id}", response_model=CrewMember)
+async def update_crew_member(crew_id: str, crew_data: CrewMemberCreate, current_user: User = Depends(get_current_user)):
+    """Update crew member - requires Edit or Full access level"""
+    # Check access level
+    user_access = current_user.access_level if hasattr(current_user, 'access_level') else 'edit'
+    if user_access == 'view':
+        raise HTTPException(status_code=403, detail="Edit or Full access level required to modify crew")
+    
+    # Find crew member
+    crew = await db.crew.find_one({"id": crew_id})
+    if not crew:
+        raise HTTPException(status_code=404, detail="Crew member not found")
+    
+    # Prepare update data
+    crew_dict = crew_data.model_dump()
+    
+    # Convert date strings to datetime
+    if crew_dict.get('license_expiry'):
+        crew_dict['license_expiry'] = datetime.fromisoformat(crew_dict['license_expiry'])
+    if crew_dict.get('medical_expiry'):
+        crew_dict['medical_expiry'] = datetime.fromisoformat(crew_dict['medical_expiry'])
+    
+    # Keep original created_at
+    crew_dict['created_at'] = crew.get('created_at')
+    crew_dict['id'] = crew_id
+    
+    # Update crew member
+    update_doc = crew_dict.copy()
+    update_doc['created_at'] = crew.get('created_at')
+    if update_doc.get('license_expiry'):
+        update_doc['license_expiry'] = update_doc['license_expiry'].isoformat()
+    if update_doc.get('medical_expiry'):
+        update_doc['medical_expiry'] = update_doc['medical_expiry'].isoformat()
+    
+    await db.crew.update_one(
+        {"id": crew_id},
+        {"$set": update_doc}
+    )
+    
+    # Log audit trail
+    await log_audit(
+        admin_id=current_user.id,
+        admin_name=current_user.full_name,
+        action="update_crew",
+        target_type="crew",
+        target_id=crew_id,
+        target_name=crew_data.full_name,
+        details={
+            "position": crew_data.position,
+            "vessel_id": crew_data.vessel_id
+        }
+    )
+    
+    # Return updated crew
+    crew_obj = CrewMember(**crew_dict)
+    return crew_obj
+
+@api_router.delete("/crew/{crew_id}")
+async def delete_crew_member(crew_id: str, current_user: User = Depends(get_current_user)):
+    """Delete crew member - requires Full access level"""
+    # Check access level
+    user_access = current_user.access_level if hasattr(current_user, 'access_level') else 'edit'
+    if user_access != 'full' and current_user.role != UserRole.OWNER:
+        raise HTTPException(status_code=403, detail="Full access level or Owner role required to delete crew")
+    
+    # Find crew member
+    crew = await db.crew.find_one({"id": crew_id})
+    if not crew:
+        raise HTTPException(status_code=404, detail="Crew member not found")
+    
+    # Delete crew member
+    await db.crew.delete_one({"id": crew_id})
+    
+    # Log audit trail
+    await log_audit(
+        admin_id=current_user.id,
+        admin_name=current_user.full_name,
+        action="delete_crew",
+        target_type="crew",
+        target_id=crew_id,
+        target_name=crew.get('full_name', 'Unknown'),
+        details={
+            "position": crew.get('position'),
+            "vessel_id": crew.get('vessel_id')
+        }
+    )
+    
+    return {"message": "Crew member deleted successfully"}
+
 # ============ FATIGUE LOG ROUTES ============
 
 @api_router.post("/fatigue-logs", response_model=FatigueLog)
