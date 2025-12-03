@@ -58,6 +58,42 @@ const VesselForm = ({ initialData = {}, onSubmit, onCancel, loading }) => {
     designated_person_contact: initialData.designated_person_contact || '',
     master_name: initialData.master_name || '',
     master_contact: initialData.master_contact || '',
+    
+    // Certificate Record - Statutory Certificates
+    cert_survey_issue: initialData.cert_survey_issue || '',
+    cert_survey_expiry: initialData.cert_survey_expiry || '',
+    cert_operation_issue: initialData.cert_operation_issue || '',
+    cert_operation_expiry: initialData.cert_operation_expiry || '',
+    cert_loadline_issue: initialData.cert_loadline_issue || '',
+    cert_loadline_expiry: initialData.cert_loadline_expiry || '',
+    
+    // Certificate Record - Operational Documentation
+    cert_stability_issue: initialData.cert_stability_issue || '',
+    cert_stability_date: initialData.cert_stability_date || '',
+    cert_sms_issue: initialData.cert_sms_issue || '',
+    cert_sms_date: initialData.cert_sms_date || '',
+    
+    // Certificate Record - Third Party Certificates
+    cert_classification_issue: initialData.cert_classification_issue || '',
+    cert_classification_expiry: initialData.cert_classification_expiry || '',
+    cert_lifting_gear_issue: initialData.cert_lifting_gear_issue || '',
+    cert_lifting_gear_expiry: initialData.cert_lifting_gear_expiry || '',
+    cert_liferaft_issue: initialData.cert_liferaft_issue || '',
+    cert_liferaft_expiry: initialData.cert_liferaft_expiry || '',
+    cert_epirb_issue: initialData.cert_epirb_issue || '',
+    cert_epirb_expiry: initialData.cert_epirb_expiry || '',
+    cert_fire_extinguisher_issue: initialData.cert_fire_extinguisher_issue || '',
+    cert_fire_extinguisher_expiry: initialData.cert_fire_extinguisher_expiry || '',
+    cert_lifejacket_issue: initialData.cert_lifejacket_issue || '',
+    cert_lifejacket_expiry: initialData.cert_lifejacket_expiry || '',
+    cert_gas_issue: initialData.cert_gas_issue || '',
+    cert_gas_expiry: initialData.cert_gas_expiry || '',
+    cert_electrical_issue: initialData.cert_electrical_issue || '',
+    cert_electrical_expiry: initialData.cert_electrical_expiry || '',
+    cert_compass_issue: initialData.cert_compass_issue || '',
+    cert_compass_expiry: initialData.cert_compass_expiry || '',
+    cert_eiapp_issue: initialData.cert_eiapp_issue || '',
+    cert_eiapp_expiry: initialData.cert_eiapp_expiry || '',
   });
 
   const handleSubmit = (e) => {
