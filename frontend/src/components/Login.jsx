@@ -39,14 +39,14 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4" style={{ background: 'linear-gradient(135deg, #1a3a52 0%, #2c5f7f 100%)' }}>
-      <div className="absolute inset-0 opacity-10">
+    <div className="min-h-screen flex items-center justify-center p-4 md:p-8" style={{ background: 'linear-gradient(135deg, #1a3a52 0%, #2c5f7f 100%)' }}>
+      <div className="absolute inset-0 opacity-10 hidden md:block">
         <Waves className="absolute top-20 left-10 w-32 h-32 text-teal-300" />
         <Anchor className="absolute bottom-20 right-20 w-24 h-24 text-cyan-300" />
         <Shield className="absolute top-1/2 right-10 w-28 h-28 text-teal-200" />
       </div>
       
-      <Card data-testid="login-card" className="w-full max-w-md relative z-10 bg-white shadow-2xl border-gray-200">
+      <Card data-testid="login-card" className="w-full max-w-md relative z-10 bg-white shadow-2xl border-gray-200 mx-4">
         <CardHeader className="text-center">
           <div className="mx-auto mb-4 w-16 h-16 bg-gradient-to-br from-teal-400 to-cyan-500 rounded-full flex items-center justify-center">
             <Anchor className="w-8 h-8 text-white" />
