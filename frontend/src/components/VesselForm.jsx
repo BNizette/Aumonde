@@ -123,7 +123,7 @@ const VesselForm = ({ initialData = {}, onSubmit, onCancel, loading }) => {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <Tabs defaultValue="basic" className="w-full">
-        <TabsList className="grid w-full grid-cols-4 bg-gray-100">
+        <TabsList className="grid w-full grid-cols-5 bg-gray-100">
           <TabsTrigger value="basic">Basic Info</TabsTrigger>
           <TabsTrigger value="details">Vessel Details</TabsTrigger>
           <TabsTrigger value="operations">Operations</TabsTrigger>
