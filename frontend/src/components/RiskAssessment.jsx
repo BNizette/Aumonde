@@ -88,7 +88,7 @@ const RiskAssessment = () => {
   };
 
   if (loading) return <Layout><div className="flex justify-center py-12"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-400"></div></div></Layout>;
-  if (vessels.length === 0) return <Layout><div className="text-center py-12"><h2 className="text-2xl font-bold text-white mb-2">No Vessels Available</h2><p className="text-slate-400 mb-6">Please add a vessel first.</p><a href="/vessels" className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Go to Vessels</a></div></Layout>;
+  if (vessels.length === 0) return <Layout><div className="text-center py-12"><h2 className="text-2xl font-bold text-white mb-2">No Vessels Available</h2><p className="text-gray-600 mb-6">Please add a vessel first.</p><a href="/vessels" className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Go to Vessels</a></div></Layout>;
 
   return (
     <Layout>
@@ -96,32 +96,32 @@ const RiskAssessment = () => {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-white mb-2">Risk Assessment</h1>
-            <p className="text-slate-400">Identify and manage operational risks</p>
+            <p className="text-gray-600">Identify and manage operational risks</p>
           </div>
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-              <Button data-testid="add-risk-button" className="bg-blue-600 hover:bg-blue-700">
+              <Button data-testid="add-risk-button" className="bg-teal-500 hover:bg-teal-600">
                 <Plus className="w-4 h-4 mr-2" />
                 Add Risk Assessment
               </Button>
             </DialogTrigger>
-            <DialogContent className="bg-slate-900 border-slate-700 text-white max-w-2xl">
+            <DialogContent className="bg-white border-gray-300 text-white max-w-2xl">
               <DialogHeader>
                 <DialogTitle>New Risk Assessment</DialogTitle>
               </DialogHeader>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                   <Label>Hazard Description</Label>
-                  <Textarea data-testid="hazard-input" value={formData.hazard} onChange={(e) => setFormData({ ...formData, hazard: e.target.value })} required className="bg-slate-800 border-slate-700" rows={3} />
+                  <Textarea data-testid="hazard-input" value={formData.hazard} onChange={(e) => setFormData({ ...formData, hazard: e.target.value })} required className="bg-gray-50 border-gray-300" rows={3} />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label>Likelihood (1-5)</Label>
-                    <Input data-testid="likelihood-input" type="number" min="1" max="5" value={formData.likelihood} onChange={(e) => setFormData({ ...formData, likelihood: e.target.value })} className="bg-slate-800 border-slate-700" />
+                    <Input data-testid="likelihood-input" type="number" min="1" max="5" value={formData.likelihood} onChange={(e) => setFormData({ ...formData, likelihood: e.target.value })} className="bg-gray-50 border-gray-300" />
                   </div>
                   <div>
                     <Label>Consequence (1-5)</Label>
-                    <Input data-testid="consequence-input" type="number" min="1" max="5" value={formData.consequence} onChange={(e) => setFormData({ ...formData, consequence: e.target.value })} className="bg-slate-800 border-slate-700" />
+                    <Input data-testid="consequence-input" type="number" min="1" max="5" value={formData.consequence} onChange={(e) => setFormData({ ...formData, consequence: e.target.value })} className="bg-gray-50 border-gray-300" />
                   </div>
                 </div>
                 <div>
@@ -131,11 +131,11 @@ const RiskAssessment = () => {
                       const newMeasures = [...formData.control_measures];
                       newMeasures[idx] = e.target.value;
                       setFormData({ ...formData, control_measures: newMeasures });
-                    }} className="bg-slate-800 border-slate-700 mb-2" placeholder="Control measure..." />
+                    }} className="bg-gray-50 border-gray-300 mb-2" placeholder="Control measure..." />
                   ))}
                   <Button type="button" onClick={() => setFormData({ ...formData, control_measures: [...formData.control_measures, ''] })} variant="outline" size="sm" className="mt-2">Add Measure</Button>
                 </div>
-                <Button type="submit" data-testid="submit-risk-button" className="w-full bg-blue-600 hover:bg-blue-700">Add Risk Assessment</Button>
+                <Button type="submit" data-testid="submit-risk-button" className="w-full bg-teal-500 hover:bg-teal-600">Add Risk Assessment</Button>
               </form>
             </DialogContent>
           </Dialog>
@@ -143,25 +143,25 @@ const RiskAssessment = () => {
 
         {vessels.length > 1 && (
           <div className="flex items-center gap-4">
-            <Label className="text-slate-300">Select Vessel:</Label>
-            <select data-testid="vessel-select-risk" value={selectedVessel?.id || ''} onChange={(e) => setSelectedVessel(vessels.find(v => v.id === e.target.value))} className="px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white">
+            <Label className="text-gray-700">Select Vessel:</Label>
+            <select data-testid="vessel-select-risk" value={selectedVessel?.id || ''} onChange={(e) => setSelectedVessel(vessels.find(v => v.id === e.target.value))} className="px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg text-gray-900">
               {vessels.map((vessel) => (<option key={vessel.id} value={vessel.id}>{vessel.name}</option>))}
             </select>
           </div>
         )}
 
         {risks.length === 0 ? (
-          <Card className="bg-slate-900 border-slate-800">
+          <Card className="bg-white border-gray-200">
             <CardContent className="py-12 text-center">
-              <AlertTriangle className="w-16 h-16 mx-auto text-slate-600 mb-4" />
+              <AlertTriangle className="w-16 h-16 mx-auto text-gray-400 mb-4" />
               <h3 className="text-xl font-semibold text-white mb-2">No Risk Assessments</h3>
-              <p className="text-slate-400">Add risk assessments to identify and manage hazards</p>
+              <p className="text-gray-600">Add risk assessments to identify and manage hazards</p>
             </CardContent>
           </Card>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {risks.map((risk) => (
-              <Card key={risk.id} data-testid={`risk-card-${risk.id}`} className="bg-slate-900 border-slate-800">
+              <Card key={risk.id} data-testid={`risk-card-${risk.id}`} className="bg-white border-gray-200">
                 <CardHeader>
                   <div className="flex items-start justify-between">
                     <CardTitle className="text-white flex items-center gap-2">
@@ -173,28 +173,28 @@ const RiskAssessment = () => {
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <div>
-                    <p className="text-sm text-slate-400">Hazard:</p>
-                    <p className="text-white">{risk.hazard}</p>
+                    <p className="text-sm text-gray-600">Hazard:</p>
+                    <p className="text-gray-900">{risk.hazard}</p>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <p className="text-sm text-slate-400">Likelihood:</p>
+                      <p className="text-sm text-gray-600">Likelihood:</p>
                       <p className="text-white font-semibold">{risk.likelihood}/5</p>
                     </div>
                     <div>
-                      <p className="text-sm text-slate-400">Consequence:</p>
+                      <p className="text-sm text-gray-600">Consequence:</p>
                       <p className="text-white font-semibold">{risk.consequence}/5</p>
                     </div>
                   </div>
                   <div>
-                    <p className="text-sm text-slate-400 mb-2">Control Measures:</p>
+                    <p className="text-sm text-gray-600 mb-2">Control Measures:</p>
                     <ul className="list-disc list-inside space-y-1">
                       {risk.control_measures.map((measure, idx) => (
-                        <li key={idx} className="text-sm text-slate-300">{measure}</li>
+                        <li key={idx} className="text-sm text-gray-700">{measure}</li>
                       ))}
                     </ul>
                   </div>
-                  <div className="text-xs text-slate-500">Assessed: {new Date(risk.assessment_date).toLocaleDateString()}</div>
+                  <div className="text-xs text-gray-500">Assessed: {new Date(risk.assessment_date).toLocaleDateString()}</div>
                 </CardContent>
               </Card>
             ))}

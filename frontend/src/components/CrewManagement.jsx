@@ -89,27 +89,27 @@ const CrewManagement = () => {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-white mb-2">Crew Management</h1>
-            <p className="text-slate-400">Manage crew members, qualifications, and fatigue tracking</p>
+            <p className="text-gray-600">Manage crew members, qualifications, and fatigue tracking</p>
           </div>
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-              <Button data-testid="add-crew-button" className="bg-blue-600 hover:bg-blue-700">
+              <Button data-testid="add-crew-button" className="bg-teal-500 hover:bg-teal-600">
                 <Plus className="w-4 h-4 mr-2" />
                 Add Crew Member
               </Button>
             </DialogTrigger>
-            <DialogContent className="bg-slate-900 border-slate-700 text-white max-w-2xl">
+            <DialogContent className="bg-white border-gray-300 text-white max-w-2xl">
               <DialogHeader>
                 <DialogTitle>Add Crew Member</DialogTitle>
               </DialogHeader>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                   <Label>Full Name</Label>
-                  <Input data-testid="crew-name-input" value={formData.full_name} onChange={(e) => setFormData({ ...formData, full_name: e.target.value })} required className="bg-slate-800 border-slate-700" />
+                  <Input data-testid="crew-name-input" value={formData.full_name} onChange={(e) => setFormData({ ...formData, full_name: e.target.value })} required className="bg-gray-50 border-gray-300" />
                 </div>
                 <div>
                   <Label>Position</Label>
-                  <Input data-testid="crew-position-input" value={formData.position} onChange={(e) => setFormData({ ...formData, position: e.target.value })} required className="bg-slate-800 border-slate-700" />
+                  <Input data-testid="crew-position-input" value={formData.position} onChange={(e) => setFormData({ ...formData, position: e.target.value })} required className="bg-gray-50 border-gray-300" />
                 </div>
                 <div>
                   <Label>Qualifications</Label>
@@ -118,25 +118,25 @@ const CrewManagement = () => {
                       const newQuals = [...formData.qualifications];
                       newQuals[idx] = e.target.value;
                       setFormData({ ...formData, qualifications: newQuals });
-                    }} className="bg-slate-800 border-slate-700 mb-2" placeholder="Qualification..." />
+                    }} className="bg-gray-50 border-gray-300 mb-2" placeholder="Qualification..." />
                   ))}
                   <Button type="button" onClick={() => setFormData({ ...formData, qualifications: [...formData.qualifications, ''] })} variant="outline" size="sm">Add Qualification</Button>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label>License Number</Label>
-                    <Input data-testid="license-number-input" value={formData.license_number} onChange={(e) => setFormData({ ...formData, license_number: e.target.value })} className="bg-slate-800 border-slate-700" />
+                    <Input data-testid="license-number-input" value={formData.license_number} onChange={(e) => setFormData({ ...formData, license_number: e.target.value })} className="bg-gray-50 border-gray-300" />
                   </div>
                   <div>
                     <Label>License Expiry</Label>
-                    <Input data-testid="license-expiry-input" type="date" value={formData.license_expiry} onChange={(e) => setFormData({ ...formData, license_expiry: e.target.value })} className="bg-slate-800 border-slate-700" />
+                    <Input data-testid="license-expiry-input" type="date" value={formData.license_expiry} onChange={(e) => setFormData({ ...formData, license_expiry: e.target.value })} className="bg-gray-50 border-gray-300" />
                   </div>
                 </div>
                 <div>
                   <Label>Medical Expiry</Label>
-                  <Input data-testid="medical-expiry-input" type="date" value={formData.medical_expiry} onChange={(e) => setFormData({ ...formData, medical_expiry: e.target.value })} className="bg-slate-800 border-slate-700" />
+                  <Input data-testid="medical-expiry-input" type="date" value={formData.medical_expiry} onChange={(e) => setFormData({ ...formData, medical_expiry: e.target.value })} className="bg-gray-50 border-gray-300" />
                 </div>
-                <Button type="submit" data-testid="submit-crew-button" className="w-full bg-blue-600 hover:bg-blue-700">Add Crew Member</Button>
+                <Button type="submit" data-testid="submit-crew-button" className="w-full bg-teal-500 hover:bg-teal-600">Add Crew Member</Button>
               </form>
             </DialogContent>
           </Dialog>
@@ -144,51 +144,51 @@ const CrewManagement = () => {
 
         {vessels.length > 1 && (
           <div className="flex items-center gap-4">
-            <Label className="text-slate-300">Select Vessel:</Label>
-            <select data-testid="vessel-select-crew" value={selectedVessel?.id || ''} onChange={(e) => setSelectedVessel(vessels.find(v => v.id === e.target.value))} className="px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white">
+            <Label className="text-gray-700">Select Vessel:</Label>
+            <select data-testid="vessel-select-crew" value={selectedVessel?.id || ''} onChange={(e) => setSelectedVessel(vessels.find(v => v.id === e.target.value))} className="px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg text-gray-900">
               {vessels.map((vessel) => (<option key={vessel.id} value={vessel.id}>{vessel.name}</option>))}
             </select>
           </div>
         )}
 
         {crew.length === 0 ? (
-          <Card className="bg-slate-900 border-slate-800">
+          <Card className="bg-white border-gray-200">
             <CardContent className="py-12 text-center">
-              <Users className="w-16 h-16 mx-auto text-slate-600 mb-4" />
+              <Users className="w-16 h-16 mx-auto text-gray-400 mb-4" />
               <h3 className="text-xl font-semibold text-white mb-2">No Crew Members</h3>
-              <p className="text-slate-400">Add crew members to manage qualifications and fatigue</p>
+              <p className="text-gray-600">Add crew members to manage qualifications and fatigue</p>
             </CardContent>
           </Card>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {crew.map((member) => (
-              <Card key={member.id} data-testid={`crew-card-${member.id}`} className="bg-slate-900 border-slate-800">
+              <Card key={member.id} data-testid={`crew-card-${member.id}`} className="bg-white border-gray-200">
                 <CardHeader>
                   <CardTitle className="text-white flex items-center gap-2">
                     <Users className="w-5 h-5 text-blue-400" />
                     {member.full_name}
                   </CardTitle>
-                  <p className="text-sm text-slate-400">{member.position}</p>
+                  <p className="text-sm text-gray-600">{member.position}</p>
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <div>
-                    <p className="text-sm text-slate-400 mb-1">Qualifications:</p>
+                    <p className="text-sm text-gray-600 mb-1">Qualifications:</p>
                     <ul className="list-disc list-inside space-y-1">
                       {member.qualifications.map((qual, idx) => (
-                        <li key={idx} className="text-sm text-slate-300">{qual}</li>
+                        <li key={idx} className="text-sm text-gray-700">{qual}</li>
                       ))}
                     </ul>
                   </div>
                   {member.license_number && (
                     <div className="flex justify-between text-sm">
-                      <span className="text-slate-400">License:</span>
-                      <span className="text-white">{member.license_number}</span>
+                      <span className="text-gray-600">License:</span>
+                      <span className="text-gray-900">{member.license_number}</span>
                     </div>
                   )}
                   {member.license_expiry && (
                     <div className="flex justify-between text-sm">
-                      <span className="text-slate-400">License Expiry:</span>
-                      <span className="text-white">{new Date(member.license_expiry).toLocaleDateString()}</span>
+                      <span className="text-gray-600">License Expiry:</span>
+                      <span className="text-gray-900">{new Date(member.license_expiry).toLocaleDateString()}</span>
                     </div>
                   )}
                 </CardContent>

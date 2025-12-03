@@ -59,17 +59,17 @@ const VesselManagement = () => {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-white mb-2">Vessel Management</h1>
-            <p className="text-slate-400">Manage your commercial vessels and their SMS configurations</p>
+            <p className="text-gray-600">Manage your commercial vessels and their SMS configurations</p>
           </div>
           
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-              <Button data-testid="add-vessel-button" className="bg-blue-600 hover:bg-blue-700">
+              <Button data-testid="add-vessel-button" className="bg-teal-500 hover:bg-teal-600">
                 <Plus className="w-4 h-4 mr-2" />
                 Add Vessel
               </Button>
             </DialogTrigger>
-            <DialogContent className="bg-slate-900 border-slate-700 text-white">
+            <DialogContent className="bg-white border-gray-300 text-gray-900">
               <DialogHeader>
                 <DialogTitle>Add New Vessel</DialogTitle>
               </DialogHeader>
@@ -82,7 +82,7 @@ const VesselManagement = () => {
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     required
-                    className="bg-slate-800 border-slate-700"
+                    className="bg-gray-50 border-gray-300"
                   />
                 </div>
                 
@@ -94,7 +94,7 @@ const VesselManagement = () => {
                     value={formData.registration_number}
                     onChange={(e) => setFormData({ ...formData, registration_number: e.target.value })}
                     required
-                    className="bg-slate-800 border-slate-700"
+                    className="bg-gray-50 border-gray-300"
                   />
                 </div>
                 
@@ -105,7 +105,7 @@ const VesselManagement = () => {
                     data-testid="vessel-class-select"
                     value={formData.vessel_class}
                     onChange={(e) => setFormData({ ...formData, vessel_class: e.target.value })}
-                    className="w-full p-2 rounded-md bg-slate-800 border-slate-700 text-white border"
+                    className="w-full p-2 rounded-md bg-gray-50 border-gray-300 text-white border"
                   >
                     <option value="class_1">Class 1 (Passenger)</option>
                     <option value="class_2">Class 2 (Non-passenger)</option>
@@ -124,7 +124,7 @@ const VesselManagement = () => {
                     value={formData.length}
                     onChange={(e) => setFormData({ ...formData, length: e.target.value })}
                     required
-                    className="bg-slate-800 border-slate-700"
+                    className="bg-gray-50 border-gray-300"
                   />
                 </div>
                 
@@ -135,17 +135,17 @@ const VesselManagement = () => {
                     data-testid="sms-type-select"
                     value={formData.sms_type}
                     onChange={(e) => setFormData({ ...formData, sms_type: e.target.value })}
-                    className="w-full p-2 rounded-md bg-slate-800 border-slate-700 text-white border"
+                    className="w-full p-2 rounded-md bg-gray-50 border-gray-300 text-white border"
                   >
                     <option value="standard">Standard SMS</option>
                     <option value="simplified">Simplified SMS</option>
                   </select>
-                  <p className="text-xs text-slate-400 mt-1">
+                  <p className="text-xs text-gray-600 mt-1">
                     Vessels under 7.5m in Class 2, 3, or 4 are eligible for simplified SMS
                   </p>
                 </div>
                 
-                <Button type="submit" data-testid="submit-vessel-button" className="w-full bg-blue-600 hover:bg-blue-700">
+                <Button type="submit" data-testid="submit-vessel-button" className="w-full bg-teal-500 hover:bg-teal-600">
                   Add Vessel
                 </Button>
               </form>
@@ -158,17 +158,17 @@ const VesselManagement = () => {
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-400"></div>
           </div>
         ) : vessels.length === 0 ? (
-          <Card className="bg-slate-900 border-slate-800">
+          <Card className="bg-white border-gray-200">
             <CardContent className="py-12 text-center">
-              <Ship className="w-16 h-16 mx-auto text-slate-600 mb-4" />
+              <Ship className="w-16 h-16 mx-auto text-gray-400 mb-4" />
               <h3 className="text-xl font-semibold text-white mb-2">No Vessels Added</h3>
-              <p className="text-slate-400">Add your first vessel to get started with the SMS</p>
+              <p className="text-gray-600">Add your first vessel to get started with the SMS</p>
             </CardContent>
           </Card>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {vessels.map((vessel) => (
-              <Card key={vessel.id} data-testid={`vessel-card-${vessel.id}`} className="bg-slate-900 border-slate-800 hover:border-blue-500 transition-colors">
+              <Card key={vessel.id} data-testid={`vessel-card-${vessel.id}`} className="bg-white border-gray-200 hover:border-blue-500 transition-colors">
                 <CardHeader>
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
@@ -176,7 +176,7 @@ const VesselManagement = () => {
                         <Ship className="w-5 h-5 text-blue-400" />
                         {vessel.name}
                       </CardTitle>
-                      <p className="text-sm text-slate-400 mt-1">{vessel.registration_number}</p>
+                      <p className="text-sm text-gray-600 mt-1">{vessel.registration_number}</p>
                     </div>
                     {vessel.eligible_simplified && (
                       <CheckCircle2 className="w-5 h-5 text-green-400" title="Eligible for Simplified SMS" />
@@ -185,15 +185,15 @@ const VesselManagement = () => {
                 </CardHeader>
                 <CardContent className="space-y-2">
                   <div className="flex justify-between text-sm">
-                    <span className="text-slate-400">Class:</span>
+                    <span className="text-gray-600">Class:</span>
                     <span className="text-white font-medium">{vessel.vessel_class.replace('_', ' ').toUpperCase()}</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-slate-400">Length:</span>
+                    <span className="text-gray-600">Length:</span>
                     <span className="text-white font-medium">{vessel.length}m</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-slate-400">SMS Type:</span>
+                    <span className="text-gray-600">SMS Type:</span>
                     <span className="text-white font-medium capitalize">{vessel.sms_type}</span>
                   </div>
                   {vessel.eligible_simplified && (

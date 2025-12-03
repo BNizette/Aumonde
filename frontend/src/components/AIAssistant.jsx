@@ -93,7 +93,7 @@ const AIAssistant = () => {
       <Layout>
         <div className="text-center py-12">
           <h2 className="text-2xl font-bold text-white mb-2">No Vessels Available</h2>
-          <p className="text-slate-400 mb-6">Please add a vessel first.</p>
+          <p className="text-gray-600 mb-6">Please add a vessel first.</p>
           <a href="/vessels" className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
             Go to Vessels
           </a>
@@ -110,25 +110,25 @@ const AIAssistant = () => {
             <Bot className="w-8 h-8 text-blue-400" />
             AI Safety Assistant
           </h1>
-          <p className="text-slate-400">Powered by Google Gemini for risk assessment, compliance checking, and document analysis</p>
+          <p className="text-gray-600">Powered by Google Gemini for risk assessment, compliance checking, and document analysis</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Input Section */}
-          <Card className="bg-slate-900 border-slate-800">
+          <Card className="bg-white border-gray-200">
             <CardHeader>
-              <CardTitle className="text-white">AI Request</CardTitle>
+              <CardTitle className="text-gray-900">AI Request</CardTitle>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-4">
                 {vessels.length > 1 && (
                   <div>
-                    <Label className="text-slate-300">Select Vessel</Label>
+                    <Label className="text-gray-700">Select Vessel</Label>
                     <select
                       data-testid="ai-vessel-select"
                       value={selectedVessel?.id || ''}
                       onChange={(e) => setSelectedVessel(vessels.find(v => v.id === e.target.value))}
-                      className="w-full p-2 rounded-md bg-slate-800 border-slate-700 text-white border"
+                      className="w-full p-2 rounded-md bg-gray-50 border-gray-300 text-white border"
                     >
                       {vessels.map((vessel) => (
                         <option key={vessel.id} value={vessel.id}>
@@ -140,12 +140,12 @@ const AIAssistant = () => {
                 )}
 
                 <div>
-                  <Label className="text-slate-300">Analysis Type</Label>
+                  <Label className="text-gray-700">Analysis Type</Label>
                   <select
                     data-testid="request-type-select"
                     value={requestType}
                     onChange={(e) => setRequestType(e.target.value)}
-                    className="w-full p-2 rounded-md bg-slate-800 border-slate-700 text-white border"
+                    className="w-full p-2 rounded-md bg-gray-50 border-gray-300 text-white border"
                   >
                     <option value="risk_assessment">Risk Assessment Generation</option>
                     <option value="compliance_check">Compliance Checking</option>
@@ -154,7 +154,7 @@ const AIAssistant = () => {
                 </div>
 
                 <div>
-                  <Label className="text-slate-300">
+                  <Label className="text-gray-700">
                     {requestType === 'risk_assessment' && 'Describe Operation/Activity'}
                     {requestType === 'compliance_check' && 'Describe Current Documentation'}
                     {requestType === 'document_analysis' && 'Paste Document Content'}
@@ -165,7 +165,7 @@ const AIAssistant = () => {
                     onChange={(e) => setContext(e.target.value)}
                     rows={10}
                     required
-                    className="bg-slate-800 border-slate-700 text-white"
+                    className="bg-gray-50 border-gray-300 text-gray-900"
                     placeholder={
                       requestType === 'risk_assessment'
                         ? 'Describe the vessel operation, activities, environmental conditions, etc.'
@@ -199,7 +199,7 @@ const AIAssistant = () => {
           </Card>
 
           {/* Results Section */}
-          <Card className="bg-slate-900 border-slate-800">
+          <Card className="bg-white border-gray-200">
             <CardHeader>
               <CardTitle className="text-white flex items-center gap-2">
                 <Sparkles className="w-5 h-5 text-purple-400" />
@@ -209,12 +209,12 @@ const AIAssistant = () => {
             <CardContent>
               {!result ? (
                 <div className="text-center py-12">
-                  <Bot className="w-16 h-16 mx-auto text-slate-600 mb-4" />
-                  <p className="text-slate-400">Submit a request to see AI analysis</p>
+                  <Bot className="w-16 h-16 mx-auto text-gray-400 mb-4" />
+                  <p className="text-gray-600">Submit a request to see AI analysis</p>
                 </div>
               ) : (
                 <div data-testid="ai-result" className="space-y-4">
-                  <div className="p-4 bg-slate-800 rounded-lg">
+                  <div className="p-4 bg-gray-50 rounded-lg">
                     <h3 className="text-sm font-semibold text-blue-400 mb-3">Analysis:</h3>
                     <div className="text-slate-200 whitespace-pre-wrap text-sm leading-relaxed">
                       {result.result}
@@ -242,7 +242,7 @@ const AIAssistant = () => {
 
         {/* Information Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card className="bg-gradient-to-br from-blue-600 to-blue-700 border-none text-white">
+          <Card className="bg-gradient-to-br from-blue-600 to-blue-700 border-none text-gray-900">
             <CardContent className="pt-6">
               <div className="flex items-center gap-3 mb-2">
                 <div className="p-2 bg-white/20 rounded-lg">
@@ -254,7 +254,7 @@ const AIAssistant = () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-purple-600 to-purple-700 border-none text-white">
+          <Card className="bg-gradient-to-br from-purple-600 to-purple-700 border-none text-gray-900">
             <CardContent className="pt-6">
               <div className="flex items-center gap-3 mb-2">
                 <div className="p-2 bg-white/20 rounded-lg">
@@ -266,7 +266,7 @@ const AIAssistant = () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-teal-600 to-teal-700 border-none text-white">
+          <Card className="bg-gradient-to-br from-teal-600 to-teal-700 border-none text-gray-900">
             <CardContent className="pt-6">
               <div className="flex items-center gap-3 mb-2">
                 <div className="p-2 bg-white/20 rounded-lg">

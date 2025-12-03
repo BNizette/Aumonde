@@ -83,21 +83,21 @@ const ComplianceCheck = () => {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-white mb-2">Compliance Verification</h1>
-            <p className="text-slate-400">Marine Order 504 SMS compliance checklists</p>
+            <p className="text-gray-600">Marine Order 504 SMS compliance checklists</p>
           </div>
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-              <Button data-testid="new-checklist-button" className="bg-blue-600 hover:bg-blue-700">
+              <Button data-testid="new-checklist-button" className="bg-teal-500 hover:bg-teal-600">
                 <Plus className="w-4 h-4 mr-2" />
                 New Checklist
               </Button>
             </DialogTrigger>
-            <DialogContent className="bg-slate-900 border-slate-700 text-white max-w-3xl max-h-[90vh] overflow-y-auto">
+            <DialogContent className="bg-white border-gray-300 text-white max-w-3xl max-h-[90vh] overflow-y-auto">
               <DialogHeader><DialogTitle>Marine Order 504 Compliance Checklist</DialogTitle></DialogHeader>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-4">
                   {checkItems.map((item, idx) => (
-                    <div key={idx} className="p-4 bg-slate-800 rounded-lg space-y-2">
+                    <div key={idx} className="p-4 bg-gray-50 rounded-lg space-y-2">
                       <div className="flex items-start gap-3">
                         <Checkbox data-testid={`check-${idx}`} checked={item.compliant} onCheckedChange={(checked) => {
                           const newItems = [...checkItems];
@@ -106,18 +106,18 @@ const ComplianceCheck = () => {
                         }} className="mt-1" />
                         <div className="flex-1">
                           <p className="text-white font-medium">{item.item}</p>
-                          <span className="text-xs text-slate-400 badge badge-info mt-1">{item.category}</span>
+                          <span className="text-xs text-gray-600 badge badge-info mt-1">{item.category}</span>
                         </div>
                       </div>
                       <Textarea data-testid={`notes-${idx}`} value={item.notes} onChange={(e) => {
                         const newItems = [...checkItems];
                         newItems[idx].notes = e.target.value;
                         setCheckItems(newItems);
-                      }} placeholder="Notes..." className="bg-slate-700 border-slate-600 text-sm" rows={2} />
+                      }} placeholder="Notes..." className="bg-gray-100 border-slate-600 text-sm" rows={2} />
                     </div>
                   ))}
                 </div>
-                <Button type="submit" data-testid="submit-checklist-button" className="w-full bg-blue-600 hover:bg-blue-700">Submit Checklist</Button>
+                <Button type="submit" data-testid="submit-checklist-button" className="w-full bg-teal-500 hover:bg-teal-600">Submit Checklist</Button>
               </form>
             </DialogContent>
           </Dialog>
@@ -125,19 +125,19 @@ const ComplianceCheck = () => {
 
         {vessels.length > 1 && (
           <div className="flex items-center gap-4">
-            <Label className="text-slate-300">Select Vessel:</Label>
-            <select data-testid="vessel-select-compliance" value={selectedVessel?.id || ''} onChange={(e) => setSelectedVessel(vessels.find(v => v.id === e.target.value))} className="px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white">
+            <Label className="text-gray-700">Select Vessel:</Label>
+            <select data-testid="vessel-select-compliance" value={selectedVessel?.id || ''} onChange={(e) => setSelectedVessel(vessels.find(v => v.id === e.target.value))} className="px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg text-gray-900">
               {vessels.map((vessel) => (<option key={vessel.id} value={vessel.id}>{vessel.name}</option>))}
             </select>
           </div>
         )}
 
         {checklists.length === 0 ? (
-          <Card className="bg-slate-900 border-slate-800">
+          <Card className="bg-white border-gray-200">
             <CardContent className="py-12 text-center">
-              <Clipboard className="w-16 h-16 mx-auto text-slate-600 mb-4" />
+              <Clipboard className="w-16 h-16 mx-auto text-gray-400 mb-4" />
               <h3 className="text-xl font-semibold text-white mb-2">No Compliance Checklists</h3>
-              <p className="text-slate-400">Create a compliance checklist to verify SMS requirements</p>
+              <p className="text-gray-600">Create a compliance checklist to verify SMS requirements</p>
             </CardContent>
           </Card>
         ) : (
@@ -146,10 +146,10 @@ const ComplianceCheck = () => {
               const compliantCount = checklist.items.filter(i => i.compliant).length;
               const percentage = Math.round((compliantCount / checklist.items.length) * 100);
               return (
-                <Card key={checklist.id} data-testid={`checklist-card-${checklist.id}`} className="bg-slate-900 border-slate-800">
+                <Card key={checklist.id} data-testid={`checklist-card-${checklist.id}`} className="bg-white border-gray-200">
                   <CardHeader>
                     <div className="flex items-center justify-between">
-                      <CardTitle className="text-white">
+                      <CardTitle className="text-gray-900">
                         Compliance Assessment - {new Date(checklist.assessment_date).toLocaleDateString()}
                       </CardTitle>
                       <span className={`badge ${checklist.overall_status === 'compliant' ? 'badge-success' : checklist.overall_status === 'non_compliant' ? 'badge-danger' : 'badge-warning'}`}>
@@ -157,11 +157,11 @@ const ComplianceCheck = () => {
                       </span>
                     </div>
                     <div className="mt-2">
-                      <div className="flex items-center justify-between text-sm text-slate-400 mb-1">
+                      <div className="flex items-center justify-between text-sm text-gray-600 mb-1">
                         <span>Compliance: {percentage}%</span>
                         <span>{compliantCount}/{checklist.items.length} items</span>
                       </div>
-                      <div className="w-full bg-slate-700 rounded-full h-2">
+                      <div className="w-full bg-gray-100 rounded-full h-2">
                         <div className={`h-2 rounded-full ${percentage === 100 ? 'bg-green-500' : percentage >= 70 ? 'bg-yellow-500' : 'bg-red-500'}`} style={{ width: `${percentage}%` }}></div>
                       </div>
                     </div>
@@ -171,7 +171,7 @@ const ComplianceCheck = () => {
                       {checklist.items.filter(i => !i.compliant).map((item, idx) => (
                         <div key={idx} className="p-3 bg-red-500/10 border border-red-500/30 rounded text-sm">
                           <p className="text-red-400 font-medium">✗ {item.item}</p>
-                          {item.notes && <p className="text-slate-400 mt-1 text-xs">{item.notes}</p>}
+                          {item.notes && <p className="text-gray-600 mt-1 text-xs">{item.notes}</p>}
                         </div>
                       ))}
                     </div>

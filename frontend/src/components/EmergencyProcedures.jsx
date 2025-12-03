@@ -75,21 +75,21 @@ const EmergencyProcedures = () => {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-white mb-2">Emergency Procedures</h1>
-            <p className="text-slate-400">Manage emergency response procedures and drills</p>
+            <p className="text-gray-600">Manage emergency response procedures and drills</p>
           </div>
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-              <Button data-testid="add-procedure-button" className="bg-blue-600 hover:bg-blue-700">
+              <Button data-testid="add-procedure-button" className="bg-teal-500 hover:bg-teal-600">
                 <Plus className="w-4 h-4 mr-2" />
                 Add Procedure
               </Button>
             </DialogTrigger>
-            <DialogContent className="bg-slate-900 border-slate-700 text-white max-w-2xl">
+            <DialogContent className="bg-white border-gray-300 text-white max-w-2xl">
               <DialogHeader><DialogTitle>Add Emergency Procedure</DialogTitle></DialogHeader>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                   <Label>Procedure Type</Label>
-                  <select data-testid="procedure-type-select" value={formData.procedure_type} onChange={(e) => setFormData({ ...formData, procedure_type: e.target.value })} className="w-full p-2 rounded-md bg-slate-800 border-slate-700 text-white border">
+                  <select data-testid="procedure-type-select" value={formData.procedure_type} onChange={(e) => setFormData({ ...formData, procedure_type: e.target.value })} className="w-full p-2 rounded-md bg-gray-50 border-gray-300 text-white border">
                     <option value="fire">Fire</option>
                     <option value="abandon_ship">Abandon Ship</option>
                     <option value="man_overboard">Man Overboard</option>
@@ -104,7 +104,7 @@ const EmergencyProcedures = () => {
                       const newSteps = [...formData.steps];
                       newSteps[idx] = e.target.value;
                       setFormData({ ...formData, steps: newSteps });
-                    }} className="bg-slate-800 border-slate-700 mb-2" placeholder={`Step ${idx + 1}...`} />
+                    }} className="bg-gray-50 border-gray-300 mb-2" placeholder={`Step ${idx + 1}...`} />
                   ))}
                   <Button type="button" onClick={() => setFormData({ ...formData, steps: [...formData.steps, ''] })} variant="outline" size="sm">Add Step</Button>
                 </div>
@@ -116,22 +116,22 @@ const EmergencyProcedures = () => {
                         const newContacts = [...formData.emergency_contacts];
                         newContacts[idx].name = e.target.value;
                         setFormData({ ...formData, emergency_contacts: newContacts });
-                      }} placeholder="Name" className="bg-slate-800 border-slate-700" />
+                      }} placeholder="Name" className="bg-gray-50 border-gray-300" />
                       <Input data-testid={`contact-role-${idx}`} value={contact.role} onChange={(e) => {
                         const newContacts = [...formData.emergency_contacts];
                         newContacts[idx].role = e.target.value;
                         setFormData({ ...formData, emergency_contacts: newContacts });
-                      }} placeholder="Role" className="bg-slate-800 border-slate-700" />
+                      }} placeholder="Role" className="bg-gray-50 border-gray-300" />
                       <Input data-testid={`contact-phone-${idx}`} value={contact.phone} onChange={(e) => {
                         const newContacts = [...formData.emergency_contacts];
                         newContacts[idx].phone = e.target.value;
                         setFormData({ ...formData, emergency_contacts: newContacts });
-                      }} placeholder="Phone" className="bg-slate-800 border-slate-700" />
+                      }} placeholder="Phone" className="bg-gray-50 border-gray-300" />
                     </div>
                   ))}
                   <Button type="button" onClick={() => setFormData({ ...formData, emergency_contacts: [...formData.emergency_contacts, { name: '', role: '', phone: '' }] })} variant="outline" size="sm">Add Contact</Button>
                 </div>
-                <Button type="submit" data-testid="submit-procedure-button" className="w-full bg-blue-600 hover:bg-blue-700">Add Procedure</Button>
+                <Button type="submit" data-testid="submit-procedure-button" className="w-full bg-teal-500 hover:bg-teal-600">Add Procedure</Button>
               </form>
             </DialogContent>
           </Dialog>
@@ -139,25 +139,25 @@ const EmergencyProcedures = () => {
 
         {vessels.length > 1 && (
           <div className="flex items-center gap-4">
-            <Label className="text-slate-300">Select Vessel:</Label>
-            <select data-testid="vessel-select-emergency" value={selectedVessel?.id || ''} onChange={(e) => setSelectedVessel(vessels.find(v => v.id === e.target.value))} className="px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white">
+            <Label className="text-gray-700">Select Vessel:</Label>
+            <select data-testid="vessel-select-emergency" value={selectedVessel?.id || ''} onChange={(e) => setSelectedVessel(vessels.find(v => v.id === e.target.value))} className="px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg text-gray-900">
               {vessels.map((vessel) => (<option key={vessel.id} value={vessel.id}>{vessel.name}</option>))}
             </select>
           </div>
         )}
 
         {procedures.length === 0 ? (
-          <Card className="bg-slate-900 border-slate-800">
+          <Card className="bg-white border-gray-200">
             <CardContent className="py-12 text-center">
-              <Shield className="w-16 h-16 mx-auto text-slate-600 mb-4" />
+              <Shield className="w-16 h-16 mx-auto text-gray-400 mb-4" />
               <h3 className="text-xl font-semibold text-white mb-2">No Emergency Procedures</h3>
-              <p className="text-slate-400">Add emergency procedures for vessel safety</p>
+              <p className="text-gray-600">Add emergency procedures for vessel safety</p>
             </CardContent>
           </Card>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {procedures.map((proc) => (
-              <Card key={proc.id} data-testid={`procedure-card-${proc.id}`} className="bg-slate-900 border-slate-800">
+              <Card key={proc.id} data-testid={`procedure-card-${proc.id}`} className="bg-white border-gray-200">
                 <CardHeader>
                   <CardTitle className="text-white flex items-center gap-2">
                     <Shield className="w-5 h-5 text-red-400" />
@@ -166,19 +166,19 @@ const EmergencyProcedures = () => {
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <div>
-                    <p className="text-sm text-slate-400 mb-2">Procedure Steps:</p>
+                    <p className="text-sm text-gray-600 mb-2">Procedure Steps:</p>
                     <ol className="list-decimal list-inside space-y-1">
                       {proc.steps.map((step, idx) => (
-                        <li key={idx} className="text-sm text-slate-300">{step}</li>
+                        <li key={idx} className="text-sm text-gray-700">{step}</li>
                       ))}
                     </ol>
                   </div>
                   <div>
-                    <p className="text-sm text-slate-400 mb-2">Emergency Contacts:</p>
+                    <p className="text-sm text-gray-600 mb-2">Emergency Contacts:</p>
                     <div className="space-y-2">
                       {proc.emergency_contacts.map((contact, idx) => (
                         <div key={idx} className="flex justify-between text-sm">
-                          <span className="text-white">{contact.name} ({contact.role})</span>
+                          <span className="text-gray-900">{contact.name} ({contact.role})</span>
                           <span className="text-blue-400">{contact.phone}</span>
                         </div>
                       ))}

@@ -68,9 +68,9 @@ const Dashboard = () => {
     return (
       <Layout>
         <div data-testid="no-vessels-message" className="text-center py-12">
-          <Ship className="w-16 h-16 mx-auto text-slate-600 mb-4" />
+          <Ship className="w-16 h-16 mx-auto text-gray-400 mb-4" />
           <h2 className="text-2xl font-bold text-white mb-2">No Vessels Registered</h2>
-          <p className="text-slate-400 mb-6">Get started by adding your first vessel to the system.</p>
+          <p className="text-gray-600 mb-6">Get started by adding your first vessel to the system.</p>
           <a href="/vessels" className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
             Add Vessel
           </a>
@@ -86,17 +86,17 @@ const Dashboard = () => {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-white mb-2">Dashboard</h1>
-            <p className="text-slate-400">Safety Management System Overview</p>
+            <p className="text-gray-600">Safety Management System Overview</p>
           </div>
           
           {vessels.length > 1 && (
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">Select Vessel</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Select Vessel</label>
               <select
                 data-testid="vessel-selector"
                 value={selectedVessel?.id || ''}
                 onChange={(e) => setSelectedVessel(vessels.find(v => v.id === e.target.value))}
-                className="px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white"
+                className="px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg text-gray-900"
               >
                 {vessels.map((vessel) => (
                   <option key={vessel.id} value={vessel.id}>
@@ -110,7 +110,7 @@ const Dashboard = () => {
 
         {/* Current Vessel Info */}
         {selectedVessel && (
-          <Card className="bg-gradient-to-r from-blue-600 to-teal-600 border-none text-white">
+          <Card className="bg-gradient-to-r from-blue-600 to-teal-600 border-none text-gray-900">
             <CardHeader>
               <CardTitle className="flex items-center gap-3">
                 <Ship className="w-6 h-6" />
@@ -128,19 +128,19 @@ const Dashboard = () => {
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {statCards.map((stat, index) => (
-            <Card key={index} data-testid={`stat-card-${stat.title.toLowerCase().replace(' ', '-')}`} className="bg-slate-900 border-slate-800">
+            <Card key={index} data-testid={`stat-card-${stat.title.toLowerCase().replace(' ', '-')}`} className="bg-white border-gray-200">
               <CardContent className="pt-6">
                 <div className="flex items-center justify-between mb-4">
                   <div className={`p-3 rounded-lg bg-gradient-to-br ${stat.color}`}>
-                    <stat.icon className="w-6 h-6 text-white" />
+                    <stat.icon className="w-6 h-6 text-gray-900" />
                   </div>
                   <div className="flex items-center gap-1 text-sm">
                     <TrendingUp className="w-4 h-4 text-green-400" />
                     <span className="text-green-400">{stat.change}</span>
                   </div>
                 </div>
-                <h3 className="text-sm font-medium text-slate-400 mb-1">{stat.title}</h3>
-                <p className="text-3xl font-bold text-white">{stat.value}</p>
+                <h3 className="text-sm font-medium text-gray-600 mb-1">{stat.title}</h3>
+                <p className="text-3xl font-bold text-gray-900">{stat.value}</p>
               </CardContent>
             </Card>
           ))}
@@ -148,52 +148,52 @@ const Dashboard = () => {
 
         {/* Recent Activity */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Card className="bg-slate-900 border-slate-800">
+          <Card className="bg-white border-gray-200">
             <CardHeader>
-              <CardTitle className="text-white">Recent Incidents</CardTitle>
+              <CardTitle className="text-gray-900">Recent Incidents</CardTitle>
               <CardDescription>Latest safety incidents reported</CardDescription>
             </CardHeader>
             <CardContent>
               {stats?.recent_incidents?.length > 0 ? (
                 <div className="space-y-3">
                   {stats.recent_incidents.map((incident, idx) => (
-                    <div key={idx} className="p-3 bg-slate-800 rounded-lg">
+                    <div key={idx} className="p-3 bg-gray-50 rounded-lg">
                       <div className="flex items-center justify-between mb-1">
                         <span className="text-sm font-semibold text-white capitalize">{incident.incident_type.replace('_', ' ')}</span>
                         <span className={`badge badge-${incident.severity === 'critical' ? 'danger' : incident.severity === 'serious' ? 'warning' : 'info'}`}>
                           {incident.severity}
                         </span>
                       </div>
-                      <p className="text-xs text-slate-400">{incident.description?.substring(0, 80)}...</p>
+                      <p className="text-xs text-gray-600">{incident.description?.substring(0, 80)}...</p>
                     </div>
                   ))}
                 </div>
               ) : (
-                <p className="text-slate-500 text-center py-4">No recent incidents</p>
+                <p className="text-gray-500 text-center py-4">No recent incidents</p>
               )}
             </CardContent>
           </Card>
 
-          <Card className="bg-slate-900 border-slate-800">
+          <Card className="bg-white border-gray-200">
             <CardHeader>
-              <CardTitle className="text-white">Recent Maintenance</CardTitle>
+              <CardTitle className="text-gray-900">Recent Maintenance</CardTitle>
               <CardDescription>Latest maintenance activities</CardDescription>
             </CardHeader>
             <CardContent>
               {stats?.recent_maintenance?.length > 0 ? (
                 <div className="space-y-3">
                   {stats.recent_maintenance.map((maint, idx) => (
-                    <div key={idx} className="p-3 bg-slate-800 rounded-lg">
+                    <div key={idx} className="p-3 bg-gray-50 rounded-lg">
                       <div className="flex items-center justify-between mb-1">
-                        <span className="text-sm font-semibold text-white">{maint.performed_by}</span>
+                        <span className="text-sm font-semibold text-gray-900">{maint.performed_by}</span>
                         <span className="badge badge-success">Completed</span>
                       </div>
-                      <p className="text-xs text-slate-400">{maint.findings?.substring(0, 80)}...</p>
+                      <p className="text-xs text-gray-600">{maint.findings?.substring(0, 80)}...</p>
                     </div>
                   ))}
                 </div>
               ) : (
-                <p className="text-slate-500 text-center py-4">No recent maintenance</p>
+                <p className="text-gray-500 text-center py-4">No recent maintenance</p>
               )}
             </CardContent>
           </Card>

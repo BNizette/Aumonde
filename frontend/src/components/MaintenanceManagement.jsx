@@ -118,26 +118,26 @@ const MaintenanceManagement = () => {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-white mb-2">Maintenance Management</h1>
-            <p className="text-slate-400">Planned maintenance schedules and maintenance logs</p>
+            <p className="text-gray-600">Planned maintenance schedules and maintenance logs</p>
           </div>
           <div className="flex gap-2">
             <Dialog open={openSchedule} onOpenChange={setOpenSchedule}>
               <DialogTrigger asChild>
-                <Button data-testid="add-schedule-button" className="bg-blue-600 hover:bg-blue-700">
+                <Button data-testid="add-schedule-button" className="bg-teal-500 hover:bg-teal-600">
                   <Plus className="w-4 h-4 mr-2" />
                   Add Schedule
                 </Button>
               </DialogTrigger>
-              <DialogContent className="bg-slate-900 border-slate-700 text-white">
+              <DialogContent className="bg-white border-gray-300 text-gray-900">
                 <DialogHeader><DialogTitle>Add Maintenance Schedule</DialogTitle></DialogHeader>
                 <form onSubmit={handleScheduleSubmit} className="space-y-4">
                   <div>
                     <Label>Equipment</Label>
-                    <Input data-testid="equipment-input" value={scheduleForm.equipment} onChange={(e) => setScheduleForm({ ...scheduleForm, equipment: e.target.value })} required className="bg-slate-800 border-slate-700" />
+                    <Input data-testid="equipment-input" value={scheduleForm.equipment} onChange={(e) => setScheduleForm({ ...scheduleForm, equipment: e.target.value })} required className="bg-gray-50 border-gray-300" />
                   </div>
                   <div>
                     <Label>Maintenance Type</Label>
-                    <select data-testid="maintenance-type-select" value={scheduleForm.maintenance_type} onChange={(e) => setScheduleForm({ ...scheduleForm, maintenance_type: e.target.value })} className="w-full p-2 rounded-md bg-slate-800 border-slate-700 text-white border">
+                    <select data-testid="maintenance-type-select" value={scheduleForm.maintenance_type} onChange={(e) => setScheduleForm({ ...scheduleForm, maintenance_type: e.target.value })} className="w-full p-2 rounded-md bg-gray-50 border-gray-300 text-white border">
                       <option value="routine">Routine</option>
                       <option value="inspection">Inspection</option>
                       <option value="repair">Repair</option>
@@ -145,7 +145,7 @@ const MaintenanceManagement = () => {
                   </div>
                   <div>
                     <Label>Frequency</Label>
-                    <select data-testid="frequency-select" value={scheduleForm.frequency} onChange={(e) => setScheduleForm({ ...scheduleForm, frequency: e.target.value })} className="w-full p-2 rounded-md bg-slate-800 border-slate-700 text-white border">
+                    <select data-testid="frequency-select" value={scheduleForm.frequency} onChange={(e) => setScheduleForm({ ...scheduleForm, frequency: e.target.value })} className="w-full p-2 rounded-md bg-gray-50 border-gray-300 text-white border">
                       <option value="daily">Daily</option>
                       <option value="weekly">Weekly</option>
                       <option value="monthly">Monthly</option>
@@ -155,46 +155,46 @@ const MaintenanceManagement = () => {
                   </div>
                   <div>
                     <Label>Next Due Date</Label>
-                    <Input data-testid="next-due-input" type="date" value={scheduleForm.next_due} onChange={(e) => setScheduleForm({ ...scheduleForm, next_due: e.target.value })} required className="bg-slate-800 border-slate-700" />
+                    <Input data-testid="next-due-input" type="date" value={scheduleForm.next_due} onChange={(e) => setScheduleForm({ ...scheduleForm, next_due: e.target.value })} required className="bg-gray-50 border-gray-300" />
                   </div>
-                  <Button type="submit" data-testid="submit-schedule-button" className="w-full bg-blue-600 hover:bg-blue-700">Add Schedule</Button>
+                  <Button type="submit" data-testid="submit-schedule-button" className="w-full bg-teal-500 hover:bg-teal-600">Add Schedule</Button>
                 </form>
               </DialogContent>
             </Dialog>
             <Dialog open={openLog} onOpenChange={setOpenLog}>
               <DialogTrigger asChild>
-                <Button data-testid="add-log-button" className="bg-teal-600 hover:bg-teal-700">
+                <Button data-testid="add-log-button" className="bg-cyan-500 hover:bg-cyan-600">
                   <Plus className="w-4 h-4 mr-2" />
                   Log Maintenance
                 </Button>
               </DialogTrigger>
-              <DialogContent className="bg-slate-900 border-slate-700 text-white max-w-2xl">
+              <DialogContent className="bg-white border-gray-300 text-white max-w-2xl">
                 <DialogHeader><DialogTitle>Log Maintenance Activity</DialogTitle></DialogHeader>
                 <form onSubmit={handleLogSubmit} className="space-y-4">
                   <div>
                     <Label>Schedule</Label>
-                    <select data-testid="schedule-select" value={logForm.schedule_id} onChange={(e) => setLogForm({ ...logForm, schedule_id: e.target.value })} required className="w-full p-2 rounded-md bg-slate-800 border-slate-700 text-white border">
+                    <select data-testid="schedule-select" value={logForm.schedule_id} onChange={(e) => setLogForm({ ...logForm, schedule_id: e.target.value })} required className="w-full p-2 rounded-md bg-gray-50 border-gray-300 text-white border">
                       <option value="">Select schedule</option>
                       {schedules.map(s => <option key={s.id} value={s.id}>{s.equipment} - {s.maintenance_type}</option>)}
                     </select>
                   </div>
                   <div>
                     <Label>Completed Date</Label>
-                    <Input data-testid="completed-date-input" type="date" value={logForm.completed_date} onChange={(e) => setLogForm({ ...logForm, completed_date: e.target.value })} required className="bg-slate-800 border-slate-700" />
+                    <Input data-testid="completed-date-input" type="date" value={logForm.completed_date} onChange={(e) => setLogForm({ ...logForm, completed_date: e.target.value })} required className="bg-gray-50 border-gray-300" />
                   </div>
                   <div>
                     <Label>Performed By</Label>
-                    <Input data-testid="performed-by-input" value={logForm.performed_by} onChange={(e) => setLogForm({ ...logForm, performed_by: e.target.value })} required className="bg-slate-800 border-slate-700" />
+                    <Input data-testid="performed-by-input" value={logForm.performed_by} onChange={(e) => setLogForm({ ...logForm, performed_by: e.target.value })} required className="bg-gray-50 border-gray-300" />
                   </div>
                   <div>
                     <Label>Findings</Label>
-                    <Textarea data-testid="findings-input" value={logForm.findings} onChange={(e) => setLogForm({ ...logForm, findings: e.target.value })} required className="bg-slate-800 border-slate-700" />
+                    <Textarea data-testid="findings-input" value={logForm.findings} onChange={(e) => setLogForm({ ...logForm, findings: e.target.value })} required className="bg-gray-50 border-gray-300" />
                   </div>
                   <div>
                     <Label>Action Taken</Label>
-                    <Textarea data-testid="action-taken-input" value={logForm.action_taken} onChange={(e) => setLogForm({ ...logForm, action_taken: e.target.value })} required className="bg-slate-800 border-slate-700" />
+                    <Textarea data-testid="action-taken-input" value={logForm.action_taken} onChange={(e) => setLogForm({ ...logForm, action_taken: e.target.value })} required className="bg-gray-50 border-gray-300" />
                   </div>
-                  <Button type="submit" data-testid="submit-log-button" className="w-full bg-teal-600 hover:bg-teal-700">Log Maintenance</Button>
+                  <Button type="submit" data-testid="submit-log-button" className="w-full bg-cyan-500 hover:bg-cyan-600">Log Maintenance</Button>
                 </form>
               </DialogContent>
             </Dialog>
@@ -203,34 +203,34 @@ const MaintenanceManagement = () => {
 
         {vessels.length > 1 && (
           <div className="flex items-center gap-4">
-            <Label className="text-slate-300">Select Vessel:</Label>
-            <select data-testid="vessel-select-maintenance" value={selectedVessel?.id || ''} onChange={(e) => setSelectedVessel(vessels.find(v => v.id === e.target.value))} className="px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white">
+            <Label className="text-gray-700">Select Vessel:</Label>
+            <select data-testid="vessel-select-maintenance" value={selectedVessel?.id || ''} onChange={(e) => setSelectedVessel(vessels.find(v => v.id === e.target.value))} className="px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg text-gray-900">
               {vessels.map((vessel) => (<option key={vessel.id} value={vessel.id}>{vessel.name}</option>))}
             </select>
           </div>
         )}
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Card className="bg-slate-900 border-slate-800">
+          <Card className="bg-white border-gray-200">
             <CardHeader>
-              <CardTitle className="text-white">Maintenance Schedules</CardTitle>
+              <CardTitle className="text-gray-900">Maintenance Schedules</CardTitle>
             </CardHeader>
             <CardContent>
               {schedules.length === 0 ? (
                 <div className="text-center py-8">
-                  <Wrench className="w-12 h-12 mx-auto text-slate-600 mb-2" />
-                  <p className="text-slate-400">No schedules</p>
+                  <Wrench className="w-12 h-12 mx-auto text-gray-400 mb-2" />
+                  <p className="text-gray-600">No schedules</p>
                 </div>
               ) : (
                 <div className="space-y-3">
                   {schedules.map(schedule => (
-                    <div key={schedule.id} data-testid={`schedule-${schedule.id}`} className="p-3 bg-slate-800 rounded-lg">
+                    <div key={schedule.id} data-testid={`schedule-${schedule.id}`} className="p-3 bg-gray-50 rounded-lg">
                       <div className="flex items-center justify-between mb-1">
-                        <span className="text-sm font-semibold text-white">{schedule.equipment}</span>
+                        <span className="text-sm font-semibold text-gray-900">{schedule.equipment}</span>
                         <span className={`badge ${schedule.status === 'completed' ? 'badge-success' : schedule.status === 'overdue' ? 'badge-danger' : 'badge-info'}`}>{schedule.status}</span>
                       </div>
-                      <p className="text-xs text-slate-400 capitalize">{schedule.maintenance_type} - {schedule.frequency}</p>
-                      <p className="text-xs text-slate-500 mt-1">Due: {new Date(schedule.next_due).toLocaleDateString()}</p>
+                      <p className="text-xs text-gray-600 capitalize">{schedule.maintenance_type} - {schedule.frequency}</p>
+                      <p className="text-xs text-gray-500 mt-1">Due: {new Date(schedule.next_due).toLocaleDateString()}</p>
                     </div>
                   ))}
                 </div>
@@ -238,24 +238,24 @@ const MaintenanceManagement = () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-slate-900 border-slate-800">
+          <Card className="bg-white border-gray-200">
             <CardHeader>
-              <CardTitle className="text-white">Recent Maintenance Logs</CardTitle>
+              <CardTitle className="text-gray-900">Recent Maintenance Logs</CardTitle>
             </CardHeader>
             <CardContent>
               {logs.length === 0 ? (
                 <div className="text-center py-8">
-                  <p className="text-slate-400">No maintenance logs</p>
+                  <p className="text-gray-600">No maintenance logs</p>
                 </div>
               ) : (
                 <div className="space-y-3">
                   {logs.slice(0, 10).map(log => (
-                    <div key={log.id} data-testid={`log-${log.id}`} className="p-3 bg-slate-800 rounded-lg">
+                    <div key={log.id} data-testid={`log-${log.id}`} className="p-3 bg-gray-50 rounded-lg">
                       <div className="flex items-center justify-between mb-1">
-                        <span className="text-sm font-semibold text-white">{log.performed_by}</span>
-                        <span className="text-xs text-slate-500">{new Date(log.completed_date).toLocaleDateString()}</span>
+                        <span className="text-sm font-semibold text-gray-900">{log.performed_by}</span>
+                        <span className="text-xs text-gray-500">{new Date(log.completed_date).toLocaleDateString()}</span>
                       </div>
-                      <p className="text-xs text-slate-400">{log.findings.substring(0, 80)}...</p>
+                      <p className="text-xs text-gray-600">{log.findings.substring(0, 80)}...</p>
                     </div>
                   ))}
                 </div>
