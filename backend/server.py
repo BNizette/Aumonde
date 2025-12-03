@@ -497,9 +497,9 @@ async def update_user(user_id: str, update: UserUpdate, current_user: User = Dep
 
 @api_router.delete("/admin/users/{user_id}")
 async def delete_user(user_id: str, current_user: User = Depends(get_current_user)):
-    """Delete user - Admin only"""
-    if current_user.role not in [UserRole.OWNER, UserRole.INSPECTOR]:
-        raise HTTPException(status_code=403, detail="Admin access required")
+    """Delete user - Owner only"""
+    if current_user.role != UserRole.OWNER:
+        raise HTTPException(status_code=403, detail="Owner access required")
     
     if user_id == current_user.id:
         raise HTTPException(status_code=400, detail="Cannot delete your own account")
