@@ -119,17 +119,9 @@ const AdminPanel = () => {
     );
   }
 
-  if (!user || (user.role !== 'owner' && user.role !== 'inspector')) {
-    return (
-      <Layout>
-        <div className="text-center py-12">
-          <UserCog className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Access Denied</h2>
-          <p className="text-gray-600">You don't have permission to access the admin panel.</p>
-        </div>
-      </Layout>
-    );
-  }
+  const isOwner = user?.role === 'owner';
+  const pageTitle = isOwner ? 'Admin Panel' : 'My Profile';
+  const pageDescription = isOwner ? 'Manage users and system settings' : 'View and update your profile information';
 
   return (
     <Layout>
