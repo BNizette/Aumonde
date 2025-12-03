@@ -15,13 +15,9 @@ const VesselManagement = () => {
   const [vessels, setVessels] = useState([]);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
-  const [formData, setFormData] = useState({
-    name: '',
-    vessel_class: 'class_1',
-    registration_number: '',
-    length: '',
-    sms_type: 'standard'
-  });
+  const [viewOpen, setViewOpen] = useState(false);
+  const [selectedVessel, setSelectedVessel] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     fetchVessels();
