@@ -1052,6 +1052,99 @@ async def get_vessel(vessel_id: str, current_user: User = Depends(get_current_us
         vessel['created_at'] = datetime.fromisoformat(vessel['created_at'])
     return Vessel(**vessel)
 
+@api_router.put("/vessels/{vessel_id}", response_model=Vessel)
+async def update_vessel(vessel_id: str, vessel_data: VesselCreate, current_user: User = Depends(get_current_user)):
+    """Update vessel - requires Edit or Full access level"""
+    # Check access level
+    user_access = current_user.access_level if hasattr(current_user, 'access_level') else 'edit'
+    if user_access == 'view':
+        raise HTTPException(status_code=403, detail="Edit or Full access level required to modify vessels")
+    
+    # Find vessel
+    vessel = await db.vessels.find_one({"id": vessel_id})
+    if not vessel:
+        raise HTTPException(status_code=404, detail="Vessel not found")
+    
+    # Check ownership (only owner or inspectors can edit any vessel)
+    if current_user.role != UserRole.INSPECTOR and current_user.role != UserRole.OWNER:
+        if vessel.get('owner_id') != current_user.id:
+            raise HTTPException(status_code=403, detail="You can only edit your own vessels")
+    
+    # Prepare update data
+    vessel_dict = vessel_data.model_dump()
+    vessel_dict['owner_id'] = vessel.get('owner_id')  # Keep original owner
+    
+    # Check simplified SMS eligibility
+    if vessel_dict['length'] < 7.5 and vessel_dict['vessel_class'] in ['class_2', 'class_3', 'class_4']:
+        vessel_dict['eligible_simplified'] = True
+    else:
+        vessel_dict['eligible_simplified'] = False
+    
+    # Keep original created_at
+    vessel_dict['created_at'] = vessel.get('created_at')
+    
+    # Update vessel
+    await db.vessels.update_one(
+        {"id": vessel_id},
+        {"$set": vessel_dict}
+    )
+    
+    # Log audit trail
+    await log_audit(
+        admin_id=current_user.id,
+        admin_name=current_user.full_name,
+        action="update_vessel",
+        target_type="vessel",
+        target_id=vessel_id,
+        target_name=vessel_data.name,
+        details={
+            "vessel_class": vessel_data.vessel_class,
+            "registration": vessel_data.registration_number
+        }
+    )
+    
+    # Return updated vessel
+    updated_vessel = await db.vessels.find_one({"id": vessel_id}, {"_id": 0})
+    if isinstance(updated_vessel.get('created_at'), str):
+        updated_vessel['created_at'] = datetime.fromisoformat(updated_vessel['created_at'])
+    return Vessel(**updated_vessel)
+
+@api_router.delete("/vessels/{vessel_id}")
+async def delete_vessel(vessel_id: str, current_user: User = Depends(get_current_user)):
+    """Delete vessel - requires Full access level"""
+    # Check access level
+    user_access = current_user.access_level if hasattr(current_user, 'access_level') else 'edit'
+    if user_access != 'full' and current_user.role != UserRole.OWNER:
+        raise HTTPException(status_code=403, detail="Full access level or Owner role required to delete vessels")
+    
+    # Find vessel
+    vessel = await db.vessels.find_one({"id": vessel_id})
+    if not vessel:
+        raise HTTPException(status_code=404, detail="Vessel not found")
+    
+    # Check ownership
+    if current_user.role != UserRole.OWNER and vessel.get('owner_id') != current_user.id:
+        raise HTTPException(status_code=403, detail="You can only delete your own vessels")
+    
+    # Delete vessel
+    await db.vessels.delete_one({"id": vessel_id})
+    
+    # Log audit trail
+    await log_audit(
+        admin_id=current_user.id,
+        admin_name=current_user.full_name,
+        action="delete_vessel",
+        target_type="vessel",
+        target_id=vessel_id,
+        target_name=vessel.get('name', 'Unknown'),
+        details={
+            "vessel_class": vessel.get('vessel_class'),
+            "registration": vessel.get('registration_number')
+        }
+    )
+    
+    return {"message": "Vessel deleted successfully"}
+
 # ============ DOCUMENT ROUTES ============
 
 @api_router.post("/documents", response_model=Document)
