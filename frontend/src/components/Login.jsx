@@ -63,7 +63,7 @@ const Login = () => {
             {!isLogin && (
               <>
                 <div>
-                  <Label htmlFor="full_name" className="text-slate-200">Full Name</Label>
+                  <Label htmlFor="full_name" className="text-gray-700">Full Name</Label>
                   <Input
                     id="full_name"
                     data-testid="full-name-input"
@@ -71,17 +71,17 @@ const Login = () => {
                     value={formData.full_name}
                     onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
                     required
-                    className="bg-slate-800 border-slate-700 text-white"
+                    className="bg-white border-gray-300 text-gray-900"
                   />
                 </div>
                 <div>
-                  <Label htmlFor="role" className="text-slate-200">Role</Label>
+                  <Label htmlFor="role" className="text-gray-700">Role</Label>
                   <select
                     id="role"
                     data-testid="role-select"
                     value={formData.role}
                     onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                    className="w-full p-2 rounded-md bg-slate-800 border-slate-700 text-white border"
+                    className="w-full p-2 rounded-md bg-white border-gray-300 text-gray-900 border"
                   >
                     <option value="owner">Owner/Operator</option>
                     <option value="master">Master</option>
@@ -91,14 +91,14 @@ const Login = () => {
                   </select>
                 </div>
                 <div>
-                  <Label htmlFor="organization" className="text-slate-200">Organization</Label>
+                  <Label htmlFor="organization" className="text-gray-700">Organization</Label>
                   <Input
                     id="organization"
                     data-testid="organization-input"
                     type="text"
                     value={formData.organization}
                     onChange={(e) => setFormData({ ...formData, organization: e.target.value })}
-                    className="bg-slate-800 border-slate-700 text-white"
+                    className="bg-white border-gray-300 text-gray-900"
                   />
                 </div>
               </>
