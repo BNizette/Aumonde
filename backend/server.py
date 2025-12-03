@@ -1368,9 +1368,9 @@ async def create_crew_member(crew_data: CrewMemberCreate, current_user: User = D
     await db.crew.insert_one(doc)
     return crew_obj
 
-@api_router.get("/crew/vessel/{vessel_id}", response_model=List[CrewMember])
-async def get_vessel_crew(vessel_id: str, current_user: User = Depends(get_current_user)):
-    crew = await db.crew.find({"vessel_id": vessel_id}, {"_id": 0}).to_list(1000)
+@api_router.get("/crew", response_model=List[CrewMember])
+async def get_all_crew(current_user: User = Depends(get_current_user)):
+    crew = await db.crew.find({}, {"_id": 0}).to_list(1000)
     for c in crew:
         if isinstance(c.get('created_at'), str):
             c['created_at'] = datetime.fromisoformat(c['created_at'])
