@@ -80,19 +80,32 @@ const Layout = ({ children }) => {
       </nav>
 
       <div className="flex">
+        {/* Mobile Sidebar Overlay */}
+        {isMobile && sidebarOpen && (
+          <div 
+            className="fixed inset-0 bg-black bg-opacity-50 z-40"
+            onClick={() => setSidebarOpen(false)}
+          />
+        )}
+
         {/* Sidebar */}
         <aside 
           className={`${
+            isMobile ? 'fixed left-0 top-[73px] z-50 h-[calc(100vh-73px)]' : 'relative'
+          } ${
             sidebarOpen ? 'w-64' : 'w-0'
           } bg-white border-r border-gray-200 transition-all duration-300 overflow-hidden`}
           style={{ minHeight: 'calc(100vh - 73px)' }}
         >
-          <div className="p-4 space-y-2">
+          <div className="p-4 space-y-2 overflow-y-auto h-full">
             {menuItems.map((item) => (
               <button
                 key={item.path}
                 data-testid={`nav-${item.label.toLowerCase().replace(' ', '-')}`}
-                onClick={() => navigate(item.path)}
+                onClick={() => {
+                  navigate(item.path);
+                  if (isMobile) setSidebarOpen(false);
+                }}
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                   isActive(item.path)
                     ? 'text-white'
