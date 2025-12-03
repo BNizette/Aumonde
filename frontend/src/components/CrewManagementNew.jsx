@@ -306,9 +306,12 @@ const CrewManagementNew = () => {
                   <h3 className="font-semibold text-gray-900 mb-2">Qualifications</h3>
                   <div className="text-sm space-y-2">
                     {selectedCrew.qualifications && selectedCrew.qualifications.length > 0 ? (
-                      <ul className="list-disc list-inside">
+                      <ul className="space-y-1">
                         {selectedCrew.qualifications.map((q, i) => (
-                          <li key={i}>{q}</li>
+                          <li key={i} className="flex items-center gap-2">
+                            <span className="font-medium">{q.name || q}</span>
+                            {q.date && <span className="text-gray-500 text-xs">({formatDate(q.date)})</span>}
+                          </li>
                         ))}
                       </ul>
                     ) : (
