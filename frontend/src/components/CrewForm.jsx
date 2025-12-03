@@ -26,6 +26,7 @@ const CrewForm = ({ initialData = {}, onSubmit, onCancel, loading, isEdit = fals
     
     // Qualifications
     qualifications: initialData.qualifications || [''],
+    qualifications_date: initialData.qualifications_date || '',
     qualifications_text: initialData.qualifications_text || '',
     experience: initialData.experience || '',
     master_class5_proof: initialData.master_class5_proof || false,
