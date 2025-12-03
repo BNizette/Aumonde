@@ -4,7 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { 
   LayoutDashboard, Ship, FileText, AlertTriangle, Users, 
-  Wrench, AlertCircle, Shield, Clipboard, Bot, LogOut, Menu
+  Wrench, AlertCircle, Shield, Clipboard, Bot, LogOut, Menu, UserCog
 } from 'lucide-react';
 
 const Layout = ({ children }) => {
