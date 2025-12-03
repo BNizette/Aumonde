@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { API } from '@/App';
+import { useState, useEffect, useContext } from 'react';
+import { API, AuthContext } from '@/App';
 import axios from 'axios';
 import Layout from '@/components/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,14 +7,16 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Ship, Plus, CheckCircle2, Eye } from 'lucide-react';
+import { Ship, Plus, CheckCircle2, Eye, Edit, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import VesselForm from '@/components/VesselForm';
 
 const VesselManagement = () => {
+  const { user } = useContext(AuthContext);
   const [vessels, setVessels] = useState([]);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
   const [viewOpen, setViewOpen] = useState(false);
   const [selectedVessel, setSelectedVessel] = useState(null);
   const [submitting, setSubmitting] = useState(false);
