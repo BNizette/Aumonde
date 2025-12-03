@@ -74,10 +74,10 @@ const IncidentReporting = () => {
 
   return (
     <Layout>
-      <div data-testid="incident-reporting" className="space-y-6">
+      <div data-testid="incident-reporting" className="space-y-4 md:space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-white mb-2">Incident Reporting</h1>
+            <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">Incident Reporting</h1>
             <p className="text-gray-600">Report and track safety incidents</p>
           </div>
           <Dialog open={open} onOpenChange={setOpen}>
@@ -87,10 +87,10 @@ const IncidentReporting = () => {
                 Report Incident
               </Button>
             </DialogTrigger>
-            <DialogContent className="bg-white border-gray-300 text-white max-w-2xl">
+            <DialogContent className="bg-white border-gray-300 text-white max-w-2xl w-full mx-4">
               <DialogHeader><DialogTitle>Report Incident</DialogTitle></DialogHeader>
               <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <Label>Incident Type</Label>
                     <select data-testid="incident-type-select" value={formData.incident_type} onChange={(e) => setFormData({ ...formData, incident_type: e.target.value })} className="w-full p-2 rounded-md bg-gray-50 border-gray-300 text-white border">
@@ -110,7 +110,7 @@ const IncidentReporting = () => {
                     </select>
                   </div>
                 </div>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <Label>Date & Time</Label>
                     <Input data-testid="incident-date-input" type="datetime-local" value={formData.date} onChange={(e) => setFormData({ ...formData, date: e.target.value })} required className="bg-gray-50 border-gray-300" />

@@ -99,10 +99,10 @@ const DocumentManagement = () => {
 
   return (
     <Layout>
-      <div data-testid="document-management" className="space-y-6">
+      <div data-testid="document-management" className="space-y-4 md:space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-white mb-2">Document Management</h1>
+            <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">Document Management</h1>
             <p className="text-gray-600">Manage SMS documentation, policies, and procedures</p>
           </div>
           
@@ -113,7 +113,7 @@ const DocumentManagement = () => {
                 Add Document
               </Button>
             </DialogTrigger>
-            <DialogContent className="bg-white border-gray-300 text-white max-w-2xl">
+            <DialogContent className="bg-white border-gray-300 text-white max-w-2xl w-full mx-4">
               <DialogHeader>
                 <DialogTitle>Add New Document</DialogTitle>
               </DialogHeader>
@@ -206,7 +206,7 @@ const DocumentManagement = () => {
             </CardContent>
           </Card>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {documents.map((doc) => (
               <Card key={doc.id} data-testid={`document-card-${doc.id}`} className="bg-white border-gray-200 hover:border-blue-500 transition-colors">
                 <CardHeader>

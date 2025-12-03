@@ -55,10 +55,10 @@ const VesselManagement = () => {
 
   return (
     <Layout>
-      <div data-testid="vessel-management" className="space-y-6">
+      <div data-testid="vessel-management" className="space-y-4 md:space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-white mb-2">Vessel Management</h1>
+            <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">Vessel Management</h1>
             <p className="text-gray-600">Manage your commercial vessels and their SMS configurations</p>
           </div>
           
@@ -166,7 +166,7 @@ const VesselManagement = () => {
             </CardContent>
           </Card>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {vessels.map((vessel) => (
               <Card key={vessel.id} data-testid={`vessel-card-${vessel.id}`} className="bg-white border-gray-200 hover:border-blue-500 transition-colors">
                 <CardHeader>

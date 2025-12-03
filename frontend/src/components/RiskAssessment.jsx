@@ -92,10 +92,10 @@ const RiskAssessment = () => {
 
   return (
     <Layout>
-      <div data-testid="risk-assessment" className="space-y-6">
+      <div data-testid="risk-assessment" className="space-y-4 md:space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-white mb-2">Risk Assessment</h1>
+            <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">Risk Assessment</h1>
             <p className="text-gray-600">Identify and manage operational risks</p>
           </div>
           <Dialog open={open} onOpenChange={setOpen}>
@@ -105,7 +105,7 @@ const RiskAssessment = () => {
                 Add Risk Assessment
               </Button>
             </DialogTrigger>
-            <DialogContent className="bg-white border-gray-300 text-white max-w-2xl">
+            <DialogContent className="bg-white border-gray-300 text-white max-w-2xl w-full mx-4">
               <DialogHeader>
                 <DialogTitle>New Risk Assessment</DialogTitle>
               </DialogHeader>
@@ -114,7 +114,7 @@ const RiskAssessment = () => {
                   <Label>Hazard Description</Label>
                   <Textarea data-testid="hazard-input" value={formData.hazard} onChange={(e) => setFormData({ ...formData, hazard: e.target.value })} required className="bg-gray-50 border-gray-300" rows={3} />
                 </div>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <Label>Likelihood (1-5)</Label>
                     <Input data-testid="likelihood-input" type="number" min="1" max="5" value={formData.likelihood} onChange={(e) => setFormData({ ...formData, likelihood: e.target.value })} className="bg-gray-50 border-gray-300" />
@@ -159,7 +159,7 @@ const RiskAssessment = () => {
             </CardContent>
           </Card>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {risks.map((risk) => (
               <Card key={risk.id} data-testid={`risk-card-${risk.id}`} className="bg-white border-gray-200">
                 <CardHeader>
@@ -176,7 +176,7 @@ const RiskAssessment = () => {
                     <p className="text-sm text-gray-600">Hazard:</p>
                     <p className="text-gray-900">{risk.hazard}</p>
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <p className="text-sm text-gray-600">Likelihood:</p>
                       <p className="text-white font-semibold">{risk.likelihood}/5</p>

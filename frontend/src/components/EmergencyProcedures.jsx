@@ -71,10 +71,10 @@ const EmergencyProcedures = () => {
 
   return (
     <Layout>
-      <div data-testid="emergency-procedures" className="space-y-6">
+      <div data-testid="emergency-procedures" className="space-y-4 md:space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-white mb-2">Emergency Procedures</h1>
+            <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">Emergency Procedures</h1>
             <p className="text-gray-600">Manage emergency response procedures and drills</p>
           </div>
           <Dialog open={open} onOpenChange={setOpen}>
@@ -84,7 +84,7 @@ const EmergencyProcedures = () => {
                 Add Procedure
               </Button>
             </DialogTrigger>
-            <DialogContent className="bg-white border-gray-300 text-white max-w-2xl">
+            <DialogContent className="bg-white border-gray-300 text-white max-w-2xl w-full mx-4">
               <DialogHeader><DialogTitle>Add Emergency Procedure</DialogTitle></DialogHeader>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>

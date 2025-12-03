@@ -85,10 +85,10 @@ const CrewManagement = () => {
 
   return (
     <Layout>
-      <div data-testid="crew-management" className="space-y-6">
+      <div data-testid="crew-management" className="space-y-4 md:space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-white mb-2">Crew Management</h1>
+            <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">Crew Management</h1>
             <p className="text-gray-600">Manage crew members, qualifications, and fatigue tracking</p>
           </div>
           <Dialog open={open} onOpenChange={setOpen}>
@@ -98,7 +98,7 @@ const CrewManagement = () => {
                 Add Crew Member
               </Button>
             </DialogTrigger>
-            <DialogContent className="bg-white border-gray-300 text-white max-w-2xl">
+            <DialogContent className="bg-white border-gray-300 text-white max-w-2xl w-full mx-4">
               <DialogHeader>
                 <DialogTitle>Add Crew Member</DialogTitle>
               </DialogHeader>
@@ -122,7 +122,7 @@ const CrewManagement = () => {
                   ))}
                   <Button type="button" onClick={() => setFormData({ ...formData, qualifications: [...formData.qualifications, ''] })} variant="outline" size="sm">Add Qualification</Button>
                 </div>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <Label>License Number</Label>
                     <Input data-testid="license-number-input" value={formData.license_number} onChange={(e) => setFormData({ ...formData, license_number: e.target.value })} className="bg-gray-50 border-gray-300" />
@@ -160,7 +160,7 @@ const CrewManagement = () => {
             </CardContent>
           </Card>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {crew.map((member) => (
               <Card key={member.id} data-testid={`crew-card-${member.id}`} className="bg-white border-gray-200">
                 <CardHeader>

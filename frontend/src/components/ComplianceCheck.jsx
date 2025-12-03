@@ -79,10 +79,10 @@ const ComplianceCheck = () => {
 
   return (
     <Layout>
-      <div data-testid="compliance-check" className="space-y-6">
+      <div data-testid="compliance-check" className="space-y-4 md:space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-white mb-2">Compliance Verification</h1>
+            <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">Compliance Verification</h1>
             <p className="text-gray-600">Marine Order 504 SMS compliance checklists</p>
           </div>
           <Dialog open={open} onOpenChange={setOpen}>

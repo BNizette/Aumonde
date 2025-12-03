@@ -104,16 +104,16 @@ const AIAssistant = () => {
 
   return (
     <Layout>
-      <div data-testid="ai-assistant" className="space-y-6">
+      <div data-testid="ai-assistant" className="space-y-4 md:space-y-6">
         <div>
-          <h1 className="text-3xl font-bold text-white mb-2 flex items-center gap-3">
+          <h1 className="text-2xl md:text-3xl font-bold text-white mb-2 flex items-center gap-3">
             <Bot className="w-8 h-8 text-blue-400" />
             AI Safety Assistant
           </h1>
           <p className="text-gray-600">Powered by Google Gemini for risk assessment, compliance checking, and document analysis</p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Input Section */}
           <Card className="bg-white border-gray-200">
             <CardHeader>
