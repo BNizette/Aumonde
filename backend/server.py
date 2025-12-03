@@ -495,9 +495,34 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
         user_id: str = payload.get("sub")
         if user_id is None:
             raise HTTPException(status_code=401, detail="Invalid token")
+        
         user = await db.users.find_one({"id": user_id}, {"_id": 0})
         if user is None:
             raise HTTPException(status_code=401, detail="User not found")
+        
+        # Check account status
+        account_status = user.get('account_status', 'active')
+        if account_status == 'disabled':
+            raise HTTPException(status_code=403, detail="Account is disabled. Contact administrator.")
+        elif account_status == 'suspended':
+            raise HTTPException(status_code=403, detail="Account is suspended. Contact administrator.")
+        
+        # Update last active
+        await db.users.update_one(
+            {"id": user_id},
+            {"$set": {"last_active": datetime.now(timezone.utc).isoformat()}}
+        )
+        
+        # Update session activity
+        await update_session_activity(token)
+        
+        if isinstance(user.get('created_at'), str):
+            user['created_at'] = datetime.fromisoformat(user['created_at'])
+        if isinstance(user.get('last_login'), str):
+            user['last_login'] = datetime.fromisoformat(user['last_login'])
+        if isinstance(user.get('last_active'), str):
+            user['last_active'] = datetime.fromisoformat(user['last_active'])
+        
         return User(**user)
     except jwt.PyJWTError:
         raise HTTPException(status_code=401, detail="Invalid token")
