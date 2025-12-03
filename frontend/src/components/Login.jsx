@@ -10,7 +10,7 @@ import { toast } from 'sonner';
 import { Anchor, Shield, Waves } from 'lucide-react';
 
 const Login = () => {
-  const { login } = useContext(AuthContext);
+  const { login, config } = useContext(AuthContext);
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({
     email: '',
