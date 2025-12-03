@@ -806,6 +806,20 @@ async def admin_reset_password(user_id: str, new_password: str, current_user: Us
         {"$set": {"password": hashed}}
     )
     
+    # Log audit trail
+    await log_audit(
+        admin_id=current_user.id,
+        admin_name=current_user.full_name,
+        action="reset_password",
+        target_type="user",
+        target_id=user_id,
+        target_name=user.get('full_name', 'Unknown'),
+        details={"email": user.get('email')}
+    )
+    
+    # Delete all sessions for this user (force logout)
+    await db.sessions.delete_many({"user_id": user_id})
+    
     return {"message": "Password reset successfully"}
 
 # ============ VESSEL ROUTES ============
