@@ -709,7 +709,7 @@ const VesselForm = ({ initialData = {}, onSubmit, onCancel, loading }) => {
                 />
               </div>
               <div>
-                <Label htmlFor="cert_stability_date">Date</Label>
+                <Label htmlFor="cert_stability_date">Expiry Date</Label>
                 <Input
                   id="cert_stability_date"
                   type="date"
@@ -733,7 +733,7 @@ const VesselForm = ({ initialData = {}, onSubmit, onCancel, loading }) => {
                 />
               </div>
               <div>
-                <Label htmlFor="cert_sms_date">Date</Label>
+                <Label htmlFor="cert_sms_date">Expiry Date</Label>
                 <Input
                   id="cert_sms_date"
                   type="date"
