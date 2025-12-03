@@ -348,7 +348,6 @@ class RiskAssessmentCreate(BaseModel):
 class CrewMember(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    vessel_id: str
     
     # Crew Details
     full_name: str
