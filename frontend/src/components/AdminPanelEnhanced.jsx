@@ -411,6 +411,22 @@ const AdminPanelEnhanced = () => {
                                             className="bg-white border-gray-300"
                                           />
                                         </div>
+                                        <div>
+                                          <Label htmlFor="edit-access-level">Access Level</Label>
+                                          <select
+                                            id="edit-access-level"
+                                            value={editFormData.access_level}
+                                            onChange={(e) => setEditFormData({ ...editFormData, access_level: e.target.value })}
+                                            className="w-full p-2 rounded-md bg-white border-gray-300 text-gray-900 border"
+                                          >
+                                            <option value="view">View - Read-only access</option>
+                                            <option value="edit">Edit - Can modify data</option>
+                                            <option value="full">Full - Complete access</option>
+                                          </select>
+                                          <p className="text-xs text-gray-500 mt-1">
+                                            Default: Owner=Full, Master/Crew=Edit, Designated/Inspector=View
+                                          </p>
+                                        </div>
                                         <Button
                                           onClick={handleEditUser}
                                           className="w-full bg-blue-500 hover:bg-blue-600 text-white"
