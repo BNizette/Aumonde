@@ -232,7 +232,7 @@ const VesselManagement = () => {
                       Eligible for Simplified SMS
                     </div>
                   )}
-                  <div className="mt-4 pt-4 border-t border-gray-200">
+                  <div className="mt-4 pt-4 border-t border-gray-200 space-y-2">
                     <Button 
                       onClick={() => handleViewVessel(vessel)}
                       variant="outline"
@@ -242,6 +242,30 @@ const VesselManagement = () => {
                       <Eye className="w-4 h-4 mr-2" />
                       View Details
                     </Button>
+                    
+                    {canEdit() && (
+                      <Button 
+                        onClick={() => openEditDialog(vessel)}
+                        variant="outline"
+                        size="sm"
+                        className="w-full text-blue-600 border-blue-300 hover:bg-blue-50"
+                      >
+                        <Edit className="w-4 h-4 mr-2" />
+                        Edit Vessel
+                      </Button>
+                    )}
+                    
+                    {canDelete() && (
+                      <Button 
+                        onClick={() => handleDelete(vessel.id, vessel.name)}
+                        variant="outline"
+                        size="sm"
+                        className="w-full text-red-600 border-red-300 hover:bg-red-50"
+                      >
+                        <Trash2 className="w-4 h-4 mr-2" />
+                        Delete Vessel
+                      </Button>
+                    )}
                   </div>
                 </CardContent>
               </Card>
