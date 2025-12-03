@@ -211,6 +211,19 @@ const AdminPanelEnhanced = () => {
     }
   };
 
+  const getAccessLevelBadge = (accessLevel) => {
+    switch (accessLevel) {
+      case 'full':
+        return <Badge className="bg-purple-100 text-purple-800 border-purple-300">Full</Badge>;
+      case 'edit':
+        return <Badge className="bg-blue-100 text-blue-800 border-blue-300">Edit</Badge>;
+      case 'view':
+        return <Badge className="bg-gray-100 text-gray-800 border-gray-300">View</Badge>;
+      default:
+        return <Badge>{accessLevel || 'edit'}</Badge>;
+    }
+  };
+
   const formatDateTime = (dateString) => {
     if (!dateString) return 'Never';
     try {
