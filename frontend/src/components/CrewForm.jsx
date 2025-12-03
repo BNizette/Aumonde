@@ -53,7 +53,7 @@ const CrewForm = ({ initialData = {}, onSubmit, onCancel, loading, isEdit = fals
     // Filter out empty qualifications
     const cleanedData = {
       ...formData,
-      qualifications: formData.qualifications.filter(q => q.trim() !== '')
+      qualifications: formData.qualifications.filter(q => q.name && q.name.trim() !== '')
     };
     
     onSubmit(cleanedData);
@@ -62,7 +62,7 @@ const CrewForm = ({ initialData = {}, onSubmit, onCancel, loading, isEdit = fals
   const addQualification = () => {
     setFormData({
       ...formData,
-      qualifications: [...formData.qualifications, '']
+      qualifications: [...formData.qualifications, { name: '', date: '' }]
     });
   };
 
@@ -73,9 +73,9 @@ const CrewForm = ({ initialData = {}, onSubmit, onCancel, loading, isEdit = fals
     });
   };
 
-  const updateQualification = (index, value) => {
+  const updateQualification = (index, field, value) => {
     const updated = [...formData.qualifications];
-    updated[index] = value;
+    updated[index][field] = value;
     setFormData({ ...formData, qualifications: updated });
   };
 
