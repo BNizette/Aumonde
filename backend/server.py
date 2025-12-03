@@ -394,8 +394,6 @@ class CrewMember(BaseModel):
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class CrewMemberCreate(BaseModel):
-    vessel_id: str
-    
     # Crew Details
     full_name: str
     address: Optional[str] = None
