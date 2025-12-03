@@ -84,6 +84,9 @@ class User(BaseModel):
     full_name: str
     role: str
     organization: Optional[str] = None
+    account_status: str = "active"  # "active", "disabled", "suspended"
+    last_login: Optional[datetime] = None
+    last_active: Optional[datetime] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class Vessel(BaseModel):
