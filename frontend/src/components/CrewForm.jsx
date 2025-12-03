@@ -6,10 +6,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Plus, Trash2 } from 'lucide-react';
 
-const CrewForm = ({ vesselId, initialData = {}, onSubmit, onCancel, loading, isEdit = false }) => {
+const CrewForm = ({ initialData = {}, onSubmit, onCancel, loading, isEdit = false }) => {
   const [formData, setFormData] = useState({
-    vessel_id: vesselId,
-    
     // Crew Details
     full_name: initialData.full_name || '',
     address: initialData.address || '',
