@@ -12,6 +12,10 @@ class AMSASMSAPITester:
         self.token = None
         self.user_id = None
         self.vessel_id = None
+        self.owner_token = None
+        self.owner_id = None
+        self.master_token = None
+        self.master_id = None
         self.tests_run = 0
         self.tests_passed = 0
         self.test_results = []
