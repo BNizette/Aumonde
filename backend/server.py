@@ -150,6 +150,45 @@ class VesselCreate(BaseModel):
     registration_number: str
     length: float
     sms_type: str = "standard"
+    
+    # Extended Vessel Details (all optional)
+    unique_identifier: Optional[str] = None
+    vessel_type: Optional[str] = None
+    year_of_build: Optional[int] = None
+    vessel_draught: Optional[float] = None
+    hull_material: Optional[str] = None
+    service_category: Optional[str] = None
+    propulsion_power: Optional[str] = None
+    main_engine_make: Optional[str] = None
+    main_engine_kw: Optional[float] = None
+    auxiliary_engine_make: Optional[str] = None
+    auxiliary_engine_kw: Optional[float] = None
+    serial_numbers: Optional[str] = None
+    passengers_berthed: Optional[int] = None
+    passengers_unberthed: Optional[int] = None
+    special_persons: Optional[int] = None
+    special_conditions: Optional[str] = None
+    classification_society: Optional[str] = None
+    licence_details: Optional[str] = None
+    certified_crew_number: Optional[int] = None
+    uncertified_crew_number: Optional[int] = None
+    master_engineer_count: Optional[int] = None
+    gph_count: Optional[int] = None
+    deckhand_count: Optional[int] = None
+    operating_area: Optional[str] = None
+    activity: Optional[str] = None
+    voyage_duration: Optional[str] = None
+    company_name: Optional[str] = None
+    company_abn: Optional[str] = None
+    company_address: Optional[str] = None
+    company_phone: Optional[str] = None
+    company_email: Optional[str] = None
+    owner_name: Optional[str] = None
+    owner_contact: Optional[str] = None
+    designated_person_name: Optional[str] = None
+    designated_person_contact: Optional[str] = None
+    master_name: Optional[str] = None
+    master_contact: Optional[str] = None
 
 class Document(BaseModel):
     model_config = ConfigDict(extra="ignore")
