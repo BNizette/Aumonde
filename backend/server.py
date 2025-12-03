@@ -558,6 +558,10 @@ async def register(user_data: UserRegister):
     
     user_dict = user_data.model_dump()
     user_dict['password'] = hash_password(user_data.password)
+    
+    # Set default access level based on role
+    user_dict['access_level'] = get_default_access_level(user_dict['role'])
+    
     user_obj = User(**{k: v for k, v in user_dict.items() if k != 'password'})
     
     doc = user_obj.model_dump()
