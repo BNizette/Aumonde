@@ -40,10 +40,15 @@ const Layout = ({ children }) => {
     { path: '/ai-assistant', icon: Bot, label: 'AI Assistant' },
   ];
 
-  const adminMenuItem = { path: '/admin', icon: UserCog, label: 'Admin Panel' };
+  // Show Admin Panel for owners, My Profile for others
+  const profileMenuItem = { 
+    path: '/admin', 
+    icon: UserCog, 
+    label: user?.role === 'owner' ? 'Admin Panel' : 'My Profile' 
+  };
   
-  const menuItems = user && (user.role === 'owner' || user.role === 'inspector') 
-    ? [...baseMenuItems, adminMenuItem]
+  const menuItems = user 
+    ? [...baseMenuItems, profileMenuItem]
     : baseMenuItems;
 
   const isActive = (path) => location.pathname === path;
