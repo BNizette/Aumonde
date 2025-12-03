@@ -822,6 +822,168 @@ async def admin_reset_password(user_id: str, new_password: str, current_user: Us
     
     return {"message": "Password reset successfully"}
 
+@api_router.get("/admin/users/{user_id}/activity-logs")
+async def get_user_activity_logs(user_id: str, current_user: User = Depends(get_current_user)):
+    """Get user activity logs - Owner only"""
+    if current_user.role != UserRole.OWNER:
+        raise HTTPException(status_code=403, detail="Owner access required")
+    
+    logs = await db.activity_logs.find({"user_id": user_id}, {"_id": 0}).sort("timestamp", -1).limit(100).to_list(100)
+    for log in logs:
+        if isinstance(log.get('timestamp'), str):
+            log['timestamp'] = datetime.fromisoformat(log['timestamp'])
+    return logs
+
+@api_router.post("/admin/users/{user_id}/status")
+async def update_user_status(user_id: str, status_update: UserStatusUpdate, current_user: User = Depends(get_current_user)):
+    """Update user account status - Owner only"""
+    if current_user.role != UserRole.OWNER:
+        raise HTTPException(status_code=403, detail="Owner access required")
+    
+    if user_id == current_user.id:
+        raise HTTPException(status_code=400, detail="Cannot change your own account status")
+    
+    if status_update.status not in ['active', 'disabled', 'suspended']:
+        raise HTTPException(status_code=400, detail="Invalid status. Must be: active, disabled, or suspended")
+    
+    user = await db.users.find_one({"id": user_id})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    old_status = user.get('account_status', 'active')
+    
+    # Update status
+    await db.users.update_one(
+        {"id": user_id},
+        {"$set": {"account_status": status_update.status}}
+    )
+    
+    # Log audit trail
+    await log_audit(
+        admin_id=current_user.id,
+        admin_name=current_user.full_name,
+        action="change_account_status",
+        target_type="user",
+        target_id=user_id,
+        target_name=user.get('full_name', 'Unknown'),
+        details={
+            "old_status": old_status,
+            "new_status": status_update.status,
+            "reason": status_update.reason
+        }
+    )
+    
+    # If disabled or suspended, logout all sessions
+    if status_update.status in ['disabled', 'suspended']:
+        await db.sessions.delete_many({"user_id": user_id})
+        await log_activity(user_id, "force_logout", f"All sessions terminated - account {status_update.status}")
+    
+    return {"message": f"User status updated to {status_update.status}"}
+
+@api_router.get("/admin/audit-logs")
+async def get_audit_logs(current_user: User = Depends(get_current_user), limit: int = 100, skip: int = 0):
+    """Get audit logs - Owner only"""
+    if current_user.role != UserRole.OWNER:
+        raise HTTPException(status_code=403, detail="Owner access required")
+    
+    logs = await db.audit_logs.find({}, {"_id": 0}).sort("timestamp", -1).skip(skip).limit(limit).to_list(limit)
+    for log in logs:
+        if isinstance(log.get('timestamp'), str):
+            log['timestamp'] = datetime.fromisoformat(log['timestamp'])
+    
+    total = await db.audit_logs.count_documents({})
+    
+    return {
+        "logs": logs,
+        "total": total,
+        "limit": limit,
+        "skip": skip
+    }
+
+@api_router.get("/admin/sessions")
+async def get_all_sessions(current_user: User = Depends(get_current_user)):
+    """Get all active sessions - Owner only"""
+    if current_user.role != UserRole.OWNER:
+        raise HTTPException(status_code=403, detail="Owner access required")
+    
+    # Get sessions that haven't expired
+    now = datetime.now(timezone.utc).isoformat()
+    sessions = await db.sessions.find({"expires_at": {"$gt": now}}, {"_id": 0, "token": 0}).sort("last_active", -1).to_list(1000)
+    
+    # Enrich with user data
+    for session in sessions:
+        user = await db.users.find_one({"id": session['user_id']}, {"_id": 0, "password": 0, "full_name": 1, "email": 1, "role": 1})
+        if user:
+            session['user'] = {
+                "full_name": user.get('full_name'),
+                "email": user.get('email'),
+                "role": user.get('role')
+            }
+        if isinstance(session.get('created_at'), str):
+            session['created_at'] = datetime.fromisoformat(session['created_at'])
+        if isinstance(session.get('expires_at'), str):
+            session['expires_at'] = datetime.fromisoformat(session['expires_at'])
+        if isinstance(session.get('last_active'), str):
+            session['last_active'] = datetime.fromisoformat(session['last_active'])
+    
+    return sessions
+
+@api_router.delete("/admin/sessions/{session_id}")
+async def force_logout_session(session_id: str, current_user: User = Depends(get_current_user)):
+    """Force logout a session - Owner only"""
+    if current_user.role != UserRole.OWNER:
+        raise HTTPException(status_code=403, detail="Owner access required")
+    
+    session = await db.sessions.find_one({"id": session_id})
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found")
+    
+    # Don't allow owner to logout their own session
+    if session['user_id'] == current_user.id:
+        raise HTTPException(status_code=400, detail="Cannot force logout your own session")
+    
+    result = await db.sessions.delete_one({"id": session_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Session not found")
+    
+    # Log audit trail
+    user = await db.users.find_one({"id": session['user_id']})
+    await log_audit(
+        admin_id=current_user.id,
+        admin_name=current_user.full_name,
+        action="force_logout",
+        target_type="user",
+        target_id=session['user_id'],
+        target_name=user.get('full_name', 'Unknown') if user else 'Unknown',
+        details={"session_id": session_id}
+    )
+    
+    await log_activity(session['user_id'], "force_logout", "Session terminated by administrator")
+    
+    return {"message": "Session terminated successfully"}
+
+@api_router.get("/admin/users/{user_id}/sessions")
+async def get_user_sessions(user_id: str, current_user: User = Depends(get_current_user)):
+    """Get user's active sessions - Owner only"""
+    if current_user.role != UserRole.OWNER:
+        raise HTTPException(status_code=403, detail="Owner access required")
+    
+    now = datetime.now(timezone.utc).isoformat()
+    sessions = await db.sessions.find(
+        {"user_id": user_id, "expires_at": {"$gt": now}},
+        {"_id": 0, "token": 0}
+    ).sort("last_active", -1).to_list(100)
+    
+    for session in sessions:
+        if isinstance(session.get('created_at'), str):
+            session['created_at'] = datetime.fromisoformat(session['created_at'])
+        if isinstance(session.get('expires_at'), str):
+            session['expires_at'] = datetime.fromisoformat(session['expires_at'])
+        if isinstance(session.get('last_active'), str):
+            session['last_active'] = datetime.fromisoformat(session['last_active'])
+    
+    return sessions
+
 # ============ VESSEL ROUTES ============
 
 @api_router.post("/vessels", response_model=Vessel)
