@@ -110,13 +110,13 @@ const Dashboard = () => {
 
         {/* Current Vessel Info */}
         {selectedVessel && (
-          <Card className="bg-gradient-to-r from-blue-600 to-teal-600 border-none text-gray-900">
+          <Card className="border-none text-white" style={{ background: 'linear-gradient(135deg, #1dd1a1 0%, #00bcd4 100%)' }}>
             <CardHeader>
-              <CardTitle className="flex items-center gap-3">
+              <CardTitle className="flex items-center gap-3 text-white">
                 <Ship className="w-6 h-6" />
                 {selectedVessel.name}
               </CardTitle>
-              <CardDescription className="text-blue-100">
+              <CardDescription className="text-white opacity-90">
                 Registration: {selectedVessel.registration_number} | Class: {selectedVessel.vessel_class.replace('_', ' ').toUpperCase()} | 
                 Length: {selectedVessel.length}m | SMS: {selectedVessel.sms_type}
                 {selectedVessel.eligible_simplified && ' (Eligible for Simplified SMS)'}
