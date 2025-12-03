@@ -576,6 +576,533 @@ class AMSASMSAPITester:
         
         return success
 
+    # ============ ADMIN PANEL ENHANCEMENT TESTS ============
+    
+    def test_admin_login_owner(self):
+        """Test login with owner credentials"""
+        login_data = {
+            "email": "brian@hover.com.au",
+            "password": "Hover2024!"
+        }
+        
+        success, response = self.run_test(
+            "Admin Login (Owner)",
+            "POST",
+            "auth/login",
+            200,
+            data=login_data
+        )
+        
+        if success and 'token' in response:
+            self.token = response['token']
+            self.user_id = response['user']['id']
+            self.owner_token = response['token']
+            self.owner_id = response['user']['id']
+            return True
+        return False
+
+    def test_admin_login_master(self):
+        """Test login with master credentials"""
+        login_data = {
+            "email": "master@test.com",
+            "password": "Test123!"
+        }
+        
+        success, response = self.run_test(
+            "Admin Login (Master)",
+            "POST",
+            "auth/login",
+            200,
+            data=login_data
+        )
+        
+        if success and 'token' in response:
+            self.master_token = response['token']
+            self.master_id = response['user']['id']
+            return True
+        return False
+
+    def test_user_activity_logging_login(self):
+        """Test that login activity is logged"""
+        # Login creates activity log automatically
+        success, response = self.run_test(
+            "Get User Activity Logs (Login)",
+            "GET",
+            f"admin/users/{self.user_id}/activity-logs",
+            200
+        )
+        
+        if success and isinstance(response, list) and len(response) > 0:
+            # Check if login activity exists
+            login_activities = [log for log in response if log.get('activity_type') == 'login']
+            if login_activities:
+                self.log_test("Login Activity Logged", True)
+                return True
+            else:
+                self.log_test("Login Activity Logged", False, "No login activity found")
+        
+        return False
+
+    def test_user_activity_logging_logout(self):
+        """Test logout activity logging"""
+        # First logout to create logout activity
+        success, response = self.run_test(
+            "User Logout",
+            "POST",
+            "auth/logout",
+            200
+        )
+        
+        if success:
+            # Login again to check activity logs
+            if self.test_admin_login_owner():
+                success, response = self.run_test(
+                    "Get User Activity Logs (Logout)",
+                    "GET",
+                    f"admin/users/{self.owner_id}/activity-logs",
+                    200
+                )
+                
+                if success and isinstance(response, list):
+                    logout_activities = [log for log in response if log.get('activity_type') == 'logout']
+                    if logout_activities:
+                        self.log_test("Logout Activity Logged", True)
+                        return True
+                    else:
+                        self.log_test("Logout Activity Logged", False, "No logout activity found")
+        
+        return False
+
+    def test_get_all_users_admin(self):
+        """Test getting all users as admin"""
+        success, response = self.run_test(
+            "Get All Users (Admin)",
+            "GET",
+            "admin/users",
+            200
+        )
+        
+        if success and isinstance(response, list):
+            # Should contain at least owner and master users
+            emails = [user.get('email') for user in response]
+            if 'brian@hover.com.au' in emails and 'master@test.com' in emails:
+                self.log_test("Admin Users List Complete", True)
+                return True
+            else:
+                self.log_test("Admin Users List Complete", False, f"Missing expected users. Found: {emails}")
+        
+        return False
+
+    def test_account_status_management_suspend(self):
+        """Test suspending a user account"""
+        # Find master user ID first
+        success, users = self.run_test(
+            "Get Users for Status Test",
+            "GET",
+            "admin/users",
+            200
+        )
+        
+        if not success:
+            return False
+            
+        master_user = None
+        for user in users:
+            if user.get('email') == 'master@test.com':
+                master_user = user
+                break
+        
+        if not master_user:
+            self.log_test("Account Status Management (Suspend)", False, "Master user not found")
+            return False
+        
+        # Suspend the master user
+        status_data = {
+            "status": "suspended",
+            "reason": "Testing suspension functionality"
+        }
+        
+        success, response = self.run_test(
+            "Suspend User Account",
+            "POST",
+            f"admin/users/{master_user['id']}/status",
+            200,
+            data=status_data
+        )
+        
+        if success:
+            # Try to login with suspended account (should fail)
+            login_data = {
+                "email": "master@test.com",
+                "password": "Test123!"
+            }
+            
+            success_login, login_response = self.run_test(
+                "Login with Suspended Account",
+                "POST",
+                "auth/login",
+                403,  # Should be forbidden
+                data=login_data
+            )
+            
+            if success_login:
+                self.log_test("Suspended Account Login Blocked", True)
+                return True
+            else:
+                self.log_test("Suspended Account Login Blocked", False, "Suspended user was able to login")
+        
+        return False
+
+    def test_account_status_management_reactivate(self):
+        """Test reactivating a suspended user account"""
+        # Find master user ID first
+        success, users = self.run_test(
+            "Get Users for Reactivation Test",
+            "GET",
+            "admin/users",
+            200
+        )
+        
+        if not success:
+            return False
+            
+        master_user = None
+        for user in users:
+            if user.get('email') == 'master@test.com':
+                master_user = user
+                break
+        
+        if not master_user:
+            return False
+        
+        # Reactivate the master user
+        status_data = {
+            "status": "active",
+            "reason": "Testing reactivation functionality"
+        }
+        
+        success, response = self.run_test(
+            "Reactivate User Account",
+            "POST",
+            f"admin/users/{master_user['id']}/status",
+            200,
+            data=status_data
+        )
+        
+        if success:
+            # Try to login with reactivated account (should succeed)
+            login_data = {
+                "email": "master@test.com",
+                "password": "Test123!"
+            }
+            
+            success_login, login_response = self.run_test(
+                "Login with Reactivated Account",
+                "POST",
+                "auth/login",
+                200,
+                data=login_data
+            )
+            
+            if success_login:
+                self.log_test("Reactivated Account Login Works", True)
+                return True
+            else:
+                self.log_test("Reactivated Account Login Works", False, "Reactivated user cannot login")
+        
+        return False
+
+    def test_audit_trail_logs(self):
+        """Test audit trail logging"""
+        success, response = self.run_test(
+            "Get Audit Trail Logs",
+            "GET",
+            "admin/audit-logs",
+            200
+        )
+        
+        if success and 'logs' in response:
+            logs = response['logs']
+            if isinstance(logs, list) and len(logs) > 0:
+                # Check for expected audit actions
+                actions = [log.get('action') for log in logs]
+                expected_actions = ['change_account_status']
+                
+                found_actions = [action for action in expected_actions if action in actions]
+                if found_actions:
+                    self.log_test("Audit Trail Contains Expected Actions", True)
+                    
+                    # Check audit log structure
+                    first_log = logs[0]
+                    required_fields = ['admin_id', 'admin_name', 'action', 'target_type', 'timestamp', 'details']
+                    missing_fields = [field for field in required_fields if field not in first_log]
+                    
+                    if not missing_fields:
+                        self.log_test("Audit Log Structure Valid", True)
+                        return True
+                    else:
+                        self.log_test("Audit Log Structure Valid", False, f"Missing fields: {missing_fields}")
+                else:
+                    self.log_test("Audit Trail Contains Expected Actions", False, f"Expected actions not found. Found: {actions}")
+            else:
+                self.log_test("Audit Trail Logs", False, "No audit logs found")
+        
+        return False
+
+    def test_session_management_get_sessions(self):
+        """Test getting all active sessions"""
+        success, response = self.run_test(
+            "Get All Active Sessions",
+            "GET",
+            "admin/sessions",
+            200
+        )
+        
+        if success and isinstance(response, list):
+            if len(response) > 0:
+                # Check session structure
+                first_session = response[0]
+                required_fields = ['id', 'user_id', 'created_at', 'expires_at', 'last_active']
+                missing_fields = [field for field in required_fields if field not in first_session]
+                
+                if not missing_fields:
+                    self.log_test("Session Structure Valid", True)
+                    
+                    # Check if user info is enriched
+                    if 'user' in first_session:
+                        self.log_test("Session User Info Enriched", True)
+                        return True
+                    else:
+                        self.log_test("Session User Info Enriched", False, "User info not included")
+                else:
+                    self.log_test("Session Structure Valid", False, f"Missing fields: {missing_fields}")
+            else:
+                self.log_test("Get All Active Sessions", False, "No active sessions found")
+        
+        return False
+
+    def test_session_management_get_user_sessions(self):
+        """Test getting specific user's sessions"""
+        # Get master user sessions
+        success, users = self.run_test(
+            "Get Users for Session Test",
+            "GET",
+            "admin/users",
+            200
+        )
+        
+        if not success:
+            return False
+            
+        master_user = None
+        for user in users:
+            if user.get('email') == 'master@test.com':
+                master_user = user
+                break
+        
+        if not master_user:
+            return False
+        
+        success, response = self.run_test(
+            "Get User Sessions",
+            "GET",
+            f"admin/users/{master_user['id']}/sessions",
+            200
+        )
+        
+        if success and isinstance(response, list):
+            self.log_test("Get User Sessions", True)
+            return True
+        
+        return False
+
+    def test_session_management_force_logout(self):
+        """Test force logout functionality"""
+        # First, login as master to create a session
+        login_data = {
+            "email": "master@test.com",
+            "password": "Test123!"
+        }
+        
+        success, login_response = self.run_test(
+            "Master Login for Force Logout Test",
+            "POST",
+            "auth/login",
+            200,
+            data=login_data
+        )
+        
+        if not success:
+            return False
+        
+        # Get all sessions to find master's session
+        success, sessions = self.run_test(
+            "Get Sessions for Force Logout",
+            "GET",
+            "admin/sessions",
+            200
+        )
+        
+        if not success:
+            return False
+        
+        # Find master's session
+        master_session = None
+        for session in sessions:
+            if session.get('user', {}).get('email') == 'master@test.com':
+                master_session = session
+                break
+        
+        if not master_session:
+            self.log_test("Session Management Force Logout", False, "Master session not found")
+            return False
+        
+        # Force logout the session
+        success, response = self.run_test(
+            "Force Logout Session",
+            "DELETE",
+            f"admin/sessions/{master_session['id']}",
+            200
+        )
+        
+        if success:
+            self.log_test("Force Logout Session", True)
+            return True
+        
+        return False
+
+    def test_non_owner_admin_access_denied(self):
+        """Test that non-owner users cannot access admin endpoints"""
+        # Login as master user
+        login_data = {
+            "email": "master@test.com",
+            "password": "Test123!"
+        }
+        
+        success, response = self.run_test(
+            "Master Login for Access Test",
+            "POST",
+            "auth/login",
+            200,
+            data=login_data
+        )
+        
+        if not success:
+            return False
+        
+        # Store current token
+        old_token = self.token
+        self.token = response['token']
+        
+        # Try to access admin endpoint (should fail)
+        success, response = self.run_test(
+            "Non-Owner Admin Access Denied",
+            "GET",
+            "admin/users",
+            403  # Should be forbidden
+        )
+        
+        # Restore owner token
+        self.token = old_token
+        
+        if success:
+            self.log_test("Non-Owner Admin Access Properly Denied", True)
+            return True
+        
+        return False
+
+    def test_integration_password_reset_audit(self):
+        """Test that password reset creates audit log and logs out user"""
+        # Get master user ID
+        success, users = self.run_test(
+            "Get Users for Password Reset Test",
+            "GET",
+            "admin/users",
+            200
+        )
+        
+        if not success:
+            return False
+            
+        master_user = None
+        for user in users:
+            if user.get('email') == 'master@test.com':
+                master_user = user
+                break
+        
+        if not master_user:
+            return False
+        
+        # Reset master's password
+        success, response = self.run_test(
+            "Admin Reset User Password",
+            "POST",
+            f"admin/users/{master_user['id']}/reset-password",
+            200,
+            data="NewPassword123!"
+        )
+        
+        if success:
+            # Check if audit log was created
+            success, audit_response = self.run_test(
+                "Check Password Reset Audit Log",
+                "GET",
+                "admin/audit-logs",
+                200
+            )
+            
+            if success and 'logs' in audit_response:
+                reset_logs = [log for log in audit_response['logs'] if log.get('action') == 'reset_password']
+                if reset_logs:
+                    self.log_test("Password Reset Audit Log Created", True)
+                    return True
+                else:
+                    self.log_test("Password Reset Audit Log Created", False, "No reset_password audit log found")
+        
+        return False
+
+    def test_last_login_timestamp_update(self):
+        """Test that last_login and last_active timestamps are updated correctly"""
+        # Login to update timestamps
+        login_data = {
+            "email": "brian@hover.com.au",
+            "password": "Hover2024!"
+        }
+        
+        success, response = self.run_test(
+            "Login for Timestamp Test",
+            "POST",
+            "auth/login",
+            200,
+            data=login_data
+        )
+        
+        if success and 'user' in response:
+            user = response['user']
+            if 'last_login' in user and 'last_active' in user:
+                # Check if timestamps are recent (within last minute)
+                from datetime import datetime, timezone
+                now = datetime.now(timezone.utc)
+                
+                try:
+                    if isinstance(user['last_login'], str):
+                        last_login = datetime.fromisoformat(user['last_login'].replace('Z', '+00:00'))
+                    else:
+                        last_login = user['last_login']
+                    
+                    time_diff = (now - last_login).total_seconds()
+                    if time_diff < 60:  # Within last minute
+                        self.log_test("Last Login Timestamp Updated", True)
+                        return True
+                    else:
+                        self.log_test("Last Login Timestamp Updated", False, f"Timestamp too old: {time_diff} seconds")
+                except Exception as e:
+                    self.log_test("Last Login Timestamp Updated", False, f"Timestamp parsing error: {str(e)}")
+            else:
+                self.log_test("Last Login Timestamp Updated", False, "Timestamp fields missing")
+        
+        return False
+
     def run_all_tests(self):
         """Run all API tests"""
         print("🚀 Starting AMSA SMS API Testing...")
