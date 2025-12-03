@@ -148,7 +148,6 @@ const CrewManagementNew = () => {
                       <p className="text-sm text-gray-600">Complete crew details, qualifications, and training records</p>
                     </DialogHeader>
                     <CrewForm
-                      vesselId={selectedVessel?.id}
                       onSubmit={handleSubmit}
                       onCancel={() => setOpen(false)}
                       loading={submitting}
