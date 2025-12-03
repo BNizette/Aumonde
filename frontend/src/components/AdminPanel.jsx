@@ -174,6 +174,83 @@ const AdminPanel = () => {
                         </td>
                         <td className="py-3 px-4 text-right">
                           <div className="flex items-center justify-end gap-2">
+                            {/* Edit User Dialog */}
+                            <Dialog open={editDialogOpen && selectedUser?.id === u.id} onOpenChange={(open) => {
+                              setEditDialogOpen(open);
+                              if (!open) {
+                                setSelectedUser(null);
+                              }
+                            }}>
+                              <DialogTrigger asChild>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  data-testid={`edit-user-${u.id}`}
+                                  onClick={() => openEditDialog(u)}
+                                  className="text-blue-600 border-blue-600 hover:bg-blue-50"
+                                >
+                                  <Edit className="w-4 h-4" />
+                                </Button>
+                              </DialogTrigger>
+                              <DialogContent className="bg-white border-gray-200 text-gray-900 max-w-md">
+                                <DialogHeader>
+                                  <DialogTitle>Edit User: {u.full_name}</DialogTitle>
+                                </DialogHeader>
+                                <div className="space-y-4">
+                                  <div>
+                                    <Label htmlFor="edit-full-name">Full Name</Label>
+                                    <Input
+                                      id="edit-full-name"
+                                      value={editFormData.full_name}
+                                      onChange={(e) => setEditFormData({ ...editFormData, full_name: e.target.value })}
+                                      className="bg-white border-gray-300"
+                                    />
+                                  </div>
+                                  <div>
+                                    <Label htmlFor="edit-email">Email</Label>
+                                    <Input
+                                      id="edit-email"
+                                      type="email"
+                                      value={editFormData.email}
+                                      onChange={(e) => setEditFormData({ ...editFormData, email: e.target.value })}
+                                      className="bg-white border-gray-300"
+                                    />
+                                  </div>
+                                  <div>
+                                    <Label htmlFor="edit-role">Role</Label>
+                                    <select
+                                      id="edit-role"
+                                      value={editFormData.role}
+                                      onChange={(e) => setEditFormData({ ...editFormData, role: e.target.value })}
+                                      className="w-full p-2 rounded-md bg-white border-gray-300 text-gray-900 border"
+                                    >
+                                      <option value="owner">Owner/Operator</option>
+                                      <option value="master">Master</option>
+                                      <option value="crew">Crew</option>
+                                      <option value="designated_person">Designated Person</option>
+                                      <option value="inspector">AMSA Inspector</option>
+                                    </select>
+                                  </div>
+                                  <div>
+                                    <Label htmlFor="edit-organization">Organization</Label>
+                                    <Input
+                                      id="edit-organization"
+                                      value={editFormData.organization}
+                                      onChange={(e) => setEditFormData({ ...editFormData, organization: e.target.value })}
+                                      className="bg-white border-gray-300"
+                                    />
+                                  </div>
+                                  <Button
+                                    onClick={handleEditUser}
+                                    className="w-full bg-blue-500 hover:bg-blue-600 text-white"
+                                  >
+                                    Update User
+                                  </Button>
+                                </div>
+                              </DialogContent>
+                            </Dialog>
+
+                            {/* Reset Password Dialog */}
                             <Dialog open={resetDialogOpen && selectedUser?.id === u.id} onOpenChange={(open) => {
                               setResetDialogOpen(open);
                               if (!open) {
@@ -218,6 +295,7 @@ const AdminPanel = () => {
                               </DialogContent>
                             </Dialog>
                             
+                            {/* Delete User Button */}
                             {u.id !== user.id && (
                               <Button
                                 size="sm"
