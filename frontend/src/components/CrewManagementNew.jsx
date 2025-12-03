@@ -250,7 +250,6 @@ const CrewManagementNew = () => {
             </DialogHeader>
             {selectedCrew && (
               <CrewForm
-                vesselId={selectedVessel?.id}
                 initialData={selectedCrew}
                 onSubmit={handleUpdate}
                 onCancel={() => {
