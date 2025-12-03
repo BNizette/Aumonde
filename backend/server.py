@@ -766,9 +766,27 @@ async def delete_user(user_id: str, current_user: User = Depends(get_current_use
     if user_id == current_user.id:
         raise HTTPException(status_code=400, detail="Cannot delete your own account")
     
+    user = await db.users.find_one({"id": user_id})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
     result = await db.users.delete_one({"id": user_id})
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="User not found")
+    
+    # Log audit trail
+    await log_audit(
+        admin_id=current_user.id,
+        admin_name=current_user.full_name,
+        action="delete_user",
+        target_type="user",
+        target_id=user_id,
+        target_name=user.get('full_name', 'Unknown'),
+        details={"email": user.get('email')}
+    )
+    
+    # Delete all sessions for this user
+    await db.sessions.delete_many({"user_id": user_id})
     
     return {"message": "User deleted successfully"}
 
