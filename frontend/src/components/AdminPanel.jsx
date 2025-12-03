@@ -27,19 +27,25 @@ const AdminPanel = () => {
   });
 
   useEffect(() => {
-    if (user && (user.role === 'owner' || user.role === 'inspector')) {
+    if (user) {
       fetchUsers();
-    } else {
-      setLoading(false);
     }
   }, [user]);
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get(`${API}/admin/users`);
-      setUsers(response.data);
+      if (user.role === 'owner') {
+        // Owner can see all users
+        const response = await axios.get(`${API}/admin/users`);
+        setUsers(response.data);
+      } else {
+        // Others can only see themselves
+        setUsers([user]);
+      }
     } catch (error) {
-      toast.error('Failed to fetch users');
+      if (user.role === 'owner') {
+        toast.error('Failed to fetch users');
+      }
     } finally {
       setLoading(false);
     }
