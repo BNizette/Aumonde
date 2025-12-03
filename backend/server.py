@@ -349,22 +349,91 @@ class CrewMember(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     vessel_id: str
+    
+    # Crew Details
     full_name: str
+    address: Optional[str] = None
+    contact_details: Optional[str] = None
+    telephone: Optional[str] = None
+    mobile: Optional[str] = None
+    next_of_kin: Optional[str] = None
+    next_of_kin_contact: Optional[str] = None
+    date_joined_vessel: Optional[str] = None
+    date_left_vessel: Optional[str] = None
+    date_commenced_employment: Optional[str] = None
+    
+    # Position and Role
     position: str
+    role: Optional[str] = None  # briefer, guide, both
+    
+    # Qualifications
     qualifications: List[str]
+    qualifications_text: Optional[str] = None
+    experience: Optional[str] = None
+    master_class5_proof: Optional[bool] = None
     license_number: Optional[str] = None
     license_expiry: Optional[datetime] = None
     medical_expiry: Optional[datetime] = None
+    
+    # Training Record - Safety Briefings Observed (10 required)
+    briefings_observed: Optional[List[Dict[str, str]]] = []  # [{number, date, supervisor_name}]
+    
+    # Training Record - Safety Briefings Delivered (5 required)
+    briefings_delivered: Optional[List[Dict[str, str]]] = []  # [{number, date, supervisor_name}]
+    
+    # Training Record - Acted as Guide
+    guide_experience: Optional[List[Dict[str, str]]] = []  # [{number, date, supervisor_name}]
+    
+    # Sign-off
+    vessel_owner_name: Optional[str] = None
+    vessel_owner_signature: Optional[str] = None
+    vessel_owner_date: Optional[str] = None
+    staff_member_name: Optional[str] = None
+    staff_member_signature: Optional[str] = None
+    staff_member_date: Optional[str] = None
+    
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class CrewMemberCreate(BaseModel):
     vessel_id: str
+    
+    # Crew Details
     full_name: str
+    address: Optional[str] = None
+    contact_details: Optional[str] = None
+    telephone: Optional[str] = None
+    mobile: Optional[str] = None
+    next_of_kin: Optional[str] = None
+    next_of_kin_contact: Optional[str] = None
+    date_joined_vessel: Optional[str] = None
+    date_left_vessel: Optional[str] = None
+    date_commenced_employment: Optional[str] = None
+    
+    # Position and Role
     position: str
+    role: Optional[str] = None
+    
+    # Qualifications
     qualifications: List[str]
+    qualifications_text: Optional[str] = None
+    experience: Optional[str] = None
+    master_class5_proof: Optional[bool] = None
     license_number: Optional[str] = None
     license_expiry: Optional[str] = None
     medical_expiry: Optional[str] = None
+    
+    # Training Record
+    briefings_observed: Optional[List[Dict[str, str]]] = []
+    briefings_delivered: Optional[List[Dict[str, str]]] = []
+    guide_experience: Optional[List[Dict[str, str]]] = []
+    
+    # Sign-off
+    vessel_owner_name: Optional[str] = None
+    vessel_owner_signature: Optional[str] = None
+    vessel_owner_date: Optional[str] = None
+    staff_member_name: Optional[str] = None
+    staff_member_signature: Optional[str] = None
+    staff_member_date: Optional[str] = None
 
 class FatigueLog(BaseModel):
     model_config = ConfigDict(extra="ignore")
