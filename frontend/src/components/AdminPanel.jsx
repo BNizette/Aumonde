@@ -18,6 +18,13 @@ const AdminPanel = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [newPassword, setNewPassword] = useState('');
   const [resetDialogOpen, setResetDialogOpen] = useState(false);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [editFormData, setEditFormData] = useState({
+    full_name: '',
+    email: '',
+    role: '',
+    organization: ''
+  });
 
   useEffect(() => {
     if (user && (user.role === 'owner' || user.role === 'inspector')) {
