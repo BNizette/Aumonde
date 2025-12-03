@@ -80,7 +80,7 @@ function App() {
   }
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout, config }}>
       <div className="App">
         <BrowserRouter>
           <Routes>
