@@ -422,6 +422,17 @@ class AIResponse(BaseModel):
 
 # ============ AUTH HELPERS ============
 
+def get_default_access_level(role: str) -> str:
+    """Get default access level based on role"""
+    role_access_map = {
+        UserRole.OWNER: "full",
+        UserRole.MASTER: "edit",
+        UserRole.CREW: "edit",
+        UserRole.DESIGNATED_PERSON: "view",
+        UserRole.INSPECTOR: "view"
+    }
+    return role_access_map.get(role, "edit")
+
 def hash_password(password: str) -> str:
     return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
 
