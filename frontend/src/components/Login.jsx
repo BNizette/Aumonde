@@ -52,10 +52,10 @@ const Login = () => {
             <Anchor className="w-8 h-8 text-white" />
           </div>
           <CardTitle className="text-3xl font-bold text-white">
-            AMSA SMS
+            {config?.organization_name || 'AMSA'} SMS
           </CardTitle>
           <CardDescription className="text-slate-300">
-            Safety Management System for Australian Maritime
+            Safety Management System
           </CardDescription>
         </CardHeader>
         <CardContent>
