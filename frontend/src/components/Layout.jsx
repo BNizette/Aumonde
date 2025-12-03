@@ -70,7 +70,7 @@ const Layout = ({ children }) => {
         <aside 
           className={`${
             sidebarOpen ? 'w-64' : 'w-0'
-          } bg-slate-900 border-r border-slate-800 transition-all duration-300 overflow-hidden`}
+          } bg-white border-r border-gray-200 transition-all duration-300 overflow-hidden`}
           style={{ minHeight: 'calc(100vh - 73px)' }}
         >
           <div className="p-4 space-y-2">
@@ -81,9 +81,10 @@ const Layout = ({ children }) => {
                 onClick={() => navigate(item.path)}
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                   isActive(item.path)
-                    ? 'bg-blue-600 text-white'
-                    : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                    ? 'text-white'
+                    : 'text-gray-700 hover:bg-gray-100'
                 }`}
+                style={isActive(item.path) ? { backgroundColor: '#1dd1a1' } : {}}
               >
                 <item.icon className="w-5 h-5" />
                 <span className="font-medium">{item.label}</span>
