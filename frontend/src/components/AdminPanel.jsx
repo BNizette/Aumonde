@@ -196,7 +196,7 @@ const AdminPanel = () => {
                               </DialogTrigger>
                               <DialogContent className="bg-white border-gray-200 text-gray-900 max-w-md">
                                 <DialogHeader>
-                                  <DialogTitle>Edit User: {u.full_name}</DialogTitle>
+                                  <DialogTitle>{isOwner ? `Edit User: ${u.full_name}` : 'Edit My Profile'}</DialogTitle>
                                 </DialogHeader>
                                 <div className="space-y-4">
                                   <div>
@@ -218,35 +218,48 @@ const AdminPanel = () => {
                                       className="bg-white border-gray-300"
                                     />
                                   </div>
-                                  <div>
-                                    <Label htmlFor="edit-role">Role</Label>
-                                    <select
-                                      id="edit-role"
-                                      value={editFormData.role}
-                                      onChange={(e) => setEditFormData({ ...editFormData, role: e.target.value })}
-                                      className="w-full p-2 rounded-md bg-white border-gray-300 text-gray-900 border"
-                                    >
-                                      <option value="owner">Owner/Operator</option>
-                                      <option value="master">Master</option>
-                                      <option value="crew">Crew</option>
-                                      <option value="designated_person">Designated Person</option>
-                                      <option value="inspector">AMSA Inspector</option>
-                                    </select>
-                                  </div>
-                                  <div>
-                                    <Label htmlFor="edit-organization">Organization</Label>
-                                    <Input
-                                      id="edit-organization"
-                                      value={editFormData.organization}
-                                      onChange={(e) => setEditFormData({ ...editFormData, organization: e.target.value })}
-                                      className="bg-white border-gray-300"
-                                    />
-                                  </div>
+                                  {isOwner && (
+                                    <>
+                                      <div>
+                                        <Label htmlFor="edit-role">Role</Label>
+                                        <select
+                                          id="edit-role"
+                                          value={editFormData.role}
+                                          onChange={(e) => setEditFormData({ ...editFormData, role: e.target.value })}
+                                          className="w-full p-2 rounded-md bg-white border-gray-300 text-gray-900 border"
+                                        >
+                                          <option value="owner">Owner/Operator</option>
+                                          <option value="master">Master</option>
+                                          <option value="crew">Crew</option>
+                                          <option value="designated_person">Designated Person</option>
+                                          <option value="inspector">AMSA Inspector</option>
+                                        </select>
+                                      </div>
+                                      <div>
+                                        <Label htmlFor="edit-organization">Organization</Label>
+                                        <Input
+                                          id="edit-organization"
+                                          value={editFormData.organization}
+                                          onChange={(e) => setEditFormData({ ...editFormData, organization: e.target.value })}
+                                          className="bg-white border-gray-300"
+                                        />
+                                      </div>
+                                    </>
+                                  )}
+                                  {!isOwner && (
+                                    <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                                      <p className="text-sm text-blue-800">
+                                        <strong>Role:</strong> {editFormData.role?.replace('_', ' ')}<br/>
+                                        <strong>Organization:</strong> {editFormData.organization || 'N/A'}
+                                      </p>
+                                      <p className="text-xs text-blue-600 mt-2">Contact your administrator to change role or organization.</p>
+                                    </div>
+                                  )}
                                   <Button
                                     onClick={handleEditUser}
                                     className="w-full bg-blue-500 hover:bg-blue-600 text-white"
                                   >
-                                    Update User
+                                    {isOwner ? 'Update User' : 'Update Profile'}
                                   </Button>
                                 </div>
                               </DialogContent>
