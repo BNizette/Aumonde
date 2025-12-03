@@ -128,6 +128,7 @@ const VesselForm = ({ initialData = {}, onSubmit, onCancel, loading }) => {
           <TabsTrigger value="details">Vessel Details</TabsTrigger>
           <TabsTrigger value="operations">Operations</TabsTrigger>
           <TabsTrigger value="contacts">Contacts</TabsTrigger>
+          <TabsTrigger value="certificates">Certificate Record</TabsTrigger>
         </TabsList>
 
         {/* Basic Information Tab */}
