@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { AuthContext } from '@/App';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -6,7 +6,6 @@ import {
   LayoutDashboard, Ship, FileText, AlertTriangle, Users, 
   Wrench, AlertCircle, Shield, Clipboard, Bot, LogOut, Menu
 } from 'lucide-react';
-import { useState } from 'react';
 
 const Layout = ({ children }) => {
   const { user, logout, config } = useContext(AuthContext);
