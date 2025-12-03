@@ -304,6 +304,14 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
     except jwt.PyJWTError:
         raise HTTPException(status_code=401, detail="Invalid token")
 
+# ============ CONFIG ROUTES ============
+
+@api_router.get("/config")
+async def get_config():
+    return {
+        "organization_name": os.environ.get('ORGANIZATION_NAME', 'AMSA')
+    }
+
 # ============ AUTH ROUTES ============
 
 @api_router.post("/auth/register")
