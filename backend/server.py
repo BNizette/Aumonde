@@ -754,6 +754,14 @@ async def update_user(user_id: str, update: UserUpdate, current_user: User = Dep
     else:
         # Owner can update all fields
         update_data = {k: v for k, v in update.model_dump().items() if v is not None}
+        
+        # If role is being changed and access_level is not specified, set default
+        if 'role' in update_data and 'access_level' not in update_data:
+            update_data['access_level'] = get_default_access_level(update_data['role'])
+        
+        # Validate access_level if provided
+        if 'access_level' in update_data and update_data['access_level'] not in ['view', 'edit', 'full']:
+            raise HTTPException(status_code=400, detail="Invalid access level. Must be: view, edit, or full")
     
     if update_data:
         await db.users.update_one(
