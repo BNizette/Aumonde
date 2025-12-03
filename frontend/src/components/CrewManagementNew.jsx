@@ -191,7 +191,7 @@ const CrewManagementNew = () => {
                           )}
                           {member.qualifications && member.qualifications.length > 0 && (
                             <p className="text-gray-600">
-                              Qualifications: {member.qualifications.join(', ')}
+                              Qualifications: {member.qualifications.map(q => q.name || q).join(', ')}
                             </p>
                           )}
                         </div>
