@@ -32,7 +32,8 @@ const AdminPanelEnhanced = () => {
     full_name: '',
     email: '',
     role: '',
-    organization: ''
+    organization: '',
+    access_level: 'edit'
   });
 
   useEffect(() => {
