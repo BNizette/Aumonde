@@ -1443,8 +1443,7 @@ async def update_crew_member(crew_id: str, crew_data: CrewMemberCreate, current_
         target_id=crew_id,
         target_name=crew_data.full_name,
         details={
-            "position": crew_data.position,
-            "vessel_id": crew_data.vessel_id
+            "position": crew_data.position
         }
     )
     
