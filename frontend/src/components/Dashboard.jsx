@@ -69,9 +69,9 @@ const Dashboard = () => {
       <Layout>
         <div data-testid="no-vessels-message" className="text-center py-12">
           <Ship className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-          <h2 className="text-2xl font-bold text-white mb-2">No Vessels Registered</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">No Vessels Registered</h2>
           <p className="text-gray-600 mb-6">Get started by adding your first vessel to the system.</p>
-          <a href="/vessels" className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+          <a href="/vessels" className="inline-flex items-center px-6 py-3 bg-teal-500 text-white rounded-lg hover:bg-teal-600">
             Add Vessel
           </a>
         </div>
