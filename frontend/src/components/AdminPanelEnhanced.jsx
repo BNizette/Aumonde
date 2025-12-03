@@ -180,7 +180,8 @@ const AdminPanelEnhanced = () => {
       full_name: u.full_name,
       email: u.email,
       role: u.role,
-      organization: u.organization || ''
+      organization: u.organization || '',
+      access_level: u.access_level || 'edit'
     });
     setEditDialogOpen(true);
   };
