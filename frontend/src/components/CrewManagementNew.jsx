@@ -320,7 +320,11 @@ const CrewManagementNew = () => {
                         {selectedCrew.qualifications.map((q, i) => (
                           <li key={i} className="flex items-center gap-2">
                             <span className="font-medium">{q.name || q}</span>
-                            {q.date && <span className="text-gray-500 text-xs">({formatDate(q.date)})</span>}
+                            {q.date && (
+                              <span className="text-gray-500 text-xs">
+                                ({formatDate(q.date)} - {calculateYears(q.date)} years)
+                              </span>
+                            )}
                           </li>
                         ))}
                       </ul>
