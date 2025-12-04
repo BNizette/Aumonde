@@ -295,9 +295,9 @@ const CrewForm = ({ initialData = {}, onSubmit, onCancel, loading, isEdit = fals
                       )}
                     </div>
                     {qual.date && (
-                      <p className="text-xs text-gray-500 ml-2">
-                        Years: {calculateYears(qual.date)} years
-                      </p>
+                      <div className="ml-2 px-2 py-1 bg-blue-50 rounded text-sm text-blue-700 font-medium">
+                        Years: {calculateYears(qual.date)}
+                      </div>
                     )}
                   </div>
                 ))}
