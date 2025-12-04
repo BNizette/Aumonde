@@ -415,6 +415,7 @@ class CrewMemberCreate(BaseModel):
     qualifications: List[Dict[str, str]]  # [{name, date}]
     qualifications_text: Optional[str] = None
     experience: Optional[str] = None
+    cv_url: Optional[str] = None
     master_class5_proof: Optional[bool] = None
     license_number: Optional[str] = None
     license_expiry: Optional[str] = None
