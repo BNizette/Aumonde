@@ -193,6 +193,85 @@ const CrewManagementNew = () => {
           <p className="text-gray-600">Manage crew members, qualifications, and training records</p>
         </div>
 
+        {/* Filter and Sort */}
+        <Card className="bg-white border-gray-200">
+          <CardContent className="pt-6">
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+              {/* Search */}
+              <div className="md:col-span-2">
+                <Label htmlFor="search" className="text-gray-700 mb-2 flex items-center gap-2">
+                  <Search className="w-4 h-4" />
+                  Search
+                </Label>
+                <Input
+                  id="search"
+                  placeholder="Search by name, contact, or position..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="bg-white border-gray-300"
+                />
+              </div>
+
+              {/* Filter by Position */}
+              <div>
+                <Label htmlFor="filterPosition" className="text-gray-700 mb-2 flex items-center gap-2">
+                  <Filter className="w-4 h-4" />
+                  Position
+                </Label>
+                <select
+                  id="filterPosition"
+                  value={filterPosition}
+                  onChange={(e) => setFilterPosition(e.target.value)}
+                  className="w-full p-2 rounded-md bg-white border-gray-300 text-gray-900 border"
+                >
+                  <option value="all">All Positions</option>
+                  <option value="master">Master</option>
+                  <option value="crew">Crew</option>
+                  <option value="engineer">Engineer</option>
+                  <option value="deckhand">Deckhand</option>
+                </select>
+              </div>
+
+              {/* Filter by Role */}
+              <div>
+                <Label htmlFor="filterRole" className="text-gray-700 mb-2">Role</Label>
+                <select
+                  id="filterRole"
+                  value={filterRole}
+                  onChange={(e) => setFilterRole(e.target.value)}
+                  className="w-full p-2 rounded-md bg-white border-gray-300 text-gray-900 border"
+                >
+                  <option value="all">All Roles</option>
+                  <option value="crew">Crew</option>
+                  <option value="host">Host</option>
+                  <option value="both">Both</option>
+                </select>
+              </div>
+
+              {/* Sort by */}
+              <div>
+                <Label htmlFor="sortBy" className="text-gray-700 mb-2">Sort By</Label>
+                <select
+                  id="sortBy"
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                  className="w-full p-2 rounded-md bg-white border-gray-300 text-gray-900 border"
+                >
+                  <option value="name">Name (A-Z)</option>
+                  <option value="position">Position</option>
+                  <option value="role">Role</option>
+                  <option value="dateCommenced">Date Commenced</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Results count */}
+            <div className="mt-4 text-sm text-gray-600">
+              Showing {getFilteredAndSortedCrew().length} of {crew.length} crew members
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Crew List */}
         <Card className="bg-white border-gray-200">
           <CardHeader>
