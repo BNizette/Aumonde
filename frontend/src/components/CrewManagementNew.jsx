@@ -106,6 +106,19 @@ const CrewManagementNew = () => {
     }
   };
 
+  const calculateYears = (dateString) => {
+    if (!dateString) return '';
+    try {
+      const qualDate = new Date(dateString);
+      const today = new Date();
+      const diffTime = Math.abs(today - qualDate);
+      const diffYears = diffTime / (1000 * 60 * 60 * 24 * 365.25);
+      return diffYears.toFixed(2);
+    } catch (e) {
+      return '';
+    }
+  };
+
   if (loading) {
     return (
       <Layout>
