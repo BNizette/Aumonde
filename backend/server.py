@@ -1353,11 +1353,16 @@ async def get_vessel_risk_assessments(vessel_id: str, current_user: User = Depen
 async def create_crew_member(crew_data: CrewMemberCreate, current_user: User = Depends(get_current_user)):
     crew_dict = crew_data.model_dump()
     
-    # Convert date strings to datetime
-    if crew_dict.get('license_expiry'):
+    # Convert date strings to datetime (handle empty strings)
+    if crew_dict.get('license_expiry') and crew_dict['license_expiry'].strip():
         crew_dict['license_expiry'] = datetime.fromisoformat(crew_dict['license_expiry'])
-    if crew_dict.get('medical_expiry'):
+    else:
+        crew_dict['license_expiry'] = None
+        
+    if crew_dict.get('medical_expiry') and crew_dict['medical_expiry'].strip():
         crew_dict['medical_expiry'] = datetime.fromisoformat(crew_dict['medical_expiry'])
+    else:
+        crew_dict['medical_expiry'] = None
     
     crew_obj = CrewMember(**crew_dict)
     doc = crew_obj.model_dump()
