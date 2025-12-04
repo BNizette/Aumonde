@@ -101,6 +101,19 @@ const CrewForm = ({ initialData = {}, onSubmit, onCancel, loading, isEdit = fals
     setFormData({ ...formData, [type]: updated });
   };
 
+  const calculateYears = (dateString) => {
+    if (!dateString) return '';
+    try {
+      const qualDate = new Date(dateString);
+      const today = new Date();
+      const diffTime = Math.abs(today - qualDate);
+      const diffYears = diffTime / (1000 * 60 * 60 * 24 * 365.25);
+      return diffYears.toFixed(2);
+    } catch (e) {
+      return '';
+    }
+  };
+
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <Tabs defaultValue="details" className="w-full">
