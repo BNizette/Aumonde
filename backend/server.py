@@ -363,7 +363,7 @@ class CrewMember(BaseModel):
     
     # Position and Role
     position: str
-    role: Optional[str] = None  # briefer, guide, both
+    role: Optional[str] = None  # crew, host, both
     
     # Qualifications
     qualifications: List[Dict[str, str]]  # [{name, date}]
