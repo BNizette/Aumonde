@@ -1408,6 +1408,14 @@ async def get_crew_member(crew_id: str, current_user: User = Depends(get_current
     if isinstance(crew.get('medical_expiry'), str):
         crew['medical_expiry'] = datetime.fromisoformat(crew['medical_expiry'])
     
+    # Convert old string qualifications to new dict format
+    if crew.get('qualifications'):
+        qualifications = crew['qualifications']
+        if qualifications and len(qualifications) > 0:
+            # Check if first item is a string (old format)
+            if isinstance(qualifications[0], str):
+                crew['qualifications'] = [{'name': q, 'date': ''} for q in qualifications]
+    
     return CrewMember(**crew)
 
 @api_router.put("/crew/{crew_id}", response_model=CrewMember)
