@@ -219,7 +219,7 @@ const CrewForm = ({ initialData = {}, onSubmit, onCancel, loading, isEdit = fals
             </div>
 
             <div>
-              <Label htmlFor="position">Position *</Label>
+              <Label htmlFor="position">Default Position *</Label>
               <Input
                 id="position"
                 value={formData.position}
@@ -238,8 +238,8 @@ const CrewForm = ({ initialData = {}, onSubmit, onCancel, loading, isEdit = fals
                 onChange={(e) => setFormData({ ...formData, role: e.target.value })}
                 className="w-full p-2 rounded-md bg-white border-gray-300 text-gray-900 border"
               >
-                <option value="briefer">Briefer</option>
-                <option value="guide">Guide</option>
+                <option value="crew">Crew</option>
+                <option value="host">Host</option>
                 <option value="both">Both</option>
               </select>
             </div>
