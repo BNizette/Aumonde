@@ -267,30 +267,37 @@ const CrewForm = ({ initialData = {}, onSubmit, onCancel, loading, isEdit = fals
               <Label>Qualifications</Label>
               <div className="space-y-2">
                 {formData.qualifications.map((qual, index) => (
-                  <div key={index} className="grid grid-cols-1 md:grid-cols-12 gap-2">
-                    <Input
-                      value={qual.name}
-                      onChange={(e) => updateQualification(index, 'name', e.target.value)}
-                      placeholder="Enter qualification"
-                      className="bg-white border-gray-300 md:col-span-7"
-                    />
-                    <Input
-                      type="date"
-                      value={qual.date}
-                      onChange={(e) => updateQualification(index, 'date', e.target.value)}
-                      placeholder="Date"
-                      className="bg-white border-gray-300 md:col-span-4"
-                    />
-                    {formData.qualifications.length > 1 && (
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => removeQualification(index)}
-                        className="text-red-600 md:col-span-1"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
+                  <div key={index} className="space-y-1">
+                    <div className="grid grid-cols-1 md:grid-cols-12 gap-2">
+                      <Input
+                        value={qual.name}
+                        onChange={(e) => updateQualification(index, 'name', e.target.value)}
+                        placeholder="Enter qualification"
+                        className="bg-white border-gray-300 md:col-span-7"
+                      />
+                      <Input
+                        type="date"
+                        value={qual.date}
+                        onChange={(e) => updateQualification(index, 'date', e.target.value)}
+                        placeholder="Date"
+                        className="bg-white border-gray-300 md:col-span-4"
+                      />
+                      {formData.qualifications.length > 1 && (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => removeQualification(index)}
+                          className="text-red-600 md:col-span-1"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      )}
+                    </div>
+                    {qual.date && (
+                      <p className="text-xs text-gray-500 ml-2">
+                        Years: {calculateYears(qual.date)} years
+                      </p>
                     )}
                   </div>
                 ))}
