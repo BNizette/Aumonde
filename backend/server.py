@@ -1418,11 +1418,16 @@ async def update_crew_member(crew_id: str, crew_data: CrewMemberCreate, current_
     # Prepare update data
     crew_dict = crew_data.model_dump()
     
-    # Convert date strings to datetime
-    if crew_dict.get('license_expiry'):
+    # Convert date strings to datetime (handle empty strings)
+    if crew_dict.get('license_expiry') and crew_dict['license_expiry'].strip():
         crew_dict['license_expiry'] = datetime.fromisoformat(crew_dict['license_expiry'])
-    if crew_dict.get('medical_expiry'):
+    else:
+        crew_dict['license_expiry'] = None
+        
+    if crew_dict.get('medical_expiry') and crew_dict['medical_expiry'].strip():
         crew_dict['medical_expiry'] = datetime.fromisoformat(crew_dict['medical_expiry'])
+    else:
+        crew_dict['medical_expiry'] = None
     
     # Keep original created_at
     crew_dict['created_at'] = crew.get('created_at')
