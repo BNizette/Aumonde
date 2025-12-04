@@ -318,6 +318,19 @@ const CrewForm = ({ initialData = {}, onSubmit, onCancel, loading, isEdit = fals
               />
             </div>
 
+            <div>
+              <Label htmlFor="cv_url">CV</Label>
+              <Input
+                id="cv_url"
+                type="text"
+                value={formData.cv_url}
+                onChange={(e) => setFormData({ ...formData, cv_url: e.target.value })}
+                className="bg-white border-gray-300"
+                placeholder="Enter CV document URL or upload link"
+              />
+              <p className="text-xs text-gray-500 mt-1">Upload your CV document and paste the link here</p>
+            </div>
+
             <div className="flex items-center gap-2">
               <input
                 type="checkbox"
