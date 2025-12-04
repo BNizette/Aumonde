@@ -186,9 +186,6 @@ const CrewManagementNew = () => {
                           {member.contact_details && (
                             <p className="text-gray-600">📞 {member.contact_details}</p>
                           )}
-                          {member.date_joined_vessel && (
-                            <p className="text-gray-600">Joined: {formatDate(member.date_joined_vessel)}</p>
-                          )}
                           {member.qualifications && member.qualifications.length > 0 && (
                             <p className="text-gray-600">
                               Qualifications: {member.qualifications.map(q => q.name || q).join(', ')}
