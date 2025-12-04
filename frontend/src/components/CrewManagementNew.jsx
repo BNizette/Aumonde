@@ -308,7 +308,7 @@ const CrewManagementNew = () => {
             {crew.length === 0 ? (
               <div className="text-center py-12">
                 <Users className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-                <p className="text-gray-600 mb-4">No crew members found for this vessel</p>
+                <p className="text-gray-600 mb-4">No crew members found</p>
                 {canEdit() && (
                   <Button
                     onClick={() => setOpen(true)}
@@ -319,9 +319,25 @@ const CrewManagementNew = () => {
                   </Button>
                 )}
               </div>
+            ) : getFilteredAndSortedCrew().length === 0 ? (
+              <div className="text-center py-12">
+                <Filter className="w-16 h-16 mx-auto text-gray-400 mb-4" />
+                <p className="text-gray-600 mb-4">No crew members match your filters</p>
+                <Button
+                  onClick={() => {
+                    setSearchTerm('');
+                    setFilterPosition('all');
+                    setFilterRole('all');
+                  }}
+                  variant="outline"
+                  className="text-teal-600 border-teal-600 hover:bg-teal-50"
+                >
+                  Clear Filters
+                </Button>
+              </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {crew.map((member) => (
+                {getFilteredAndSortedCrew().map((member) => (
                   <Card key={member.id} className="border-gray-200 hover:shadow-lg transition-shadow">
                     <CardContent className="pt-6">
                       <div className="space-y-3">
