@@ -125,6 +125,54 @@ const CrewManagementNew = () => {
     }
   };
 
+  // Filter and sort crew
+  const getFilteredAndSortedCrew = () => {
+    let filtered = [...crew];
+
+    // Search filter
+    if (searchTerm) {
+      filtered = filtered.filter(member => 
+        member.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (member.contact_details && member.contact_details.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (member.position && member.position.toLowerCase().includes(searchTerm.toLowerCase()))
+      );
+    }
+
+    // Position filter
+    if (filterPosition !== 'all') {
+      filtered = filtered.filter(member => 
+        member.position && member.position.toLowerCase() === filterPosition.toLowerCase()
+      );
+    }
+
+    // Role filter
+    if (filterRole !== 'all') {
+      filtered = filtered.filter(member => 
+        member.role && member.role.toLowerCase() === filterRole.toLowerCase()
+      );
+    }
+
+    // Sort
+    filtered.sort((a, b) => {
+      switch (sortBy) {
+        case 'name':
+          return a.full_name.localeCompare(b.full_name);
+        case 'position':
+          return (a.position || '').localeCompare(b.position || '');
+        case 'role':
+          return (a.role || '').localeCompare(b.role || '');
+        case 'dateJoined':
+          return new Date(b.date_joined_vessel || 0) - new Date(a.date_joined_vessel || 0);
+        case 'dateCommenced':
+          return new Date(b.date_commenced_employment || 0) - new Date(a.date_commenced_employment || 0);
+        default:
+          return 0;
+      }
+    });
+
+    return filtered;
+  };
+
   if (loading) {
     return (
       <Layout>
