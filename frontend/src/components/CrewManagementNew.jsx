@@ -18,6 +18,12 @@ const CrewManagementNew = () => {
   const [viewOpen, setViewOpen] = useState(false);
   const [selectedCrew, setSelectedCrew] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+  
+  // Filter and Sort states
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterPosition, setFilterPosition] = useState('all');
+  const [filterRole, setFilterRole] = useState('all');
+  const [sortBy, setSortBy] = useState('name');
 
   useEffect(() => {
     fetchCrew();
