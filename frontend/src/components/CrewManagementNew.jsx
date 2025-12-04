@@ -334,6 +334,22 @@ const CrewManagementNew = () => {
                   </div>
                 </div>
 
+                {selectedCrew.cv_url && (
+                  <div>
+                    <h3 className="font-semibold text-gray-900 mb-2">CV</h3>
+                    <div className="text-sm">
+                      <a 
+                        href={selectedCrew.cv_url} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:underline"
+                      >
+                        View CV Document
+                      </a>
+                    </div>
+                  </div>
+                )}
+
                 <div>
                   <h3 className="font-semibold text-gray-900 mb-2">Training Record</h3>
                   <div className="space-y-3 text-sm">
