@@ -30,7 +30,7 @@ const Layout = ({ children }) => {
   const baseMenuItems = [
     { path: '/', icon: LayoutDashboard, label: 'Dashboard' },
     { path: '/vessels', icon: Ship, label: 'Vessels' },
-    { path: '/crew', icon: Users, label: 'Crew Management' },
+    { path: '/crew', icon: Users, label: 'Crew' },
     { path: '/documents', icon: FileText, label: 'Documents' },
     { path: '/risk-assessment', icon: AlertTriangle, label: 'Risk Assessment' },
     { path: '/maintenance', icon: Wrench, label: 'Maintenance' },
