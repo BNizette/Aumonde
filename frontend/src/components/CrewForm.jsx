@@ -22,7 +22,7 @@ const CrewForm = ({ initialData = {}, onSubmit, onCancel, loading, isEdit = fals
     
     // Position and Role
     position: initialData.position || '',
-    role: initialData.role || 'briefer',
+    role: initialData.role || 'crew',
     
     // Qualifications
     qualifications: initialData.qualifications || [{ name: '', date: '' }],
