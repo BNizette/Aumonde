@@ -133,7 +133,7 @@ const RiskAssessment = () => {
     setSortBy('riskLevel');
   };
 
-  const hasActiveFilters = searchQuery || riskLevelFilter !== 'all' || statusFilter !== 'all' || vesselFilter !== 'all' || sortBy !== 'riskLevel';
+  const hasActiveFilters = searchQuery || filters.risk_levels.length > 0 || filters.statuses.length > 0 || filters.start_date || filters.end_date || sortBy !== 'riskLevel';
 
   const fetchRisks = async () => {
     try {
@@ -143,6 +143,10 @@ const RiskAssessment = () => {
         headers: { Authorization: `Bearer ${token}` }
       });
       setRisks(response.data);
+      const uniqueLevels = [...new Set(response.data.map(r => r.risk_level).filter(Boolean))];
+      const uniqueStatuses = [...new Set(response.data.map(r => r.status).filter(Boolean))];
+      setRiskLevels(uniqueLevels);
+      setStatuses(uniqueStatuses);
     } catch (err) {
       setError('Failed to fetch risk assessments');
     } finally {
