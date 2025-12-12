@@ -635,7 +635,7 @@ const Incidents = () => {
                             checked={filters.statuses.includes(status)}
                             onCheckedChange={() => toggleFilter('statuses', status)}
                           />
-                          <label className="text-sm flex-1 cursor-pointer">{level}</label>
+                          <label className="text-sm flex-1 cursor-pointer">{status}</label>
                         </div>
                       ))}
                     </div>
