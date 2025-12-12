@@ -49,7 +49,7 @@ const VesselManagement = () => {
 
   useEffect(() => {
     applyFiltersAndSort();
-  }, [searchQuery, vesselTypeFilter, sortBy, vessels]);
+  }, [searchQuery, filters, sortBy, vessels]);
 
   const applyFiltersAndSort = () => {
     let filtered = [...vessels];
