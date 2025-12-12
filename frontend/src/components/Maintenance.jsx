@@ -48,12 +48,10 @@ const Maintenance = () => {
 
   useEffect(() => {
     applyFiltersAndSort();
-  }, [searchQuery, statusFilter, priorityFilter, typeFilter, vesselFilter, sortBy, maintenanceRecords]);
+  }, [searchQuery, filters, sortBy, maintenanceRecords]);
 
   const applyFiltersAndSort = () => {
     let filtered = [...maintenanceRecords];
-
-    // Apply search filter
     if (searchQuery) {
       filtered = filtered.filter(record =>
         record.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -62,65 +60,74 @@ const Maintenance = () => {
         record.responsible_person?.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
-
-    // Apply status filter
-    if (statusFilter !== 'all') {
-      filtered = filtered.filter(record => 
-        record.status?.toLowerCase() === statusFilter.toLowerCase()
-      );
+    if (filters.statuses.length > 0) {
+      filtered = filtered.filter(record => filters.statuses.includes(record.status));
     }
-
-    // Apply priority filter
-    if (priorityFilter !== 'all') {
-      filtered = filtered.filter(record => 
-        record.priority?.toLowerCase() === priorityFilter.toLowerCase()
-      );
+    if (filters.priorities.length > 0) {
+      filtered = filtered.filter(record => filters.priorities.includes(record.priority));
     }
-
-    // Apply type filter
-    if (typeFilter !== 'all') {
-      filtered = filtered.filter(record => 
-        record.maintenance_type?.toLowerCase() === typeFilter.toLowerCase()
-      );
+    if (filters.start_date || filters.end_date) {
+      filtered = filtered.filter(record => {
+        if (!record.scheduled_date) return false;
+        const recDate = new Date(record.scheduled_date);
+        const startDate = filters.start_date ? new Date(filters.start_date) : null;
+        const endDate = filters.end_date ? new Date(filters.end_date + 'T23:59:59') : null;
+        if (startDate && recDate < startDate) return false;
+        if (endDate && recDate > endDate) return false;
+        return true;
+      });
     }
-
-    // Apply vessel filter
-    if (vesselFilter !== 'all') {
-      filtered = filtered.filter(record => 
-        record.vessel_name?.toLowerCase().includes(vesselFilter.toLowerCase())
-      );
-    }
-
-    // Apply sorting
     filtered.sort((a, b) => {
       switch (sortBy) {
         case 'priority':
           const priorityOrder = { 'Critical': 4, 'High': 3, 'Medium': 2, 'Low': 1 };
           return (priorityOrder[b.priority] || 0) - (priorityOrder[a.priority] || 0);
-        case 'dueDate':
-          return new Date(a.scheduled_date || '9999-12-31') - new Date(b.scheduled_date || '9999-12-31');
-        case 'equipment':
-          return (a.equipment_system || '').localeCompare(b.equipment_system || '');
-        case 'status':
-          return (a.status || '').localeCompare(b.status || '');
-        default:
-          return 0;
+        case 'dueDate': return new Date(a.scheduled_date || '9999-12-31') - new Date(b.scheduled_date || '9999-12-31');
+        case 'equipment': return (a.equipment_system || '').localeCompare(b.equipment_system || '');
+        case 'status': return (a.status || '').localeCompare(b.status || '');
+        default: return 0;
       }
     });
-
     setFilteredRecords(filtered);
   };
 
-  const clearFilters = () => {
-    setSearchQuery('');
-    setStatusFilter('all');
-    setPriorityFilter('all');
-    setTypeFilter('all');
-    setVesselFilter('all');
-    setSortBy('priority');
+  const toggleFilter = (filterType, value) => {
+    setFilters(prev => {
+      const currentArray = prev[filterType];
+      const isSelected = currentArray.includes(value);
+      return {...prev, [filterType]: isSelected ? currentArray.filter(item => item !== value) : [...currentArray, value]};
+    });
   };
 
-  const hasActiveFilters = searchQuery || statusFilter !== 'all' || priorityFilter !== 'all' || typeFilter !== 'all' || vesselFilter !== 'all' || sortBy !== 'priority';
+  const clearFilter = (filterType) => { setFilters(prev => ({...prev, [filterType]: []})); };
+  const clearDateFilters = () => { setFilters(prev => ({...prev, start_date: '', end_date: ''})); };
+  const clearAllFilters = () => { setSearchQuery(''); setFilters({statuses: [], priorities: [], start_date: '', end_date: ''}); };
+
+  const exportToCSV = () => {
+    if (filteredRecords.length === 0) { setError('No maintenance records to export'); setTimeout(() => setError(''), 3000); return; }
+    const headers = ['ID', 'Title', 'Equipment/System', 'Vessel', 'Type', 'Status', 'Priority', 'Scheduled Date', 'Completed Date', 'Responsible Person', 'Description', 'Created At'];
+    const csvRows = [headers.join(','), ...filteredRecords.map(r => [
+      `"${r.id || ''}"`, `"${(r.title || '').replace(/"/g, '""')}"`, `"${(r.equipment_system || '').replace(/"/g, '""')}"`,
+      `"${(r.vessel_name || '').replace(/"/g, '""')}"`, `"${r.maintenance_type || ''}"`, `"${r.status || ''}"`,
+      `"${r.priority || ''}"`, `"${r.scheduled_date ? new Date(r.scheduled_date).toLocaleDateString() : ''}"`,
+      `"${r.completed_date ? new Date(r.completed_date).toLocaleDateString() : ''}"`,
+      `"${(r.responsible_person || '').replace(/"/g, '""')}"`, `"${(r.description || '').replace(/"/g, '""')}"`,
+      `"${r.created_at ? new Date(r.created_at).toLocaleString() : ''}"`
+    ].join(','))];
+    const blob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.setAttribute('href', URL.createObjectURL(blob));
+    link.setAttribute('download', `maintenance_export_${new Date().toISOString().slice(0, 10)}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setMessage(`Exported ${filteredRecords.length} maintenance records to CSV`);
+    setTimeout(() => setMessage(''), 3000);
+  };
+
+  const clearFilters = () => { setSearchQuery(''); clearAllFilters(); setSortBy('priority'); };
+  const hasActiveFilters = searchQuery || filters.statuses.length > 0 || filters.priorities.length > 0 || filters.start_date || filters.end_date || sortBy !== 'priority';
 
   const fetchMaintenanceRecords = async () => {
     try {
