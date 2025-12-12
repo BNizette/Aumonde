@@ -276,9 +276,6 @@ const TripManagement = () => {
   const canEdit = user?.access_level === 'Edit' || user?.access_level === 'Full';
   const canDelete = user?.access_level === 'Full';
 
-  // Get unique vessels for filter
-  const uniqueVessels = [...new Set(trips.map(t => t.vessel_name).filter(Boolean))];
-
   if (loading) {
     return <div className="flex items-center justify-center h-96">Loading...</div>;
   }
