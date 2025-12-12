@@ -64,11 +64,34 @@ const VesselManagement = () => {
       );
     }
 
-    // Apply vessel type filter
-    if (vesselTypeFilter !== 'all') {
+    // Apply multi-select vessel type filter
+    if (filters.vessel_types.length > 0) {
       filtered = filtered.filter(vessel => 
-        vessel.vessel_type?.toLowerCase() === vesselTypeFilter.toLowerCase()
+        filters.vessel_types.includes(vessel.vessel_type)
       );
+    }
+
+    // Apply multi-select status filter
+    if (filters.statuses.length > 0) {
+      filtered = filtered.filter(vessel => 
+        filters.statuses.includes(vessel.operational_status)
+      );
+    }
+
+    // Apply date range filter
+    if (filters.start_date || filters.end_date) {
+      filtered = filtered.filter(vessel => {
+        if (!vessel.created_at) return false;
+        
+        const vesselDate = new Date(vessel.created_at);
+        const startDate = filters.start_date ? new Date(filters.start_date) : null;
+        const endDate = filters.end_date ? new Date(filters.end_date + 'T23:59:59') : null;
+
+        if (startDate && vesselDate < startDate) return false;
+        if (endDate && vesselDate > endDate) return false;
+        
+        return true;
+      });
     }
 
     // Apply sorting
@@ -90,9 +113,121 @@ const VesselManagement = () => {
     setFilteredVessels(filtered);
   };
 
+  const toggleFilter = (filterType, value) => {
+    setFilters(prev => {
+      const currentArray = prev[filterType];
+      const isSelected = currentArray.includes(value);
+      
+      return {
+        ...prev,
+        [filterType]: isSelected
+          ? currentArray.filter(item => item !== value)
+          : [...currentArray, value]
+      };
+    });
+  };
+
+  const clearFilter = (filterType) => {
+    setFilters(prev => ({
+      ...prev,
+      [filterType]: []
+    }));
+  };
+
+  const clearDateFilters = () => {
+    setFilters(prev => ({
+      ...prev,
+      start_date: '',
+      end_date: ''
+    }));
+  };
+
+  const clearAllFilters = () => {
+    setSearchQuery('');
+    setFilters({
+      vessel_types: [],
+      statuses: [],
+      start_date: '',
+      end_date: ''
+    });
+  };
+
+  const exportToCSV = () => {
+    if (filteredVessels.length === 0) {
+      setError('No vessels to export');
+      setTimeout(() => setError(''), 3000);
+      return;
+    }
+
+    const headers = [
+      'ID', 'Vessel Name', 'Registration Number', 'Vessel Type', 'Year Built',
+      'Length (m)', 'Beam (m)', 'Draft (m)', 'Gross Tonnage', 'Net Tonnage',
+      'Passenger Capacity', 'Crew Capacity', 'Flag State', 'Port of Registry',
+      'IMO Number', 'MMSI Number', 'Call Sign', 'Owner Name', 'Owner Contact',
+      'Operator Name', 'Operator Contact', 'Classification Society',
+      'Class Notation', 'Hull Material', 'Propulsion Type', 'Engine Manufacturer',
+      'Engine Model', 'Engine Power (kW)', 'Operational Status', 'Last Survey Date',
+      'Next Survey Due', 'Insurance Expiry', 'Created At'
+    ];
+
+    const csvRows = [
+      headers.join(','),
+      ...filteredVessels.map(v => [
+        `"${v.id || ''}"`,
+        `"${(v.vessel_name || '').replace(/"/g, '""')}"`,
+        `"${v.registration_number || ''}"`,
+        `"${v.vessel_type || ''}"`,
+        `"${v.year_built || ''}"`,
+        `"${v.length || ''}"`,
+        `"${v.beam || ''}"`,
+        `"${v.draft || ''}"`,
+        `"${v.gross_tonnage || ''}"`,
+        `"${v.net_tonnage || ''}"`,
+        `"${v.passenger_capacity || ''}"`,
+        `"${v.crew_capacity || ''}"`,
+        `"${v.flag_state || ''}"`,
+        `"${v.port_of_registry || ''}"`,
+        `"${v.imo_number || ''}"`,
+        `"${v.mmsi_number || ''}"`,
+        `"${v.call_sign || ''}"`,
+        `"${(v.owner_name || '').replace(/"/g, '""')}"`,
+        `"${v.owner_contact || ''}"`,
+        `"${(v.operator_name || '').replace(/"/g, '""')}"`,
+        `"${v.operator_contact || ''}"`,
+        `"${v.classification_society || ''}"`,
+        `"${v.class_notation || ''}"`,
+        `"${v.hull_material || ''}"`,
+        `"${v.propulsion_type || ''}"`,
+        `"${v.engine_manufacturer || ''}"`,
+        `"${v.engine_model || ''}"`,
+        `"${v.engine_power || ''}"`,
+        `"${v.operational_status || ''}"`,
+        `"${v.last_survey_date ? new Date(v.last_survey_date).toLocaleDateString() : ''}"`,
+        `"${v.next_survey_due ? new Date(v.next_survey_due).toLocaleDateString() : ''}"`,
+        `"${v.insurance_expiry ? new Date(v.insurance_expiry).toLocaleDateString() : ''}"`,
+        `"${v.created_at ? new Date(v.created_at).toLocaleString() : ''}"`
+      ].join(','))
+    ];
+
+    const csvContent = csvRows.join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    
+    link.setAttribute('href', url);
+    link.setAttribute('download', `vessels_export_${new Date().toISOString().slice(0, 10)}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    setMessage(`Exported ${filteredVessels.length} vessels to CSV`);
+    setTimeout(() => setMessage(''), 3000);
+  };
+
   const clearFilters = () => {
     setSearchQuery('');
-    setVesselTypeFilter('all');
+    clearAllFilters();
     setSortBy('name');
   };
 
