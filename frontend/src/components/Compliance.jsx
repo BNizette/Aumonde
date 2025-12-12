@@ -78,9 +78,9 @@ const Compliance = () => {
     notes: ''
   });
 
-  const certTypes = ['Vessel Certificate', 'Crew Certificate', 'Company Certificate'];
+  const certTypesOptions = ['Vessel Certificate', 'Crew Certificate', 'Company Certificate'];
   const categories = ['Safety', 'Environmental', 'Operational', 'Administrative'];
-  const statuses = ['Compliant', 'Non-Compliant', 'Partial', 'Under Review'];
+  const statusOptions = ['Compliant', 'Non-Compliant', 'Partial', 'Under Review'];
 
   useEffect(() => {
     fetchData();
@@ -88,11 +88,11 @@ const Compliance = () => {
 
   useEffect(() => {
     applyCertFilters();
-  }, [certSearch, certTypeFilter, certStatusFilter, certVesselFilter, certSort, certificates]);
+  }, [certSearch, certFilters, certSort, certificates]);
 
   useEffect(() => {
     applyReqFilters();
-  }, [reqSearch, reqCategoryFilter, reqStatusFilter, reqSort, requirements]);
+  }, [reqSearch, reqFilters, reqSort, requirements]);
 
   const fetchData = async () => {
     try {
