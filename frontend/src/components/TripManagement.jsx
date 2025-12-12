@@ -154,6 +154,10 @@ const TripManagement = () => {
         headers: { Authorization: `Bearer ${token}` }
       });
       setTrips(response.data);
+      const uniqueStatuses = ['active', 'completed', 'upcoming'];
+      const uniqueVessels = [...new Set(response.data.map(t => t.vessel_name).filter(Boolean))];
+      setStatuses(uniqueStatuses);
+      setVessels(uniqueVessels);
     } catch (err) {
       setError('Error fetching trips');
       console.error(err);
