@@ -5,8 +5,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Plus, Search, Eye, Edit, Trash2, MapPin, Ship, Calendar, Users, FileText, Filter, X } from 'lucide-react';
+import { Plus, Search, Eye, Edit, Trash2, MapPin, Ship, Calendar, Users, FileText, Filter, X, AlertTriangle } from 'lucide-react';
 import TripForm from './TripForm';
 import TripDetailsDialog from './TripDetailsDialog';
 
