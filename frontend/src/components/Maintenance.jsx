@@ -21,11 +21,15 @@ const Maintenance = () => {
   const [filteredRecords, setFilteredRecords] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
-  const [priorityFilter, setPriorityFilter] = useState('all');
-  const [typeFilter, setTypeFilter] = useState('all');
-  const [vesselFilter, setVesselFilter] = useState('all');
+  const [statuses, setStatuses] = useState([]);
+  const [priorities, setPriorities] = useState([]);
   const [sortBy, setSortBy] = useState('priority');
+  const [filters, setFilters] = useState({
+    statuses: [],
+    priorities: [],
+    start_date: '',
+    end_date: ''
+  });
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [formOpen, setFormOpen] = useState(false);
