@@ -449,43 +449,211 @@ const Incidents = () => {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {/* First Row: Type, Severity, Status */}
+            {/* Clear All Filters Button */}
+            {(filters.incident_types.length > 0 || filters.severities.length > 0 || filters.statuses.length > 0 || filters.start_date || filters.end_date) && (
+              <div className="flex justify-end">
+                <Button variant="ghost" size="sm" onClick={clearAllFilters}>
+                  <X className="h-4 w-4 mr-2" />
+                  Clear All Filters
+                </Button>
+              </div>
+            )}
+
+            {/* First Row: Type, Severity, Status - Multi-Select */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {/* Incident Type Multi-Select */}
               <div>
                 <Label>Incident Type</Label>
-                <Select value={filters.incident_type} onValueChange={(value) => setFilters({...filters, incident_type: value})}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="All Types" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Types</SelectItem>
-                    {incidentTypes.map(type => <SelectItem key={type} value={type}>{type}</SelectItem>)}
-                  </SelectContent>
-                </Select>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="w-full justify-between"
+                    >
+                      <span className="truncate">
+                        {filters.incident_types.length === 0
+                          ? 'All Types'
+                          : filters.incident_types.length === 1
+                          ? filters.incident_types[0]
+                          : `${filters.incident_types.length} selected`}
+                      </span>
+                      <ChevronDown className="h-4 w-4 ml-2 shrink-0" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-64 p-0" align="start">
+                    <div className="p-2">
+                      <div className="flex items-center justify-between px-2 py-1.5 mb-1">
+                        <span className="text-sm font-medium">Select Types</span>
+                        {filters.incident_types.length > 0 && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => clearFilter('incident_types')}
+                            className="h-auto p-1 text-xs"
+                          >
+                            Clear
+                          </Button>
+                        )}
+                      </div>
+                      {incidentTypes.map(type => (
+                        <div
+                          key={type}
+                          className="flex items-center space-x-2 px-2 py-1.5 hover:bg-gray-100 rounded cursor-pointer"
+                          onClick={() => toggleFilter('incident_types', type)}
+                        >
+                          <Checkbox
+                            checked={filters.incident_types.includes(type)}
+                            onCheckedChange={() => toggleFilter('incident_types', type)}
+                          />
+                          <label className="text-sm flex-1 cursor-pointer">{type}</label>
+                        </div>
+                      ))}
+                    </div>
+                  </PopoverContent>
+                </Popover>
+                {filters.incident_types.length > 0 && (
+                  <div className="flex flex-wrap gap-1 mt-2">
+                    {filters.incident_types.map(type => (
+                      <Badge key={type} variant="secondary" className="text-xs">
+                        {type}
+                        <X
+                          className="h-3 w-3 ml-1 cursor-pointer"
+                          onClick={() => toggleFilter('incident_types', type)}
+                        />
+                      </Badge>
+                    ))}
+                  </div>
+                )}
               </div>
+
+              {/* Severity Multi-Select */}
               <div>
                 <Label>Severity</Label>
-                <Select value={filters.severity} onValueChange={(value) => setFilters({...filters, severity: value})}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="All Severities" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Severities</SelectItem>
-                    {severityLevels.map(level => <SelectItem key={level} value={level}>{level}</SelectItem>)}
-                  </SelectContent>
-                </Select>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="w-full justify-between"
+                    >
+                      <span className="truncate">
+                        {filters.severities.length === 0
+                          ? 'All Severities'
+                          : filters.severities.length === 1
+                          ? filters.severities[0]
+                          : `${filters.severities.length} selected`}
+                      </span>
+                      <ChevronDown className="h-4 w-4 ml-2 shrink-0" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-64 p-0" align="start">
+                    <div className="p-2">
+                      <div className="flex items-center justify-between px-2 py-1.5 mb-1">
+                        <span className="text-sm font-medium">Select Severities</span>
+                        {filters.severities.length > 0 && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => clearFilter('severities')}
+                            className="h-auto p-1 text-xs"
+                          >
+                            Clear
+                          </Button>
+                        )}
+                      </div>
+                      {severityLevels.map(level => (
+                        <div
+                          key={level}
+                          className="flex items-center space-x-2 px-2 py-1.5 hover:bg-gray-100 rounded cursor-pointer"
+                          onClick={() => toggleFilter('severities', level)}
+                        >
+                          <Checkbox
+                            checked={filters.severities.includes(level)}
+                            onCheckedChange={() => toggleFilter('severities', level)}
+                          />
+                          <label className="text-sm flex-1 cursor-pointer">{level}</label>
+                        </div>
+                      ))}
+                    </div>
+                  </PopoverContent>
+                </Popover>
+                {filters.severities.length > 0 && (
+                  <div className="flex flex-wrap gap-1 mt-2">
+                    {filters.severities.map(level => (
+                      <Badge key={level} variant="secondary" className="text-xs">
+                        {level}
+                        <X
+                          className="h-3 w-3 ml-1 cursor-pointer"
+                          onClick={() => toggleFilter('severities', level)}
+                        />
+                      </Badge>
+                    ))}
+                  </div>
+                )}
               </div>
+
+              {/* Status Multi-Select */}
               <div>
                 <Label>Status</Label>
-                <Select value={filters.status} onValueChange={(value) => setFilters({...filters, status: value})}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="All Statuses" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Statuses</SelectItem>
-                    {statuses.map(status => <SelectItem key={status} value={status}>{status}</SelectItem>)}
-                  </SelectContent>
-                </Select>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="w-full justify-between"
+                    >
+                      <span className="truncate">
+                        {filters.statuses.length === 0
+                          ? 'All Statuses'
+                          : filters.statuses.length === 1
+                          ? filters.statuses[0]
+                          : `${filters.statuses.length} selected`}
+                      </span>
+                      <ChevronDown className="h-4 w-4 ml-2 shrink-0" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-64 p-0" align="start">
+                    <div className="p-2">
+                      <div className="flex items-center justify-between px-2 py-1.5 mb-1">
+                        <span className="text-sm font-medium">Select Statuses</span>
+                        {filters.statuses.length > 0 && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => clearFilter('statuses')}
+                            className="h-auto p-1 text-xs"
+                          >
+                            Clear
+                          </Button>
+                        )}
+                      </div>
+                      {statuses.map(status => (
+                        <div
+                          key={status}
+                          className="flex items-center space-x-2 px-2 py-1.5 hover:bg-gray-100 rounded cursor-pointer"
+                          onClick={() => toggleFilter('statuses', status)}
+                        >
+                          <Checkbox
+                            checked={filters.statuses.includes(status)}
+                            onCheckedChange={() => toggleFilter('statuses', status)}
+                          />
+                          <label className="text-sm flex-1 cursor-pointer">{level}</label>
+                        </div>
+                      ))}
+                    </div>
+                  </PopoverContent>
+                </Popover>
+                {filters.statuses.length > 0 && (
+                  <div className="flex flex-wrap gap-1 mt-2">
+                    {filters.statuses.map(status => (
+                      <Badge key={status} variant="secondary" className="text-xs">
+                        {status}
+                        <X
+                          className="h-3 w-3 ml-1 cursor-pointer"
+                          onClick={() => toggleFilter('statuses', status)}
+                        />
+                      </Badge>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
 
