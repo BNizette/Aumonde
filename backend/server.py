@@ -446,17 +446,42 @@ async def get_dashboard_stats(current_user: dict = Depends(get_current_user)):
         ]
     })
     
-    # Maintenance count - placeholder for future maintenance system
-    total_maintenance = 0
+    # Maintenance count
+    total_maintenance = await db.maintenance.count_documents({})
+    pending_maintenance = await db.maintenance.count_documents({"status": "Scheduled"})
+    
+    # Risk assessments
+    total_risks = await db.risk_assessments.count_documents({})
+    critical_risks = await db.risk_assessments.count_documents({"risk_level": "Critical"})
+    
+    # Incidents
+    total_incidents = await db.incidents.count_documents({})
+    
+    # Emergency contacts and procedures
+    emergency_contacts = await db.emergency_contacts.count_documents({})
+    emergency_procedures = await db.emergency_procedures.count_documents({})
+    
+    # Compliance
+    total_certificates = await db.compliance_certificates.count_documents({})
+    expiring_soon = await db.compliance_certificates.count_documents({
+        "expiry_date": {"$lt": datetime.now(timezone.utc) + timedelta(days=30)}
+    })
     
     return {
         "trips": total_trips,
         "active_trips": active_trips,
         "maintenance": total_maintenance,
+        "pending_maintenance": pending_maintenance,
         "vessels": total_vessels,
         "crew_members": total_crew,
         "documents": total_documents,
-        "incidents": 0
+        "incidents": total_incidents,
+        "risks": total_risks,
+        "critical_risks": critical_risks,
+        "emergency_contacts": emergency_contacts,
+        "emergency_procedures": emergency_procedures,
+        "certificates": total_certificates,
+        "expiring_certificates": expiring_soon
     }
 
 # ============================================================================
