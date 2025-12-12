@@ -159,7 +159,42 @@ const CrewManagement = () => {
     setViewDialogOpen(true);
   };
 
+  const checkDuplicates = async (formData) => {
+    try {
+      const token = localStorage.getItem('token');
+      const checkData = {
+        ...formData,
+        id: formMode === 'edit' ? selectedCrew.id : null
+      };
+      
+      const response = await axios.post(`${API}/crew/check-duplicate`, checkData, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      return response.data;
+    } catch (err) {
+      console.error('Error checking duplicates:', err);
+      return { has_duplicates: false, duplicates: [] };
+    }
+  };
+
   const handleSave = async (formData) => {
+    setPendingFormData(formData);
+    
+    // Check for duplicates
+    const duplicateCheck = await checkDuplicates(formData);
+    
+    if (duplicateCheck.has_duplicates) {
+      setDuplicateWarning(duplicateCheck.duplicates);
+      setShowDuplicateDialog(true);
+      return; // Don't save yet, wait for user confirmation
+    }
+    
+    // No duplicates, proceed with save
+    await performSave(formData);
+  };
+
+  const performSave = async (formData) => {
     try {
       const token = localStorage.getItem('token');
       
@@ -176,6 +211,8 @@ const CrewManagement = () => {
       }
       
       setFormOpen(false);
+      setShowDuplicateDialog(false);
+      setPendingFormData(null);
       fetchCrew();
       setTimeout(() => setMessage(''), 3000);
     } catch (err) {
