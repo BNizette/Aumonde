@@ -137,6 +137,10 @@ const Maintenance = () => {
         headers: { Authorization: `Bearer ${token}` }
       });
       setMaintenanceRecords(response.data);
+      const uniqueStatuses = [...new Set(response.data.map(r => r.status).filter(Boolean))];
+      const uniquePriorities = [...new Set(response.data.map(r => r.priority).filter(Boolean))];
+      setStatuses(uniqueStatuses);
+      setPriorities(uniquePriorities);
     } catch (err) {
       setError('Failed to fetch maintenance records');
     } finally {
