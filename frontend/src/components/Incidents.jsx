@@ -229,7 +229,7 @@ const Incidents = () => {
           <CardHeader className="pb-2">
             <CardTitle className="text-xs font-medium text-gray-500">Total Incidents</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pt-0">
             <div className="text-lg font-bold">{incidents.length}</div>
             <p className="text-[10px] text-gray-500 mt-0.5">Click to show all</p>
           </CardContent>
@@ -241,7 +241,7 @@ const Incidents = () => {
           <CardHeader className="pb-2">
             <CardTitle className="text-xs font-medium text-gray-500">Critical</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pt-0">
             <div className="text-lg font-bold text-red-600">
               {incidents.filter(i => i.severity === 'Critical').length}
             </div>
@@ -255,7 +255,7 @@ const Incidents = () => {
           <CardHeader className="pb-2">
             <CardTitle className="text-xs font-medium text-gray-500">Serious</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pt-0">
             <div className="text-lg font-bold text-orange-600">
               {incidents.filter(i => i.severity === 'Serious').length}
             </div>
@@ -269,7 +269,7 @@ const Incidents = () => {
           <CardHeader className="pb-2">
             <CardTitle className="text-xs font-medium text-gray-500">Under Investigation</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pt-0">
             <div className="text-lg font-bold text-yellow-600">
               {incidents.filter(i => i.investigation_status === 'Under Investigation').length}
             </div>

@@ -445,7 +445,7 @@ const Emergency = () => {
                   <CardHeader className="pb-2">
                     <CardTitle className="text-xs font-medium text-gray-500">Total Contacts</CardTitle>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="pt-0">
                     <div className="text-lg font-bold">{contacts.length}</div>
                     <p className="text-[10px] text-gray-500 mt-0.5">Click to show all</p>
                   </CardContent>
@@ -457,7 +457,7 @@ const Emergency = () => {
                   <CardHeader className="pb-2">
                     <CardTitle className="text-xs font-medium text-gray-500">Priority 1</CardTitle>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="pt-0">
                     <div className="text-lg font-bold text-red-600">
                       {contacts.filter(c => c.priority === 1).length}
                     </div>
@@ -471,7 +471,7 @@ const Emergency = () => {
                   <CardHeader className="pb-2">
                     <CardTitle className="text-xs font-medium text-gray-500">Medical</CardTitle>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="pt-0">
                     <div className="text-lg font-bold text-blue-600">
                       {contacts.filter(c => c.contact_type === 'Medical').length}
                     </div>
@@ -485,7 +485,7 @@ const Emergency = () => {
                   <CardHeader className="pb-2">
                     <CardTitle className="text-xs font-medium text-gray-500">Authorities</CardTitle>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="pt-0">
                     <div className="text-lg font-bold text-purple-600">
                       {contacts.filter(c => c.contact_type === 'Authority').length}
                     </div>
@@ -632,7 +632,7 @@ const Emergency = () => {
                   <CardHeader className="pb-2">
                     <CardTitle className="text-xs font-medium text-gray-500">Total Procedures</CardTitle>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="pt-0">
                     <div className="text-lg font-bold">{procedures.length}</div>
                     <p className="text-[10px] text-gray-500 mt-0.5">Click to show all</p>
                   </CardContent>
@@ -644,7 +644,7 @@ const Emergency = () => {
                   <CardHeader className="pb-2">
                     <CardTitle className="text-xs font-medium text-gray-500">Fire</CardTitle>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="pt-0">
                     <div className="text-lg font-bold text-red-600">
                       {procedures.filter(p => p.emergency_type === 'Fire').length}
                     </div>
@@ -658,7 +658,7 @@ const Emergency = () => {
                   <CardHeader className="pb-2">
                     <CardTitle className="text-xs font-medium text-gray-500">Man Overboard</CardTitle>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="pt-0">
                     <div className="text-lg font-bold text-blue-600">
                       {procedures.filter(p => p.emergency_type === 'Man Overboard').length}
                     </div>
@@ -672,7 +672,7 @@ const Emergency = () => {
                   <CardHeader className="pb-2">
                     <CardTitle className="text-xs font-medium text-gray-500">Medical</CardTitle>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="pt-0">
                     <div className="text-lg font-bold text-green-600">
                       {procedures.filter(p => p.emergency_type === 'Medical Emergency').length}
                     </div>
@@ -802,7 +802,7 @@ const Emergency = () => {
                   <CardHeader className="pb-2">
                     <CardTitle className="text-xs font-medium text-gray-500">Total Drills</CardTitle>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="pt-0">
                     <div className="text-lg font-bold">{drills.length}</div>
                     <p className="text-[10px] text-gray-500 mt-0.5">Click to show all</p>
                   </CardContent>
@@ -814,7 +814,7 @@ const Emergency = () => {
                   <CardHeader className="pb-2">
                     <CardTitle className="text-xs font-medium text-gray-500">Fire Drills</CardTitle>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="pt-0">
                     <div className="text-lg font-bold text-red-600">
                       {drills.filter(d => d.drill_type === 'Fire Drill').length}
                     </div>
@@ -828,7 +828,7 @@ const Emergency = () => {
                   <CardHeader className="pb-2">
                     <CardTitle className="text-xs font-medium text-gray-500">Abandon Ship</CardTitle>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="pt-0">
                     <div className="text-lg font-bold text-orange-600">
                       {drills.filter(d => d.drill_type === 'Abandon Ship Drill').length}
                     </div>
@@ -842,7 +842,7 @@ const Emergency = () => {
                   <CardHeader className="pb-2">
                     <CardTitle className="text-xs font-medium text-gray-500">Man Overboard</CardTitle>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="pt-0">
                     <div className="text-lg font-bold text-blue-600">
                       {drills.filter(d => d.drill_type === 'Man Overboard Drill').length}
                     </div>

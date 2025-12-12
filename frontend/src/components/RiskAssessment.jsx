@@ -250,7 +250,7 @@ const RiskAssessment = () => {
           <CardHeader className="pb-2">
             <CardTitle className="text-xs font-medium text-gray-500">Total Risks</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pt-0">
             <div className="text-lg font-bold">{risks.length}</div>
             <p className="text-[10px] text-gray-500 mt-0.5">Click to show all</p>
           </CardContent>
@@ -265,7 +265,7 @@ const RiskAssessment = () => {
           <CardHeader className="pb-2">
             <CardTitle className="text-xs font-medium text-gray-500">Critical</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pt-0">
             <div className="text-lg font-bold text-red-600">
               {risks.filter(r => r.risk_level === 'Critical').length}
             </div>
@@ -282,7 +282,7 @@ const RiskAssessment = () => {
           <CardHeader className="pb-2">
             <CardTitle className="text-xs font-medium text-gray-500">High</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pt-0">
             <div className="text-lg font-bold text-orange-600">
               {risks.filter(r => r.risk_level === 'High').length}
             </div>
@@ -299,7 +299,7 @@ const RiskAssessment = () => {
           <CardHeader className="pb-2">
             <CardTitle className="text-xs font-medium text-gray-500">Active</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pt-0">
             <div className="text-lg font-bold text-green-600">
               {risks.filter(r => r.status === 'Active').length}
             </div>

@@ -266,7 +266,7 @@ const Maintenance = () => {
           <CardHeader className="pb-2">
             <CardTitle className="text-xs font-medium text-gray-500">Total Records</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pt-0">
             <div className="text-lg font-bold">{maintenanceRecords.length}</div>
             <p className="text-[10px] text-gray-500 mt-0.5">Click to show all</p>
           </CardContent>
@@ -278,7 +278,7 @@ const Maintenance = () => {
           <CardHeader className="pb-2">
             <CardTitle className="text-xs font-medium text-gray-500">Scheduled</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pt-0">
             <div className="text-lg font-bold text-blue-600">
               {maintenanceRecords.filter(r => r.status === 'Scheduled').length}
             </div>
@@ -292,7 +292,7 @@ const Maintenance = () => {
           <CardHeader className="pb-2">
             <CardTitle className="text-xs font-medium text-gray-500">In Progress</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pt-0">
             <div className="text-lg font-bold text-yellow-600">
               {maintenanceRecords.filter(r => r.status === 'In Progress').length}
             </div>
@@ -306,7 +306,7 @@ const Maintenance = () => {
           <CardHeader className="pb-2">
             <CardTitle className="text-xs font-medium text-gray-500">Overdue</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pt-0">
             <div className="text-lg font-bold text-red-600">
               {maintenanceRecords.filter(r => r.status === 'Overdue').length}
             </div>
@@ -320,7 +320,7 @@ const Maintenance = () => {
           <CardHeader className="pb-2">
             <CardTitle className="text-xs font-medium text-gray-500">Completed</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pt-0">
             <div className="text-lg font-bold text-green-600">
               {maintenanceRecords.filter(r => r.status === 'Completed').length}
             </div>
