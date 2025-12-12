@@ -692,6 +692,145 @@ const CrewManagement = () => {
         </DialogContent>
       </Dialog>
 
+      {/* Crew Logs Dialog */}
+      <Dialog open={logsDialogOpen} onOpenChange={setLogsDialogOpen}>
+        <DialogContent className="max-w-4xl max-h-[90vh]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <FileText className="h-5 w-5 text-blue-500" />
+              Crew Logs - {selectedCrewForLogs?.staff_name}
+            </DialogTitle>
+            <DialogDescription>
+              View allocated ships and shift logs for this crew member
+            </DialogDescription>
+          </DialogHeader>
+          
+          <ScrollArea className="h-[600px] pr-4">
+            {loadingLogs ? (
+              <div className="flex items-center justify-center py-8">
+                <div className="text-gray-500">Loading logs...</div>
+              </div>
+            ) : (
+              <Tabs defaultValue="trips" className="w-full">
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="trips">Allocated Ships ({crewTrips.length})</TabsTrigger>
+                  <TabsTrigger value="shifts">Crew Shifts ({crewShifts.length})</TabsTrigger>
+                </TabsList>
+                
+                <TabsContent value="trips" className="mt-4">
+                  {crewTrips.length === 0 ? (
+                    <div className="text-center py-8 text-gray-500">
+                      No trip allocations found for this crew member
+                    </div>
+                  ) : (
+                    <div className="border rounded-lg overflow-hidden">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Trip Name</TableHead>
+                            <TableHead>Vessel</TableHead>
+                            <TableHead>Position</TableHead>
+                            <TableHead>Departure</TableHead>
+                            <TableHead>Return</TableHead>
+                            <TableHead>Status</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {crewTrips.map((allocation, index) => (
+                            <TableRow key={allocation.id || index}>
+                              <TableCell className="font-medium">
+                                {allocation.trip?.trip_name || 'N/A'}
+                              </TableCell>
+                              <TableCell>
+                                {allocation.trip?.vessel_name || 'N/A'}
+                              </TableCell>
+                              <TableCell>
+                                <Badge variant="outline">{allocation.position}</Badge>
+                              </TableCell>
+                              <TableCell>
+                                {allocation.trip?.depart_datetime 
+                                  ? new Date(allocation.trip.depart_datetime).toLocaleDateString()
+                                  : 'N/A'
+                                }
+                              </TableCell>
+                              <TableCell>
+                                {allocation.trip?.return_datetime 
+                                  ? new Date(allocation.trip.return_datetime).toLocaleDateString()
+                                  : 'N/A'
+                                }
+                              </TableCell>
+                              <TableCell>
+                                {allocation.trip?.status ? (
+                                  <Badge 
+                                    variant={
+                                      allocation.trip.status === 'Completed' ? 'default' :
+                                      allocation.trip.status === 'Active' ? 'default' :
+                                      'secondary'
+                                    }
+                                    className={
+                                      allocation.trip.status === 'Completed' ? 'bg-green-100 text-green-800' :
+                                      allocation.trip.status === 'Active' ? 'bg-blue-100 text-blue-800' :
+                                      ''
+                                    }
+                                  >
+                                    {allocation.trip.status}
+                                  </Badge>
+                                ) : 'N/A'}
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  )}
+                </TabsContent>
+                
+                <TabsContent value="shifts" className="mt-4">
+                  {crewShifts.length === 0 ? (
+                    <div className="text-center py-8 text-gray-500">
+                      No shift logs found for this crew member
+                    </div>
+                  ) : (
+                    <div className="border rounded-lg overflow-hidden">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Date & Time</TableHead>
+                            <TableHead>Activity</TableHead>
+                            <TableHead>Details</TableHead>
+                            <TableHead>Trip ID</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {crewShifts.map((shift) => (
+                            <TableRow key={shift.id}>
+                              <TableCell className="font-medium">
+                                {new Date(shift.log_datetime).toLocaleString()}
+                              </TableCell>
+                              <TableCell>
+                                <Badge variant="outline" className="bg-purple-50 text-purple-700">
+                                  {shift.activity}
+                                </Badge>
+                              </TableCell>
+                              <TableCell className="max-w-xs truncate">
+                                {shift.activity_details || '-'}
+                              </TableCell>
+                              <TableCell className="text-xs text-gray-500">
+                                {shift.trip_id?.substring(0, 8)}...
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  )}
+                </TabsContent>
+              </Tabs>
+            )}
+          </ScrollArea>
+        </DialogContent>
+      </Dialog>
+
       {/* Duplicate Warning Dialog */}
       <AlertDialog open={showDuplicateDialog} onOpenChange={setShowDuplicateDialog}>
         <AlertDialogContent>
