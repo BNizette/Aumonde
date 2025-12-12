@@ -519,6 +519,57 @@ const TripManagement = () => {
         trip={selectedTrip}
         onRefresh={fetchTrips}
       />
+
+      {/* Duplicate Warning Dialog */}
+      <AlertDialog open={showDuplicateDialog} onOpenChange={setShowDuplicateDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2">
+              <AlertTriangle className="h-5 w-5 text-yellow-500" />
+              Potential Duplicate Detected
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              The following conflicts were found:
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          
+          <div className="space-y-3 py-4">
+            {duplicateWarning?.map((dup, index) => (
+              <div key={index} className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                <div className="font-semibold text-sm text-yellow-800 mb-1">
+                  {dup.field === 'trip_name' && '⚠️ Trip Name'}
+                  {dup.field === 'date_overlap' && '⚠️ Date Overlap on Same Vessel'}
+                </div>
+                <div className="text-sm text-gray-700">
+                  <span className="font-medium">Value:</span> {dup.value}
+                </div>
+                <div className="text-sm text-gray-600 mt-1">
+                  <span className="font-medium">Existing Record:</span>{' '}
+                  {dup.existing_record.name}
+                  {dup.existing_record.depart && ` - Departs: ${new Date(dup.existing_record.depart).toLocaleDateString()}`}
+                  {dup.existing_record.return && ` - Returns: ${new Date(dup.existing_record.return).toLocaleDateString()}`}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => {
+              setShowDuplicateDialog(false);
+              setPendingFormData(null);
+              setDuplicateWarning(null);
+            }}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={() => performSave(pendingFormData)}
+              className="bg-yellow-600 hover:bg-yellow-700"
+            >
+              Override and Save
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
