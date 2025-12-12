@@ -63,6 +63,30 @@ const Dashboard = () => {
       link: '/trips'
     },
     {
+      title: 'Risk Assessments',
+      value: stats?.risks || 0,
+      description: `${stats?.critical_risks || 0} critical`,
+      icon: AlertTriangle,
+      color: 'bg-yellow-500',
+      link: '/risk-assessment'
+    },
+    {
+      title: 'Emergency',
+      value: (stats?.emergency_contacts || 0) + (stats?.emergency_procedures || 0),
+      description: `${stats?.emergency_contacts || 0} contacts, ${stats?.emergency_procedures || 0} procedures`,
+      icon: Phone,
+      color: 'bg-red-600',
+      link: '/emergency'
+    },
+    {
+      title: 'Compliance',
+      value: stats?.certificates || 0,
+      description: `${stats?.expiring_certificates || 0} expiring soon`,
+      icon: Shield,
+      color: 'bg-indigo-500',
+      link: '/compliance'
+    },
+    {
       title: 'Documents',
       value: stats?.documents || 0,
       description: 'Total documents',
@@ -73,7 +97,7 @@ const Dashboard = () => {
     {
       title: 'Maintenance',
       value: stats?.maintenance || 0,
-      description: 'Pending tasks',
+      description: `${stats?.pending_maintenance || 0} pending`,
       icon: Wrench,
       color: 'bg-green-500',
       link: '/maintenance'
