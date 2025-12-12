@@ -335,7 +335,7 @@ const CrewManagement = () => {
       )}
 
       {/* Statistics Cards - Clickable */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
         <Card 
           className="cursor-pointer hover:shadow-lg transition-shadow"
           onClick={() => {
@@ -345,54 +345,54 @@ const CrewManagement = () => {
             setSortBy('name');
           }}
         >
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-gray-500">Total Crew</CardTitle>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-xs font-medium text-gray-500">Total Crew</CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{crewList.length}</div>
-            <p className="text-xs text-gray-500 mt-1">Click to show all</p>
+          <CardContent className="pt-0">
+            <div className="text-lg font-bold">{crewList.length}</div>
+            <p className="text-[10px] text-gray-500 mt-0.5">Click to show all</p>
           </CardContent>
         </Card>
         <Card 
           className="cursor-pointer hover:shadow-lg transition-shadow"
           onClick={() => setPositionFilter('master')}
         >
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-gray-500">Masters</CardTitle>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-xs font-medium text-gray-500">Masters</CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-blue-600">
+          <CardContent className="pt-0">
+            <div className="text-lg font-bold text-blue-600">
               {crewList.filter(c => c.position?.toLowerCase().includes('master')).length}
             </div>
-            <p className="text-xs text-gray-500 mt-1">Click to filter</p>
+            <p className="text-[10px] text-gray-500 mt-0.5">Click to filter</p>
           </CardContent>
         </Card>
         <Card 
           className="cursor-pointer hover:shadow-lg transition-shadow"
           onClick={() => setPositionFilter('engineer')}
         >
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-gray-500">Engineers</CardTitle>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-xs font-medium text-gray-500">Engineers</CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-green-600">
+          <CardContent className="pt-0">
+            <div className="text-lg font-bold text-green-600">
               {crewList.filter(c => c.position?.toLowerCase().includes('engineer')).length}
             </div>
-            <p className="text-xs text-gray-500 mt-1">Click to filter</p>
+            <p className="text-[10px] text-gray-500 mt-0.5">Click to filter</p>
           </CardContent>
         </Card>
         <Card 
           className="cursor-pointer hover:shadow-lg transition-shadow"
           onClick={() => setPositionFilter('crew')}
         >
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-gray-500">Crew Members</CardTitle>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-xs font-medium text-gray-500">Crew Members</CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-purple-600">
+          <CardContent className="pt-0">
+            <div className="text-lg font-bold text-purple-600">
               {crewList.filter(c => c.position?.toLowerCase() === 'crew' || c.position?.toLowerCase().includes('deckhand')).length}
             </div>
-            <p className="text-xs text-gray-500 mt-1">Click to filter</p>
+            <p className="text-[10px] text-gray-500 mt-0.5">Click to filter</p>
           </CardContent>
         </Card>
       </div>
