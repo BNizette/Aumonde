@@ -76,7 +76,25 @@ const Incidents = () => {
         axios.get(`${API}/vessels`, { headers })
       ]);
 
-      setIncidents(incidentsRes.data);
+      let filteredIncidents = incidentsRes.data;
+
+      // Apply date range filter on client side
+      if (filters.start_date || filters.end_date) {
+        filteredIncidents = filteredIncidents.filter(incident => {
+          if (!incident.incident_date) return false;
+          
+          const incidentDate = new Date(incident.incident_date);
+          const startDate = filters.start_date ? new Date(filters.start_date) : null;
+          const endDate = filters.end_date ? new Date(filters.end_date + 'T23:59:59') : null;
+
+          if (startDate && incidentDate < startDate) return false;
+          if (endDate && incidentDate > endDate) return false;
+          
+          return true;
+        });
+      }
+
+      setIncidents(filteredIncidents);
       setVessels(vesselsRes.data);
     } catch (err) {
       setError('Error fetching data');
