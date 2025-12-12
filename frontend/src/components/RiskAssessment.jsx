@@ -21,10 +21,15 @@ const RiskAssessment = () => {
   const [filteredRisks, setFilteredRisks] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [riskLevelFilter, setRiskLevelFilter] = useState('all');
-  const [statusFilter, setStatusFilter] = useState('all');
-  const [vesselFilter, setVesselFilter] = useState('all');
+  const [riskLevels, setRiskLevels] = useState([]);
+  const [statuses, setStatuses] = useState([]);
   const [sortBy, setSortBy] = useState('riskLevel');
+  const [filters, setFilters] = useState({
+    risk_levels: [],
+    statuses: [],
+    start_date: '',
+    end_date: ''
+  });
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [formOpen, setFormOpen] = useState(false);
