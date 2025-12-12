@@ -237,7 +237,7 @@ const VesselManagement = () => {
       )}
 
       {/* Statistics Cards - Clickable */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
         <Card 
           className="cursor-pointer hover:shadow-lg transition-shadow"
           onClick={() => {
@@ -246,12 +246,12 @@ const VesselManagement = () => {
             setSortBy('name');
           }}
         >
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-gray-500">Total Vessels</CardTitle>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-xs font-medium text-gray-500">Total Vessels</CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{vessels.length}</div>
-            <p className="text-xs text-gray-500 mt-1">Click to show all</p>
+          <CardContent className="pt-0">
+            <div className="text-lg font-bold">{vessels.length}</div>
+            <p className="text-[10px] text-gray-500 mt-0.5">Click to show all</p>
           </CardContent>
         </Card>
         <Card 
@@ -261,14 +261,14 @@ const VesselManagement = () => {
             setVesselTypeFilter('all');
           }}
         >
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-gray-500">Passenger Vessels</CardTitle>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-xs font-medium text-gray-500">Passenger Vessels</CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-blue-600">
+          <CardContent className="pt-0">
+            <div className="text-lg font-bold text-blue-600">
               {vessels.filter(v => v.vessel_type?.includes('Passenger')).length}
             </div>
-            <p className="text-xs text-gray-500 mt-1">Click to filter</p>
+            <p className="text-[10px] text-gray-500 mt-0.5">Click to filter</p>
           </CardContent>
         </Card>
         <Card 
@@ -277,14 +277,14 @@ const VesselManagement = () => {
             setSearchQuery('Operational');
           }}
         >
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-gray-500">Active Fleet</CardTitle>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-xs font-medium text-gray-500">Active Fleet</CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-green-600">
+          <CardContent className="pt-0">
+            <div className="text-lg font-bold text-green-600">
               {vessels.filter(v => v.operational_status === 'Operational').length}
             </div>
-            <p className="text-xs text-gray-500 mt-1">Click to filter</p>
+            <p className="text-[10px] text-gray-500 mt-0.5">Click to filter</p>
           </CardContent>
         </Card>
         <Card 
@@ -295,14 +295,14 @@ const VesselManagement = () => {
             setSortBy('name');
           }}
         >
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-gray-500">Total Capacity</CardTitle>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-xs font-medium text-gray-500">Total Capacity</CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-purple-600">
+          <CardContent className="pt-0">
+            <div className="text-lg font-bold text-purple-600">
               {vessels.reduce((sum, v) => sum + (parseInt(v.passenger_capacity) || 0), 0)}
             </div>
-            <p className="text-xs text-gray-500 mt-1">View all vessels</p>
+            <p className="text-[10px] text-gray-500 mt-0.5">View all vessels</p>
           </CardContent>
         </Card>
       </div>
