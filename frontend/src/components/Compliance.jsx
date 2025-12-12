@@ -110,6 +110,17 @@ const Compliance = () => {
       setRequirements(reqsRes.data);
       setVessels(vesselsRes.data);
       setCrew(crewRes.data);
+      
+      // Extract unique values for filters
+      const uniqueCertTypes = [...new Set(certsRes.data.map(c => c.certificate_type).filter(Boolean))];
+      const uniqueCertStatuses = ['valid', 'expiring', 'expired'];
+      const uniqueReqCategories = [...new Set(reqsRes.data.map(r => r.category).filter(Boolean))];
+      const uniqueReqStatuses = [...new Set(reqsRes.data.map(r => r.compliance_status).filter(Boolean))];
+      
+      setCertTypes(uniqueCertTypes);
+      setCertStatuses(uniqueCertStatuses);
+      setReqCategories(uniqueReqCategories);
+      setReqStatuses(uniqueReqStatuses);
     } catch (err) {
       setError('Error fetching compliance data');
     } finally {
