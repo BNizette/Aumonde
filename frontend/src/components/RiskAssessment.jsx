@@ -343,91 +343,37 @@ const RiskAssessment = () => {
 
       {/* Search and Filter Bar */}
       <Card>
-        <CardContent className="pt-6">
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle>Filters</CardTitle>
+          <Button variant="outline" size="sm" onClick={exportToCSV} className="flex items-center gap-2">
+            <Download className="h-4 w-4" />Export to CSV
+          </Button>
+        </CardHeader>
+        <CardContent>
           <div className="space-y-4">
-            <div className="flex flex-col md:flex-row gap-4">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                <Input
-                  placeholder="Search by activity, location, vessel, or hazard..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
-              
-              <div className="w-full md:w-48">
-                <Select value={riskLevelFilter} onValueChange={setRiskLevelFilter}>
-                  <SelectTrigger>
-                    <div className="flex items-center gap-2">
-                      <Filter className="h-4 w-4" />
-                      <SelectValue placeholder="Risk Level" />
-                    </div>
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Risk Levels</SelectItem>
-                    <SelectItem value="critical">Critical</SelectItem>
-                    <SelectItem value="high">High</SelectItem>
-                    <SelectItem value="medium">Medium</SelectItem>
-                    <SelectItem value="low">Low</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="w-full md:w-40">
-                <Select value={statusFilter} onValueChange={setStatusFilter}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Status</SelectItem>
-                    <SelectItem value="active">Active</SelectItem>
-                    <SelectItem value="under review">Under Review</SelectItem>
-                    <SelectItem value="archived">Archived</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="w-full md:w-44">
-                <Select value={vesselFilter} onValueChange={setVesselFilter}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Vessel" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Vessels</SelectItem>
-                    {uniqueVessels.map(vessel => (
-                      <SelectItem key={vessel} value={vessel}>{vessel}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="w-full md:w-48">
-                <Select value={sortBy} onValueChange={setSortBy}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Sort by" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="riskLevel">Risk Level (High to Low)</SelectItem>
-                    <SelectItem value="activity">Activity Name</SelectItem>
-                    <SelectItem value="date">Date</SelectItem>
-                    <SelectItem value="vessel">Vessel</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+            {(filters.risk_levels.length > 0 || filters.statuses.length > 0 || filters.start_date || filters.end_date || searchQuery) && (
+              <div className="flex justify-end"><Button variant="ghost" size="sm" onClick={clearAllFilters}><X className="h-4 w-4 mr-2" />Clear All Filters</Button></div>
+            )}
+            <div className="relative"><Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Input placeholder="Search by activity, location, vessel, or hazard..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-10" />
             </div>
-
-            <div className="flex items-center justify-between">
-              <div className="text-sm text-gray-500">
-                Showing {filteredRisks.length} of {risks.length} risk assessments
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div><Label>Risk Level</Label>
+                <Popover><PopoverTrigger asChild><Button variant="outline" className="w-full justify-between"><span className="truncate">{filters.risk_levels.length === 0 ? 'All Levels' : filters.risk_levels.length === 1 ? filters.risk_levels[0] : `${filters.risk_levels.length} selected`}</span><ChevronDown className="h-4 w-4 ml-2 shrink-0" /></Button></PopoverTrigger><PopoverContent className="w-64 p-0" align="start"><div className="p-2"><div className="flex items-center justify-between px-2 py-1.5 mb-1"><span className="text-sm font-medium">Select Levels</span>{filters.risk_levels.length > 0 && (<Button variant="ghost" size="sm" onClick={() => clearFilter('risk_levels')} className="h-auto p-1 text-xs">Clear</Button>)}</div>{riskLevels.map(lvl => (<div key={lvl} className="flex items-center space-x-2 px-2 py-1.5 hover:bg-gray-100 rounded cursor-pointer" onClick={() => toggleFilter('risk_levels', lvl)}><Checkbox checked={filters.risk_levels.includes(lvl)} onCheckedChange={() => toggleFilter('risk_levels', lvl)} /><label className="text-sm flex-1 cursor-pointer">{lvl}</label></div>))}</div></PopoverContent></Popover>
+                {filters.risk_levels.length > 0 && (<div className="flex flex-wrap gap-1 mt-2">{filters.risk_levels.map(lvl => (<Badge key={lvl} variant="secondary" className="text-xs">{lvl}<X className="h-3 w-3 ml-1 cursor-pointer" onClick={() => toggleFilter('risk_levels', lvl)} /></Badge>))}</div>)}
               </div>
-              {hasActiveFilters && (
-                <Button variant="ghost" size="sm" onClick={clearFilters}>
-                  <X className="h-4 w-4 mr-1" />
-                  Clear Filters
-                </Button>
-              )}
+              <div><Label>Status</Label>
+                <Popover><PopoverTrigger asChild><Button variant="outline" className="w-full justify-between"><span className="truncate">{filters.statuses.length === 0 ? 'All Status' : filters.statuses.length === 1 ? filters.statuses[0] : `${filters.statuses.length} selected`}</span><ChevronDown className="h-4 w-4 ml-2 shrink-0" /></Button></PopoverTrigger><PopoverContent className="w-64 p-0" align="start"><div className="p-2"><div className="flex items-center justify-between px-2 py-1.5 mb-1"><span className="text-sm font-medium">Select Status</span>{filters.statuses.length > 0 && (<Button variant="ghost" size="sm" onClick={() => clearFilter('statuses')} className="h-auto p-1 text-xs">Clear</Button>)}</div>{statuses.map(st => (<div key={st} className="flex items-center space-x-2 px-2 py-1.5 hover:bg-gray-100 rounded cursor-pointer" onClick={() => toggleFilter('statuses', st)}><Checkbox checked={filters.statuses.includes(st)} onCheckedChange={() => toggleFilter('statuses', st)} /><label className="text-sm flex-1 cursor-pointer">{st}</label></div>))}</div></PopoverContent></Popover>
+                {filters.statuses.length > 0 && (<div className="flex flex-wrap gap-1 mt-2">{filters.statuses.map(st => (<Badge key={st} variant="secondary" className="text-xs">{st}<X className="h-3 w-3 ml-1 cursor-pointer" onClick={() => toggleFilter('statuses', st)} /></Badge>))}</div>)}
+              </div>
+              <div><Label>Sort By</Label><Select value={sortBy} onValueChange={setSortBy}><SelectTrigger><SelectValue placeholder="Sort by" /></SelectTrigger><SelectContent><SelectItem value="riskLevel">Risk Level (High to Low)</SelectItem><SelectItem value="activity">Activity Name</SelectItem><SelectItem value="date">Date</SelectItem><SelectItem value="vessel">Vessel</SelectItem></SelectContent></Select></div>
             </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+              <div><Label htmlFor="start_date">From Date</Label><Input id="start_date" type="date" value={filters.start_date} onChange={(e) => setFilters({...filters, start_date: e.target.value})} /></div>
+              <div><Label htmlFor="end_date">To Date</Label><Input id="end_date" type="date" value={filters.end_date} onChange={(e) => setFilters({...filters, end_date: e.target.value})} /></div>
+              <div>{(filters.start_date || filters.end_date) && (<Button variant="outline" size="sm" onClick={clearDateFilters} className="w-full"><X className="h-4 w-4 mr-2" />Clear Date Range</Button>)}</div>
+            </div>
+            <div className="text-sm text-gray-500">Showing {filteredRisks.length} of {risks.length} risk assessments</div>
           </div>
         </CardContent>
       </Card>
