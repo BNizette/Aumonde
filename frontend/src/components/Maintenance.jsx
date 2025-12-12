@@ -6,7 +6,10 @@ import { Input } from '@/components/ui/input';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Plus, Edit, Trash2, Wrench, Eye, Calendar, Search, Filter, X } from 'lucide-react';
+import { Plus, Edit, Trash2, Wrench, Eye, Calendar, Search, Filter, X, Download, ChevronDown } from 'lucide-react';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
 import MaintenanceForm from './MaintenanceForm';
 import MaintenanceDetails from './MaintenanceDetails';
 
