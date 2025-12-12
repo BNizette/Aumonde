@@ -52,12 +52,11 @@ const TripManagement = () => {
 
   useEffect(() => {
     applyFiltersAndSort();
-  }, [searchQuery, statusFilter, vesselFilter, sortBy, trips]);
+  }, [searchQuery, filters, sortBy, trips]);
 
   const applyFiltersAndSort = () => {
     let filtered = [...trips];
 
-    // Apply search filter
     if (searchQuery) {
       filtered = filtered.filter(trip =>
         trip.trip_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -67,56 +66,86 @@ const TripManagement = () => {
       );
     }
 
-    // Apply status filter (based on dates)
-    if (statusFilter !== 'all') {
+    if (filters.statuses.length > 0) {
       const now = new Date();
       filtered = filtered.filter(trip => {
         const departDate = trip.depart_datetime ? new Date(trip.depart_datetime) : null;
         const returnDate = trip.return_datetime ? new Date(trip.return_datetime) : null;
         
-        if (statusFilter === 'active') {
-          return departDate && departDate <= now && (!returnDate || returnDate >= now);
-        } else if (statusFilter === 'completed') {
-          return returnDate && returnDate < now;
-        } else if (statusFilter === 'upcoming') {
-          return departDate && departDate > now;
-        }
+        return filters.statuses.some(status => {
+          if (status === 'active') return departDate && departDate <= now && (!returnDate || returnDate >= now);
+          if (status === 'completed') return returnDate && returnDate < now;
+          if (status === 'upcoming') return departDate && departDate > now;
+          return false;
+        });
+      });
+    }
+
+    if (filters.vessels.length > 0) {
+      filtered = filtered.filter(trip => filters.vessels.includes(trip.vessel_name));
+    }
+
+    if (filters.start_date || filters.end_date) {
+      filtered = filtered.filter(trip => {
+        if (!trip.depart_datetime) return false;
+        const tripDate = new Date(trip.depart_datetime);
+        const startDate = filters.start_date ? new Date(filters.start_date) : null;
+        const endDate = filters.end_date ? new Date(filters.end_date + 'T23:59:59') : null;
+        if (startDate && tripDate < startDate) return false;
+        if (endDate && tripDate > endDate) return false;
         return true;
       });
     }
 
-    // Apply vessel filter
-    if (vesselFilter !== 'all') {
-      filtered = filtered.filter(trip => 
-        trip.vessel_name?.toLowerCase().includes(vesselFilter.toLowerCase())
-      );
-    }
-
-    // Apply sorting
     filtered.sort((a, b) => {
       switch (sortBy) {
-        case 'date':
-          return new Date(b.depart_datetime || 0) - new Date(a.depart_datetime || 0);
-        case 'vessel':
-          return (a.vessel_name || '').localeCompare(b.vessel_name || '');
-        case 'name':
-          return (a.trip_name || '').localeCompare(b.trip_name || '');
-        default:
-          return 0;
+        case 'date': return new Date(b.depart_datetime || 0) - new Date(a.depart_datetime || 0);
+        case 'vessel': return (a.vessel_name || '').localeCompare(b.vessel_name || '');
+        case 'name': return (a.trip_name || '').localeCompare(b.trip_name || '');
+        default: return 0;
       }
     });
 
     setFilteredTrips(filtered);
   };
 
-  const clearFilters = () => {
-    setSearchQuery('');
-    setStatusFilter('all');
-    setVesselFilter('all');
-    setSortBy('date');
+  const toggleFilter = (filterType, value) => {
+    setFilters(prev => {
+      const currentArray = prev[filterType];
+      const isSelected = currentArray.includes(value);
+      return {...prev, [filterType]: isSelected ? currentArray.filter(item => item !== value) : [...currentArray, value]};
+    });
   };
 
-  const hasActiveFilters = searchQuery || statusFilter !== 'all' || vesselFilter !== 'all' || sortBy !== 'date';
+  const clearFilter = (filterType) => { setFilters(prev => ({...prev, [filterType]: []})); };
+  const clearDateFilters = () => { setFilters(prev => ({...prev, start_date: '', end_date: ''})); };
+  const clearAllFilters = () => { setSearchQuery(''); setFilters({statuses: [], vessels: [], start_date: '', end_date: ''}); };
+
+  const exportToCSV = () => {
+    if (filteredTrips.length === 0) { setError('No trips to export'); setTimeout(() => setError(''), 3000); return; }
+    const headers = ['ID', 'Trip Name', 'Vessel Name', 'Trip Type', 'Depart Date', 'Return Date', 'Operating Area', 'Passengers', 'Crew', 'Master', 'Engineer', 'Deckhand', 'Host', 'Notes', 'Created At'];
+    const csvRows = [headers.join(','), ...filteredTrips.map(t => [
+      `"${t.id || ''}"`, `"${(t.trip_name || '').replace(/"/g, '""')}"`, `"${(t.vessel_name || '').replace(/"/g, '""')}"`,
+      `"${t.trip_type || ''}"`, `"${t.depart_datetime ? new Date(t.depart_datetime).toLocaleString() : ''}"`,
+      `"${t.return_datetime ? new Date(t.return_datetime).toLocaleString() : ''}"`, `"${(t.operating_area || '').replace(/"/g, '""')}"`,
+      `"${t.number_of_passengers || ''}"`, `"${t.number_of_crew || ''}"`, `"${t.master || ''}"`, `"${t.engineer || ''}"`,
+      `"${t.deckhand || ''}"`, `"${t.host || ''}"`, `"${(t.notes || '').replace(/"/g, '""')}"`,
+      `"${t.created_at ? new Date(t.created_at).toLocaleString() : ''}"`
+    ].join(','))];
+    const blob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.setAttribute('href', URL.createObjectURL(blob));
+    link.setAttribute('download', `trips_export_${new Date().toISOString().slice(0, 10)}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setMessage(`Exported ${filteredTrips.length} trips to CSV`);
+    setTimeout(() => setMessage(''), 3000);
+  };
+
+  const clearFilters = () => { setSearchQuery(''); clearAllFilters(); setSortBy('date'); };
+  const hasActiveFilters = searchQuery || filters.statuses.length > 0 || filters.vessels.length > 0 || filters.start_date || filters.end_date || sortBy !== 'date';
 
   const fetchTrips = async () => {
     try {
