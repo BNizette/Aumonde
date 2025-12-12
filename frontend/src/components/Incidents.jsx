@@ -221,59 +221,59 @@ const Incidents = () => {
       )}
 
       {/* Statistics Cards - Clickable */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
         <Card 
           className="cursor-pointer hover:shadow-lg transition-shadow"
           onClick={() => setFilters({ incident_type: 'all', severity: 'all', status: 'all' })}
         >
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-gray-500">Total Incidents</CardTitle>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-xs font-medium text-gray-500">Total Incidents</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{incidents.length}</div>
-            <p className="text-xs text-gray-500 mt-1">Click to show all</p>
+            <div className="text-lg font-bold">{incidents.length}</div>
+            <p className="text-[10px] text-gray-500 mt-0.5">Click to show all</p>
           </CardContent>
         </Card>
         <Card 
           className="cursor-pointer hover:shadow-lg transition-shadow"
           onClick={() => setFilters({ ...filters, severity: 'Critical' })}
         >
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-gray-500">Critical</CardTitle>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-xs font-medium text-gray-500">Critical</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-red-600">
+            <div className="text-lg font-bold text-red-600">
               {incidents.filter(i => i.severity === 'Critical').length}
             </div>
-            <p className="text-xs text-gray-500 mt-1">Click to filter</p>
+            <p className="text-[10px] text-gray-500 mt-0.5">Click to filter</p>
           </CardContent>
         </Card>
         <Card 
           className="cursor-pointer hover:shadow-lg transition-shadow"
           onClick={() => setFilters({ ...filters, severity: 'Serious' })}
         >
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-gray-500">Serious</CardTitle>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-xs font-medium text-gray-500">Serious</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-orange-600">
+            <div className="text-lg font-bold text-orange-600">
               {incidents.filter(i => i.severity === 'Serious').length}
             </div>
-            <p className="text-xs text-gray-500 mt-1">Click to filter</p>
+            <p className="text-[10px] text-gray-500 mt-0.5">Click to filter</p>
           </CardContent>
         </Card>
         <Card 
           className="cursor-pointer hover:shadow-lg transition-shadow"
           onClick={() => setFilters({ ...filters, status: 'Under Investigation' })}
         >
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-gray-500">Under Investigation</CardTitle>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-xs font-medium text-gray-500">Under Investigation</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-yellow-600">
+            <div className="text-lg font-bold text-yellow-600">
               {incidents.filter(i => i.investigation_status === 'Under Investigation').length}
             </div>
-            <p className="text-xs text-gray-500 mt-1">Click to filter</p>
+            <p className="text-[10px] text-gray-500 mt-0.5">Click to filter</p>
           </CardContent>
         </Card>
       </div>

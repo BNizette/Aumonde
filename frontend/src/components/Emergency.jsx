@@ -432,7 +432,7 @@ const Emergency = () => {
             </CardHeader>
             <CardContent>
               {/* Statistics Cards - Clickable */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-3 mb-6">
                 <Card 
                   className="cursor-pointer hover:shadow-lg transition-shadow"
                   onClick={() => {
@@ -442,54 +442,54 @@ const Emergency = () => {
                     setContactSort('priority');
                   }}
                 >
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-sm font-medium text-gray-500">Total Contacts</CardTitle>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-xs font-medium text-gray-500">Total Contacts</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold">{contacts.length}</div>
-                    <p className="text-xs text-gray-500 mt-1">Click to show all</p>
+                    <div className="text-lg font-bold">{contacts.length}</div>
+                    <p className="text-[10px] text-gray-500 mt-0.5">Click to show all</p>
                   </CardContent>
                 </Card>
                 <Card 
                   className="cursor-pointer hover:shadow-lg transition-shadow"
                   onClick={() => setContactPriorityFilter('1')}
                 >
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-sm font-medium text-gray-500">Priority 1</CardTitle>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-xs font-medium text-gray-500">Priority 1</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold text-red-600">
+                    <div className="text-lg font-bold text-red-600">
                       {contacts.filter(c => c.priority === 1).length}
                     </div>
-                    <p className="text-xs text-gray-500 mt-1">Critical contacts</p>
+                    <p className="text-[10px] text-gray-500 mt-0.5">Critical contacts</p>
                   </CardContent>
                 </Card>
                 <Card 
                   className="cursor-pointer hover:shadow-lg transition-shadow"
                   onClick={() => setContactTypeFilter('Medical')}
                 >
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-sm font-medium text-gray-500">Medical</CardTitle>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-xs font-medium text-gray-500">Medical</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold text-blue-600">
+                    <div className="text-lg font-bold text-blue-600">
                       {contacts.filter(c => c.contact_type === 'Medical').length}
                     </div>
-                    <p className="text-xs text-gray-500 mt-1">Click to filter</p>
+                    <p className="text-[10px] text-gray-500 mt-0.5">Click to filter</p>
                   </CardContent>
                 </Card>
                 <Card 
                   className="cursor-pointer hover:shadow-lg transition-shadow"
                   onClick={() => setContactTypeFilter('Authority')}
                 >
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-sm font-medium text-gray-500">Authorities</CardTitle>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-xs font-medium text-gray-500">Authorities</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold text-purple-600">
+                    <div className="text-lg font-bold text-purple-600">
                       {contacts.filter(c => c.contact_type === 'Authority').length}
                     </div>
-                    <p className="text-xs text-gray-500 mt-1">Click to filter</p>
+                    <p className="text-[10px] text-gray-500 mt-0.5">Click to filter</p>
                   </CardContent>
                 </Card>
               </div>
@@ -620,7 +620,7 @@ const Emergency = () => {
             </CardHeader>
             <CardContent>
               {/* Statistics Cards - Clickable */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-3 mb-6">
                 <Card 
                   className="cursor-pointer hover:shadow-lg transition-shadow"
                   onClick={() => {
@@ -629,54 +629,54 @@ const Emergency = () => {
                     setProcedureSort('type');
                   }}
                 >
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-sm font-medium text-gray-500">Total Procedures</CardTitle>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-xs font-medium text-gray-500">Total Procedures</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold">{procedures.length}</div>
-                    <p className="text-xs text-gray-500 mt-1">Click to show all</p>
+                    <div className="text-lg font-bold">{procedures.length}</div>
+                    <p className="text-[10px] text-gray-500 mt-0.5">Click to show all</p>
                   </CardContent>
                 </Card>
                 <Card 
                   className="cursor-pointer hover:shadow-lg transition-shadow"
                   onClick={() => setProcedureTypeFilter('Fire')}
                 >
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-sm font-medium text-gray-500">Fire</CardTitle>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-xs font-medium text-gray-500">Fire</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold text-red-600">
+                    <div className="text-lg font-bold text-red-600">
                       {procedures.filter(p => p.emergency_type === 'Fire').length}
                     </div>
-                    <p className="text-xs text-gray-500 mt-1">Click to filter</p>
+                    <p className="text-[10px] text-gray-500 mt-0.5">Click to filter</p>
                   </CardContent>
                 </Card>
                 <Card 
                   className="cursor-pointer hover:shadow-lg transition-shadow"
                   onClick={() => setProcedureTypeFilter('Man Overboard')}
                 >
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-sm font-medium text-gray-500">Man Overboard</CardTitle>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-xs font-medium text-gray-500">Man Overboard</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold text-blue-600">
+                    <div className="text-lg font-bold text-blue-600">
                       {procedures.filter(p => p.emergency_type === 'Man Overboard').length}
                     </div>
-                    <p className="text-xs text-gray-500 mt-1">Click to filter</p>
+                    <p className="text-[10px] text-gray-500 mt-0.5">Click to filter</p>
                   </CardContent>
                 </Card>
                 <Card 
                   className="cursor-pointer hover:shadow-lg transition-shadow"
                   onClick={() => setProcedureTypeFilter('Medical Emergency')}
                 >
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-sm font-medium text-gray-500">Medical</CardTitle>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-xs font-medium text-gray-500">Medical</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold text-green-600">
+                    <div className="text-lg font-bold text-green-600">
                       {procedures.filter(p => p.emergency_type === 'Medical Emergency').length}
                     </div>
-                    <p className="text-xs text-gray-500 mt-1">Click to filter</p>
+                    <p className="text-[10px] text-gray-500 mt-0.5">Click to filter</p>
                   </CardContent>
                 </Card>
               </div>
@@ -789,7 +789,7 @@ const Emergency = () => {
             </CardHeader>
             <CardContent>
               {/* Statistics Cards - Clickable */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-3 mb-6">
                 <Card 
                   className="cursor-pointer hover:shadow-lg transition-shadow"
                   onClick={() => {
@@ -799,54 +799,54 @@ const Emergency = () => {
                     setDrillSort('date');
                   }}
                 >
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-sm font-medium text-gray-500">Total Drills</CardTitle>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-xs font-medium text-gray-500">Total Drills</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold">{drills.length}</div>
-                    <p className="text-xs text-gray-500 mt-1">Click to show all</p>
+                    <div className="text-lg font-bold">{drills.length}</div>
+                    <p className="text-[10px] text-gray-500 mt-0.5">Click to show all</p>
                   </CardContent>
                 </Card>
                 <Card 
                   className="cursor-pointer hover:shadow-lg transition-shadow"
                   onClick={() => setDrillTypeFilter('Fire Drill')}
                 >
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-sm font-medium text-gray-500">Fire Drills</CardTitle>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-xs font-medium text-gray-500">Fire Drills</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold text-red-600">
+                    <div className="text-lg font-bold text-red-600">
                       {drills.filter(d => d.drill_type === 'Fire Drill').length}
                     </div>
-                    <p className="text-xs text-gray-500 mt-1">Click to filter</p>
+                    <p className="text-[10px] text-gray-500 mt-0.5">Click to filter</p>
                   </CardContent>
                 </Card>
                 <Card 
                   className="cursor-pointer hover:shadow-lg transition-shadow"
                   onClick={() => setDrillTypeFilter('Abandon Ship Drill')}
                 >
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-sm font-medium text-gray-500">Abandon Ship</CardTitle>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-xs font-medium text-gray-500">Abandon Ship</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold text-orange-600">
+                    <div className="text-lg font-bold text-orange-600">
                       {drills.filter(d => d.drill_type === 'Abandon Ship Drill').length}
                     </div>
-                    <p className="text-xs text-gray-500 mt-1">Click to filter</p>
+                    <p className="text-[10px] text-gray-500 mt-0.5">Click to filter</p>
                   </CardContent>
                 </Card>
                 <Card 
                   className="cursor-pointer hover:shadow-lg transition-shadow"
                   onClick={() => setDrillTypeFilter('Man Overboard Drill')}
                 >
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-sm font-medium text-gray-500">Man Overboard</CardTitle>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-xs font-medium text-gray-500">Man Overboard</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold text-blue-600">
+                    <div className="text-lg font-bold text-blue-600">
                       {drills.filter(d => d.drill_type === 'Man Overboard Drill').length}
                     </div>
-                    <p className="text-xs text-gray-500 mt-1">Click to filter</p>
+                    <p className="text-[10px] text-gray-500 mt-0.5">Click to filter</p>
                   </CardContent>
                 </Card>
               </div>

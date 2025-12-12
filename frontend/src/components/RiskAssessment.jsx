@@ -240,19 +240,19 @@ const RiskAssessment = () => {
       )}
 
       {/* Statistics Cards - Clickable */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
         <Card 
           className="cursor-pointer hover:shadow-lg transition-shadow" 
           onClick={() => {
             clearFilters();
           }}
         >
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-gray-500">Total Risks</CardTitle>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-xs font-medium text-gray-500">Total Risks</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{risks.length}</div>
-            <p className="text-xs text-gray-500 mt-1">Click to show all</p>
+            <div className="text-lg font-bold">{risks.length}</div>
+            <p className="text-[10px] text-gray-500 mt-0.5">Click to show all</p>
           </CardContent>
         </Card>
         <Card 
@@ -262,14 +262,14 @@ const RiskAssessment = () => {
             setStatusFilter('all');
           }}
         >
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-gray-500">Critical</CardTitle>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-xs font-medium text-gray-500">Critical</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-red-600">
+            <div className="text-lg font-bold text-red-600">
               {risks.filter(r => r.risk_level === 'Critical').length}
             </div>
-            <p className="text-xs text-gray-500 mt-1">Click to filter</p>
+            <p className="text-[10px] text-gray-500 mt-0.5">Click to filter</p>
           </CardContent>
         </Card>
         <Card 
@@ -279,14 +279,14 @@ const RiskAssessment = () => {
             setStatusFilter('all');
           }}
         >
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-gray-500">High</CardTitle>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-xs font-medium text-gray-500">High</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-orange-600">
+            <div className="text-lg font-bold text-orange-600">
               {risks.filter(r => r.risk_level === 'High').length}
             </div>
-            <p className="text-xs text-gray-500 mt-1">Click to filter</p>
+            <p className="text-[10px] text-gray-500 mt-0.5">Click to filter</p>
           </CardContent>
         </Card>
         <Card 
@@ -296,14 +296,14 @@ const RiskAssessment = () => {
             setStatusFilter('Active');
           }}
         >
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-gray-500">Active</CardTitle>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-xs font-medium text-gray-500">Active</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">
+            <div className="text-lg font-bold text-green-600">
               {risks.filter(r => r.status === 'Active').length}
             </div>
-            <p className="text-xs text-gray-500 mt-1">Click to filter</p>
+            <p className="text-[10px] text-gray-500 mt-0.5">Click to filter</p>
           </CardContent>
         </Card>
       </div>

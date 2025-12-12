@@ -339,14 +339,14 @@ const Compliance = () => {
       )}
 
       {/* Statistics - Clickable */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
         <Card 
           className="cursor-pointer hover:shadow-lg transition-shadow"
           onClick={() => setCertStatusFilter('valid')}
         >
           <CardContent className="pt-6">
             <div className="text-center">
-              <div className="text-2xl font-bold text-green-600">{validCerts}</div>
+              <div className="text-lg font-bold text-green-600">{validCerts}</div>
               <div className="text-sm text-gray-600">Valid</div>
               <p className="text-xs text-gray-400 mt-1">Click to filter</p>
             </div>
@@ -358,7 +358,7 @@ const Compliance = () => {
         >
           <CardContent className="pt-6">
             <div className="text-center">
-              <div className="text-2xl font-bold text-yellow-600">{expiringSoon}</div>
+              <div className="text-lg font-bold text-yellow-600">{expiringSoon}</div>
               <div className="text-sm text-gray-600">Expiring Soon</div>
               <p className="text-xs text-gray-400 mt-1">Click to filter</p>
             </div>
@@ -370,7 +370,7 @@ const Compliance = () => {
         >
           <CardContent className="pt-6">
             <div className="text-center">
-              <div className="text-2xl font-bold text-red-600">{expired}</div>
+              <div className="text-lg font-bold text-red-600">{expired}</div>
               <div className="text-sm text-gray-600">Expired</div>
               <p className="text-xs text-gray-400 mt-1">Click to filter</p>
             </div>
@@ -382,7 +382,7 @@ const Compliance = () => {
         >
           <CardContent className="pt-6">
             <div className="text-center">
-              <div className="text-2xl font-bold text-green-600">{compliant}</div>
+              <div className="text-lg font-bold text-green-600">{compliant}</div>
               <div className="text-sm text-gray-600">Compliant</div>
               <p className="text-xs text-gray-400 mt-1">Click to filter</p>
             </div>
@@ -394,7 +394,7 @@ const Compliance = () => {
         >
           <CardContent className="pt-6">
             <div className="text-center">
-              <div className="text-2xl font-bold text-red-600">{nonCompliant}</div>
+              <div className="text-lg font-bold text-red-600">{nonCompliant}</div>
               <div className="text-sm text-gray-600">Non-Compliant</div>
               <p className="text-xs text-gray-400 mt-1">Click to filter</p>
             </div>
