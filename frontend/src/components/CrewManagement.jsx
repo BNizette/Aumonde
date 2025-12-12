@@ -257,6 +257,12 @@ const CrewManagement = () => {
       });
       setCrewList(response.data);
       setFilteredCrew(response.data);
+      
+      // Extract unique values for filters
+      const uniquePositions = [...new Set(response.data.map(c => c.default_position).filter(Boolean))];
+      const uniqueRoles = [...new Set(response.data.map(c => c.role).filter(Boolean))];
+      setPositions(uniquePositions);
+      setRoles(uniqueRoles);
     } catch (err) {
       setError('Error fetching crew');
       console.error(err);
