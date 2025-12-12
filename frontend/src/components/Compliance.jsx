@@ -219,11 +219,53 @@ const Compliance = () => {
     setFilteredRequirements(filtered);
   };
 
+  const exportCertificatesToCSV = () => {
+    if (filteredCertificates.length === 0) { setError('No certificates to export'); setTimeout(() => setError(''), 3000); return; }
+    const headers = ['ID', 'Certificate Name', 'Certificate Number', 'Type', 'Issuing Authority', 'Issue Date', 'Expiry Date', 'Vessel Name', 'Crew Name', 'Status', 'Created At'];
+    const csvRows = [headers.join(','), ...filteredCertificates.map(c => [
+      `"${c.id || ''}"`, `"${(c.certificate_name || '').replace(/"/g, '""')}"`, `"${c.certificate_number || ''}"`,
+      `"${c.certificate_type || ''}"`, `"${(c.issuing_authority || '').replace(/"/g, '""')}"`,
+      `"${c.issue_date ? new Date(c.issue_date).toLocaleDateString() : ''}"`,
+      `"${c.expiry_date ? new Date(c.expiry_date).toLocaleDateString() : ''}"`,
+      `"${(c.vessel_name || '').replace(/"/g, '""')}"`, `"${(c.crew_name || '').replace(/"/g, '""')}"`,
+      `"${c.status || ''}"`, `"${c.created_at ? new Date(c.created_at).toLocaleString() : ''}"`
+    ].join(','))];
+    const blob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.setAttribute('href', URL.createObjectURL(blob));
+    link.setAttribute('download', `certificates_export_${new Date().toISOString().slice(0, 10)}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setMessage(`Exported ${filteredCertificates.length} certificates to CSV`);
+    setTimeout(() => setMessage(''), 3000);
+  };
+
+  const exportRequirementsToCSV = () => {
+    if (filteredRequirements.length === 0) { setError('No requirements to export'); setTimeout(() => setError(''), 3000); return; }
+    const headers = ['ID', 'Requirement Name', 'Category', 'Description', 'Regulatory Reference', 'Compliance Status', 'Responsible Person', 'Notes', 'Created At'];
+    const csvRows = [headers.join(','), ...filteredRequirements.map(r => [
+      `"${r.id || ''}"`, `"${(r.requirement_name || '').replace(/"/g, '""')}"`, `"${r.category || ''}"`,
+      `"${(r.description || '').replace(/"/g, '""')}"`, `"${(r.regulatory_reference || '').replace(/"/g, '""')}"`,
+      `"${r.compliance_status || ''}"`, `"${(r.responsible_person || '').replace(/"/g, '""')}"`,
+      `"${(r.notes || '').replace(/"/g, '""')}"`, `"${r.created_at ? new Date(r.created_at).toLocaleString() : ''}"`
+    ].join(','))];
+    const blob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.setAttribute('href', URL.createObjectURL(blob));
+    link.setAttribute('download', `requirements_export_${new Date().toISOString().slice(0, 10)}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setMessage(`Exported ${filteredRequirements.length} requirements to CSV`);
+    setTimeout(() => setMessage(''), 3000);
+  };
+
   const clearCertFilters = () => {
     setCertSearch('');
-    setCertTypeFilter('all');
-    setCertStatusFilter('all');
-    setCertVesselFilter('all');
+    setCertFilters({types: [], statuses: [], start_date: '', end_date: ''});
     setCertSort('expiry');
   };
 
