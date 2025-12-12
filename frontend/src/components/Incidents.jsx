@@ -297,6 +297,37 @@ const Incidents = () => {
     });
   };
 
+  const toggleFilter = (filterType, value) => {
+    setFilters(prev => {
+      const currentArray = prev[filterType];
+      const isSelected = currentArray.includes(value);
+      
+      return {
+        ...prev,
+        [filterType]: isSelected
+          ? currentArray.filter(item => item !== value)
+          : [...currentArray, value]
+      };
+    });
+  };
+
+  const clearFilter = (filterType) => {
+    setFilters(prev => ({
+      ...prev,
+      [filterType]: []
+    }));
+  };
+
+  const clearAllFilters = () => {
+    setFilters({
+      incident_types: [],
+      severities: [],
+      statuses: [],
+      start_date: '',
+      end_date: ''
+    });
+  };
+
   const getSeverityColor = (severity) => {
     const colors = {
       'Minor': 'bg-blue-100 text-blue-800',
