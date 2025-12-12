@@ -27,7 +27,9 @@ const Incidents = () => {
   const [filters, setFilters] = useState({
     incident_type: 'all',
     severity: 'all',
-    status: 'all'
+    status: 'all',
+    start_date: '',
+    end_date: ''
   });
 
   const [formData, setFormData] = useState({
