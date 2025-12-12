@@ -22,9 +22,15 @@ const TripManagement = () => {
   const [filteredTrips, setFilteredTrips] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
-  const [vesselFilter, setVesselFilter] = useState('all');
+  const [statuses, setStatuses] = useState([]);
+  const [vessels, setVessels] = useState([]);
   const [sortBy, setSortBy] = useState('date');
+  const [filters, setFilters] = useState({
+    statuses: [],
+    vessels: [],
+    start_date: '',
+    end_date: ''
+  });
   const [formOpen, setFormOpen] = useState(false);
   const [formMode, setFormMode] = useState('create');
   const [selectedTrip, setSelectedTrip] = useState(null);
