@@ -68,19 +68,34 @@ const Incidents = () => {
       const token = localStorage.getItem('token');
       const headers = { Authorization: `Bearer ${token}` };
 
-      const params = new URLSearchParams();
-      if (filters.incident_type && filters.incident_type !== 'all') params.append('incident_type', filters.incident_type);
-      if (filters.severity && filters.severity !== 'all') params.append('severity', filters.severity);
-      if (filters.status && filters.status !== 'all') params.append('status', filters.status);
-
+      // Fetch all incidents (no backend filtering)
       const [incidentsRes, vesselsRes] = await Promise.all([
-        axios.get(`${API}/incidents?${params}`, { headers }),
+        axios.get(`${API}/incidents`, { headers }),
         axios.get(`${API}/vessels`, { headers })
       ]);
 
       let filteredIncidents = incidentsRes.data;
 
-      // Apply date range filter on client side
+      // Apply multi-select filters on client side
+      if (filters.incident_types.length > 0) {
+        filteredIncidents = filteredIncidents.filter(incident => 
+          filters.incident_types.includes(incident.incident_type)
+        );
+      }
+
+      if (filters.severities.length > 0) {
+        filteredIncidents = filteredIncidents.filter(incident => 
+          filters.severities.includes(incident.severity)
+        );
+      }
+
+      if (filters.statuses.length > 0) {
+        filteredIncidents = filteredIncidents.filter(incident => 
+          filters.statuses.includes(incident.investigation_status)
+        );
+      }
+
+      // Apply date range filter
       if (filters.start_date || filters.end_date) {
         filteredIncidents = filteredIncidents.filter(incident => {
           if (!incident.incident_date) return false;
