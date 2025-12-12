@@ -400,42 +400,82 @@ const Incidents = () => {
           </Button>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <Label>Incident Type</Label>
-              <Select value={filters.incident_type} onValueChange={(value) => setFilters({...filters, incident_type: value})}>
-                <SelectTrigger>
-                  <SelectValue placeholder="All Types" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Types</SelectItem>
-                  {incidentTypes.map(type => <SelectItem key={type} value={type}>{type}</SelectItem>)}
-                </SelectContent>
-              </Select>
+          <div className="space-y-4">
+            {/* First Row: Type, Severity, Status */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <Label>Incident Type</Label>
+                <Select value={filters.incident_type} onValueChange={(value) => setFilters({...filters, incident_type: value})}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="All Types" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Types</SelectItem>
+                    {incidentTypes.map(type => <SelectItem key={type} value={type}>{type}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label>Severity</Label>
+                <Select value={filters.severity} onValueChange={(value) => setFilters({...filters, severity: value})}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="All Severities" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Severities</SelectItem>
+                    {severityLevels.map(level => <SelectItem key={level} value={level}>{level}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label>Status</Label>
+                <Select value={filters.status} onValueChange={(value) => setFilters({...filters, status: value})}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="All Statuses" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Statuses</SelectItem>
+                    {statuses.map(status => <SelectItem key={status} value={status}>{status}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
-            <div>
-              <Label>Severity</Label>
-              <Select value={filters.severity} onValueChange={(value) => setFilters({...filters, severity: value})}>
-                <SelectTrigger>
-                  <SelectValue placeholder="All Severities" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Severities</SelectItem>
-                  {severityLevels.map(level => <SelectItem key={level} value={level}>{level}</SelectItem>)}
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label>Status</Label>
-              <Select value={filters.status} onValueChange={(value) => setFilters({...filters, status: value})}>
-                <SelectTrigger>
-                  <SelectValue placeholder="All Statuses" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Statuses</SelectItem>
-                  {statuses.map(status => <SelectItem key={status} value={status}>{status}</SelectItem>)}
-                </SelectContent>
-              </Select>
+
+            {/* Second Row: Date Range */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+              <div>
+                <Label htmlFor="start_date">From Date</Label>
+                <Input
+                  id="start_date"
+                  type="date"
+                  value={filters.start_date}
+                  onChange={(e) => setFilters({...filters, start_date: e.target.value})}
+                  placeholder="Start date"
+                />
+              </div>
+              <div>
+                <Label htmlFor="end_date">To Date</Label>
+                <Input
+                  id="end_date"
+                  type="date"
+                  value={filters.end_date}
+                  onChange={(e) => setFilters({...filters, end_date: e.target.value})}
+                  placeholder="End date"
+                />
+              </div>
+              <div>
+                {(filters.start_date || filters.end_date) && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={clearDateFilters}
+                    className="w-full"
+                  >
+                    <X className="h-4 w-4 mr-2" />
+                    Clear Date Range
+                  </Button>
+                )}
+              </div>
             </div>
           </div>
         </CardContent>
