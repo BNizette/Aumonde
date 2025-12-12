@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Ship, Users, FileText, AlertCircle, MapPin, Wrench } from 'lucide-react';
+import { Ship, Users, FileText, AlertCircle, MapPin, Wrench, AlertTriangle, Phone, Shield } from 'lucide-react';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
