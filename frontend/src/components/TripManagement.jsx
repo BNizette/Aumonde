@@ -426,10 +426,6 @@ const TripManagement = () => {
           </div>
         </CardContent>
       </Card>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
 
       {filteredTrips.length === 0 ? (
         <Card>
