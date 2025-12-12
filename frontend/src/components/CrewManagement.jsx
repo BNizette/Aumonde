@@ -85,7 +85,7 @@ const CrewManagement = () => {
 
   useEffect(() => {
     applyFiltersAndSort();
-  }, [searchQuery, positionFilter, roleFilter, sortBy, crewList]);
+  }, [searchQuery, filters, sortBy, crewList]);
 
   const applyFiltersAndSort = () => {
     let filtered = [...crewList];
@@ -100,18 +100,34 @@ const CrewManagement = () => {
       );
     }
 
-    // Apply position filter
-    if (positionFilter !== 'all') {
+    // Apply multi-select position filter
+    if (filters.positions.length > 0) {
       filtered = filtered.filter(member => 
-        member.default_position?.toLowerCase().includes(positionFilter.toLowerCase())
+        filters.positions.some(pos => member.default_position?.toLowerCase().includes(pos.toLowerCase()))
       );
     }
 
-    // Apply role filter
-    if (roleFilter !== 'all') {
+    // Apply multi-select role filter
+    if (filters.roles.length > 0) {
       filtered = filtered.filter(member => 
-        member.role?.toLowerCase() === roleFilter.toLowerCase()
+        filters.roles.includes(member.role)
       );
+    }
+
+    // Apply date range filter
+    if (filters.start_date || filters.end_date) {
+      filtered = filtered.filter(member => {
+        if (!member.date_commenced) return false;
+        
+        const memberDate = new Date(member.date_commenced);
+        const startDate = filters.start_date ? new Date(filters.start_date) : null;
+        const endDate = filters.end_date ? new Date(filters.end_date + 'T23:59:59') : null;
+
+        if (startDate && memberDate < startDate) return false;
+        if (endDate && memberDate > endDate) return false;
+        
+        return true;
+      });
     }
 
     // Apply sorting
@@ -133,14 +149,105 @@ const CrewManagement = () => {
     setFilteredCrew(filtered);
   };
 
+  const toggleFilter = (filterType, value) => {
+    setFilters(prev => {
+      const currentArray = prev[filterType];
+      const isSelected = currentArray.includes(value);
+      
+      return {
+        ...prev,
+        [filterType]: isSelected
+          ? currentArray.filter(item => item !== value)
+          : [...currentArray, value]
+      };
+    });
+  };
+
+  const clearFilter = (filterType) => {
+    setFilters(prev => ({
+      ...prev,
+      [filterType]: []
+    }));
+  };
+
+  const clearDateFilters = () => {
+    setFilters(prev => ({
+      ...prev,
+      start_date: '',
+      end_date: ''
+    }));
+  };
+
+  const clearAllFilters = () => {
+    setSearchQuery('');
+    setFilters({
+      positions: [],
+      roles: [],
+      start_date: '',
+      end_date: ''
+    });
+  };
+
+  const exportToCSV = () => {
+    if (filteredCrew.length === 0) {
+      setError('No crew to export');
+      setTimeout(() => setError(''), 3000);
+      return;
+    }
+
+    const headers = [
+      'ID', 'Staff Name', 'Date of Birth', 'Gender', 'Address', 'Mobile', 'Telephone', 'Email',
+      'Next of Kin', 'Next of Kin Contact', 'Default Position', 'Role', 'Qualifications',
+      'Certificates', 'Date Commenced', 'Date Ceased', 'Status', 'Created At'
+    ];
+
+    const csvRows = [
+      headers.join(','),
+      ...filteredCrew.map(c => [
+        `"${c.id || ''}"`,
+        `"${(c.staff_name || '').replace(/"/g, '""')}"`,
+        `"${c.date_of_birth ? new Date(c.date_of_birth).toLocaleDateString() : ''}"`,
+        `"${c.gender || ''}"`,
+        `"${(c.address || '').replace(/"/g, '""')}"`,
+        `"${c.mobile || ''}"`,
+        `"${c.telephone || ''}"`,
+        `"${c.email || ''}"`,
+        `"${(c.next_of_kin || '').replace(/"/g, '""')}"`,
+        `"${c.next_of_kin_contact || ''}"`,
+        `"${c.default_position || ''}"`,
+        `"${c.role || ''}"`,
+        `"${(c.qualifications || '').replace(/"/g, '""')}"`,
+        `"${(c.certificates || '').replace(/"/g, '""')}"`,
+        `"${c.date_commenced ? new Date(c.date_commenced).toLocaleDateString() : ''}"`,
+        `"${c.date_ceased ? new Date(c.date_ceased).toLocaleDateString() : ''}"`,
+        `"${c.status || ''}"`,
+        `"${c.created_at ? new Date(c.created_at).toLocaleString() : ''}"`
+      ].join(','))
+    ];
+
+    const csvContent = csvRows.join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    
+    link.setAttribute('href', url);
+    link.setAttribute('download', `crew_export_${new Date().toISOString().slice(0, 10)}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    setMessage(`Exported ${filteredCrew.length} crew members to CSV`);
+    setTimeout(() => setMessage(''), 3000);
+  };
+
   const clearFilters = () => {
     setSearchQuery('');
-    setPositionFilter('all');
-    setRoleFilter('all');
+    clearAllFilters();
     setSortBy('name');
   };
 
-  const hasActiveFilters = searchQuery || positionFilter !== 'all' || roleFilter !== 'all' || sortBy !== 'name';
+  const hasActiveFilters = searchQuery || filters.positions.length > 0 || filters.roles.length > 0 || filters.start_date || filters.end_date || sortBy !== 'name';
 
   const fetchCrew = async () => {
     try {
