@@ -457,40 +457,133 @@ const VesselManagement = () => {
 
       {/* Search and Filter Bar */}
       <Card>
-        <CardContent className="pt-6">
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle>Filters</CardTitle>
+          <Button variant="outline" size="sm" onClick={exportToCSV} className="flex items-center gap-2">
+            <Download className="h-4 w-4" />
+            Export to CSV
+          </Button>
+        </CardHeader>
+        <CardContent>
           <div className="space-y-4">
-            {/* Search Bar */}
-            <div className="flex flex-col md:flex-row gap-4">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                <Input
-                  placeholder="Search by name, registration, type, or owner..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10"
-                />
+            {/* Clear All Button */}
+            {(filters.vessel_types.length > 0 || filters.statuses.length > 0 || filters.start_date || filters.end_date || searchQuery) && (
+              <div className="flex justify-end">
+                <Button variant="ghost" size="sm" onClick={clearAllFilters}>
+                  <X className="h-4 w-4 mr-2" />
+                  Clear All Filters
+                </Button>
               </div>
-              
-              {/* Vessel Type Filter */}
-              <div className="w-full md:w-48">
-                <Select value={vesselTypeFilter} onValueChange={setVesselTypeFilter}>
-                  <SelectTrigger>
-                    <div className="flex items-center gap-2">
-                      <Filter className="h-4 w-4" />
-                      <SelectValue placeholder="Vessel Type" />
+            )}
+
+            {/* Search Bar */}
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Input
+                placeholder="Search by name, registration, type, or owner..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+
+            {/* Multi-Select Filters Row */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {/* Vessel Type Multi-Select */}
+              <div>
+                <Label>Vessel Type</Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline" className="w-full justify-between">
+                      <span className="truncate">
+                        {filters.vessel_types.length === 0 ? 'All Types' :
+                         filters.vessel_types.length === 1 ? filters.vessel_types[0] :
+                         `${filters.vessel_types.length} selected`}
+                      </span>
+                      <ChevronDown className="h-4 w-4 ml-2 shrink-0" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-64 p-0" align="start">
+                    <div className="p-2">
+                      <div className="flex items-center justify-between px-2 py-1.5 mb-1">
+                        <span className="text-sm font-medium">Select Types</span>
+                        {filters.vessel_types.length > 0 && (
+                          <Button variant="ghost" size="sm" onClick={() => clearFilter('vessel_types')} className="h-auto p-1 text-xs">
+                            Clear
+                          </Button>
+                        )}
+                      </div>
+                      {vesselTypes.map(type => (
+                        <div key={type} className="flex items-center space-x-2 px-2 py-1.5 hover:bg-gray-100 rounded cursor-pointer"
+                          onClick={() => toggleFilter('vessel_types', type)}>
+                          <Checkbox checked={filters.vessel_types.includes(type)} onCheckedChange={() => toggleFilter('vessel_types', type)} />
+                          <label className="text-sm flex-1 cursor-pointer">{type}</label>
+                        </div>
+                      ))}
                     </div>
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Types</SelectItem>
-                    {vesselTypes.filter(type => type !== 'all').map(type => (
-                      <SelectItem key={type} value={type}>{type}</SelectItem>
+                  </PopoverContent>
+                </Popover>
+                {filters.vessel_types.length > 0 && (
+                  <div className="flex flex-wrap gap-1 mt-2">
+                    {filters.vessel_types.map(type => (
+                      <Badge key={type} variant="secondary" className="text-xs">
+                        {type}
+                        <X className="h-3 w-3 ml-1 cursor-pointer" onClick={() => toggleFilter('vessel_types', type)} />
+                      </Badge>
                     ))}
-                  </SelectContent>
-                </Select>
+                  </div>
+                )}
+              </div>
+
+              {/* Status Multi-Select */}
+              <div>
+                <Label>Status</Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline" className="w-full justify-between">
+                      <span className="truncate">
+                        {filters.statuses.length === 0 ? 'All Statuses' :
+                         filters.statuses.length === 1 ? filters.statuses[0] :
+                         `${filters.statuses.length} selected`}
+                      </span>
+                      <ChevronDown className="h-4 w-4 ml-2 shrink-0" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-64 p-0" align="start">
+                    <div className="p-2">
+                      <div className="flex items-center justify-between px-2 py-1.5 mb-1">
+                        <span className="text-sm font-medium">Select Statuses</span>
+                        {filters.statuses.length > 0 && (
+                          <Button variant="ghost" size="sm" onClick={() => clearFilter('statuses')} className="h-auto p-1 text-xs">
+                            Clear
+                          </Button>
+                        )}
+                      </div>
+                      {statusTypes.map(status => (
+                        <div key={status} className="flex items-center space-x-2 px-2 py-1.5 hover:bg-gray-100 rounded cursor-pointer"
+                          onClick={() => toggleFilter('statuses', status)}>
+                          <Checkbox checked={filters.statuses.includes(status)} onCheckedChange={() => toggleFilter('statuses', status)} />
+                          <label className="text-sm flex-1 cursor-pointer">{status}</label>
+                        </div>
+                      ))}
+                    </div>
+                  </PopoverContent>
+                </Popover>
+                {filters.statuses.length > 0 && (
+                  <div className="flex flex-wrap gap-1 mt-2">
+                    {filters.statuses.map(status => (
+                      <Badge key={status} variant="secondary" className="text-xs">
+                        {status}
+                        <X className="h-3 w-3 ml-1 cursor-pointer" onClick={() => toggleFilter('statuses', status)} />
+                      </Badge>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* Sort By */}
-              <div className="w-full md:w-48">
+              <div>
+                <Label>Sort By</Label>
                 <Select value={sortBy} onValueChange={setSortBy}>
                   <SelectTrigger>
                     <SelectValue placeholder="Sort by" />
@@ -505,17 +598,31 @@ const VesselManagement = () => {
               </div>
             </div>
 
-            {/* Results and Clear Filters */}
-            <div className="flex items-center justify-between">
-              <div className="text-sm text-gray-500">
-                Showing {filteredVessels.length} of {vessels.length} vessels
+            {/* Date Range Row */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+              <div>
+                <Label htmlFor="start_date">From Date</Label>
+                <Input id="start_date" type="date" value={filters.start_date}
+                  onChange={(e) => setFilters({...filters, start_date: e.target.value})} />
               </div>
-              {hasActiveFilters && (
-                <Button variant="ghost" size="sm" onClick={clearFilters}>
-                  <X className="h-4 w-4 mr-1" />
-                  Clear Filters
-                </Button>
-              )}
+              <div>
+                <Label htmlFor="end_date">To Date</Label>
+                <Input id="end_date" type="date" value={filters.end_date}
+                  onChange={(e) => setFilters({...filters, end_date: e.target.value})} />
+              </div>
+              <div>
+                {(filters.start_date || filters.end_date) && (
+                  <Button variant="outline" size="sm" onClick={clearDateFilters} className="w-full">
+                    <X className="h-4 w-4 mr-2" />
+                    Clear Date Range
+                  </Button>
+                )}
+              </div>
+            </div>
+
+            {/* Results Counter */}
+            <div className="text-sm text-gray-500">
+              Showing {filteredVessels.length} of {vessels.length} vessels
             </div>
           </div>
         </CardContent>
