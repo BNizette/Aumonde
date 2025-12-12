@@ -272,6 +272,14 @@ const Incidents = () => {
     setEditingIncident(null);
   };
 
+  const clearDateFilters = () => {
+    setFilters({
+      ...filters,
+      start_date: '',
+      end_date: ''
+    });
+  };
+
   const getSeverityColor = (severity) => {
     const colors = {
       'Minor': 'bg-blue-100 text-blue-800',
