@@ -27,9 +27,15 @@ const CrewManagement = () => {
   const [filteredCrew, setFilteredCrew] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [positionFilter, setPositionFilter] = useState('all');
-  const [roleFilter, setRoleFilter] = useState('all');
+  const [positions, setPositions] = useState([]);
+  const [roles, setRoles] = useState([]);
   const [sortBy, setSortBy] = useState('name');
+  const [filters, setFilters] = useState({
+    positions: [],
+    roles: [],
+    start_date: '',
+    end_date: ''
+  });
   const [formOpen, setFormOpen] = useState(false);
   const [formMode, setFormMode] = useState('create');
   const [selectedCrew, setSelectedCrew] = useState(null);
