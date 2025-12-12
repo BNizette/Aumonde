@@ -38,6 +38,11 @@ const CrewManagement = () => {
   const [duplicateWarning, setDuplicateWarning] = useState(null);
   const [showDuplicateDialog, setShowDuplicateDialog] = useState(false);
   const [pendingFormData, setPendingFormData] = useState(null);
+  const [logsDialogOpen, setLogsDialogOpen] = useState(false);
+  const [selectedCrewForLogs, setSelectedCrewForLogs] = useState(null);
+  const [crewTrips, setCrewTrips] = useState([]);
+  const [crewShifts, setCrewShifts] = useState([]);
+  const [loadingLogs, setLoadingLogs] = useState(false);
 
   const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
   const canEdit = currentUser.access_level === 'Edit' || currentUser.access_level === 'Full';
