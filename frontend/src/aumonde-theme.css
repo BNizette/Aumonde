@@ -1,0 +1,248 @@
+/* AuMonde Theme for AMSA System */
+/* Apply aumonde.au branding colors and styling */
+
+:root {
+  /* Primary Colors from AuMonde */
+  --aumonde-teal: #01b3a7;
+  --aumonde-navy: #162e44;
+  --aumonde-light: #f7f7f7;
+  --aumonde-bright: #ffffff;
+  
+  /* Override default colors */
+  --primary: #01b3a7;
+  --primary-dark: #00988e;
+  --secondary: #162e44;
+  --background: #f7f7f7;
+  --card-bg: #ffffff;
+  --text-primary: #162e44;
+  --text-light: #666666;
+  --border-color: #e5e7eb;
+}
+
+/* Navigation Sidebar */
+.sidebar, .bg-gray-900 {
+  background-color: var(--aumonde-navy) !important;
+}
+
+/* Primary Buttons */
+button.bg-blue-600, 
+button.bg-blue-500,
+.bg-blue-600,
+.bg-blue-500,
+button[class*="primary"] {
+  background-color: var(--aumonde-teal) !important;
+  border-color: var(--aumonde-teal) !important;
+}
+
+button.bg-blue-600:hover, 
+button.bg-blue-500:hover,
+.bg-blue-600:hover,
+.bg-blue-500:hover {
+  background-color: var(--primary-dark) !important;
+}
+
+/* Links */
+a {
+  color: var(--aumonde-teal);
+}
+
+a:hover {
+  color: var(--primary-dark);
+}
+
+/* Cards and Panels */
+.bg-white {
+  background-color: var(--card-bg);
+}
+
+/* Page Background */
+body, .bg-gray-50 {
+  background-color: var(--aumonde-light) !important;
+}
+
+/* Header/Title Styling */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--aumonde-navy);
+  font-weight: 700;
+}
+
+/* Badges - Update to match theme */
+.bg-blue-100 {
+  background-color: #d0f2f0 !important;
+}
+
+.text-blue-800 {
+  color: var(--aumonde-navy) !important;
+}
+
+.bg-green-100 {
+  background-color: #d1f4e0 !important;
+}
+
+.text-green-800 {
+  color: #0d5c2f !important;
+}
+
+/* Border colors */
+.border-blue-200 {
+  border-color: var(--aumonde-teal) !important;
+}
+
+/* Active nav items */
+.bg-gray-800 {
+  background-color: rgba(1, 179, 167, 0.2) !important;
+}
+
+/* Focus states */
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--aumonde-teal) !important;
+  ring-color: var(--aumonde-teal) !important;
+}
+
+/* Sidebar menu items */
+.sidebar a:hover {
+  background-color: rgba(1, 179, 167, 0.1);
+}
+
+.sidebar a.active,
+.sidebar a[aria-current="page"] {
+  background-color: rgba(1, 179, 167, 0.2);
+  border-left: 4px solid var(--aumonde-teal);
+}
+
+/* Header branding */
+.sidebar h1, 
+.sidebar .text-xl {
+  color: var(--aumonde-bright) !important;
+}
+
+/* Status badges customization */
+.bg-yellow-100 {
+  background-color: #fef3c7 !important;
+}
+
+.bg-orange-100 {
+  background-color: #ffedd5 !important;
+}
+
+.bg-red-100 {
+  background-color: #fee2e2 !important;
+}
+
+.bg-purple-100 {
+  background-color: #f3e8ff !important;
+}
+
+/* Dashboard cards */
+.bg-blue-50 {
+  background-color: #ecfcfb !important;
+}
+
+.bg-green-50 {
+  background-color: #f0fdf4 !important;
+}
+
+.bg-purple-50 {
+  background-color: #faf5ff !important;
+}
+
+.bg-orange-50 {
+  background-color: #fff7ed !important;
+}
+
+/* Shadows */
+.shadow,
+.shadow-lg,
+.shadow-md {
+  box-shadow: 0 4px 6px -1px rgb(22 46 68 / 0.1), 0 2px 4px -2px rgb(22 46 68 / 0.1);
+}
+
+/* Tables */
+thead {
+  background-color: var(--aumonde-light);
+  color: var(--aumonde-navy);
+}
+
+/* Icons color adjustment */
+.text-blue-600,
+.text-blue-500 {
+  color: var(--aumonde-teal) !important;
+}
+
+/* Alert/Info boxes */
+.bg-blue-50.border-blue-200 {
+  background-color: #ecfcfb !important;
+  border-color: var(--aumonde-teal) !important;
+}
+
+/* Forms */
+.form-input,
+.form-select,
+.form-textarea {
+  border-color: var(--border-color);
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+  border-color: var(--aumonde-teal);
+  box-shadow: 0 0 0 3px rgba(1, 179, 167, 0.1);
+}
+
+/* Loading states */
+.animate-spin {
+  color: var(--aumonde-teal);
+}
+
+/* Tabs */
+[role="tablist"] button[aria-selected="true"] {
+  border-bottom-color: var(--aumonde-teal) !important;
+  color: var(--aumonde-teal) !important;
+}
+
+/* Progress bars */
+.bg-blue-600.h-2,
+.bg-blue-500.h-2 {
+  background-color: var(--aumonde-teal) !important;
+}
+
+/* Logo area - if needed */
+.logo-area {
+  background: linear-gradient(135deg, var(--aumonde-navy) 0%, var(--aumonde-teal) 100%);
+}
+
+/* Mobile menu */
+@media (max-width: 768px) {
+  .sidebar {
+    background-color: var(--aumonde-navy) !important;
+  }
+}
+
+/* Chart colors (if using charts) */
+.recharts-surface {
+  --color-primary: var(--aumonde-teal);
+  --color-secondary: var(--aumonde-navy);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar-thumb {
+  background-color: var(--aumonde-teal);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--primary-dark);
+}
+
+/* Notification badges */
+.notification-badge {
+  background-color: var(--aumonde-teal);
+  color: white;
+}
+
+/* Footer if present */
+footer {
+  background-color: var(--aumonde-navy);
+  color: var(--aumonde-bright);
+}

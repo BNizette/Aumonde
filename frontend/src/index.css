@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Import AuMonde Theme */
+@import './aumonde-theme.css';
+
 body {
     margin: 0;
     font-family:

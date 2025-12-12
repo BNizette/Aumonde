@@ -1,0 +1,545 @@
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Plus, Edit, Trash2, Wrench, Eye, Calendar, Search, Filter, X } from 'lucide-react';
+import MaintenanceForm from './MaintenanceForm';
+import MaintenanceDetails from './MaintenanceDetails';
+
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const API = `${BACKEND_URL}/api`;
+
+const Maintenance = () => {
+  const [maintenanceRecords, setMaintenanceRecords] = useState([]);
+  const [filteredRecords, setFilteredRecords] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [priorityFilter, setPriorityFilter] = useState('all');
+  const [typeFilter, setTypeFilter] = useState('all');
+  const [vesselFilter, setVesselFilter] = useState('all');
+  const [sortBy, setSortBy] = useState('priority');
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
+  const [formOpen, setFormOpen] = useState(false);
+  const [detailsOpen, setDetailsOpen] = useState(false);
+  const [selectedRecord, setSelectedRecord] = useState(null);
+  const [formMode, setFormMode] = useState('create');
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const userData = localStorage.getItem('user');
+    if (userData) {
+      setUser(JSON.parse(userData));
+    }
+    fetchMaintenanceRecords();
+  }, []);
+
+  useEffect(() => {
+    applyFiltersAndSort();
+  }, [searchQuery, statusFilter, priorityFilter, typeFilter, vesselFilter, sortBy, maintenanceRecords]);
+
+  const applyFiltersAndSort = () => {
+    let filtered = [...maintenanceRecords];
+
+    // Apply search filter
+    if (searchQuery) {
+      filtered = filtered.filter(record =>
+        record.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        record.equipment_system?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        record.vessel_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        record.responsible_person?.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+    // Apply status filter
+    if (statusFilter !== 'all') {
+      filtered = filtered.filter(record => 
+        record.status?.toLowerCase() === statusFilter.toLowerCase()
+      );
+    }
+
+    // Apply priority filter
+    if (priorityFilter !== 'all') {
+      filtered = filtered.filter(record => 
+        record.priority?.toLowerCase() === priorityFilter.toLowerCase()
+      );
+    }
+
+    // Apply type filter
+    if (typeFilter !== 'all') {
+      filtered = filtered.filter(record => 
+        record.maintenance_type?.toLowerCase() === typeFilter.toLowerCase()
+      );
+    }
+
+    // Apply vessel filter
+    if (vesselFilter !== 'all') {
+      filtered = filtered.filter(record => 
+        record.vessel_name?.toLowerCase().includes(vesselFilter.toLowerCase())
+      );
+    }
+
+    // Apply sorting
+    filtered.sort((a, b) => {
+      switch (sortBy) {
+        case 'priority':
+          const priorityOrder = { 'Critical': 4, 'High': 3, 'Medium': 2, 'Low': 1 };
+          return (priorityOrder[b.priority] || 0) - (priorityOrder[a.priority] || 0);
+        case 'dueDate':
+          return new Date(a.scheduled_date || '9999-12-31') - new Date(b.scheduled_date || '9999-12-31');
+        case 'equipment':
+          return (a.equipment_system || '').localeCompare(b.equipment_system || '');
+        case 'status':
+          return (a.status || '').localeCompare(b.status || '');
+        default:
+          return 0;
+      }
+    });
+
+    setFilteredRecords(filtered);
+  };
+
+  const clearFilters = () => {
+    setSearchQuery('');
+    setStatusFilter('all');
+    setPriorityFilter('all');
+    setTypeFilter('all');
+    setVesselFilter('all');
+    setSortBy('priority');
+  };
+
+  const hasActiveFilters = searchQuery || statusFilter !== 'all' || priorityFilter !== 'all' || typeFilter !== 'all' || vesselFilter !== 'all' || sortBy !== 'priority';
+
+  const fetchMaintenanceRecords = async () => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`${API}/maintenance`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setMaintenanceRecords(response.data);
+    } catch (err) {
+      setError('Failed to fetch maintenance records');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAdd = () => {
+    setSelectedRecord(null);
+    setFormMode('create');
+    setFormOpen(true);
+  };
+
+  const handleEdit = (record) => {
+    setSelectedRecord(record);
+    setFormMode('edit');
+    setFormOpen(true);
+  };
+
+  const handleView = (record) => {
+    setSelectedRecord(record);
+    setDetailsOpen(true);
+  };
+
+  const handleSave = async (maintenanceData) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (formMode === 'create') {
+        await axios.post(`${API}/maintenance`, maintenanceData, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setMessage('Maintenance record created successfully');
+      } else {
+        await axios.put(`${API}/maintenance/${selectedRecord.id}`, maintenanceData, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setMessage('Maintenance record updated successfully');
+      }
+      setFormOpen(false);
+      fetchMaintenanceRecords();
+      setTimeout(() => setMessage(''), 3000);
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Error saving maintenance record');
+      setTimeout(() => setError(''), 3000);
+    }
+  };
+
+  const handleDelete = async (record) => {
+    if (!window.confirm(`Delete maintenance record: ${record.title}?`)) return;
+
+    try {
+      const token = localStorage.getItem('token');
+      await axios.delete(`${API}/maintenance/${record.id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setMessage('Maintenance record deleted successfully');
+      fetchMaintenanceRecords();
+      setTimeout(() => setMessage(''), 3000);
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Error deleting maintenance record');
+      setTimeout(() => setError(''), 3000);
+    }
+  };
+
+  const getStatusColor = (status) => {
+    const colors = {
+      'Scheduled': 'bg-blue-100 text-blue-800',
+      'In Progress': 'bg-yellow-100 text-yellow-800',
+      'Completed': 'bg-green-100 text-green-800',
+      'Overdue': 'bg-red-100 text-red-800',
+      'Cancelled': 'bg-gray-100 text-gray-800',
+      'Planned': 'bg-purple-100 text-purple-800'
+    };
+    return colors[status] || 'bg-gray-100 text-gray-800';
+  };
+
+  const getPriorityColor = (priority) => {
+    const colors = {
+      'Critical': 'bg-red-600 text-white',
+      'High': 'bg-orange-500 text-white',
+      'Medium': 'bg-yellow-500 text-white',
+      'Low': 'bg-green-500 text-white'
+    };
+    return colors[priority] || 'bg-gray-500 text-white';
+  };
+
+  const canEdit = user?.access_level === 'Edit' || user?.access_level === 'Full';
+  const canDelete = user?.access_level === 'Full';
+
+  // Get unique vessels for filter
+  const uniqueVessels = [...new Set(maintenanceRecords.map(r => r.vessel_name).filter(Boolean))];
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-96">
+        <p className="text-gray-500">Loading maintenance records...</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">Maintenance Management</h1>
+          <p className="text-gray-500 mt-1">Track and manage vessel maintenance activities</p>
+        </div>
+        {canEdit && (
+          <Button onClick={handleAdd}>
+            <Plus className="h-4 w-4 mr-2" />
+            New Maintenance
+          </Button>
+        )}
+      </div>
+
+      {message && (
+        <Alert className="bg-green-50 border-green-200">
+          <AlertDescription className="text-green-800">{message}</AlertDescription>
+        </Alert>
+      )}
+
+      {error && (
+        <Alert variant="destructive">
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
+
+      {/* Statistics Cards - Clickable */}
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+        <Card 
+          className="cursor-pointer hover:shadow-lg transition-shadow" 
+          onClick={() => {
+            setSearchQuery('');
+            setStatusFilter('all');
+            setPriorityFilter('all');
+            setTypeFilter('all');
+            setVesselFilter('all');
+            setSortBy('dueDate');
+          }}
+        >
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium text-gray-500">Total Records</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{maintenanceRecords.length}</div>
+            <p className="text-xs text-gray-500 mt-1">Click to show all</p>
+          </CardContent>
+        </Card>
+        <Card 
+          className="cursor-pointer hover:shadow-lg transition-shadow" 
+          onClick={() => setStatusFilter('Scheduled')}
+        >
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium text-gray-500">Scheduled</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-blue-600">
+              {maintenanceRecords.filter(r => r.status === 'Scheduled').length}
+            </div>
+            <p className="text-xs text-gray-500 mt-1">Click to filter</p>
+          </CardContent>
+        </Card>
+        <Card 
+          className="cursor-pointer hover:shadow-lg transition-shadow" 
+          onClick={() => setStatusFilter('In Progress')}
+        >
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium text-gray-500">In Progress</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-yellow-600">
+              {maintenanceRecords.filter(r => r.status === 'In Progress').length}
+            </div>
+            <p className="text-xs text-gray-500 mt-1">Click to filter</p>
+          </CardContent>
+        </Card>
+        <Card 
+          className="cursor-pointer hover:shadow-lg transition-shadow" 
+          onClick={() => setStatusFilter('Overdue')}
+        >
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium text-gray-500">Overdue</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-red-600">
+              {maintenanceRecords.filter(r => r.status === 'Overdue').length}
+            </div>
+            <p className="text-xs text-gray-500 mt-1">Click to filter</p>
+          </CardContent>
+        </Card>
+        <Card 
+          className="cursor-pointer hover:shadow-lg transition-shadow" 
+          onClick={() => setStatusFilter('Completed')}
+        >
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium text-gray-500">Completed</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-green-600">
+              {maintenanceRecords.filter(r => r.status === 'Completed').length}
+            </div>
+            <p className="text-xs text-gray-500 mt-1">Click to filter</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Search and Filter Bar */}
+      <Card>
+        <CardContent className="pt-6">
+          <div className="space-y-4">
+            <div className="flex flex-col md:flex-row gap-4">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Input
+                  placeholder="Search by title, equipment, vessel, or person..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+              
+              <div className="w-full md:w-40">
+                <Select value={statusFilter} onValueChange={setStatusFilter}>
+                  <SelectTrigger>
+                    <div className="flex items-center gap-2">
+                      <Filter className="h-4 w-4" />
+                      <SelectValue placeholder="Status" />
+                    </div>
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Status</SelectItem>
+                    <SelectItem value="scheduled">Scheduled</SelectItem>
+                    <SelectItem value="in progress">In Progress</SelectItem>
+                    <SelectItem value="completed">Completed</SelectItem>
+                    <SelectItem value="overdue">Overdue</SelectItem>
+                    <SelectItem value="planned">Planned</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="w-full md:w-40">
+                <Select value={priorityFilter} onValueChange={setPriorityFilter}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Priority" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Priority</SelectItem>
+                    <SelectItem value="critical">Critical</SelectItem>
+                    <SelectItem value="high">High</SelectItem>
+                    <SelectItem value="medium">Medium</SelectItem>
+                    <SelectItem value="low">Low</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="w-full md:w-44">
+                <Select value={typeFilter} onValueChange={setTypeFilter}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Types</SelectItem>
+                    <SelectItem value="preventive">Preventive</SelectItem>
+                    <SelectItem value="corrective">Corrective</SelectItem>
+                    <SelectItem value="inspection">Inspection</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="w-full md:w-44">
+                <Select value={vesselFilter} onValueChange={setVesselFilter}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Vessel" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Vessels</SelectItem>
+                    {uniqueVessels.map(vessel => (
+                      <SelectItem key={vessel} value={vessel}>{vessel}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="w-full md:w-48">
+                <Select value={sortBy} onValueChange={setSortBy}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Sort by" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="priority">Priority (High to Low)</SelectItem>
+                    <SelectItem value="dueDate">Due Date</SelectItem>
+                    <SelectItem value="equipment">Equipment</SelectItem>
+                    <SelectItem value="status">Status</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between">
+              <div className="text-sm text-gray-500">
+                Showing {filteredRecords.length} of {maintenanceRecords.length} maintenance records
+              </div>
+              {hasActiveFilters && (
+                <Button variant="ghost" size="sm" onClick={clearFilters}>
+                  <X className="h-4 w-4 mr-1" />
+                  Clear Filters
+                </Button>
+              )}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Maintenance Records List */}
+      {filteredRecords.length === 0 ? (
+        <Card>
+          <CardContent className="py-12">
+            <div className="text-center">
+              <Wrench className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">No Maintenance Records</h3>
+              <p className="text-gray-500 mb-4">
+                {searchQuery || hasActiveFilters ? 'Try adjusting your search or filters' : 'Get started by creating your first maintenance record'}
+              </p>
+              {canEdit && !searchQuery && !hasActiveFilters && (
+                <Button onClick={handleAdd}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Create Maintenance Record
+                </Button>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="grid gap-4">
+          {filteredRecords.map((record) => (
+            <Card key={record.id} className="hover:shadow-md transition-shadow">
+              <CardHeader>
+                <div className="flex items-start justify-between">
+                  <div className="space-y-1 flex-1">
+                    <div className="flex items-center gap-2">
+                      <CardTitle className="text-lg">{record.title}</CardTitle>
+                      <Badge className={getStatusColor(record.status)}>
+                        {record.status}
+                      </Badge>
+                      <Badge className={getPriorityColor(record.priority)}>
+                        {record.priority}
+                      </Badge>
+                    </div>
+                    <CardDescription>
+                      {record.equipment_system && `Equipment: ${record.equipment_system}`}
+                      {record.vessel_name && ` • Vessel: ${record.vessel_name}`}
+                    </CardDescription>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button size="sm" variant="ghost" onClick={() => handleView(record)}>
+                      <Eye className="h-4 w-4" />
+                    </Button>
+                    {canEdit && (
+                      <Button size="sm" variant="ghost" onClick={() => handleEdit(record)}>
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                    )}
+                    {canDelete && (
+                      <Button 
+                        size="sm" 
+                        variant="ghost" 
+                        onClick={() => handleDelete(record)}
+                        className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
+                  <div>
+                    <span className="font-medium text-gray-700">Type:</span>
+                    <p className="text-gray-600 mt-1">{record.maintenance_type}</p>
+                  </div>
+                  <div>
+                    <span className="font-medium text-gray-700">Scheduled Date:</span>
+                    <p className="text-gray-600 mt-1">
+                      {record.scheduled_date ? new Date(record.scheduled_date).toLocaleDateString() : 'Not set'}
+                    </p>
+                  </div>
+                  <div>
+                    <span className="font-medium text-gray-700">Responsible:</span>
+                    <p className="text-gray-600 mt-1">{record.responsible_person || 'Not assigned'}</p>
+                  </div>
+                  <div>
+                    <span className="font-medium text-gray-700">Cost:</span>
+                    <p className="text-gray-600 mt-1">{record.cost ? `$${record.cost}` : 'TBD'}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
+
+      <MaintenanceForm
+        open={formOpen}
+        onClose={() => setFormOpen(false)}
+        onSave={handleSave}
+        record={selectedRecord}
+        mode={formMode}
+      />
+
+      <MaintenanceDetails
+        open={detailsOpen}
+        onClose={() => setDetailsOpen(false)}
+        record={selectedRecord}
+      />
+    </div>
+  );
+};
+
+export default Maintenance;

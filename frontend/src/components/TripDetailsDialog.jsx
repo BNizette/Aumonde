@@ -1,0 +1,694 @@
+import React, { useState, useEffect, useCallback } from 'react';
+import axios from 'axios';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Plus, Edit, Trash2, Calendar, Clock, User, FileText, Activity, Gauge } from 'lucide-react';
+import TripLogForm from './TripLogForm';
+import RunningLogForm from './RunningLogForm';
+import EngineRunningLogForm from './EngineRunningLogForm';
+import AllocatedCrewForm from './AllocatedCrewForm';
+
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const API = `${BACKEND_URL}/api`;
+
+const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
+  const [shiftLogs, setShiftLogs] = useState([]);
+  const [runningLogs, setRunningLogs] = useState([]);
+  const [engineLogs, setEngineLogs] = useState([]);
+  const [allocatedCrew, setAllocatedCrew] = useState([]);
+  const [loading, setLoading] = useState(false);
+  
+  const [shiftFormOpen, setShiftFormOpen] = useState(false);
+  const [runningFormOpen, setRunningFormOpen] = useState(false);
+  const [engineFormOpen, setEngineFormOpen] = useState(false);
+  const [crewFormOpen, setCrewFormOpen] = useState(false);
+  
+  const [shiftFormMode, setShiftFormMode] = useState('create');
+  const [runningFormMode, setRunningFormMode] = useState('create');
+  const [engineFormMode, setEngineFormMode] = useState('create');
+  const [crewFormMode, setCrewFormMode] = useState('create');
+  
+  const [selectedShiftLog, setSelectedShiftLog] = useState(null);
+  const [selectedRunningLog, setSelectedRunningLog] = useState(null);
+  const [selectedEngineLog, setSelectedEngineLog] = useState(null);
+  const [selectedCrewMember, setSelectedCrewMember] = useState(null);
+  
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const userData = localStorage.getItem('user');
+    if (userData) {
+      setUser(JSON.parse(userData));
+    }
+  }, []);
+
+  const fetchAllLogs = useCallback(async () => {
+    if (!trip) return;
+    
+    try {
+      setLoading(true);
+      const token = localStorage.getItem('token');
+      
+      const [shiftRes, runningRes, engineRes, crewRes] = await Promise.all([
+        axios.get(`${API}/trip-logs?trip_id=${trip.id}`, { headers: { Authorization: `Bearer ${token}` } }),
+        axios.get(`${API}/running-logs?trip_id=${trip.id}`, { headers: { Authorization: `Bearer ${token}` } }),
+        axios.get(`${API}/engine-running-logs?trip_id=${trip.id}`, { headers: { Authorization: `Bearer ${token}` } }),
+        axios.get(`${API}/allocated-crew?trip_id=${trip.id}`, { headers: { Authorization: `Bearer ${token}` } })
+      ]);
+      
+      setShiftLogs(shiftRes.data);
+      setRunningLogs(runningRes.data);
+      setEngineLogs(engineRes.data);
+      setAllocatedCrew(crewRes.data);
+    } catch (err) {
+      console.error('Error fetching logs:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, [trip]);
+
+  useEffect(() => {
+    if (open && trip) {
+      fetchAllLogs();
+    }
+  }, [open, trip, fetchAllLogs]);
+
+  // Shift Log handlers
+  const handleAddShiftLog = () => {
+    setSelectedShiftLog(null);
+    setShiftFormMode('create');
+    setShiftFormOpen(true);
+  };
+
+  const handleEditShiftLog = (log) => {
+    setSelectedShiftLog(log);
+    setShiftFormMode('edit');
+    setShiftFormOpen(true);
+  };
+
+  const handleSaveShiftLog = async (logData) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (shiftFormMode === 'create') {
+        await axios.post(`${API}/trip-logs`, logData, { headers: { Authorization: `Bearer ${token}` } });
+        setMessage('Shift log added successfully');
+      } else {
+        await axios.put(`${API}/trip-logs/${selectedShiftLog.id}`, logData, { headers: { Authorization: `Bearer ${token}` } });
+        setMessage('Shift log updated successfully');
+      }
+      setShiftFormOpen(false);
+      fetchAllLogs();
+      setTimeout(() => setMessage(''), 3000);
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Error saving shift log');
+      setTimeout(() => setError(''), 3000);
+    }
+  };
+
+  const handleDeleteShiftLog = async (log) => {
+    if (!window.confirm(`Delete shift log for ${log.crew_name}?`)) return;
+    
+    try {
+      const token = localStorage.getItem('token');
+      await axios.delete(`${API}/trip-logs/${log.id}`, { headers: { Authorization: `Bearer ${token}` } });
+      setMessage('Shift log deleted successfully');
+      fetchAllLogs();
+      setTimeout(() => setMessage(''), 3000);
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Error deleting shift log');
+      setTimeout(() => setError(''), 3000);
+    }
+  };
+
+  // Running Log handlers
+  const handleAddRunningLog = () => {
+    setSelectedRunningLog(null);
+    setRunningFormMode('create');
+    setRunningFormOpen(true);
+  };
+
+  const handleEditRunningLog = (log) => {
+    setSelectedRunningLog(log);
+    setRunningFormMode('edit');
+    setRunningFormOpen(true);
+  };
+
+  const handleSaveRunningLog = async (logData) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (runningFormMode === 'create') {
+        await axios.post(`${API}/running-logs`, logData, { headers: { Authorization: `Bearer ${token}` } });
+        setMessage('Running log added successfully');
+      } else {
+        await axios.put(`${API}/running-logs/${selectedRunningLog.id}`, logData, { headers: { Authorization: `Bearer ${token}` } });
+        setMessage('Running log updated successfully');
+      }
+      setRunningFormOpen(false);
+      fetchAllLogs();
+      setTimeout(() => setMessage(''), 3000);
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Error saving running log');
+      setTimeout(() => setError(''), 3000);
+    }
+  };
+
+  const handleDeleteRunningLog = async (log) => {
+    if (!window.confirm(`Delete running log: ${log.activity}?`)) return;
+    
+    try {
+      const token = localStorage.getItem('token');
+      await axios.delete(`${API}/running-logs/${log.id}`, { headers: { Authorization: `Bearer ${token}` } });
+      setMessage('Running log deleted successfully');
+      fetchAllLogs();
+      setTimeout(() => setMessage(''), 3000);
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Error deleting running log');
+      setTimeout(() => setError(''), 3000);
+    }
+  };
+
+  // Engine Log handlers
+  const handleAddEngineLog = () => {
+    setSelectedEngineLog(null);
+    setEngineFormMode('create');
+    setEngineFormOpen(true);
+  };
+
+  const handleEditEngineLog = (log) => {
+    setSelectedEngineLog(log);
+    setEngineFormMode('edit');
+    setEngineFormOpen(true);
+  };
+
+  const handleSaveEngineLog = async (logData) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (engineFormMode === 'create') {
+        await axios.post(`${API}/engine-running-logs`, logData, { headers: { Authorization: `Bearer ${token}` } });
+        setMessage('Engine log added successfully');
+      } else {
+        await axios.put(`${API}/engine-running-logs/${selectedEngineLog.id}`, logData, { headers: { Authorization: `Bearer ${token}` } });
+        setMessage('Engine log updated successfully');
+      }
+      setEngineFormOpen(false);
+      fetchAllLogs();
+      setTimeout(() => setMessage(''), 3000);
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Error saving engine log');
+      setTimeout(() => setError(''), 3000);
+    }
+  };
+
+  const handleDeleteEngineLog = async (log) => {
+    if (!window.confirm('Delete this engine log entry?')) return;
+    
+    try {
+      const token = localStorage.getItem('token');
+      await axios.delete(`${API}/engine-running-logs/${log.id}`, { headers: { Authorization: `Bearer ${token}` } });
+      setMessage('Engine log deleted successfully');
+      fetchAllLogs();
+      setTimeout(() => setMessage(''), 3000);
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Error deleting engine log');
+      setTimeout(() => setError(''), 3000);
+    }
+  };
+
+  // Allocated Crew handlers
+  const handleAddCrewMember = () => {
+    setSelectedCrewMember(null);
+    setCrewFormMode('create');
+    setCrewFormOpen(true);
+  };
+
+  const handleEditCrewMember = (crew) => {
+    setSelectedCrewMember(crew);
+    setCrewFormMode('edit');
+    setCrewFormOpen(true);
+  };
+
+  const handleSaveCrewMember = async (crewData) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (crewFormMode === 'create') {
+        await axios.post(`${API}/allocated-crew`, crewData, { headers: { Authorization: `Bearer ${token}` } });
+        setMessage('Crew member allocated successfully');
+      } else {
+        await axios.put(`${API}/allocated-crew/${selectedCrewMember.id}`, crewData, { headers: { Authorization: `Bearer ${token}` } });
+        setMessage('Allocated crew updated successfully');
+      }
+      setCrewFormOpen(false);
+      fetchAllLogs();
+      setTimeout(() => setMessage(''), 3000);
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Error saving allocated crew');
+      setTimeout(() => setError(''), 3000);
+    }
+  };
+
+  const handleDeleteCrewMember = async (crew) => {
+    if (!window.confirm(`Remove ${crew.crew_name} from this trip?`)) return;
+    
+    try {
+      const token = localStorage.getItem('token');
+      await axios.delete(`${API}/allocated-crew/${crew.id}`, { headers: { Authorization: `Bearer ${token}` } });
+      setMessage('Crew member removed successfully');
+      fetchAllLogs();
+      setTimeout(() => setMessage(''), 3000);
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Error removing crew member');
+      setTimeout(() => setError(''), 3000);
+    }
+  };
+
+  const formatDateTime = (dateString) => {
+    if (!dateString) return '-';
+    return new Date(dateString).toLocaleString('en-AU', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
+  const getTotalShiftHours = () => {
+    return shiftLogs.reduce((sum, log) => sum + (log.total_hours || 0), 0).toFixed(2);
+  };
+
+  const canEdit = user?.access_level === 'Edit' || user?.access_level === 'Full';
+  const canDelete = user?.access_level === 'Full';
+
+  if (!trip) return null;
+
+  return (
+    <>
+      <Dialog open={open} onOpenChange={onClose}>
+        <DialogContent className="max-w-5xl max-h-[90vh]">
+          <DialogHeader>
+            <DialogTitle>{trip.trip_name}</DialogTitle>
+            <DialogDescription>Trip details and logs</DialogDescription>
+          </DialogHeader>
+
+          {message && (
+            <Alert className="bg-green-50 border-green-200">
+              <AlertDescription className="text-green-800">{message}</AlertDescription>
+            </Alert>
+          )}
+
+          {error && (
+            <Alert variant="destructive">
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
+
+          <ScrollArea className="h-[65vh] pr-4">
+            <div className="space-y-6">
+              {/* Trip Info */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-base">Trip Information</CardTitle>
+                </CardHeader>
+                <CardContent className="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <span className="font-semibold">Vessel:</span>
+                    <p className="text-gray-600">{trip.vessel_name || '-'}</p>
+                  </div>
+                  <div>
+                    <span className="font-semibold">Trip Type:</span>
+                    <p className="text-gray-600">{trip.trip_type || '-'}</p>
+                  </div>
+                  <div>
+                    <span className="font-semibold">Operating Area:</span>
+                    <p className="text-gray-600">{trip.operating_area || '-'}</p>
+                  </div>
+                  <div>
+                    <span className="font-semibold">Depart:</span>
+                    <p className="text-gray-600">{formatDateTime(trip.depart_datetime)}</p>
+                  </div>
+                  <div>
+                    <span className="font-semibold">Arrival:</span>
+                    <p className="text-gray-600">{formatDateTime(trip.arrival_datetime)}</p>
+                  </div>
+                  <div>
+                    <span className="font-semibold">Passengers / Crew:</span>
+                    <p className="text-gray-600">{trip.number_of_passengers || 0} / {trip.number_of_crew || 0}</p>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Tabbed Logs */}
+              <Tabs defaultValue="allocated" className="w-full">
+                <TabsList className="grid w-full grid-cols-4">
+                  <TabsTrigger value="allocated">
+                    <User className="h-4 w-4 mr-2" />
+                    Allocated Crew ({allocatedCrew.length})
+                  </TabsTrigger>
+                  <TabsTrigger value="shift">
+                    <Clock className="h-4 w-4 mr-2" />
+                    Crew Shifts ({shiftLogs.length})
+                  </TabsTrigger>
+                  <TabsTrigger value="running">
+                    <Activity className="h-4 w-4 mr-2" />
+                    Running ({runningLogs.length})
+                  </TabsTrigger>
+                  <TabsTrigger value="engine">
+                    <Gauge className="h-4 w-4 mr-2" />
+                    Engine ({engineLogs.length})
+                  </TabsTrigger>
+                </TabsList>
+
+                {/* Allocated Crew Tab */}
+                <TabsContent value="allocated" className="space-y-4 mt-4">
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm text-gray-500">
+                      {allocatedCrew.length} crew {allocatedCrew.length === 1 ? 'member' : 'members'} allocated
+                    </p>
+                    {canEdit && (
+                      <Button size="sm" onClick={handleAddCrewMember}>
+                        <Plus className="h-4 w-4 mr-2" />
+                        Allocate Crew
+                      </Button>
+                    )}
+                  </div>
+
+                  {allocatedCrew.length === 0 ? (
+                    <div className="text-center py-8">
+                      <User className="h-12 w-12 text-gray-400 mx-auto mb-3" />
+                      <p className="text-gray-500">No crew allocated to this trip</p>
+                    </div>
+                  ) : (
+                    <div className="border rounded-lg overflow-hidden">
+                      <table className="w-full">
+                        <thead className="bg-gray-50">
+                          <tr>
+                            <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Crew Name</th>
+                            <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Position</th>
+                            {(canEdit || canDelete) && (
+                              <th className="px-4 py-3 text-right text-sm font-semibold text-gray-700">Actions</th>
+                            )}
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-200">
+                          {allocatedCrew.map((crew) => (
+                            <tr key={crew.id} className="hover:bg-gray-50">
+                              <td className="px-4 py-3 text-sm text-gray-900">{crew.crew_name}</td>
+                              <td className="px-4 py-3 text-sm text-gray-600">{crew.position}</td>
+                              {(canEdit || canDelete) && (
+                                <td className="px-4 py-3 text-right">
+                                  <div className="flex items-center justify-end gap-1">
+                                    {canEdit && (
+                                      <Button size="sm" variant="ghost" onClick={() => handleEditCrewMember(crew)}>
+                                        <Edit className="h-4 w-4" />
+                                      </Button>
+                                    )}
+                                    {canDelete && (
+                                      <Button size="sm" variant="ghost" onClick={() => handleDeleteCrewMember(crew)} className="text-red-600 hover:text-red-700 hover:bg-red-50">
+                                        <Trash2 className="h-4 w-4" />
+                                      </Button>
+                                    )}
+                                  </div>
+                                </td>
+                              )}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </TabsContent>
+
+                {/* Crew Shift Logs Tab */}
+                <TabsContent value="shift" className="space-y-4 mt-4">
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm text-gray-500">
+                      {shiftLogs.length} {shiftLogs.length === 1 ? 'entry' : 'entries'} • Total: {getTotalShiftHours()} hours
+                    </p>
+                    {canEdit && (
+                      <Button size="sm" onClick={handleAddShiftLog}>
+                        <Plus className="h-4 w-4 mr-2" />
+                        Add Shift Log
+                      </Button>
+                    )}
+                  </div>
+
+                  {shiftLogs.length === 0 ? (
+                    <div className="text-center py-8">
+                      <FileText className="h-12 w-12 text-gray-400 mx-auto mb-3" />
+                      <p className="text-gray-500">No shift logs recorded</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {shiftLogs.map((log) => (
+                        <div key={log.id} className="border rounded-lg p-4 hover:bg-gray-50">
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-2">
+                                <User className="h-4 w-4 text-teal-600" />
+                                <span className="font-semibold">{log.crew_name}</span>
+                                {log.total_hours && (
+                                  <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                                    {log.total_hours} hrs
+                                  </Badge>
+                                )}
+                                {!log.total_hours && (
+                                  <Badge variant="outline" className="bg-gray-50 text-gray-600 border-gray-200">
+                                    In Progress
+                                  </Badge>
+                                )}
+                              </div>
+                              
+                              <div className="grid grid-cols-2 gap-2 text-sm text-gray-600 mb-2">
+                                <div className="flex items-center gap-2">
+                                  <Calendar className="h-3 w-3" />
+                                  <span>{formatDateTime(log.shift_start_datetime)}</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <Clock className="h-3 w-3" />
+                                  <span>{log.shift_stop_datetime ? formatDateTime(log.shift_stop_datetime) : 'Ongoing'}</span>
+                                </div>
+                              </div>
+                              
+                              {log.task_performed && (
+                                <div className="text-sm text-gray-700 bg-gray-50 rounded p-2 mt-2">
+                                  <span className="font-medium">Task:</span> {log.task_performed}
+                                </div>
+                              )}
+                            </div>
+
+                            <div className="flex items-center gap-1 ml-4">
+                              {canEdit && (
+                                <Button size="sm" variant="ghost" onClick={() => handleEditShiftLog(log)}>
+                                  <Edit className="h-4 w-4" />
+                                </Button>
+                              )}
+                              {canDelete && (
+                                <Button size="sm" variant="ghost" onClick={() => handleDeleteShiftLog(log)} className="text-red-600 hover:text-red-700 hover:bg-red-50">
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </TabsContent>
+
+                {/* Running Logs Tab */}
+                <TabsContent value="running" className="space-y-4 mt-4">
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm text-gray-500">
+                      {runningLogs.length} {runningLogs.length === 1 ? 'entry' : 'entries'}
+                    </p>
+                    {canEdit && (
+                      <Button size="sm" onClick={handleAddRunningLog}>
+                        <Plus className="h-4 w-4 mr-2" />
+                        Add Running Log
+                      </Button>
+                    )}
+                  </div>
+
+                  {runningLogs.length === 0 ? (
+                    <div className="text-center py-8">
+                      <Activity className="h-12 w-12 text-gray-400 mx-auto mb-3" />
+                      <p className="text-gray-500">No running logs recorded</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {runningLogs.map((log) => (
+                        <div key={log.id} className="border rounded-lg p-4 hover:bg-gray-50">
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-2">
+                                <Activity className="h-4 w-4 text-blue-600" />
+                                <span className="font-semibold">{log.activity}</span>
+                              </div>
+                              
+                              <div className="text-sm text-gray-600 mb-2">
+                                <span className="font-medium">Crew:</span> {log.crew_name} • 
+                                <span className="font-medium"> Time:</span> {formatDateTime(log.log_datetime)}
+                              </div>
+                              
+                              {log.activity_details && (
+                                <div className="text-sm text-gray-700 bg-gray-50 rounded p-2 mt-2">
+                                  {log.activity_details}
+                                </div>
+                              )}
+                            </div>
+
+                            <div className="flex items-center gap-1 ml-4">
+                              {canEdit && (
+                                <Button size="sm" variant="ghost" onClick={() => handleEditRunningLog(log)}>
+                                  <Edit className="h-4 w-4" />
+                                </Button>
+                              )}
+                              {canDelete && (
+                                <Button size="sm" variant="ghost" onClick={() => handleDeleteRunningLog(log)} className="text-red-600 hover:text-red-700 hover:bg-red-50">
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </TabsContent>
+
+                {/* Engine Running Logs Tab */}
+                <TabsContent value="engine" className="space-y-4 mt-4">
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm text-gray-500">
+                      {engineLogs.length} {engineLogs.length === 1 ? 'entry' : 'entries'}
+                    </p>
+                    {canEdit && (
+                      <Button size="sm" onClick={handleAddEngineLog}>
+                        <Plus className="h-4 w-4 mr-2" />
+                        Add Engine Log
+                      </Button>
+                    )}
+                  </div>
+
+                  {engineLogs.length === 0 ? (
+                    <div className="text-center py-8">
+                      <Gauge className="h-12 w-12 text-gray-400 mx-auto mb-3" />
+                      <p className="text-gray-500">No engine logs recorded</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {engineLogs.map((log) => (
+                        <div key={log.id} className="border rounded-lg p-4 hover:bg-gray-50">
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-3">
+                                <Gauge className="h-4 w-4 text-purple-600" />
+                                <span className="font-semibold">{formatDateTime(log.log_datetime)}</span>
+                              </div>
+                              
+                              <div className="grid grid-cols-2 gap-4">
+                                {/* Port Engine */}
+                                <div className="space-y-1">
+                                  <div className="text-xs font-semibold text-teal-700 border-b pb-1">Port Engine</div>
+                                  {log.engine1_rpm && <div className="text-sm"><span className="font-medium">RPM:</span> {log.engine1_rpm}</div>}
+                                  {log.engine1_water_temp && <div className="text-sm"><span className="font-medium">Water:</span> {log.engine1_water_temp}°C</div>}
+                                  {log.engine1_oil_temp && <div className="text-sm"><span className="font-medium">Oil Temp:</span> {log.engine1_oil_temp}°C</div>}
+                                  {log.engine1_oil_pressure && <div className="text-sm"><span className="font-medium">Oil Press:</span> {log.engine1_oil_pressure} PSI</div>}
+                                  {log.engine1_gearbox_temp && <div className="text-sm"><span className="font-medium">Gearbox:</span> {log.engine1_gearbox_temp}°C</div>}
+                                  {log.engine1_gearbox_pressure && <div className="text-sm"><span className="font-medium">GB Press:</span> {log.engine1_gearbox_pressure} PSI</div>}
+                                  {log.engine1_pyrometers && <div className="text-sm"><span className="font-medium">Pyro:</span> {log.engine1_pyrometers}°C</div>}
+                                  {log.engine1_battery_volts && <div className="text-sm"><span className="font-medium">Battery:</span> {log.engine1_battery_volts}V</div>}
+                                  {log.engine1_aux_volts && <div className="text-sm"><span className="font-medium">Aux:</span> {log.engine1_aux_volts}V</div>}
+                                  {log.engine1_fuel_level && <div className="text-sm"><span className="font-medium">Fuel:</span> {log.engine1_fuel_level}%</div>}
+                                  {log.engine1_engine_hrs_start && <div className="text-sm"><span className="font-medium">Hrs:</span> {log.engine1_engine_hrs_start} - {log.engine1_engine_hrs_end || '?'}</div>}
+                                </div>
+                                
+                                {/* Starboard Engine */}
+                                <div className="space-y-1">
+                                  <div className="text-xs font-semibold text-blue-700 border-b pb-1">Starboard Engine</div>
+                                  {log.engine2_rpm && <div className="text-sm"><span className="font-medium">RPM:</span> {log.engine2_rpm}</div>}
+                                  {log.engine2_water_temp && <div className="text-sm"><span className="font-medium">Water:</span> {log.engine2_water_temp}°C</div>}
+                                  {log.engine2_oil_temp && <div className="text-sm"><span className="font-medium">Oil Temp:</span> {log.engine2_oil_temp}°C</div>}
+                                  {log.engine2_oil_pressure && <div className="text-sm"><span className="font-medium">Oil Press:</span> {log.engine2_oil_pressure} PSI</div>}
+                                  {log.engine2_gearbox_temp && <div className="text-sm"><span className="font-medium">Gearbox:</span> {log.engine2_gearbox_temp}°C</div>}
+                                  {log.engine2_gearbox_pressure && <div className="text-sm"><span className="font-medium">GB Press:</span> {log.engine2_gearbox_pressure} PSI</div>}
+                                  {log.engine2_pyrometers && <div className="text-sm"><span className="font-medium">Pyro:</span> {log.engine2_pyrometers}°C</div>}
+                                  {log.engine2_battery_volts && <div className="text-sm"><span className="font-medium">Battery:</span> {log.engine2_battery_volts}V</div>}
+                                  {log.engine2_aux_volts && <div className="text-sm"><span className="font-medium">Aux:</span> {log.engine2_aux_volts}V</div>}
+                                  {log.engine2_fuel_level && <div className="text-sm"><span className="font-medium">Fuel:</span> {log.engine2_fuel_level}%</div>}
+                                  {log.engine2_engine_hrs_start && <div className="text-sm"><span className="font-medium">Hrs:</span> {log.engine2_engine_hrs_start} - {log.engine2_engine_hrs_end || '?'}</div>}
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="flex items-center gap-1 ml-4">
+                              {canEdit && (
+                                <Button size="sm" variant="ghost" onClick={() => handleEditEngineLog(log)}>
+                                  <Edit className="h-4 w-4" />
+                                </Button>
+                              )}
+                              {canDelete && (
+                                <Button size="sm" variant="ghost" onClick={() => handleDeleteEngineLog(log)} className="text-red-600 hover:text-red-700 hover:bg-red-50">
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </TabsContent>
+              </Tabs>
+            </div>
+          </ScrollArea>
+        </DialogContent>
+      </Dialog>
+
+      <TripLogForm
+        open={shiftFormOpen}
+        onClose={() => setShiftFormOpen(false)}
+        onSave={handleSaveShiftLog}
+        log={selectedShiftLog}
+        tripId={trip?.id}
+        mode={shiftFormMode}
+      />
+
+      <RunningLogForm
+        open={runningFormOpen}
+        onClose={() => setRunningFormOpen(false)}
+        onSave={handleSaveRunningLog}
+        log={selectedRunningLog}
+        tripId={trip?.id}
+        mode={runningFormMode}
+      />
+
+      <EngineRunningLogForm
+        open={engineFormOpen}
+        onClose={() => setEngineFormOpen(false)}
+        onSave={handleSaveEngineLog}
+        log={selectedEngineLog}
+        tripId={trip?.id}
+        mode={engineFormMode}
+      />
+
+      <AllocatedCrewForm
+        open={crewFormOpen}
+        onClose={() => setCrewFormOpen(false)}
+        onSave={handleSaveCrewMember}
+        crewMember={selectedCrewMember}
+        tripId={trip?.id}
+        mode={crewFormMode}
+      />
+    </>
+  );
+};
+
+export default TripDetailsDialog;

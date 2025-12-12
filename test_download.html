@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Backup Download Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 10px 5px;
+            cursor: pointer;
+            background: #01b3a7;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        button:hover {
+            background: #009688;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 5px;
+        }
+        .error {
+            background: #ffebee;
+            color: #c62828;
+        }
+        .success {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+        input {
+            padding: 10px;
+            width: 300px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>AMSA Backup Download Test</h1>
+    
+    <div>
+        <h3>Step 1: Login</h3>
+        <input type="text" id="email" placeholder="Email" value="admin@test.com">
+        <input type="password" id="password" placeholder="Password" value="Admin123!">
+        <button onclick="login()">Login</button>
+    </div>
+
+    <div>
+        <h3>Step 2: Get Backup List</h3>
+        <button onclick="getBackups()">Get Backup History</button>
+        <div id="backupList"></div>
+    </div>
+
+    <div>
+        <h3>Step 3: Test Download Methods</h3>
+        <button onclick="testMethod1()">Method 1: Blob Download</button>
+        <button onclick="testMethod2()">Method 2: Direct Export</button>
+        <button onclick="testMethod3()">Method 3: Fetch API</button>
+    </div>
+
+    <div id="result" class="result" style="display:none;"></div>
+
+    <script>
+        const BACKEND_URL = window.location.origin;
+        const API = `${BACKEND_URL}/api`;
+        let token = '';
+        let backupId = '';
+
+        function showResult(message, isError = false) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.textContent = message;
+            resultDiv.className = isError ? 'result error' : 'result success';
+            resultDiv.style.display = 'block';
+        }
+
+        async function login() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            try {
+                const response = await fetch(`${API}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                const data = await response.json();
+                token = data.access_token;
+                showResult('✅ Login successful! Token: ' + token.substring(0, 30) + '...');
+            } catch (err) {
+                showResult('❌ Login failed: ' + err.message, true);
+            }
+        }
+
+        async function getBackups() {
+            if (!token) {
+                showResult('❌ Please login first', true);
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API}/backup/history`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                const backups = await response.json();
+                
+                if (backups.length > 0) {
+                    backupId = backups[0].id;
+                    const listDiv = document.getElementById('backupList');
+                    listDiv.innerHTML = `
+                        <div style="margin: 10px 0; padding: 10px; background: #fff; border: 1px solid #ddd; border-radius: 5px;">
+                            <strong>Latest Backup:</strong><br>
+                            Filename: ${backups[0].filename}<br>
+                            Size: ${(backups[0].file_size / 1024).toFixed(2)} KB<br>
+                            Records: ${backups[0].record_count}<br>
+                            ID: ${backups[0].id}
+                        </div>
+                    `;
+                    showResult(`✅ Found ${backups.length} backups. First backup ID set: ${backupId.substring(0, 20)}...`);
+                } else {
+                    showResult('⚠️ No backups found', true);
+                }
+            } catch (err) {
+                showResult('❌ Failed to get backups: ' + err.message, true);
+            }
+        }
+
+        async function testMethod1() {
+            if (!token || !backupId) {
+                showResult('❌ Please login and get backups first', true);
+                return;
+            }
+
+            showResult('⏳ Testing Method 1: Blob Download...');
+
+            try {
+                const response = await fetch(`${API}/backup/download/${backupId}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `backup_method1_${Date.now()}.json`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                window.URL.revokeObjectURL(url);
+                
+                showResult('✅ Method 1: Download triggered! Check your downloads folder.');
+            } catch (err) {
+                showResult('❌ Method 1 failed: ' + err.message, true);
+            }
+        }
+
+        async function testMethod2() {
+            if (!token) {
+                showResult('❌ Please login first', true);
+                return;
+            }
+
+            showResult('⏳ Testing Method 2: Direct Export...');
+
+            try {
+                const response = await fetch(`${API}/backup/export`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `backup_export_${Date.now()}.json`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                window.URL.revokeObjectURL(url);
+                
+                showResult('✅ Method 2: Download triggered! Check your downloads folder.');
+            } catch (err) {
+                showResult('❌ Method 2 failed: ' + err.message, true);
+            }
+        }
+
+        async function testMethod3() {
+            if (!token || !backupId) {
+                showResult('❌ Please login and get backups first', true);
+                return;
+            }
+
+            showResult('⏳ Testing Method 3: Fetch API...');
+
+            try {
+                const response = await fetch(`${API}/backup/download/${backupId}`, {
+                    method: 'GET',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                
+                const blob = await response.blob();
+                
+                // Create download link
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = `backup_fetch_${Date.now()}.json`;
+                
+                document.body.appendChild(a);
+                a.click();
+                
+                setTimeout(() => {
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                }, 100);
+                
+                showResult('✅ Method 3: Download triggered! Check your downloads folder.');
+            } catch (err) {
+                showResult('❌ Method 3 failed: ' + err.message, true);
+            }
+        }
+    </script>
+</body>
+</html>

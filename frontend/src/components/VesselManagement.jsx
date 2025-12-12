@@ -1,0 +1,496 @@
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Ship, Plus, Edit, Trash2, Search, Calendar, Filter, X } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import VesselForm from './VesselForm';
+
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const API = `${BACKEND_URL}/api`;
+
+const VesselManagement = () => {
+  const [vessels, setVessels] = useState([]);
+  const [filteredVessels, setFilteredVessels] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [vesselTypeFilter, setVesselTypeFilter] = useState('all');
+  const [sortBy, setSortBy] = useState('name');
+  const [formOpen, setFormOpen] = useState(false);
+  const [formMode, setFormMode] = useState('create');
+  const [selectedVessel, setSelectedVessel] = useState(null);
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
+  const [duplicateWarning, setDuplicateWarning] = useState(null);
+  const [showDuplicateDialog, setShowDuplicateDialog] = useState(false);
+  const [pendingFormData, setPendingFormData] = useState(null);
+
+  const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+  const canEdit = currentUser.access_level === 'Edit' || currentUser.access_level === 'Full';
+  const canDelete = currentUser.access_level === 'Full';
+
+  useEffect(() => {
+    fetchVessels();
+  }, []);
+
+  useEffect(() => {
+    applyFiltersAndSort();
+  }, [searchQuery, vesselTypeFilter, sortBy, vessels]);
+
+  const applyFiltersAndSort = () => {
+    let filtered = [...vessels];
+
+    // Apply search filter
+    if (searchQuery) {
+      filtered = filtered.filter(vessel =>
+        vessel.vessel_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        vessel.registration_number?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        vessel.vessel_type?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        vessel.owner_name?.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+    // Apply vessel type filter
+    if (vesselTypeFilter !== 'all') {
+      filtered = filtered.filter(vessel => 
+        vessel.vessel_type?.toLowerCase() === vesselTypeFilter.toLowerCase()
+      );
+    }
+
+    // Apply sorting
+    filtered.sort((a, b) => {
+      switch (sortBy) {
+        case 'name':
+          return (a.vessel_name || '').localeCompare(b.vessel_name || '');
+        case 'type':
+          return (a.vessel_type || '').localeCompare(b.vessel_type || '');
+        case 'year':
+          return (b.year_built || 0) - (a.year_built || 0);
+        case 'registration':
+          return (a.registration_number || '').localeCompare(b.registration_number || '');
+        default:
+          return 0;
+      }
+    });
+
+    setFilteredVessels(filtered);
+  };
+
+  const clearFilters = () => {
+    setSearchQuery('');
+    setVesselTypeFilter('all');
+    setSortBy('name');
+  };
+
+  const hasActiveFilters = searchQuery || vesselTypeFilter !== 'all' || sortBy !== 'name';
+
+  // Get unique vessel types for filter dropdown
+  const vesselTypes = ['all', ...new Set(vessels.map(v => v.vessel_type).filter(Boolean))];
+
+  const fetchVessels = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`${API}/vessels`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setVessels(response.data);
+      setFilteredVessels(response.data);
+    } catch (err) {
+      setError('Error fetching vessels');
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCreate = () => {
+    setFormMode('create');
+    setSelectedVessel(null);
+    setFormOpen(true);
+  };
+
+  const handleEdit = (vessel) => {
+    setFormMode('edit');
+    setSelectedVessel(vessel);
+    setFormOpen(true);
+  };
+
+  const checkDuplicates = async (formData) => {
+    try {
+      const token = localStorage.getItem('token');
+      const checkData = {
+        ...formData,
+        id: formMode === 'edit' ? selectedVessel.id : null
+      };
+      
+      const response = await axios.post(`${API}/vessels/check-duplicate`, checkData, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      return response.data;
+    } catch (err) {
+      console.error('Error checking duplicates:', err);
+      return { has_duplicates: false, duplicates: [] };
+    }
+  };
+
+  const handleSave = async (formData) => {
+    setPendingFormData(formData);
+    
+    // Check for duplicates
+    const duplicateCheck = await checkDuplicates(formData);
+    
+    if (duplicateCheck.has_duplicates) {
+      setDuplicateWarning(duplicateCheck.duplicates);
+      setShowDuplicateDialog(true);
+      return; // Don't save yet, wait for user confirmation
+    }
+    
+    // No duplicates, proceed with save
+    await performSave(formData);
+  };
+
+  const performSave = async (formData) => {
+    try {
+      const token = localStorage.getItem('token');
+      
+      if (formMode === 'create') {
+        await axios.post(`${API}/vessels`, formData, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setMessage('Vessel created successfully');
+      } else {
+        await axios.put(`${API}/vessels/${selectedVessel.id}`, formData, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setMessage('Vessel updated successfully');
+      }
+      
+      setFormOpen(false);
+      setShowDuplicateDialog(false);
+      setPendingFormData(null);
+      fetchVessels();
+      setTimeout(() => setMessage(''), 3000);
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Error saving vessel');
+    }
+  };
+
+  const handleDelete = async (vesselId, vesselName) => {
+    if (!window.confirm(`Are you sure you want to delete ${vesselName}?`)) return;
+
+    try {
+      const token = localStorage.getItem('token');
+      await axios.delete(`${API}/vessels/${vesselId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setMessage('Vessel deleted successfully');
+      fetchVessels();
+      setTimeout(() => setMessage(''), 3000);
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Error deleting vessel');
+    }
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return 'N/A';
+    return new Date(dateString).toLocaleDateString();
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-gray-500">Loading vessels...</div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-3xl font-bold text-gray-900">Vessel Management</h2>
+          <p className="text-gray-500 mt-1">Manage your fleet of vessels and their certificates</p>
+        </div>
+        {canEdit && (
+          <Button onClick={handleCreate}>
+            <Plus className="mr-2 h-4 w-4" />
+            Add Vessel
+          </Button>
+        )}
+      </div>
+
+      {message && (
+        <Alert className="bg-green-50 border-green-200">
+          <AlertDescription className="text-green-800">{message}</AlertDescription>
+        </Alert>
+      )}
+
+      {error && (
+        <Alert variant="destructive">
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
+
+      {/* Statistics Cards - Clickable */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <Card 
+          className="cursor-pointer hover:shadow-lg transition-shadow"
+          onClick={() => {
+            setSearchQuery('');
+            setVesselTypeFilter('all');
+            setSortBy('name');
+          }}
+        >
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium text-gray-500">Total Vessels</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{vessels.length}</div>
+            <p className="text-xs text-gray-500 mt-1">Click to show all</p>
+          </CardContent>
+        </Card>
+        <Card 
+          className="cursor-pointer hover:shadow-lg transition-shadow"
+          onClick={() => {
+            setSearchQuery('Passenger');
+            setVesselTypeFilter('all');
+          }}
+        >
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium text-gray-500">Passenger Vessels</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-blue-600">
+              {vessels.filter(v => v.vessel_type?.includes('Passenger')).length}
+            </div>
+            <p className="text-xs text-gray-500 mt-1">Click to filter</p>
+          </CardContent>
+        </Card>
+        <Card 
+          className="cursor-pointer hover:shadow-lg transition-shadow"
+          onClick={() => {
+            setSearchQuery('Operational');
+          }}
+        >
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium text-gray-500">Active Fleet</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-green-600">
+              {vessels.filter(v => v.operational_status === 'Operational').length}
+            </div>
+            <p className="text-xs text-gray-500 mt-1">Click to filter</p>
+          </CardContent>
+        </Card>
+        <Card 
+          className="cursor-pointer hover:shadow-lg transition-shadow"
+          onClick={() => {
+            setSearchQuery('');
+            setVesselTypeFilter('all');
+            setSortBy('name');
+          }}
+        >
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium text-gray-500">Total Capacity</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-purple-600">
+              {vessels.reduce((sum, v) => sum + (parseInt(v.passenger_capacity) || 0), 0)}
+            </div>
+            <p className="text-xs text-gray-500 mt-1">View all vessels</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Search and Filter Bar */}
+      <Card>
+        <CardContent className="pt-6">
+          <div className="space-y-4">
+            {/* Search Bar */}
+            <div className="flex flex-col md:flex-row gap-4">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Input
+                  placeholder="Search by name, registration, type, or owner..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+              
+              {/* Vessel Type Filter */}
+              <div className="w-full md:w-48">
+                <Select value={vesselTypeFilter} onValueChange={setVesselTypeFilter}>
+                  <SelectTrigger>
+                    <div className="flex items-center gap-2">
+                      <Filter className="h-4 w-4" />
+                      <SelectValue placeholder="Vessel Type" />
+                    </div>
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Types</SelectItem>
+                    {vesselTypes.filter(type => type !== 'all').map(type => (
+                      <SelectItem key={type} value={type}>{type}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Sort By */}
+              <div className="w-full md:w-48">
+                <Select value={sortBy} onValueChange={setSortBy}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Sort by" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="name">Name (A-Z)</SelectItem>
+                    <SelectItem value="type">Vessel Type</SelectItem>
+                    <SelectItem value="year">Year Built (Newest)</SelectItem>
+                    <SelectItem value="registration">Registration</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            {/* Results and Clear Filters */}
+            <div className="flex items-center justify-between">
+              <div className="text-sm text-gray-500">
+                Showing {filteredVessels.length} of {vessels.length} vessels
+              </div>
+              {hasActiveFilters && (
+                <Button variant="ghost" size="sm" onClick={clearFilters}>
+                  <X className="h-4 w-4 mr-1" />
+                  Clear Filters
+                </Button>
+              )}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Vessels Grid */}
+      {filteredVessels.length === 0 ? (
+        <Card>
+          <CardContent className="flex flex-col items-center justify-center py-12">
+            <Ship className="h-12 w-12 text-gray-400 mb-4" />
+            <h3 className="text-lg font-semibold mb-2">No vessels found</h3>
+            <p className="text-gray-500 text-sm mb-4">
+              {searchQuery ? 'Try adjusting your search criteria' : 'Get started by adding your first vessel'}
+            </p>
+            {canEdit && !searchQuery && (
+              <Button onClick={handleCreate}>
+                <Plus className="mr-2 h-4 w-4" />
+                Add Vessel
+              </Button>
+            )}
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredVessels.map((vessel) => (
+            <Card key={vessel.id} className="hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <CardTitle className="flex items-center gap-2">
+                      <Ship className="h-5 w-5 text-blue-600" />
+                      {vessel.vessel_name}
+                    </CardTitle>
+                    <CardDescription className="mt-1">
+                      {vessel.registration_number || 'No registration'}
+                    </CardDescription>
+                  </div>
+                  <Badge variant="outline">{vessel.vessel_type || 'N/A'}</Badge>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  <div className="text-sm">
+                    <span className="font-medium text-gray-700">Owner:</span>
+                    <span className="text-gray-600 ml-2">{vessel.owner_name || 'N/A'}</span>
+                  </div>
+                  
+                  {vessel.length_overall && (
+                    <div className="text-sm">
+                      <span className="font-medium text-gray-700">Specifications:</span>
+                      <span className="text-gray-600 ml-2">
+                        {vessel.length_overall}m × {vessel.beam}m
+                      </span>
+                    </div>
+                  )}
+
+                  {vessel.year_built && (
+                    <div className="text-sm">
+                      <span className="font-medium text-gray-700">Year Built:</span>
+                      <span className="text-gray-600 ml-2">{vessel.year_built}</span>
+                    </div>
+                  )}
+
+                  {vessel.max_passengers && (
+                    <div className="text-sm">
+                      <span className="font-medium text-gray-700">Capacity:</span>
+                      <span className="text-gray-600 ml-2">
+                        {vessel.max_passengers} passengers, {vessel.max_crew} crew
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Certificate Status */}
+                  <div className="pt-2 border-t">
+                    <div className="flex items-center text-xs text-gray-500">
+                      <Calendar className="h-3 w-3 mr-1" />
+                      {vessel.cert_survey_expiry ? (
+                        <span>Survey expires: {formatDate(vessel.cert_survey_expiry)}</span>
+                      ) : (
+                        <span>No certificate dates</span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex gap-2 pt-2">
+                    {canEdit && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="flex-1"
+                        onClick={() => handleEdit(vessel)}
+                      >
+                        <Edit className="h-4 w-4 mr-1" />
+                        Edit
+                      </Button>
+                    )}
+                    {canDelete && (
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        onClick={() => handleDelete(vessel.id, vessel.vessel_name)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
+
+      {/* Vessel Form Dialog */}
+      <VesselForm
+        open={formOpen}
+        onClose={() => setFormOpen(false)}
+        onSave={handleSave}
+        vessel={selectedVessel}
+        mode={formMode}
+      />
+    </div>
+  );
+};
+
+export default VesselManagement;

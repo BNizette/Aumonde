@@ -1,0 +1,640 @@
+import React, { useState, useEffect } from 'react';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
+import { Plus, Trash2 } from 'lucide-react';
+
+const CrewForm = ({ open, onClose, onSave, crew, mode = 'create', prefilledData = null }) => {
+  const [formData, setFormData] = useState({
+    // Tab 1: Crew Details
+    staff_name: '',
+    email: '',
+    address: '',
+    telephone: '',
+    mobile: '',
+    contact_details: '',
+    next_of_kin: '',
+    kin_contact: '',
+    date_commenced: '',
+    date_joined_vessel: '',
+    date_left_vessel: '',
+    default_position: '',
+    role: 'Crew',
+    
+    // Tab 2: Qualifications
+    qualifications: [],
+    qualifications_comment: '',
+    experience: '',
+    cv_url: '',
+    master_class5_proof: false,
+    license_number: '',
+    license_expiry: '',
+    medical_cert_expiry: '',
+    
+    // Tab 3: Training Record
+    briefings_observed: [],
+    briefings_delivered: [],
+    practical_experience: [],
+    
+    // Tab 4: Sign-off
+    owner_name: '',
+    owner_signature: '',
+    owner_date: '',
+    staff_signature: '',
+    staff_date: '',
+  });
+
+  useEffect(() => {
+    if (crew && mode === 'edit') {
+      setFormData({
+        ...crew,
+        qualifications: crew.qualifications || [],
+        briefings_observed: crew.briefings_observed || [],
+        briefings_delivered: crew.briefings_delivered || [],
+        practical_experience: crew.practical_experience || [],
+      });
+    } else if (mode === 'create' && prefilledData) {
+      setFormData({
+        staff_name: prefilledData.staff_name || '',
+        email: prefilledData.email || '',
+        address: '',
+        telephone: '',
+        mobile: '',
+        contact_details: '',
+        next_of_kin: '',
+        kin_contact: '',
+        date_commenced: '',
+        date_joined_vessel: '',
+        date_left_vessel: '',
+        default_position: '',
+        role: 'Crew',
+        qualifications: [],
+        qualifications_comment: '',
+        experience: '',
+        cv_url: '',
+        master_class5_proof: false,
+        license_number: '',
+        license_expiry: '',
+        medical_cert_expiry: '',
+        briefings_observed: [],
+        briefings_delivered: [],
+        practical_experience: [],
+        owner_name: '',
+        owner_signature: '',
+        owner_date: '',
+        staff_signature: '',
+        staff_date: '',
+      });
+    } else if (mode === 'create') {
+      setFormData({
+        staff_name: '',
+        email: '',
+        address: '',
+        telephone: '',
+        mobile: '',
+        contact_details: '',
+        next_of_kin: '',
+        kin_contact: '',
+        date_commenced: '',
+        date_joined_vessel: '',
+        date_left_vessel: '',
+        default_position: '',
+        role: 'Crew',
+        qualifications: [],
+        qualifications_comment: '',
+        experience: '',
+        cv_url: '',
+        master_class5_proof: false,
+        license_number: '',
+        license_expiry: '',
+        medical_cert_expiry: '',
+        briefings_observed: [],
+        briefings_delivered: [],
+        practical_experience: [],
+        owner_name: '',
+        owner_signature: '',
+        owner_date: '',
+        staff_signature: '',
+        staff_date: '',
+      });
+    }
+  }, [crew, mode, open, prefilledData]);
+
+  const handleChange = (field, value) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  // Qualification functions
+  const addQualification = () => {
+    setFormData(prev => ({
+      ...prev,
+      qualifications: [...prev.qualifications, { name: '', date: '' }]
+    }));
+  };
+
+  const updateQualification = (index, field, value) => {
+    const updated = [...formData.qualifications];
+    updated[index][field] = value;
+    setFormData(prev => ({ ...prev, qualifications: updated }));
+  };
+
+  const removeQualification = (index) => {
+    setFormData(prev => ({
+      ...prev,
+      qualifications: prev.qualifications.filter((_, i) => i !== index)
+    }));
+  };
+
+  const calculateYears = (dateStr) => {
+    if (!dateStr) return null;
+    const qualDate = new Date(dateStr);
+    const now = new Date();
+    const years = (now - qualDate) / (365.25 * 24 * 60 * 60 * 1000);
+    return years.toFixed(2);
+  };
+
+  // Training record functions
+  const addTrainingItem = (type) => {
+    setFormData(prev => ({
+      ...prev,
+      [type]: [...prev[type], { number: '', date: '', supervisor: '' }]
+    }));
+  };
+
+  const updateTrainingItem = (type, index, field, value) => {
+    const updated = [...formData[type]];
+    updated[index][field] = value;
+    setFormData(prev => ({ ...prev, [type]: updated }));
+  };
+
+  const removeTrainingItem = (type, index) => {
+    setFormData(prev => ({
+      ...prev,
+      [type]: prev[type].filter((_, i) => i !== index)
+    }));
+  };
+
+  const handleSubmit = () => {
+    onSave(formData);
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onClose}>
+      <DialogContent className="max-w-4xl max-h-[90vh]">
+        <DialogHeader>
+          <DialogTitle>{mode === 'create' ? 'Add New Crew Member' : 'Edit Crew Member'}</DialogTitle>
+          <DialogDescription>
+            {mode === 'create' ? 'Enter crew member details across all tabs' : 'Update crew member information'}
+          </DialogDescription>
+        </DialogHeader>
+
+        <Tabs defaultValue="details" className="w-full">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="details">Details</TabsTrigger>
+            <TabsTrigger value="qualifications">Qualifications</TabsTrigger>
+            <TabsTrigger value="training">Training</TabsTrigger>
+            <TabsTrigger value="signoff">Sign-off</TabsTrigger>
+          </TabsList>
+
+          <ScrollArea className="h-[400px] w-full pr-4">
+            {/* TAB 1: CREW DETAILS */}
+            <TabsContent value="details" className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2 col-span-2">
+                  <Label htmlFor="staff_name">Staff Member Name *</Label>
+                  <Input
+                    id="staff_name"
+                    value={formData.staff_name}
+                    onChange={(e) => handleChange('staff_name', e.target.value)}
+                    placeholder="Full name"
+                  />
+                </div>
+                <div className="space-y-2 col-span-2">
+                  <Label htmlFor="email">Email Address</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => handleChange('email', e.target.value)}
+                    placeholder="email@example.com"
+                  />
+                </div>
+                <div className="space-y-2 col-span-2">
+                  <Label htmlFor="address">Address</Label>
+                  <Input
+                    id="address"
+                    value={formData.address}
+                    onChange={(e) => handleChange('address', e.target.value)}
+                    placeholder="Residential address"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="telephone">Telephone</Label>
+                  <Input
+                    id="telephone"
+                    value={formData.telephone}
+                    onChange={(e) => handleChange('telephone', e.target.value)}
+                    placeholder="Home phone"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="mobile">Mobile</Label>
+                  <Input
+                    id="mobile"
+                    value={formData.mobile}
+                    onChange={(e) => handleChange('mobile', e.target.value)}
+                    placeholder="Mobile number"
+                  />
+                </div>
+                <div className="space-y-2 col-span-2">
+                  <Label htmlFor="contact_details">Contact Details</Label>
+                  <Input
+                    id="contact_details"
+                    value={formData.contact_details}
+                    onChange={(e) => handleChange('contact_details', e.target.value)}
+                    placeholder="Additional contact information"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="next_of_kin">Next of Kin</Label>
+                  <Input
+                    id="next_of_kin"
+                    value={formData.next_of_kin}
+                    onChange={(e) => handleChange('next_of_kin', e.target.value)}
+                    placeholder="Emergency contact name"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="kin_contact">Kin Contact</Label>
+                  <Input
+                    id="kin_contact"
+                    value={formData.kin_contact}
+                    onChange={(e) => handleChange('kin_contact', e.target.value)}
+                    placeholder="Emergency contact number"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="date_commenced">Date Commenced Employment</Label>
+                  <Input
+                    id="date_commenced"
+                    type="date"
+                    value={formData.date_commenced}
+                    onChange={(e) => handleChange('date_commenced', e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="default_position">Default Position</Label>
+                  <Input
+                    id="default_position"
+                    value={formData.default_position}
+                    onChange={(e) => handleChange('default_position', e.target.value)}
+                    placeholder="e.g., Master, Deckhand, Engineer"
+                  />
+                </div>
+                <div className="space-y-2 col-span-2">
+                  <Label htmlFor="role">Role</Label>
+                  <Select value={formData.role} onValueChange={(value) => handleChange('role', value)}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Crew">Crew</SelectItem>
+                      <SelectItem value="Host">Host</SelectItem>
+                      <SelectItem value="Both">Both</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </TabsContent>
+
+            {/* TAB 2: QUALIFICATIONS */}
+            <TabsContent value="qualifications" className="space-y-4">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <Label className="text-base font-semibold">Qualifications</Label>
+                  <Button type="button" size="sm" onClick={addQualification}>
+                    <Plus className="h-4 w-4 mr-1" />
+                    Add Qualification
+                  </Button>
+                </div>
+
+                {formData.qualifications.map((qual, index) => (
+                  <div key={index} className="border rounded-lg p-3">
+                    <div className="flex items-end gap-2">
+                      <div className="flex-1">
+                        <Label className="text-sm">Qualification Name</Label>
+                        <Input
+                          value={qual.name}
+                          onChange={(e) => updateQualification(index, 'name', e.target.value)}
+                          placeholder="e.g., Coxswain Certificate"
+                          className="mt-1"
+                        />
+                      </div>
+                      <div className="w-40">
+                        <Label className="text-sm">Date Obtained</Label>
+                        <Input
+                          type="date"
+                          value={qual.date}
+                          onChange={(e) => updateQualification(index, 'date', e.target.value)}
+                          className="mt-1"
+                        />
+                      </div>
+                      <div className="w-32">
+                        <Label className="text-sm">Years</Label>
+                        <div className="h-10 flex items-center mt-1">
+                          {qual.date ? (
+                            <Badge variant="secondary" className="bg-blue-100 text-blue-800 whitespace-nowrap">
+                              Years: {calculateYears(qual.date)}
+                            </Badge>
+                          ) : (
+                            <span className="text-xs text-gray-400">-</span>
+                          )}
+                        </div>
+                      </div>
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="icon"
+                        onClick={() => removeQualification(index)}
+                        className="mb-0"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+
+                <div className="space-y-2">
+                  <Label htmlFor="qualifications_comment">Qualifications Comment</Label>
+                  <Textarea
+                    id="qualifications_comment"
+                    value={formData.qualifications_comment}
+                    onChange={(e) => handleChange('qualifications_comment', e.target.value)}
+                    placeholder="Additional notes about qualifications"
+                    rows={3}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="experience">Experience</Label>
+                  <Textarea
+                    id="experience"
+                    value={formData.experience}
+                    onChange={(e) => handleChange('experience', e.target.value)}
+                    placeholder="Relevant work experience"
+                    rows={3}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="cv_url">CV/Resume URL</Label>
+                  <Input
+                    id="cv_url"
+                    value={formData.cv_url}
+                    onChange={(e) => handleChange('cv_url', e.target.value)}
+                    placeholder="https://example.com/cv.pdf"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="master_class5_proof"
+                      checked={formData.master_class5_proof}
+                      onCheckedChange={(checked) => handleChange('master_class5_proof', checked)}
+                    />
+                    <Label htmlFor="master_class5_proof" className="cursor-pointer">Master Class 5 Proof</Label>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="license_number">License Number</Label>
+                    <Input
+                      id="license_number"
+                      value={formData.license_number}
+                      onChange={(e) => handleChange('license_number', e.target.value)}
+                      placeholder="License ID"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="license_expiry">License Expiry</Label>
+                    <Input
+                      id="license_expiry"
+                      type="date"
+                      value={formData.license_expiry}
+                      onChange={(e) => handleChange('license_expiry', e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-2 col-span-2">
+                    <Label htmlFor="medical_cert_expiry">Medical Certificate Expiry</Label>
+                    <Input
+                      id="medical_cert_expiry"
+                      type="date"
+                      value={formData.medical_cert_expiry}
+                      onChange={(e) => handleChange('medical_cert_expiry', e.target.value)}
+                    />
+                  </div>
+                </div>
+              </div>
+            </TabsContent>
+
+            {/* TAB 3: TRAINING RECORD */}
+            <TabsContent value="training" className="space-y-6">
+              {/* Safety Briefings Observed */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <Label className="text-base font-semibold">10 Safety Briefings Observed</Label>
+                  <Button type="button" size="sm" onClick={() => addTrainingItem('briefings_observed')}>
+                    <Plus className="h-4 w-4 mr-1" />
+                    Add
+                  </Button>
+                </div>
+                {formData.briefings_observed.map((item, index) => (
+                  <div key={index} className="border rounded-lg p-3 grid grid-cols-4 gap-2">
+                    <Input
+                      type="number"
+                      placeholder="Number"
+                      value={item.number}
+                      onChange={(e) => updateTrainingItem('briefings_observed', index, 'number', e.target.value)}
+                    />
+                    <Input
+                      type="date"
+                      value={item.date}
+                      onChange={(e) => updateTrainingItem('briefings_observed', index, 'date', e.target.value)}
+                    />
+                    <Input
+                      placeholder="Supervisor"
+                      value={item.supervisor}
+                      onChange={(e) => updateTrainingItem('briefings_observed', index, 'supervisor', e.target.value)}
+                    />
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => removeTrainingItem('briefings_observed', index)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+
+              {/* Safety Briefings Delivered */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <Label className="text-base font-semibold">5 Safety Briefings Delivered</Label>
+                  <Button type="button" size="sm" onClick={() => addTrainingItem('briefings_delivered')}>
+                    <Plus className="h-4 w-4 mr-1" />
+                    Add
+                  </Button>
+                </div>
+                {formData.briefings_delivered.map((item, index) => (
+                  <div key={index} className="border rounded-lg p-3 grid grid-cols-4 gap-2">
+                    <Input
+                      type="number"
+                      placeholder="Number"
+                      value={item.number}
+                      onChange={(e) => updateTrainingItem('briefings_delivered', index, 'number', e.target.value)}
+                    />
+                    <Input
+                      type="date"
+                      value={item.date}
+                      onChange={(e) => updateTrainingItem('briefings_delivered', index, 'date', e.target.value)}
+                    />
+                    <Input
+                      placeholder="Supervisor"
+                      value={item.supervisor}
+                      onChange={(e) => updateTrainingItem('briefings_delivered', index, 'supervisor', e.target.value)}
+                    />
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => removeTrainingItem('briefings_delivered', index)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+
+              {/* Practical Experience */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <Label className="text-base font-semibold">Acted as Guide / Practical Experience</Label>
+                  <Button type="button" size="sm" onClick={() => addTrainingItem('practical_experience')}>
+                    <Plus className="h-4 w-4 mr-1" />
+                    Add
+                  </Button>
+                </div>
+                {formData.practical_experience.map((item, index) => (
+                  <div key={index} className="border rounded-lg p-3 grid grid-cols-4 gap-2">
+                    <Input
+                      type="number"
+                      placeholder="Number"
+                      value={item.number}
+                      onChange={(e) => updateTrainingItem('practical_experience', index, 'number', e.target.value)}
+                    />
+                    <Input
+                      type="date"
+                      value={item.date}
+                      onChange={(e) => updateTrainingItem('practical_experience', index, 'date', e.target.value)}
+                    />
+                    <Input
+                      placeholder="Supervisor"
+                      value={item.supervisor}
+                      onChange={(e) => updateTrainingItem('practical_experience', index, 'supervisor', e.target.value)}
+                    />
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => removeTrainingItem('practical_experience', index)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            </TabsContent>
+
+            {/* TAB 4: SIGN-OFF */}
+            <TabsContent value="signoff" className="space-y-4">
+              <div className="space-y-4">
+                <h3 className="font-semibold text-lg">Vessel Owner</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="owner_name">Name</Label>
+                    <Input
+                      id="owner_name"
+                      value={formData.owner_name}
+                      onChange={(e) => handleChange('owner_name', e.target.value)}
+                      placeholder="Owner name"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="owner_date">Date</Label>
+                    <Input
+                      id="owner_date"
+                      type="date"
+                      value={formData.owner_date}
+                      onChange={(e) => handleChange('owner_date', e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-2 col-span-2">
+                    <Label htmlFor="owner_signature">Signature</Label>
+                    <Input
+                      id="owner_signature"
+                      value={formData.owner_signature}
+                      onChange={(e) => handleChange('owner_signature', e.target.value)}
+                      placeholder="Signature or typed name"
+                    />
+                  </div>
+                </div>
+
+                <h3 className="font-semibold text-lg pt-4">Staff Member</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="staff_date">Date</Label>
+                    <Input
+                      id="staff_date"
+                      type="date"
+                      value={formData.staff_date}
+                      onChange={(e) => handleChange('staff_date', e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-2 col-span-2">
+                    <Label htmlFor="staff_signature">Signature</Label>
+                    <Input
+                      id="staff_signature"
+                      value={formData.staff_signature}
+                      onChange={(e) => handleChange('staff_signature', e.target.value)}
+                      placeholder="Signature or typed name"
+                    />
+                  </div>
+                </div>
+              </div>
+            </TabsContent>
+          </ScrollArea>
+        </Tabs>
+
+        <DialogFooter>
+          <Button variant="outline" onClick={onClose}>Cancel</Button>
+          <Button onClick={handleSubmit}>
+            {mode === 'create' ? 'Create Crew Member' : 'Save Changes'}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+export default CrewForm;
