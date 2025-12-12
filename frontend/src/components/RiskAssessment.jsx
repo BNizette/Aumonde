@@ -48,12 +48,10 @@ const RiskAssessment = () => {
 
   useEffect(() => {
     applyFiltersAndSort();
-  }, [searchQuery, riskLevelFilter, statusFilter, vesselFilter, sortBy, risks]);
+  }, [searchQuery, filters, sortBy, risks]);
 
   const applyFiltersAndSort = () => {
     let filtered = [...risks];
-
-    // Apply search filter
     if (searchQuery) {
       filtered = filtered.filter(risk =>
         risk.activity_task?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -62,52 +60,75 @@ const RiskAssessment = () => {
         risk.hazard?.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
-
-    // Apply risk level filter
-    if (riskLevelFilter !== 'all') {
-      filtered = filtered.filter(risk => 
-        risk.risk_level?.toLowerCase() === riskLevelFilter.toLowerCase()
-      );
+    if (filters.risk_levels.length > 0) {
+      filtered = filtered.filter(risk => filters.risk_levels.includes(risk.risk_level));
     }
-
-    // Apply status filter
-    if (statusFilter !== 'all') {
-      filtered = filtered.filter(risk => 
-        risk.status?.toLowerCase() === statusFilter.toLowerCase()
-      );
+    if (filters.statuses.length > 0) {
+      filtered = filtered.filter(risk => filters.statuses.includes(risk.status));
     }
-
-    // Apply vessel filter
-    if (vesselFilter !== 'all') {
-      filtered = filtered.filter(risk => 
-        risk.vessel_name?.toLowerCase().includes(vesselFilter.toLowerCase())
-      );
+    if (filters.start_date || filters.end_date) {
+      filtered = filtered.filter(risk => {
+        if (!risk.assessment_date) return false;
+        const riskDate = new Date(risk.assessment_date);
+        const startDate = filters.start_date ? new Date(filters.start_date) : null;
+        const endDate = filters.end_date ? new Date(filters.end_date + 'T23:59:59') : null;
+        if (startDate && riskDate < startDate) return false;
+        if (endDate && riskDate > endDate) return false;
+        return true;
+      });
     }
-
-    // Apply sorting
     filtered.sort((a, b) => {
       switch (sortBy) {
         case 'riskLevel':
           const riskOrder = { 'Critical': 5, 'High': 4, 'Medium': 3, 'Low': 2, 'Very Low': 1 };
           return (riskOrder[b.risk_level] || 0) - (riskOrder[a.risk_level] || 0);
-        case 'activity':
-          return (a.activity_task || '').localeCompare(b.activity_task || '');
-        case 'date':
-          return new Date(b.created_at || 0) - new Date(a.created_at || 0);
-        case 'vessel':
-          return (a.vessel_name || '').localeCompare(b.vessel_name || '');
-        default:
-          return 0;
+        case 'activity': return (a.activity_task || '').localeCompare(b.activity_task || '');
+        case 'date': return new Date(b.assessment_date || 0) - new Date(a.assessment_date || 0);
+        case 'vessel': return (a.vessel_name || '').localeCompare(b.vessel_name || '');
+        default: return 0;
       }
     });
-
     setFilteredRisks(filtered);
+  };
+
+  const toggleFilter = (filterType, value) => {
+    setFilters(prev => {
+      const currentArray = prev[filterType];
+      const isSelected = currentArray.includes(value);
+      return {...prev, [filterType]: isSelected ? currentArray.filter(item => item !== value) : [...currentArray, value]};
+    });
+  };
+
+  const clearFilter = (filterType) => { setFilters(prev => ({...prev, [filterType]: []})); };
+  const clearDateFilters = () => { setFilters(prev => ({...prev, start_date: '', end_date: ''})); };
+  const clearAllFilters = () => { setSearchQuery(''); setFilters({risk_levels: [], statuses: [], start_date: '', end_date: ''}); };
+
+  const exportToCSV = () => {
+    if (filteredRisks.length === 0) { setError('No risks to export'); setTimeout(() => setError(''), 3000); return; }
+    const headers = ['ID', 'Activity/Task', 'Location', 'Vessel', 'Hazard', 'Risk Level', 'Status', 'Controls', 'Responsible Person', 'Assessment Date', 'Review Date', 'Created At'];
+    const csvRows = [headers.join(','), ...filteredRisks.map(r => [
+      `"${r.id || ''}"`, `"${(r.activity_task || '').replace(/"/g, '""')}"`, `"${(r.location || '').replace(/"/g, '""')}"`,
+      `"${(r.vessel_name || '').replace(/"/g, '""')}"`, `"${(r.hazard || '').replace(/"/g, '""')}"`, `"${r.risk_level || ''}"`,
+      `"${r.status || ''}"`, `"${(r.controls || '').replace(/"/g, '""')}"`, `"${(r.responsible_person || '').replace(/"/g, '""')}"`,
+      `"${r.assessment_date ? new Date(r.assessment_date).toLocaleDateString() : ''}"`,
+      `"${r.review_date ? new Date(r.review_date).toLocaleDateString() : ''}"`,
+      `"${r.created_at ? new Date(r.created_at).toLocaleString() : ''}"`
+    ].join(','))];
+    const blob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.setAttribute('href', URL.createObjectURL(blob));
+    link.setAttribute('download', `risk_assessment_export_${new Date().toISOString().slice(0, 10)}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setMessage(`Exported ${filteredRisks.length} risk assessments to CSV`);
+    setTimeout(() => setMessage(''), 3000);
   };
 
   const clearFilters = () => {
     setSearchQuery('');
-    setRiskLevelFilter('all');
-    setStatusFilter('all');
+    clearAllFilters();
     setVesselFilter('all');
     setSortBy('riskLevel');
   };
