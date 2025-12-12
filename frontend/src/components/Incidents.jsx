@@ -83,6 +83,85 @@ const Incidents = () => {
     }
   };
 
+  const exportToCSV = () => {
+    if (incidents.length === 0) {
+      setError('No incidents to export');
+      setTimeout(() => setError(''), 3000);
+      return;
+    }
+
+    // Define all possible fields from incident records
+    const headers = [
+      'ID',
+      'Title',
+      'Incident Type',
+      'Severity',
+      'Status',
+      'Description',
+      'Incident Date',
+      'Location',
+      'Vessel ID',
+      'Vessel Name',
+      'Injuries',
+      'Injury Details',
+      'Witnesses',
+      'Immediate Actions',
+      'Investigation Status',
+      'Root Cause',
+      'Corrective Actions',
+      'Preventive Actions',
+      'Responsible Person',
+      'Target Completion Date',
+      'Created At',
+      'Created By'
+    ];
+
+    // Convert incidents to CSV rows with ALL fields
+    const csvRows = [
+      headers.join(','),
+      ...incidents.map(incident => [
+        `"${incident.id || ''}"`,
+        `"${(incident.title || '').replace(/"/g, '""')}"`,
+        `"${incident.incident_type || ''}"`,
+        `"${incident.severity || ''}"`,
+        `"${incident.investigation_status || ''}"`,
+        `"${(incident.description || '').replace(/"/g, '""')}"`,
+        `"${incident.incident_date ? new Date(incident.incident_date).toLocaleString() : ''}"`,
+        `"${(incident.location || '').replace(/"/g, '""')}"`,
+        `"${incident.vessel_id || ''}"`,
+        `"${(incident.vessel_name || '').replace(/"/g, '""')}"`,
+        `"${incident.injuries ? 'Yes' : 'No'}"`,
+        `"${(incident.injury_details || '').replace(/"/g, '""')}"`,
+        `"${(incident.witnesses || '').replace(/"/g, '""')}"`,
+        `"${(incident.immediate_actions || '').replace(/"/g, '""')}"`,
+        `"${incident.investigation_status || ''}"`,
+        `"${(incident.root_cause || '').replace(/"/g, '""')}"`,
+        `"${(incident.corrective_actions || '').replace(/"/g, '""')}"`,
+        `"${(incident.preventive_actions || '').replace(/"/g, '""')}"`,
+        `"${(incident.responsible_person || '').replace(/"/g, '""')}"`,
+        `"${incident.target_completion_date ? new Date(incident.target_completion_date).toLocaleDateString() : ''}"`,
+        `"${incident.created_at ? new Date(incident.created_at).toLocaleString() : ''}"`,
+        `"${incident.created_by || ''}"`,
+      ].join(','))
+    ];
+
+    // Create blob and download
+    const csvContent = csvRows.join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    
+    link.setAttribute('href', url);
+    link.setAttribute('download', `incidents_export_${new Date().toISOString().slice(0, 10)}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    setMessage(`Exported ${incidents.length} incidents to CSV`);
+    setTimeout(() => setMessage(''), 3000);
+  };
+
   const handleSubmit = async () => {
     if (!formData.title || !formData.description) {
       setError('Please fill in required fields');
