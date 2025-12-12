@@ -231,10 +231,7 @@ const VesselManagement = () => {
     setSortBy('name');
   };
 
-  const hasActiveFilters = searchQuery || vesselTypeFilter !== 'all' || sortBy !== 'name';
-
-  // Get unique vessel types for filter dropdown
-  const vesselTypes = ['all', ...new Set(vessels.map(v => v.vessel_type).filter(Boolean))];
+  const hasActiveFilters = searchQuery || filters.vessel_types.length > 0 || filters.statuses.length > 0 || filters.start_date || filters.end_date || sortBy !== 'name';
 
   const fetchVessels = async () => {
     try {
@@ -244,6 +241,12 @@ const VesselManagement = () => {
       });
       setVessels(response.data);
       setFilteredVessels(response.data);
+      
+      // Extract unique values for filters
+      const uniqueTypes = [...new Set(response.data.map(v => v.vessel_type).filter(Boolean))];
+      const uniqueStatuses = [...new Set(response.data.map(v => v.operational_status).filter(Boolean))];
+      setVesselTypes(uniqueTypes);
+      setStatusTypes(uniqueStatuses);
     } catch (err) {
       setError('Error fetching vessels');
       console.error(err);
