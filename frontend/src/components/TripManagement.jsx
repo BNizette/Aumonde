@@ -29,6 +29,9 @@ const TripManagement = () => {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [user, setUser] = useState(null);
+  const [duplicateWarning, setDuplicateWarning] = useState(null);
+  const [showDuplicateDialog, setShowDuplicateDialog] = useState(false);
+  const [pendingFormData, setPendingFormData] = useState(null);
 
   useEffect(() => {
     const userData = localStorage.getItem('user');
