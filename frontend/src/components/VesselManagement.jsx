@@ -21,7 +21,8 @@ const VesselManagement = () => {
   const [filteredVessels, setFilteredVessels] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [vesselTypeFilter, setVesselTypeFilter] = useState('all');
+  const [vesselTypes, setVesselTypes] = useState([]);
+  const [statusTypes, setStatusTypes] = useState([]);
   const [sortBy, setSortBy] = useState('name');
   const [formOpen, setFormOpen] = useState(false);
   const [formMode, setFormMode] = useState('create');
@@ -31,6 +32,12 @@ const VesselManagement = () => {
   const [duplicateWarning, setDuplicateWarning] = useState(null);
   const [showDuplicateDialog, setShowDuplicateDialog] = useState(false);
   const [pendingFormData, setPendingFormData] = useState(null);
+  const [filters, setFilters] = useState({
+    vessel_types: [],
+    statuses: [],
+    start_date: '',
+    end_date: ''
+  });
 
   const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
   const canEdit = currentUser.access_level === 'Edit' || currentUser.access_level === 'Full';
