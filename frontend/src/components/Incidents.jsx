@@ -27,9 +27,9 @@ const Incidents = () => {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [filters, setFilters] = useState({
-    incident_type: 'all',
-    severity: 'all',
-    status: 'all',
+    incident_types: [],
+    severities: [],
+    statuses: [],
     start_date: '',
     end_date: ''
   });
