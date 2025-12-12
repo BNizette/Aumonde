@@ -9,7 +9,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { Shield, Plus, AlertTriangle, CheckCircle, Clock, Search, Filter, X } from 'lucide-react';
+import { Shield, Plus, AlertTriangle, CheckCircle, Clock, Search, Filter, X, Download, ChevronDown } from 'lucide-react';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
