@@ -141,7 +141,42 @@ const TripManagement = () => {
     setDetailsOpen(true);
   };
 
+  const checkDuplicates = async (tripData) => {
+    try {
+      const token = localStorage.getItem('token');
+      const checkData = {
+        ...tripData,
+        id: formMode === 'edit' ? selectedTrip.id : null
+      };
+      
+      const response = await axios.post(`${API}/trips/check-duplicate`, checkData, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      return response.data;
+    } catch (err) {
+      console.error('Error checking duplicates:', err);
+      return { has_duplicates: false, duplicates: [] };
+    }
+  };
+
   const handleSave = async (tripData) => {
+    setPendingFormData(tripData);
+    
+    // Check for duplicates
+    const duplicateCheck = await checkDuplicates(tripData);
+    
+    if (duplicateCheck.has_duplicates) {
+      setDuplicateWarning(duplicateCheck.duplicates);
+      setShowDuplicateDialog(true);
+      return; // Don't save yet, wait for user confirmation
+    }
+    
+    // No duplicates, proceed with save
+    await performSave(tripData);
+  };
+
+  const performSave = async (tripData) => {
     try {
       const token = localStorage.getItem('token');
       if (formMode === 'create') {
@@ -156,6 +191,8 @@ const TripManagement = () => {
         setMessage('Trip updated successfully');
       }
       setFormOpen(false);
+      setShowDuplicateDialog(false);
+      setPendingFormData(null);
       fetchTrips();
       setTimeout(() => setMessage(''), 3000);
     } catch (err) {
