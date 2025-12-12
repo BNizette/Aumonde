@@ -119,21 +119,21 @@ const Dashboard = () => {
         <p className="text-gray-500 mt-1">Overview of your safety management system</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {statCards.map((stat, index) => {
           const Icon = stat.icon;
           return (
             <Link key={index} to={stat.link}>
               <Card className="cursor-pointer hover:shadow-lg transition-shadow duration-200 hover:border-blue-400">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
+                  <CardTitle className="text-xs font-medium">{stat.title}</CardTitle>
                   <div className={`${stat.color} p-2 rounded-lg`}>
                     <Icon className="h-4 w-4 text-white" />
                   </div>
                 </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{stat.value}</div>
-                  <p className="text-xs text-gray-500 mt-1">{stat.description}</p>
+                <CardContent className="pt-0">
+                  <div className="text-lg font-bold">{stat.value}</div>
+                  <p className="text-[10px] text-gray-500 mt-0.5">{stat.description}</p>
                 </CardContent>
               </Card>
             </Link>
