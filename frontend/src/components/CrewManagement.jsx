@@ -166,6 +166,54 @@ const CrewManagement = () => {
     setViewDialogOpen(true);
   };
 
+  const handleViewLogs = async (crew) => {
+    setSelectedCrewForLogs(crew);
+    setLogsDialogOpen(true);
+    setLoadingLogs(true);
+    
+    try {
+      const token = localStorage.getItem('token');
+      
+      // Fetch allocated trips for this crew
+      const allocatedResponse = await axios.get(`${API}/allocated-crew`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const crewAllocations = allocatedResponse.data.filter(a => a.crew_id === crew.id);
+      
+      // Get trip details for each allocation
+      const tripPromises = crewAllocations.map(async (allocation) => {
+        try {
+          const tripResponse = await axios.get(`${API}/trips/${allocation.trip_id}`, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          return {
+            ...allocation,
+            trip: tripResponse.data
+          };
+        } catch (err) {
+          console.error('Error fetching trip:', err);
+          return allocation;
+        }
+      });
+      
+      const tripsData = await Promise.all(tripPromises);
+      setCrewTrips(tripsData);
+      
+      // Fetch running logs (shifts) for this crew
+      const logsResponse = await axios.get(`${API}/running-logs`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const crewLogs = logsResponse.data.filter(log => log.crew_id === crew.id);
+      setCrewShifts(crewLogs);
+      
+    } catch (err) {
+      console.error('Error fetching crew logs:', err);
+      setError('Error loading crew logs');
+    } finally {
+      setLoadingLogs(false);
+    }
+  };
+
   const checkDuplicates = async (formData) => {
     try {
       const token = localStorage.getItem('token');
