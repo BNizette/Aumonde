@@ -30,18 +30,29 @@ const Compliance = () => {
 
   // Filter states for Certificates
   const [certSearch, setCertSearch] = useState('');
-  const [certTypeFilter, setCertTypeFilter] = useState('all');
-  const [certStatusFilter, setCertStatusFilter] = useState('all');
-  const [certVesselFilter, setCertVesselFilter] = useState('all');
   const [certSort, setCertSort] = useState('expiry');
   const [filteredCertificates, setFilteredCertificates] = useState([]);
+  const [certTypes, setCertTypes] = useState([]);
+  const [certStatuses, setCertStatuses] = useState([]);
+  const [certFilters, setCertFilters] = useState({
+    types: [],
+    statuses: [],
+    start_date: '',
+    end_date: ''
+  });
 
   // Filter states for Requirements
   const [reqSearch, setReqSearch] = useState('');
-  const [reqCategoryFilter, setReqCategoryFilter] = useState('all');
-  const [reqStatusFilter, setReqStatusFilter] = useState('all');
   const [reqSort, setReqSort] = useState('category');
   const [filteredRequirements, setFilteredRequirements] = useState([]);
+  const [reqCategories, setReqCategories] = useState([]);
+  const [reqStatuses, setReqStatuses] = useState([]);
+  const [reqFilters, setReqFilters] = useState({
+    categories: [],
+    statuses: [],
+    start_date: '',
+    end_date: ''
+  });
 
   const [certForm, setCertForm] = useState({
     certificate_type: 'Vessel Certificate',
