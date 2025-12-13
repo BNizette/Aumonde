@@ -795,12 +795,25 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
                     <p className="text-sm text-gray-500">
                       {engineLogs.length} {engineLogs.length === 1 ? 'entry' : 'entries'}
                     </p>
-                    {canEdit && (
-                      <Button size="sm" onClick={handleAddEngineLog}>
-                        <Plus className="h-4 w-4 mr-2" />
-                        Add Engine Log
-                      </Button>
-                    )}
+                    <div className="flex gap-2">
+                      {engineLogs.length > 0 && (
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          onClick={exportEngineLogsToCSV}
+                          className="flex items-center gap-2"
+                        >
+                          <Download className="h-4 w-4" />
+                          Export CSV
+                        </Button>
+                      )}
+                      {canEdit && (
+                        <Button size="sm" onClick={handleAddEngineLog}>
+                          <Plus className="h-4 w-4 mr-2" />
+                          Add Engine Log
+                        </Button>
+                      )}
+                    </div>
                   </div>
 
                   {engineLogs.length === 0 ? (
