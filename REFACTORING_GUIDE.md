@@ -206,15 +206,15 @@ const clearAll = () => {
 
 ### ✅ Completed
 - [x] Maintenance.jsx - **DONE** (example implementation)
+- [x] Incidents.jsx - **DONE** 
+- [x] VesselManagement.jsx - **DONE**
+- [x] CrewManagement.jsx - **DONE**
+- [x] RiskAssessment.jsx - **DONE**
+- [x] TripManagement.jsx - **DONE**
 
 ### 🔄 Pending Refactoring
-- [ ] Incidents.jsx
-- [ ] VesselManagement.jsx
-- [ ] CrewManagement.jsx
 - [ ] Compliance.jsx (has dual filter sets - certificates & requirements)
 - [ ] Emergency.jsx (has triple filter sets - contacts, procedures & drills)
-- [ ] RiskAssessment.jsx
-- [ ] TripManagement.jsx
 
 ### Special Cases
 
