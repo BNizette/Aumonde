@@ -313,7 +313,12 @@ const AdminPanel = () => {
 
     try {
       const token = localStorage.getItem('token');
-      await axios.post(`${API}/auth/register`, newUser, {
+      // Convert 'auto' to empty string for backend processing
+      const userData = {
+        ...newUser,
+        access_level: newUser.access_level === 'auto' ? '' : newUser.access_level
+      };
+      await axios.post(`${API}/auth/register`, userData, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setMessage('User created successfully');
@@ -323,7 +328,7 @@ const AdminPanel = () => {
         password: '',
         full_name: '',
         role: 'Crew',
-        access_level: ''
+        access_level: 'auto'
       });
       fetchData();
       setTimeout(() => setMessage(''), 3000);
