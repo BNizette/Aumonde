@@ -13,6 +13,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import TripForm from './TripForm';
 import TripDetailsDialog from './TripDetailsDialog';
+import useAdvancedFilters from '../hooks/useAdvancedFilters';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -25,12 +26,6 @@ const TripManagement = () => {
   const [statuses, setStatuses] = useState([]);
   const [vessels, setVessels] = useState([]);
   const [sortBy, setSortBy] = useState('date');
-  const [filters, setFilters] = useState({
-    statuses: [],
-    vessels: [],
-    start_date: '',
-    end_date: ''
-  });
   const [formOpen, setFormOpen] = useState(false);
   const [formMode, setFormMode] = useState('create');
   const [selectedTrip, setSelectedTrip] = useState(null);
@@ -41,6 +36,20 @@ const TripManagement = () => {
   const [duplicateWarning, setDuplicateWarning] = useState(null);
   const [showDuplicateDialog, setShowDuplicateDialog] = useState(false);
   const [pendingFormData, setPendingFormData] = useState(null);
+
+  // Use custom hook for advanced filtering
+  const {
+    filters,
+    toggleFilter,
+    clearFilter,
+    clearDateFilters,
+    clearAllFilters: clearAllFiltersHook
+  } = useAdvancedFilters({
+    statuses: [],
+    vessels: [],
+    start_date: '',
+    end_date: ''
+  });
 
   useEffect(() => {
     const userData = localStorage.getItem('user');
@@ -109,17 +118,10 @@ const TripManagement = () => {
     setFilteredTrips(filtered);
   };
 
-  const toggleFilter = (filterType, value) => {
-    setFilters(prev => {
-      const currentArray = prev[filterType];
-      const isSelected = currentArray.includes(value);
-      return {...prev, [filterType]: isSelected ? currentArray.filter(item => item !== value) : [...currentArray, value]};
-    });
+  const clearAllFilters = () => { 
+    setSearchQuery(''); 
+    clearAllFiltersHook(); 
   };
-
-  const clearFilter = (filterType) => { setFilters(prev => ({...prev, [filterType]: []})); };
-  const clearDateFilters = () => { setFilters(prev => ({...prev, start_date: '', end_date: ''})); };
-  const clearAllFilters = () => { setSearchQuery(''); setFilters({statuses: [], vessels: [], start_date: '', end_date: ''}); };
 
   const exportToCSV = () => {
     if (filteredTrips.length === 0) { setError('No trips to export'); setTimeout(() => setError(''), 3000); return; }
