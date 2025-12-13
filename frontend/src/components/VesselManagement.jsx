@@ -451,9 +451,9 @@ const VesselManagement = () => {
           </CardHeader>
           <CardContent className="pt-0">
             <div className="text-lg font-bold text-purple-600">
-              {vessels.reduce((sum, v) => sum + (parseInt(v.passenger_capacity) || 0), 0)}
+              {vessels.reduce((sum, v) => sum + (parseInt(v.max_passengers) || 0), 0)} pax
             </div>
-            <p className="text-[10px] text-gray-500 mt-0.5">View all vessels</p>
+            <p className="text-[10px] text-gray-500 mt-0.5">Total passenger capacity</p>
           </CardContent>
         </Card>
       </div>
