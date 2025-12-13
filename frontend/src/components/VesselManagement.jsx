@@ -646,94 +646,78 @@ const VesselManagement = () => {
           </CardContent>
         </Card>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredVessels.map((vessel) => (
-            <Card key={vessel.id} className="hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <CardTitle className="flex items-center gap-2">
-                      <Ship className="h-5 w-5 text-blue-600" />
-                      {vessel.vessel_name}
-                    </CardTitle>
-                    <CardDescription className="mt-1">
-                      {vessel.registration_number || 'No registration'}
-                    </CardDescription>
-                  </div>
-                  <Badge variant="outline">{vessel.vessel_type || 'N/A'}</Badge>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <div className="text-sm">
-                    <span className="font-medium text-gray-700">Owner:</span>
-                    <span className="text-gray-600 ml-2">{vessel.owner_name || 'N/A'}</span>
-                  </div>
-                  
-                  {vessel.length_overall && (
-                    <div className="text-sm">
-                      <span className="font-medium text-gray-700">Specifications:</span>
-                      <span className="text-gray-600 ml-2">
-                        {vessel.length_overall}m × {vessel.beam}m
-                      </span>
+        <div className="border rounded-lg overflow-hidden">
+          <table className="w-full">
+            <thead className="bg-gray-50 border-b">
+              <tr>
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Vessel Name</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Registration</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Type</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Owner</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Specifications</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Status</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Survey Expiry</th>
+                <th className="px-4 py-3 text-right text-sm font-medium text-gray-700">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y">
+              {filteredVessels.map((vessel) => (
+                <tr key={vessel.id} className="hover:bg-gray-50">
+                  <td className="px-4 py-3">
+                    <div className="flex items-center gap-2">
+                      <Ship className="h-4 w-4 text-blue-600" />
+                      <span className="font-medium text-gray-900">{vessel.vessel_name}</span>
                     </div>
-                  )}
-
-                  {vessel.year_built && (
-                    <div className="text-sm">
-                      <span className="font-medium text-gray-700">Year Built:</span>
-                      <span className="text-gray-600 ml-2">{vessel.year_built}</span>
-                    </div>
-                  )}
-
-                  {vessel.max_passengers && (
-                    <div className="text-sm">
-                      <span className="font-medium text-gray-700">Capacity:</span>
-                      <span className="text-gray-600 ml-2">
-                        {vessel.max_passengers} passengers, {vessel.max_crew} crew
-                      </span>
-                    </div>
-                  )}
-
-                  {/* Certificate Status */}
-                  <div className="pt-2 border-t">
-                    <div className="flex items-center text-xs text-gray-500">
-                      <Calendar className="h-3 w-3 mr-1" />
-                      {vessel.cert_survey_expiry ? (
-                        <span>Survey expires: {formatDate(vessel.cert_survey_expiry)}</span>
-                      ) : (
-                        <span>No certificate dates</span>
+                  </td>
+                  <td className="px-4 py-3 text-sm text-gray-600">
+                    {vessel.registration_number || '-'}
+                  </td>
+                  <td className="px-4 py-3">
+                    <Badge variant="outline" className="text-xs">{vessel.vessel_type || 'N/A'}</Badge>
+                  </td>
+                  <td className="px-4 py-3 text-sm text-gray-600">
+                    {vessel.owner_name || '-'}
+                  </td>
+                  <td className="px-4 py-3 text-sm text-gray-600">
+                    {vessel.length_overall ? `${vessel.length_overall}m × ${vessel.beam}m` : '-'}
+                  </td>
+                  <td className="px-4 py-3">
+                    <Badge 
+                      variant={vessel.operational_status === 'Operational' ? 'default' : 'secondary'}
+                      className="text-xs"
+                    >
+                      {vessel.operational_status || 'Unknown'}
+                    </Badge>
+                  </td>
+                  <td className="px-4 py-3 text-sm text-gray-600">
+                    {vessel.cert_survey_expiry ? formatDate(vessel.cert_survey_expiry) : '-'}
+                  </td>
+                  <td className="px-4 py-3">
+                    <div className="flex justify-end gap-2">
+                      {canEdit && (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleEdit(vessel)}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                      )}
+                      {canDelete && (
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          onClick={() => handleDelete(vessel.id, vessel.vessel_name)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
                       )}
                     </div>
-                  </div>
-
-                  {/* Action Buttons */}
-                  <div className="flex gap-2 pt-2">
-                    {canEdit && (
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="flex-1"
-                        onClick={() => handleEdit(vessel)}
-                      >
-                        <Edit className="h-4 w-4 mr-1" />
-                        Edit
-                      </Button>
-                    )}
-                    {canDelete && (
-                      <Button
-                        size="sm"
-                        variant="destructive"
-                        onClick={() => handleDelete(vessel.id, vessel.vessel_name)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    )}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
 
