@@ -100,15 +100,17 @@ const TripForm = ({ open, onClose, onSave, trip, mode = 'create' }) => {
       return;
     }
 
-    if (!formData.depart_datetime) {
-      setError('Please enter a departure date and time');
+    if (!formData.planned_depart_datetime) {
+      setError('Please enter a planned departure date and time');
       return;
     }
 
     const submitData = {
       ...formData,
-      depart_datetime: new Date(formData.depart_datetime).toISOString(),
-      arrival_datetime: formData.arrival_datetime ? new Date(formData.arrival_datetime).toISOString() : null,
+      planned_depart_datetime: new Date(formData.planned_depart_datetime).toISOString(),
+      planned_arrival_datetime: formData.planned_arrival_datetime ? new Date(formData.planned_arrival_datetime).toISOString() : null,
+      actual_depart_datetime: formData.actual_depart_datetime ? new Date(formData.actual_depart_datetime).toISOString() : null,
+      actual_arrival_datetime: formData.actual_arrival_datetime ? new Date(formData.actual_arrival_datetime).toISOString() : null,
       number_of_passengers: parseInt(formData.number_of_passengers) || 0,
       number_of_crew: parseInt(formData.number_of_crew) || 0
     };
