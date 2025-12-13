@@ -10,4 +10,153 @@
         "access_level": "Full",
         "account_status": "Active",
         "created_at": "2025-12-12 05:03:53.841000",
-        "last_login": 
+        "last_login": "2025-12-13T01:16:19.353000",
+        "last_active": "2025-12-13T01:16:36.814000"
+      },
+      {
+        "id": "0ddce2a7-5899-4c16-9105-8bee7841c955",
+        "email": "john.masters@aumonde.com",
+        "password_hash": "$2b$12$a0JJfE4cg.hWekgt7Ag2reCviksuYKQxGg09SczaM4KuGlFMTgXOa",
+        "full_name": "John Masters",
+        "role": "Master",
+        "access_level": "Full",
+        "account_status": "Active",
+        "created_at": "2025-12-12 05:36:59.017000",
+        "last_login": "2025-12-12 06:36:22.618000",
+        "last_active": "2025-12-12 06:36:22.618000"
+      },
+      {
+        "id": "bc0cbf82-09f5-45fe-a1d4-cc76fd667c08",
+        "email": "sarah.thompson@aumonde.com",
+        "password_hash": "$2b$12$sc9UdsJLwrgTRGeZxUcw3ONB5NcVmottednQzv90S/ORddLRezbSi",
+        "full_name": "Sarah Thompson",
+        "role": "Master",
+        "access_level": "Edit",
+        "account_status": "Active",
+        "created_at": "2025-12-12 05:36:59.267000",
+        "last_login": "2025-12-12 05:46:36.139000",
+        "last_active": "2025-12-12 05:46:36.139000"
+      },
+      {
+        "id": "ef6be983-7322-4386-be88-0b9e042a3334",
+        "email": "david.chen@aumonde.com",
+        "password_hash": "$2b$12$OUcDzaNA9pzumQPLISh0YeauocdcaM6v4Z7dlWdxuwisG06JqGmSC",
+        "full_name": "David Chen",
+        "role": "Crew",
+        "access_level": "Edit",
+        "account_status": "Active",
+        "created_at": "2025-12-12 05:36:59.516000",
+        "last_login": "2025-12-12 05:46:36.648000",
+        "last_active": "2025-12-12 05:46:36.648000"
+      },
+      {
+        "id": "63b69900-5767-4f5c-aee2-9f463ac0e6d8",
+        "email": "emma.wilson@aumonde.com",
+        "password_hash": "$2b$12$t.CzsAqSwN/.ixzm4QwceuwDhBZ5GMEMBe/GFK0Nj.QG87RLLAnH.",
+        "full_name": "Emma Wilson",
+        "role": "Crew",
+        "access_level": "View",
+        "account_status": "Active",
+        "created_at": "2025-12-12 05:36:59.769000",
+        "last_login": "2025-12-12 06:36:22.845000",
+        "last_active": "2025-12-12 06:36:22.845000"
+      },
+      {
+        "id": "120c54bb-cb4d-4b20-9fff-22e983084329",
+        "email": "michael.roberts@aumonde.com",
+        "password_hash": "$2b$12$iB3MUNkeNXsNIl0/0PqKB.QLbDjZ6zY1O0Xbty3e6vA/V4k88rsfe",
+        "full_name": "Michael Roberts",
+        "role": "Crew",
+        "access_level": "View",
+        "account_status": "Active",
+        "created_at": "2025-12-12 05:37:00.016000",
+        "last_login": "2025-12-12 05:46:37.402000",
+        "last_active": "2025-12-12 05:46:37.402000"
+      },
+      {
+        "id": "c8a2fa2b-c5de-4f23-8354-b068b2ddf492",
+        "email": "sophie.anderson@aumonde.com",
+        "password_hash": "$2b$12$bcqsqLlraCnBi/sdEnp5L.11lfecQKvW/Rn91wu6z6.Q2wmUebGcS",
+        "full_name": "Sophie Anderson",
+        "role": "Designated Person",
+        "access_level": "Full",
+        "account_status": "Active",
+        "created_at": "2025-12-12 05:37:00.269000",
+        "last_login": "2025-12-12 05:46:37.904000",
+        "last_active": "2025-12-12 05:46:37.904000"
+      },
+      {
+        "id": "797439f0-91a0-48a5-8adb-20eb89b83ab7",
+        "email": "robert.taylor@amsa.gov.au",
+        "password_hash": "$2b$12$b8c1bjfOy7L4bsDqcsJJa..Ld5tYtlABvdp05DNqHZGVtiPbtOMIC",
+        "full_name": "Robert Taylor",
+        "role": "Inspector",
+        "access_level": "Edit",
+        "account_status": "Active",
+        "created_at": "2025-12-12 05:37:00.516000",
+        "last_login": "2025-12-12 06:36:23.076000",
+        "last_active": "2025-12-12 06:36:23.076000"
+      },
+      {
+        "id": "bdb8bba8-9f45-4307-a40b-363a01bd9851",
+        "email": "jennifer.lee@aumonde.com",
+        "password_hash": "$2b$12$M.jzNC9t5kLootqH5LM7Y.yzViBUxDi0CN8ZWuOEtAcqOrUe10EQS",
+        "full_name": "Jennifer Lee",
+        "role": "Crew",
+        "access_level": "View",
+        "account_status": "Active",
+        "created_at": "2025-12-12 05:37:00.764000",
+        "last_login": "2025-12-12 05:46:37.653000",
+        "last_active": "2025-12-12 05:46:37.653000"
+      },
+      {
+        "id": "c01fbd5b-1461-4cfe-8f22-1be7644368c9",
+        "email": "james.brown@aumonde.com",
+        "password_hash": "$2b$12$dkRJzePEXvsYhsnj8kN0B.nrtLc7wgwUazUlKU7ZOOmLg/yLBUOPG",
+        "full_name": "James Brown",
+        "role": "Master",
+        "access_level": "View",
+        "account_status": "Active",
+        "created_at": "2025-12-12 05:37:01.015000",
+        "last_login": "2025-12-12 05:46:36.396000",
+        "last_active": "2025-12-12 05:46:36.396000"
+      },
+      {
+        "id": "0d68fd81-a0b9-4046-bd5e-9be8df75e323",
+        "email": "lisa.white@aumonde.com",
+        "password_hash": "$2b$12$zQ2dB3Fdtf1AarWkX5iMh.wlWn7c5lX6cXs2tRYgimKQLtk6d6wou",
+        "full_name": "Lisa White",
+        "role": "Crew",
+        "access_level": "Edit",
+        "account_status": "Active",
+        "created_at": "2025-12-12 05:37:01.264000",
+        "last_login": "2025-12-12 05:46:36.897000",
+        "last_active": "2025-12-12 05:46:36.897000"
+      },
+      {
+        "id": "24bf76aa-8e70-41a7-b5ef-ed875c76778e",
+        "email": "inactive.user@aumonde.com",
+        "password_hash": "$2b$12$VzEQ4BEeRK989UMvC/cwWeN0ufZzGx0bdpV/FGd24XY5idY2I2JNa",
+        "full_name": "Inactive User (Former Crew)",
+        "role": "Crew",
+        "access_level": "View",
+        "account_status": "Disabled",
+        "created_at": "2025-12-12 05:37:31.083000",
+        "last_login": null,
+        "last_active": null
+      },
+      {
+        "id": "331f1d49-4e5f-4cff-8959-f90e7d9e9e1e",
+        "email": "brian@hover.com.au",
+        "password_hash": "$2b$12$R/jlnN/SShWihX6cZam35.YWk9Dq1nfGG8VpCwc7nAto1KwT44Hf2",
+        "full_name": "Brian",
+        "role": "Owner",
+        "access_level": "Full",
+        "account_status": "Active",
+        "created_at": "2025-12-12 07:20:05.318000",
+        "last_login": "2025-12-13T01:16:01.581000",
+        "last_active": "2025-12-13T01:18:14.729000"
+      }
+    ]
+  }
+}
