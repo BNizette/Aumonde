@@ -148,26 +148,32 @@ const Emergency = () => {
       );
     }
 
-    if (contactTypeFilter !== 'all') {
-      filtered = filtered.filter(contact => contact.contact_type === contactTypeFilter);
+    // Apply multi-select type filter
+    if (contactFilters.types.length > 0) {
+      filtered = filtered.filter(contact => contactFilters.types.includes(contact.contact_type));
     }
 
-    if (contactPriorityFilter !== 'all') {
-      filtered = filtered.filter(contact => contact.priority === parseInt(contactPriorityFilter));
+    // Apply multi-select priority filter
+    if (contactFilters.priorities.length > 0) {
+      filtered = filtered.filter(contact => contactFilters.priorities.includes(contact.priority));
     }
 
-    filtered.sort((a, b) => {
-      switch (contactSort) {
-        case 'priority':
-          return a.priority - b.priority;
-        case 'name':
-          return (a.name || '').localeCompare(b.name || '');
-        case 'type':
-          return (a.contact_type || '').localeCompare(b.contact_type || '');
-        default:
-          return 0;
-      }
-    });
+    // Apply date range filter (created_at)
+    if (contactFilters.start_date || contactFilters.end_date) {
+      filtered = filtered.filter(contact => {
+        if (!contact.created_at) return false;
+        const createdDate = new Date(contact.created_at);
+        const startDate = contactFilters.start_date ? new Date(contactFilters.start_date) : null;
+        const endDate = contactFilters.end_date ? new Date(contactFilters.end_date + 'T23:59:59') : null;
+
+        if (startDate && createdDate < startDate) return false;
+        if (endDate && createdDate > endDate) return false;
+        return true;
+      });
+    }
+
+    // Sort by priority by default
+    filtered.sort((a, b) => a.priority - b.priority);
 
     setFilteredContacts(filtered);
   };
