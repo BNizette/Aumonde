@@ -279,7 +279,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Summary Card Incorrect Quantity Display Investigation"
+    - "Risk Assessment Module Filtering Runtime Errors Investigation"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
