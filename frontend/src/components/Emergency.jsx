@@ -1620,7 +1620,7 @@ const Emergency = () => {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setDrillDialogOpen(false)}>Cancel</Button>
-            <Button onClick={handleDrillSubmit}>Record Drill</Button>
+            <Button onClick={handleSaveDrill}>{drillEditMode ? 'Update Drill' : 'Record Drill'}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
