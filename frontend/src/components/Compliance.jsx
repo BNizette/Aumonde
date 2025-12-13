@@ -25,6 +25,10 @@ const Compliance = () => {
   const [loading, setLoading] = useState(true);
   const [certDialogOpen, setCertDialogOpen] = useState(false);
   const [reqDialogOpen, setReqDialogOpen] = useState(false);
+  const [certEditMode, setCertEditMode] = useState(false);
+  const [reqEditMode, setReqEditMode] = useState(false);
+  const [editingCertId, setEditingCertId] = useState(null);
+  const [editingReqId, setEditingReqId] = useState(null);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
 
