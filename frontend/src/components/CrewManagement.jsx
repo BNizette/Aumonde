@@ -1055,7 +1055,19 @@ const CrewManagement = () => {
                       No shift logs found for this crew member
                     </div>
                   ) : (
-                    <div className="border rounded-lg overflow-hidden">
+                    <>
+                      <div className="flex justify-end mb-4">
+                        <Button 
+                          onClick={exportCrewShiftsToCSV}
+                          variant="outline" 
+                          size="sm"
+                          className="flex items-center gap-2"
+                        >
+                          <Download className="h-4 w-4" />
+                          Export to CSV
+                        </Button>
+                      </div>
+                      <div className="border rounded-lg overflow-hidden">
                       <Table>
                         <TableHeader>
                           <TableRow>
