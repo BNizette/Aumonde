@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Investigate uncaught runtime errors when clicking summary cards across different modules (Vessels, Crew, Trips, Risk, Maintenance, Incidents, Emergency, Compliance)"
+user_problem_statement: "Identify summary cards showing incorrect quantities (displaying 0 but filtering to actual records). User reports summary cards displaying '0' count but when clicked, they filter and show actual records (e.g., showing 2 records). The filtering works correctly, but the counting logic is broken."
 
 backend:
   - task: "User Export File Import Functionality"
