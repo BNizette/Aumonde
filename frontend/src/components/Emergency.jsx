@@ -859,10 +859,16 @@ const Emergency = () => {
                   </CardTitle>
                   <CardDescription>Record and track emergency drill exercises</CardDescription>
                 </div>
-                <Button onClick={() => setDrillDialogOpen(true)}>
-                  <Plus className="mr-2 h-4 w-4" />
-                  Record Drill
-                </Button>
+                <div className="flex gap-2">
+                  <Button variant="outline" onClick={exportDrillsToCSV}>
+                    <Download className="mr-2 h-4 w-4" />
+                    Export CSV
+                  </Button>
+                  <Button onClick={() => setDrillDialogOpen(true)}>
+                    <Plus className="mr-2 h-4 w-4" />
+                    Record Drill
+                  </Button>
+                </div>
               </div>
             </CardHeader>
             <CardContent>
