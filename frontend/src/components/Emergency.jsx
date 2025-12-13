@@ -291,71 +291,19 @@ const Emergency = () => {
     setFilteredDrills(filtered);
   };
 
-  // Toggle functions for multi-select filters
-  const toggleContactFilter = (filterType, value) => {
-    setContactFilters(prev => {
-      const currentArray = prev[filterType];
-      const isSelected = currentArray.includes(value);
-      return {
-        ...prev,
-        [filterType]: isSelected
-          ? currentArray.filter(item => item !== value)
-          : [...currentArray, value]
-      };
-    });
-  };
-
-  const toggleProcedureFilter = (filterType, value) => {
-    setProcedureFilters(prev => {
-      const currentArray = prev[filterType];
-      const isSelected = currentArray.includes(value);
-      return {
-        ...prev,
-        [filterType]: isSelected
-          ? currentArray.filter(item => item !== value)
-          : [...currentArray, value]
-      };
-    });
-  };
-
-  const toggleDrillFilter = (filterType, value) => {
-    setDrillFilters(prev => {
-      const currentArray = prev[filterType];
-      const isSelected = currentArray.includes(value);
-      return {
-        ...prev,
-        [filterType]: isSelected
-          ? currentArray.filter(item => item !== value)
-          : [...currentArray, value]
-      };
-    });
-  };
-
-  const clearContactFilterType = (filterType) => {
-    setContactFilters(prev => ({ ...prev, [filterType]: [] }));
-  };
-
-  const clearProcedureFilterType = (filterType) => {
-    setProcedureFilters(prev => ({ ...prev, [filterType]: [] }));
-  };
-
-  const clearDrillFilterType = (filterType) => {
-    setDrillFilters(prev => ({ ...prev, [filterType]: [] }));
-  };
-
   const clearContactFilters = () => {
     setContactSearch('');
-    setContactFilters({types: [], priorities: [], start_date: '', end_date: ''});
+    clearAllContactFilters();
   };
 
   const clearProcedureFilters = () => {
     setProcedureSearch('');
-    setProcedureFilters({types: [], start_date: '', end_date: ''});
+    clearAllProcedureFilters();
   };
 
   const clearDrillFilters = () => {
     setDrillSearch('');
-    setDrillFilters({types: [], vessels: [], start_date: '', end_date: ''});
+    clearAllDrillFilters();
   };
 
   const hasActiveContactFilters = contactSearch || contactFilters.types.length > 0 || contactFilters.priorities.length > 0 || contactFilters.start_date || contactFilters.end_date;
