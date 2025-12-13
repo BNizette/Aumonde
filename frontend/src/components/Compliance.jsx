@@ -142,29 +142,43 @@ const Compliance = () => {
       );
     }
 
-    if (certTypeFilter !== 'all') {
-      filtered = filtered.filter(cert => cert.certificate_type === certTypeFilter);
+    // Apply multi-select type filter
+    if (certFilters.types.length > 0) {
+      filtered = filtered.filter(cert => certFilters.types.includes(cert.certificate_type));
     }
 
-    if (certStatusFilter !== 'all') {
+    // Apply multi-select status filter
+    if (certFilters.statuses.length > 0) {
       const now = new Date();
       filtered = filtered.filter(cert => {
         const expiryDate = cert.expiry_date ? new Date(cert.expiry_date) : null;
-        if (certStatusFilter === 'expired') {
-          return expiryDate && expiryDate < now;
-        } else if (certStatusFilter === 'expiring') {
-          const thirtyDaysFromNow = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
-          return expiryDate && expiryDate >= now && expiryDate <= thirtyDaysFromNow;
-        } else if (certStatusFilter === 'valid') {
-          const thirtyDaysFromNow = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
-          return expiryDate && expiryDate > thirtyDaysFromNow;
-        }
-        return true;
+        return certFilters.statuses.some(status => {
+          if (status === 'expired') {
+            return expiryDate && expiryDate < now;
+          } else if (status === 'expiring') {
+            const thirtyDaysFromNow = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+            return expiryDate && expiryDate >= now && expiryDate <= thirtyDaysFromNow;
+          } else if (status === 'valid') {
+            const thirtyDaysFromNow = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+            return expiryDate && expiryDate > thirtyDaysFromNow;
+          }
+          return false;
+        });
       });
     }
 
-    if (certVesselFilter !== 'all') {
-      filtered = filtered.filter(cert => cert.vessel_name === certVesselFilter);
+    // Apply date range filter (issue date)
+    if (certFilters.start_date || certFilters.end_date) {
+      filtered = filtered.filter(cert => {
+        if (!cert.issue_date) return false;
+        const issueDate = new Date(cert.issue_date);
+        const startDate = certFilters.start_date ? new Date(certFilters.start_date) : null;
+        const endDate = certFilters.end_date ? new Date(certFilters.end_date + 'T23:59:59') : null;
+
+        if (startDate && issueDate < startDate) return false;
+        if (endDate && issueDate > endDate) return false;
+        return true;
+      });
     }
 
     filtered.sort((a, b) => {
