@@ -637,7 +637,7 @@ const Incidents = () => {
                   id="start_date"
                   type="date"
                   value={filters.start_date}
-                  onChange={(e) => setFilters({...filters, start_date: e.target.value})}
+                  onChange={(e) => setFilterValue('start_date', e.target.value)}
                   placeholder="Start date"
                 />
               </div>
@@ -647,7 +647,7 @@ const Incidents = () => {
                   id="end_date"
                   type="date"
                   value={filters.end_date}
-                  onChange={(e) => setFilters({...filters, end_date: e.target.value})}
+                  onChange={(e) => setFilterValue('end_date', e.target.value)}
                   placeholder="End date"
                 />
               </div>
