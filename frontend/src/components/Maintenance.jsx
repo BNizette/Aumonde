@@ -274,11 +274,8 @@ const Maintenance = () => {
           className="cursor-pointer hover:shadow-lg transition-shadow" 
           onClick={() => {
             setSearchQuery('');
-            setStatusFilter('all');
-            setPriorityFilter('all');
-            setTypeFilter('all');
-            setVesselFilter('all');
-            setSortBy('dueDate');
+            setFilters({ statuses: [], priorities: [], start_date: '', end_date: '' });
+            setSortBy('priority');
           }}
         >
           <CardHeader className="pb-2">
@@ -291,7 +288,7 @@ const Maintenance = () => {
         </Card>
         <Card 
           className="cursor-pointer hover:shadow-lg transition-shadow" 
-          onClick={() => setStatusFilter('Scheduled')}
+          onClick={() => setFilters(prev => ({ ...prev, statuses: ['Scheduled'] }))}
         >
           <CardHeader className="pb-2">
             <CardTitle className="text-xs font-medium text-gray-500">Scheduled</CardTitle>
@@ -305,7 +302,7 @@ const Maintenance = () => {
         </Card>
         <Card 
           className="cursor-pointer hover:shadow-lg transition-shadow" 
-          onClick={() => setStatusFilter('In Progress')}
+          onClick={() => setFilters(prev => ({ ...prev, statuses: ['In Progress'] }))}
         >
           <CardHeader className="pb-2">
             <CardTitle className="text-xs font-medium text-gray-500">In Progress</CardTitle>
@@ -319,7 +316,7 @@ const Maintenance = () => {
         </Card>
         <Card 
           className="cursor-pointer hover:shadow-lg transition-shadow" 
-          onClick={() => setStatusFilter('Overdue')}
+          onClick={() => setFilters(prev => ({ ...prev, statuses: ['Overdue'] }))}
         >
           <CardHeader className="pb-2">
             <CardTitle className="text-xs font-medium text-gray-500">Overdue</CardTitle>
@@ -333,7 +330,7 @@ const Maintenance = () => {
         </Card>
         <Card 
           className="cursor-pointer hover:shadow-lg transition-shadow" 
-          onClick={() => setStatusFilter('Completed')}
+          onClick={() => setFilters(prev => ({ ...prev, statuses: ['Completed'] }))}
         >
           <CardHeader className="pb-2">
             <CardTitle className="text-xs font-medium text-gray-500">Completed</CardTitle>
