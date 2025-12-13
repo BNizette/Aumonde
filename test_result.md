@@ -241,8 +241,7 @@ metadata:
 test_plan:
   current_focus:
     - "Admin Panel User Creation"
-  stuck_tasks:
-    - "Admin Panel User Creation"
+  stuck_tasks: []
   test_all: false
   test_priority: "high_first"
 
