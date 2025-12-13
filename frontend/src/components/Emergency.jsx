@@ -257,6 +257,77 @@ const Emergency = () => {
     setFilteredDrills(filtered);
   };
 
+  // Toggle functions for multi-select filters
+  const toggleContactFilter = (filterType, value) => {
+    setContactFilters(prev => {
+      const currentArray = prev[filterType];
+      const isSelected = currentArray.includes(value);
+      return {
+        ...prev,
+        [filterType]: isSelected
+          ? currentArray.filter(item => item !== value)
+          : [...currentArray, value]
+      };
+    });
+  };
+
+  const toggleProcedureFilter = (filterType, value) => {
+    setProcedureFilters(prev => {
+      const currentArray = prev[filterType];
+      const isSelected = currentArray.includes(value);
+      return {
+        ...prev,
+        [filterType]: isSelected
+          ? currentArray.filter(item => item !== value)
+          : [...currentArray, value]
+      };
+    });
+  };
+
+  const toggleDrillFilter = (filterType, value) => {
+    setDrillFilters(prev => {
+      const currentArray = prev[filterType];
+      const isSelected = currentArray.includes(value);
+      return {
+        ...prev,
+        [filterType]: isSelected
+          ? currentArray.filter(item => item !== value)
+          : [...currentArray, value]
+      };
+    });
+  };
+
+  const clearContactFilterType = (filterType) => {
+    setContactFilters(prev => ({ ...prev, [filterType]: [] }));
+  };
+
+  const clearProcedureFilterType = (filterType) => {
+    setProcedureFilters(prev => ({ ...prev, [filterType]: [] }));
+  };
+
+  const clearDrillFilterType = (filterType) => {
+    setDrillFilters(prev => ({ ...prev, [filterType]: [] }));
+  };
+
+  const clearContactFilters = () => {
+    setContactSearch('');
+    setContactFilters({types: [], priorities: [], start_date: '', end_date: ''});
+  };
+
+  const clearProcedureFilters = () => {
+    setProcedureSearch('');
+    setProcedureFilters({types: [], start_date: '', end_date: ''});
+  };
+
+  const clearDrillFilters = () => {
+    setDrillSearch('');
+    setDrillFilters({types: [], vessels: [], start_date: '', end_date: ''});
+  };
+
+  const hasActiveContactFilters = contactSearch || contactFilters.types.length > 0 || contactFilters.priorities.length > 0 || contactFilters.start_date || contactFilters.end_date;
+  const hasActiveProcedureFilters = procedureSearch || procedureFilters.types.length > 0 || procedureFilters.start_date || procedureFilters.end_date;
+  const hasActiveDrillFilters = drillSearch || drillFilters.types.length > 0 || drillFilters.vessels.length > 0 || drillFilters.start_date || drillFilters.end_date;
+
   const exportContactsToCSV = () => {
     if (filteredContacts.length === 0) { setError('No contacts to export'); setTimeout(() => setError(''), 3000); return; }
     const headers = ['ID', 'Name', 'Title', 'Organization', 'Contact Type', 'Priority', 'Primary Phone', 'Secondary Phone', 'Email', 'Address', 'Available 24/7', 'Notes', 'Created At'];
