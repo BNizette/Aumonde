@@ -388,11 +388,7 @@ const VesselManagement = () => {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
         <Card 
           className="cursor-pointer hover:shadow-lg transition-shadow"
-          onClick={() => {
-            setSearchQuery('');
-            setVesselTypeFilter('all');
-            setSortBy('name');
-          }}
+          onClick={() => clearFilters()}
         >
           <CardHeader className="pb-2">
             <CardTitle className="text-xs font-medium text-gray-500">Total Vessels</CardTitle>
@@ -406,7 +402,7 @@ const VesselManagement = () => {
           className="cursor-pointer hover:shadow-lg transition-shadow"
           onClick={() => {
             setSearchQuery('Passenger');
-            setVesselTypeFilter('all');
+            setFilters({types: [], statuses: [], start_date: '', end_date: ''});
           }}
         >
           <CardHeader className="pb-2">
@@ -423,6 +419,7 @@ const VesselManagement = () => {
           className="cursor-pointer hover:shadow-lg transition-shadow"
           onClick={() => {
             setSearchQuery('Operational');
+            setFilters({types: [], statuses: [], start_date: '', end_date: ''});
           }}
         >
           <CardHeader className="pb-2">
@@ -437,11 +434,7 @@ const VesselManagement = () => {
         </Card>
         <Card 
           className="cursor-pointer hover:shadow-lg transition-shadow"
-          onClick={() => {
-            setSearchQuery('');
-            setVesselTypeFilter('all');
-            setSortBy('name');
-          }}
+          onClick={() => clearFilters()}
         >
           <CardHeader className="pb-2">
             <CardTitle className="text-xs font-medium text-gray-500">Total Capacity</CardTitle>
