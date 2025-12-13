@@ -80,3 +80,7 @@ android-sdk/
 
 # Specific cache files
 frontend/node_modules/.cache/
+-e 
+# Environment files
+*.env
+*.env.*
