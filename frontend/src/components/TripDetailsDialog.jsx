@@ -631,12 +631,25 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
                     <p className="text-sm text-gray-500">
                       {shiftLogs.length} {shiftLogs.length === 1 ? 'entry' : 'entries'} • Total: {getTotalShiftHours()} hours
                     </p>
-                    {canEdit && (
-                      <Button size="sm" onClick={handleAddShiftLog}>
-                        <Plus className="h-4 w-4 mr-2" />
-                        Add Shift Log
-                      </Button>
-                    )}
+                    <div className="flex gap-2">
+                      {shiftLogs.length > 0 && (
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          onClick={exportCrewShiftsToCSV}
+                          className="flex items-center gap-2"
+                        >
+                          <Download className="h-4 w-4" />
+                          Export CSV
+                        </Button>
+                      )}
+                      {canEdit && (
+                        <Button size="sm" onClick={handleAddShiftLog}>
+                          <Plus className="h-4 w-4 mr-2" />
+                          Add Shift Log
+                        </Button>
+                      )}
+                    </div>
                   </div>
 
                   {shiftLogs.length === 0 ? (
