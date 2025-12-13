@@ -1083,7 +1083,7 @@ const Compliance = () => {
                 <Select value={reqForm.compliance_status} onValueChange={(value) => setReqForm({...reqForm, compliance_status: value})}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    {statuses.map(status => <SelectItem key={status} value={status}>{status}</SelectItem>)}
+                    {statusOptions.map(status => <SelectItem key={status} value={status}>{status}</SelectItem>)}
                   </SelectContent>
                 </Select>
               </div>
