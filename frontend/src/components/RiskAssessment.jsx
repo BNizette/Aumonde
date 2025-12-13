@@ -129,7 +129,6 @@ const RiskAssessment = () => {
   const clearFilters = () => {
     setSearchQuery('');
     clearAllFilters();
-    setVesselFilter('all');
     setSortBy('riskLevel');
   };
 
