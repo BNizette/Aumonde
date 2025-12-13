@@ -402,7 +402,12 @@ const VesselManagement = () => {
           className="cursor-pointer hover:shadow-lg transition-shadow"
           onClick={() => {
             setSearchQuery('Passenger');
-            setFilters({types: [], statuses: [], start_date: '', end_date: ''});
+            setFilters({
+              vessel_types: [],
+              statuses: [],
+              start_date: '',
+              end_date: ''
+            });
           }}
         >
           <CardHeader className="pb-2">
