@@ -13,6 +13,7 @@ import { Phone, Plus, Edit, Trash2, AlertTriangle, FileText, Activity, Search, F
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import useAdvancedFilters from '../hooks/useAdvancedFilters';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -38,7 +39,16 @@ const Emergency = () => {
   // Filter states for Contacts
   const [contactSearch, setContactSearch] = useState('');
   const [filteredContacts, setFilteredContacts] = useState([]);
-  const [contactFilters, setContactFilters] = useState({
+
+  // Use custom hook for Contact filters
+  const {
+    filters: contactFilters,
+    toggleFilter: toggleContactFilter,
+    clearFilter: clearContactFilterType,
+    clearDateFilters: clearContactDateFilters,
+    clearAllFilters: clearAllContactFilters,
+    setFilterValue: setContactFilterValue
+  } = useAdvancedFilters({
     types: [],
     priorities: [],
     start_date: '',
@@ -48,7 +58,16 @@ const Emergency = () => {
   // Filter states for Procedures
   const [procedureSearch, setProcedureSearch] = useState('');
   const [filteredProcedures, setFilteredProcedures] = useState([]);
-  const [procedureFilters, setProcedureFilters] = useState({
+
+  // Use custom hook for Procedure filters
+  const {
+    filters: procedureFilters,
+    toggleFilter: toggleProcedureFilter,
+    clearFilter: clearProcedureFilterType,
+    clearDateFilters: clearProcedureDateFilters,
+    clearAllFilters: clearAllProcedureFilters,
+    setFilterValue: setProcedureFilterValue
+  } = useAdvancedFilters({
     types: [],
     start_date: '',
     end_date: ''
@@ -57,7 +76,16 @@ const Emergency = () => {
   // Filter states for Drills
   const [drillSearch, setDrillSearch] = useState('');
   const [filteredDrills, setFilteredDrills] = useState([]);
-  const [drillFilters, setDrillFilters] = useState({
+
+  // Use custom hook for Drill filters
+  const {
+    filters: drillFilters,
+    toggleFilter: toggleDrillFilter,
+    clearFilter: clearDrillFilterType,
+    clearDateFilters: clearDrillDateFilters,
+    clearAllFilters: clearAllDrillFilters,
+    setFilterValue: setDrillFilterValue
+  } = useAdvancedFilters({
     types: [],
     vessels: [],
     start_date: '',
