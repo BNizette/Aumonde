@@ -353,11 +353,20 @@ const Compliance = () => {
 
     try {
       const token = localStorage.getItem('token');
-      await axios.post(`${API}/compliance/certificates`, certForm, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setMessage('Certificate added successfully');
+      if (certEditMode) {
+        await axios.put(`${API}/compliance/certificates/${editingCertId}`, certForm, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setMessage('Certificate updated successfully');
+      } else {
+        await axios.post(`${API}/compliance/certificates`, certForm, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setMessage('Certificate added successfully');
+      }
       setCertDialogOpen(false);
+      setCertEditMode(false);
+      setEditingCertId(null);
       resetCertForm();
       fetchData();
       setTimeout(() => setMessage(''), 3000);
@@ -374,16 +383,93 @@ const Compliance = () => {
 
     try {
       const token = localStorage.getItem('token');
-      await axios.post(`${API}/compliance/requirements`, reqForm, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setMessage('Requirement added successfully');
+      if (reqEditMode) {
+        await axios.put(`${API}/compliance/requirements/${editingReqId}`, reqForm, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setMessage('Requirement updated successfully');
+      } else {
+        await axios.post(`${API}/compliance/requirements`, reqForm, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setMessage('Requirement added successfully');
+      }
       setReqDialogOpen(false);
+      setReqEditMode(false);
+      setEditingReqId(null);
       resetReqForm();
       fetchData();
       setTimeout(() => setMessage(''), 3000);
     } catch (err) {
       setError(err.response?.data?.detail || 'Error saving requirement');
+    }
+  };
+
+  // Edit handlers
+  const handleEditCert = (cert) => {
+    setCertForm({
+      certificate_type: cert.certificate_type || 'Vessel Certificate',
+      certificate_name: cert.certificate_name || '',
+      certificate_number: cert.certificate_number || '',
+      issuing_authority: cert.issuing_authority || '',
+      issue_date: cert.issue_date ? new Date(cert.issue_date).toISOString().split('T')[0] : '',
+      expiry_date: cert.expiry_date ? new Date(cert.expiry_date).toISOString().split('T')[0] : '',
+      vessel_id: cert.vessel_id || '',
+      vessel_name: cert.vessel_name || '',
+      crew_id: cert.crew_id || '',
+      crew_name: cert.crew_name || '',
+      notes: cert.notes || ''
+    });
+    setEditingCertId(cert.id);
+    setCertEditMode(true);
+    setCertDialogOpen(true);
+  };
+
+  const handleEditReq = (req) => {
+    setReqForm({
+      requirement_name: req.requirement_name || '',
+      category: req.category || 'Safety',
+      description: req.description || '',
+      regulatory_reference: req.regulatory_reference || '',
+      compliance_status: req.compliance_status || 'Under Review',
+      responsible_person: req.responsible_person || '',
+      notes: req.notes || ''
+    });
+    setEditingReqId(req.id);
+    setReqEditMode(true);
+    setReqDialogOpen(true);
+  };
+
+  // Delete handlers
+  const handleDeleteCert = async (certId, certName) => {
+    if (!window.confirm(`Are you sure you want to delete certificate "${certName}"?`)) return;
+
+    try {
+      const token = localStorage.getItem('token');
+      await axios.delete(`${API}/compliance/certificates/${certId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setMessage('Certificate deleted successfully');
+      fetchData();
+      setTimeout(() => setMessage(''), 3000);
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Error deleting certificate');
+    }
+  };
+
+  const handleDeleteReq = async (reqId, reqName) => {
+    if (!window.confirm(`Are you sure you want to delete requirement "${reqName}"?`)) return;
+
+    try {
+      const token = localStorage.getItem('token');
+      await axios.delete(`${API}/compliance/requirements/${reqId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setMessage('Requirement deleted successfully');
+      fetchData();
+      setTimeout(() => setMessage(''), 3000);
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Error deleting requirement');
     }
   };
 
