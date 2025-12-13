@@ -519,6 +519,105 @@ const Emergency = () => {
     }
   };
 
+  // Edit handlers
+  const handleEditContact = (contact) => {
+    setContactForm({
+      contact_type: contact.contact_type || 'Shore',
+      name: contact.name || '',
+      organization: contact.organization || '',
+      role: contact.role || '',
+      phone_primary: contact.phone_primary || '',
+      phone_secondary: contact.phone_secondary || '',
+      email: contact.email || '',
+      address: contact.address || '',
+      available_24_7: contact.available_24_7 || false,
+      notes: contact.notes || '',
+      priority: contact.priority || 1
+    });
+    setEditingContactId(contact.id);
+    setContactEditMode(true);
+    setContactDialogOpen(true);
+  };
+
+  const handleEditProcedure = (procedure) => {
+    setProcedureForm({
+      emergency_type: procedure.emergency_type || 'Fire',
+      title: procedure.title || '',
+      procedure_steps: procedure.procedure_steps || '',
+      equipment_required: procedure.equipment_required || '',
+      muster_station: procedure.muster_station || '',
+      key_contacts: procedure.key_contacts || ''
+    });
+    setEditingProcedureId(procedure.id);
+    setProcedureEditMode(true);
+    setProcedureDialogOpen(true);
+  };
+
+  const handleEditDrill = (drill) => {
+    setDrillForm({
+      drill_type: drill.drill_type || 'Fire Drill',
+      drill_date: drill.drill_date ? new Date(drill.drill_date).toISOString().slice(0, 16) : new Date().toISOString().slice(0, 16),
+      vessel_id: drill.vessel_id || '',
+      vessel_name: drill.vessel_name || '',
+      participants: drill.participants || '',
+      duration_minutes: drill.duration_minutes || '',
+      observations: drill.observations || '',
+      areas_for_improvement: drill.areas_for_improvement || ''
+    });
+    setEditingDrillId(drill.id);
+    setDrillEditMode(true);
+    setDrillDialogOpen(true);
+  };
+
+  // Delete handlers
+  const handleDeleteContact = async (contactId, contactName) => {
+    if (!window.confirm(`Are you sure you want to delete contact "${contactName}"?`)) return;
+
+    try {
+      const token = localStorage.getItem('token');
+      await axios.delete(`${API}/emergency/contacts/${contactId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setMessage('Contact deleted successfully');
+      fetchData();
+      setTimeout(() => setMessage(''), 3000);
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Error deleting contact');
+    }
+  };
+
+  const handleDeleteProcedure = async (procedureId, procedureTitle) => {
+    if (!window.confirm(`Are you sure you want to delete procedure "${procedureTitle}"?`)) return;
+
+    try {
+      const token = localStorage.getItem('token');
+      await axios.delete(`${API}/emergency/procedures/${procedureId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setMessage('Procedure deleted successfully');
+      fetchData();
+      setTimeout(() => setMessage(''), 3000);
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Error deleting procedure');
+    }
+  };
+
+  const handleDeleteDrill = async (drillId, drillType) => {
+    if (!window.confirm(`Are you sure you want to delete drill "${drillType}"?`)) return;
+
+    try {
+      const token = localStorage.getItem('token');
+      await axios.delete(`${API}/emergency/drills/${drillId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setMessage('Drill deleted successfully');
+      fetchData();
+      setTimeout(() => setMessage(''), 3000);
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Error deleting drill');
+    }
+  };
+
   const resetContactForm = () => {
     setContactForm({
       contact_type: 'Shore',
@@ -533,6 +632,8 @@ const Emergency = () => {
       notes: '',
       priority: 1
     });
+    setContactEditMode(false);
+    setEditingContactId(null);
   };
 
   const resetProcedureForm = () => {
@@ -544,6 +645,8 @@ const Emergency = () => {
       muster_station: '',
       key_contacts: ''
     });
+    setProcedureEditMode(false);
+    setEditingProcedureId(null);
   };
 
   const resetDrillForm = () => {
@@ -557,6 +660,8 @@ const Emergency = () => {
       observations: '',
       areas_for_improvement: ''
     });
+    setDrillEditMode(false);
+    setEditingDrillId(null);
   };
 
   if (loading) return <div className="flex items-center justify-center h-64">Loading...</div>;
