@@ -668,59 +668,139 @@ const Emergency = () => {
 
               {/* Filter Section */}
               <div className="space-y-4 mb-6">
-                <div className="flex flex-col md:flex-row gap-4">
-                  <div className="relative flex-1">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                {hasActiveContactFilters && (
+                  <div className="flex justify-end">
+                    <Button variant="ghost" size="sm" onClick={clearContactFilters}>
+                      <X className="h-4 w-4 mr-2" />
+                      Clear All Filters
+                    </Button>
+                  </div>
+                )}
+
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  <Input
+                    placeholder="Search contacts by name, organization, role, or phone..."
+                    value={contactSearch}
+                    onChange={(e) => setContactSearch(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label>Contact Type</Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button variant="outline" className="w-full justify-between">
+                          <span className="truncate">
+                            {contactFilters.types.length === 0
+                              ? 'All Types'
+                              : contactFilters.types.length === 1
+                              ? contactFilters.types[0]
+                              : `${contactFilters.types.length} selected`}
+                          </span>
+                          <ChevronDown className="h-4 w-4 ml-2 shrink-0" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-64 p-0" align="start">
+                        <div className="p-2">
+                          <div className="flex items-center justify-between px-2 py-1.5 mb-1">
+                            <span className="text-sm font-medium">Select Types</span>
+                            {contactFilters.types.length > 0 && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => clearContactFilterType('types')}
+                                className="h-auto p-1 text-xs"
+                              >
+                                Clear
+                              </Button>
+                            )}
+                          </div>
+                          {contactTypes.map(type => (
+                            <div
+                              key={type}
+                              className="flex items-center space-x-2 px-2 py-2 hover:bg-gray-100 rounded cursor-pointer"
+                              onClick={() => toggleContactFilter('types', type)}
+                            >
+                              <Checkbox
+                                checked={contactFilters.types.includes(type)}
+                                onCheckedChange={() => toggleContactFilter('types', type)}
+                              />
+                              <span className="text-sm">{type}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+
+                  <div>
+                    <Label>Priority</Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button variant="outline" className="w-full justify-between">
+                          <span className="truncate">
+                            {contactFilters.priorities.length === 0
+                              ? 'All Priorities'
+                              : contactFilters.priorities.length === 1
+                              ? `Priority ${contactFilters.priorities[0]}`
+                              : `${contactFilters.priorities.length} selected`}
+                          </span>
+                          <ChevronDown className="h-4 w-4 ml-2 shrink-0" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-64 p-0" align="start">
+                        <div className="p-2">
+                          <div className="flex items-center justify-between px-2 py-1.5 mb-1">
+                            <span className="text-sm font-medium">Select Priorities</span>
+                            {contactFilters.priorities.length > 0 && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => clearContactFilterType('priorities')}
+                                className="h-auto p-1 text-xs"
+                              >
+                                Clear
+                              </Button>
+                            )}
+                          </div>
+                          {[1, 2, 3].map(priority => (
+                            <div
+                              key={priority}
+                              className="flex items-center space-x-2 px-2 py-2 hover:bg-gray-100 rounded cursor-pointer"
+                              onClick={() => toggleContactFilter('priorities', priority)}
+                            >
+                              <Checkbox
+                                checked={contactFilters.priorities.includes(priority)}
+                                onCheckedChange={() => toggleContactFilter('priorities', priority)}
+                              />
+                              <span className="text-sm">Priority {priority}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label>Created Date From</Label>
                     <Input
-                      placeholder="Search contacts by name, organization, role, or phone..."
-                      value={contactSearch}
-                      onChange={(e) => setContactSearch(e.target.value)}
-                      className="pl-10"
+                      type="date"
+                      value={contactFilters.start_date}
+                      onChange={(e) => setContactFilters({...contactFilters, start_date: e.target.value})}
                     />
                   </div>
-                  
-                  <div className="w-full md:w-48">
-                    <Select value={contactTypeFilter} onValueChange={setContactTypeFilter}>
-                      <SelectTrigger>
-                        <div className="flex items-center gap-2">
-                          <Filter className="h-4 w-4" />
-                          <SelectValue placeholder="Type" />
-                        </div>
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Types</SelectItem>
-                        {contactTypes.map(type => (
-                          <SelectItem key={type} value={type}>{type}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="w-full md:w-48">
-                    <Select value={contactPriorityFilter} onValueChange={setContactPriorityFilter}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Priority" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Priorities</SelectItem>
-                        <SelectItem value="1">Priority 1</SelectItem>
-                        <SelectItem value="2">Priority 2</SelectItem>
-                        <SelectItem value="3">Priority 3</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="w-full md:w-48">
-                    <Select value={contactSort} onValueChange={setContactSort}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Sort by" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="priority">Priority</SelectItem>
-                        <SelectItem value="name">Name</SelectItem>
-                        <SelectItem value="type">Type</SelectItem>
-                      </SelectContent>
-                    </Select>
+                  <div>
+                    <Label>Created Date To</Label>
+                    <Input
+                      type="date"
+                      value={contactFilters.end_date}
+                      onChange={(e) => setContactFilters({...contactFilters, end_date: e.target.value})}
+                    />
                   </div>
                 </div>
 
@@ -728,12 +808,6 @@ const Emergency = () => {
                   <p className="text-sm text-gray-600">
                     Showing {filteredContacts.length} of {contacts.length} contacts
                   </p>
-                  {hasActiveContactFilters && (
-                    <Button variant="outline" size="sm" onClick={clearContactFilters}>
-                      <X className="mr-2 h-4 w-4" />
-                      Clear Filters
-                    </Button>
-                  )}
                 </div>
               </div>
 
