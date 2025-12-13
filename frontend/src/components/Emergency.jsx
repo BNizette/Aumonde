@@ -26,6 +26,12 @@ const Emergency = () => {
   const [contactDialogOpen, setContactDialogOpen] = useState(false);
   const [procedureDialogOpen, setProcedureDialogOpen] = useState(false);
   const [drillDialogOpen, setDrillDialogOpen] = useState(false);
+  const [contactEditMode, setContactEditMode] = useState(false);
+  const [procedureEditMode, setProcedureEditMode] = useState(false);
+  const [drillEditMode, setDrillEditMode] = useState(false);
+  const [editingContactId, setEditingContactId] = useState(null);
+  const [editingProcedureId, setEditingProcedureId] = useState(null);
+  const [editingDrillId, setEditingDrillId] = useState(null);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
 
