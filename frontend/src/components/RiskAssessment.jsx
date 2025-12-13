@@ -307,8 +307,7 @@ const RiskAssessment = () => {
         <Card 
           className="cursor-pointer hover:shadow-lg transition-shadow" 
           onClick={() => {
-            setRiskLevelFilter('High');
-            setStatusFilter('all');
+            setFilters(prev => ({...prev, risk_levels: ['High'], statuses: []}));
           }}
         >
           <CardHeader className="pb-2">
