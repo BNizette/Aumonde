@@ -102,15 +102,15 @@ const Emergency = () => {
 
   useEffect(() => {
     applyContactFilters();
-  }, [contactSearch, contactTypeFilter, contactPriorityFilter, contactSort, contacts]);
+  }, [contactSearch, contactFilters, contacts]);
 
   useEffect(() => {
     applyProcedureFilters();
-  }, [procedureSearch, procedureTypeFilter, procedureSort, procedures]);
+  }, [procedureSearch, procedureFilters, procedures]);
 
   useEffect(() => {
     applyDrillFilters();
-  }, [drillSearch, drillTypeFilter, drillVesselFilter, drillSort, drills]);
+  }, [drillSearch, drillFilters, drills]);
 
   const fetchData = async () => {
     try {
