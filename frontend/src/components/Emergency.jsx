@@ -1158,9 +1158,14 @@ const Emergency = () => {
                             <p className="mt-2 text-sm"><strong>Equipment:</strong> {proc.equipment_required}</p>
                           )}
                         </div>
-                        <Button variant="destructive" size="sm" onClick={() => deleteProcedure(proc.id)}>
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
+                        <div className="flex gap-2">
+                          <Button variant="outline" size="sm" onClick={() => handleEditProcedure(proc)}>
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button variant="destructive" size="sm" onClick={() => handleDeleteProcedure(proc.id, proc.title)}>
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   ))
