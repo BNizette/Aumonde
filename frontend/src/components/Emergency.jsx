@@ -399,7 +399,7 @@ const Emergency = () => {
     setTimeout(() => setMessage(''), 3000);
   };
 
-  const handleContactSubmit = async () => {
+  const handleSaveContact = async () => {
     if (!contactForm.name || !contactForm.phone_primary) {
       setError('Please fill in required fields');
       return;
