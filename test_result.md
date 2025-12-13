@@ -238,6 +238,24 @@ frontend:
           agent: "testing"
           comment: "✅ SUMMARY CARD FIXES SUCCESSFULLY IMPLEMENTED AND VERIFIED: All 4 broken summary cards have been fixed and are now working correctly. FIXED CARDS: 1) Vessels - Total Capacity: Now shows '0 pax' (correct - no passenger capacity data in vessels). 2) Crew - Masters: Now shows '2' (correct - 2 crew with position 'Master'). 3) Crew - Engineers: Now shows '4' (correct - 2 'Second Engineer' + 2 'Chief Engineer'). 4) Crew - Crew Members: Now shows '2' (correct - 2 'Deckhand' positions). FIXES APPLIED: Changed crew card calculations from c.position to c.default_position (correct field name). Changed Engineers filter from exact match to includes('Engineer') to capture all engineer positions. VERIFICATION COMPLETE: All cards display correct counts AND clicking each card filters to matching records with counts that match the displayed numbers. User-reported issue fully resolved."
 
+  - task: "Risk Assessment Module Filtering Runtime Errors Investigation"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/components/RiskAssessment.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "NEW TASK: User reports 'uncaught runtime errors' when using filters in Risk Assessment module. Need to test multi-select dropdown filters, date range filters, search box, clear filters button, and sort options. Expected errors: undefined filter state variables, calls to non-existent filter functions (setRiskFilter, setLikelihoodFilter, etc.), React state update errors, filter object structure mismatches."
+        - working: false
+          agent: "testing"
+          comment: "🚨 CRITICAL RUNTIME ERROR IDENTIFIED: Found exact error reported by user - 'setVesselFilter is not defined' when clicking summary cards in Risk Assessment module. ROOT CAUSE: Summary card onClick handlers call undefined functions: setRiskLevelFilter(), setStatusFilter(), and setVesselFilter() which don't exist in component state. The component uses filters object state but onClick handlers reference non-existent setter functions. SPECIFIC ERRORS: 1) Total Risks card calls clearFilters() which calls setVesselFilter('all') - undefined function. 2) Critical/High cards call setRiskLevelFilter() - undefined function. 3) Active card calls setStatusFilter() - undefined function. All other filtering (search, date range, dropdowns) work correctly - issue is specifically with summary card clicks."
+        - working: true
+          agent: "testing"
+          comment: "✅ RISK ASSESSMENT FILTERING RUNTIME ERRORS FIXED: Successfully resolved all uncaught runtime errors in Risk Assessment module filtering. FIXES APPLIED: 1) Fixed Total Risks card onClick to use clearAllFilters() instead of undefined clearFilters(). 2) Fixed Critical card onClick to use setFilters(prev => ({...prev, risk_levels: ['Critical'], statuses: []})) instead of undefined setRiskLevelFilter(). 3) Fixed High card onClick to use setFilters(prev => ({...prev, risk_levels: ['High'], statuses: []})) instead of undefined setRiskLevelFilter(). 4) Fixed Active card onClick to use setFilters(prev => ({...prev, risk_levels: [], statuses: ['Active']})) instead of undefined setStatusFilter(). 5) Removed setVesselFilter('all') call from clearFilters function. VERIFICATION COMPLETE: All summary cards now click without runtime errors. Search box, date range filters, clear filters button, and all other filtering functionality working correctly. No console errors detected. User-reported runtime errors completely resolved."
+
   - task: "Admin Panel User Creation"
     implemented: true
     working: true
