@@ -1513,7 +1513,7 @@ const Emergency = () => {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setContactDialogOpen(false)}>Cancel</Button>
-            <Button onClick={handleContactSubmit}>Add Contact</Button>
+            <Button onClick={handleSaveContact}>{contactEditMode ? 'Update Contact' : 'Add Contact'}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
