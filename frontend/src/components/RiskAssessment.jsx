@@ -12,6 +12,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import RiskAssessmentForm from './RiskAssessmentForm';
 import RiskAssessmentDetails from './RiskAssessmentDetails';
+import useAdvancedFilters from '../hooks/useAdvancedFilters';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -24,12 +25,6 @@ const RiskAssessment = () => {
   const [riskLevels, setRiskLevels] = useState([]);
   const [statuses, setStatuses] = useState([]);
   const [sortBy, setSortBy] = useState('riskLevel');
-  const [filters, setFilters] = useState({
-    risk_levels: [],
-    statuses: [],
-    start_date: '',
-    end_date: ''
-  });
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [formOpen, setFormOpen] = useState(false);
@@ -37,6 +32,20 @@ const RiskAssessment = () => {
   const [selectedRisk, setSelectedRisk] = useState(null);
   const [formMode, setFormMode] = useState('create');
   const [user, setUser] = useState(null);
+
+  // Use custom hook for advanced filtering
+  const {
+    filters,
+    toggleFilter,
+    clearFilter,
+    clearDateFilters,
+    clearAllFilters: clearAllFiltersHook
+  } = useAdvancedFilters({
+    risk_levels: [],
+    statuses: [],
+    start_date: '',
+    end_date: ''
+  });
 
   useEffect(() => {
     const userData = localStorage.getItem('user');
@@ -91,17 +100,10 @@ const RiskAssessment = () => {
     setFilteredRisks(filtered);
   };
 
-  const toggleFilter = (filterType, value) => {
-    setFilters(prev => {
-      const currentArray = prev[filterType];
-      const isSelected = currentArray.includes(value);
-      return {...prev, [filterType]: isSelected ? currentArray.filter(item => item !== value) : [...currentArray, value]};
-    });
+  const clearAllFilters = () => { 
+    setSearchQuery(''); 
+    clearAllFiltersHook(); 
   };
-
-  const clearFilter = (filterType) => { setFilters(prev => ({...prev, [filterType]: []})); };
-  const clearDateFilters = () => { setFilters(prev => ({...prev, start_date: '', end_date: ''})); };
-  const clearAllFilters = () => { setSearchQuery(''); setFilters({risk_levels: [], statuses: [], start_date: '', end_date: ''}); };
 
   const exportToCSV = () => {
     if (filteredRisks.length === 0) { setError('No risks to export'); setTimeout(() => setError(''), 3000); return; }

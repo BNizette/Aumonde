@@ -12,6 +12,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Checkbox } from '@/components/ui/checkbox';
 import { AlertCircle, Plus, Edit, Trash2, Eye, Download, X, ChevronDown } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import useAdvancedFilters from '../hooks/useAdvancedFilters';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -26,7 +27,9 @@ const Incidents = () => {
   const [viewingIncident, setViewingIncident] = useState(null);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
-  const [filters, setFilters] = useState({
+
+  // Use custom hook for advanced filtering
+  const { filters } = useAdvancedFilters({
     incident_types: [],
     severities: [],
     statuses: [],

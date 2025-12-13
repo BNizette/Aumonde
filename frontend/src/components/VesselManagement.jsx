@@ -12,6 +12,7 @@ import { Label } from '@/components/ui/label';
 import { Ship, Plus, Edit, Trash2, Search, Calendar, Filter, X, AlertTriangle, Download, ChevronDown } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import VesselForm from './VesselForm';
+import useAdvancedFilters from '../hooks/useAdvancedFilters';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -32,7 +33,17 @@ const VesselManagement = () => {
   const [duplicateWarning, setDuplicateWarning] = useState(null);
   const [showDuplicateDialog, setShowDuplicateDialog] = useState(false);
   const [pendingFormData, setPendingFormData] = useState(null);
-  const [filters, setFilters] = useState({
+
+  // Use custom hook for advanced filtering
+  const {
+    filters,
+    setFilters,
+    toggleFilter,
+    clearFilter,
+    clearDateFilters,
+    clearAllFilters: clearAllFiltersHook,
+    setFilterValue
+  } = useAdvancedFilters({
     vessel_types: [],
     statuses: [],
     start_date: '',
@@ -113,41 +124,10 @@ const VesselManagement = () => {
     setFilteredVessels(filtered);
   };
 
-  const toggleFilter = (filterType, value) => {
-    setFilters(prev => {
-      const currentArray = prev[filterType];
-      const isSelected = currentArray.includes(value);
-      
-      return {
-        ...prev,
-        [filterType]: isSelected
-          ? currentArray.filter(item => item !== value)
-          : [...currentArray, value]
-      };
-    });
-  };
-
-  const clearFilter = (filterType) => {
-    setFilters(prev => ({
-      ...prev,
-      [filterType]: []
-    }));
-  };
-
-  const clearDateFilters = () => {
-    setFilters(prev => ({
-      ...prev,
-      start_date: '',
-      end_date: ''
-    }));
-  };
-
   const clearAllFilters = () => {
     setSearchQuery('');
-    setFilters({
-      vessel_types: [],
-      statuses: [],
-      start_date: '',
+    clearAllFiltersHook();
+    setSortBy('name');
       end_date: ''
     });
   };
