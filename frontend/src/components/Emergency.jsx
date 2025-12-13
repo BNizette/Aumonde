@@ -1561,11 +1561,16 @@ const Emergency = () => {
       </Dialog>
 
       {/* Drill Dialog */}
-      <Dialog open={drillDialogOpen} onOpenChange={setDrillDialogOpen}>
+      <Dialog open={drillDialogOpen} onOpenChange={(open) => {
+        setDrillDialogOpen(open);
+        if (!open) resetDrillForm();
+      }}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Record Emergency Drill</DialogTitle>
-            <DialogDescription>Document emergency drill exercise and observations</DialogDescription>
+            <DialogTitle>{drillEditMode ? 'Edit Emergency Drill' : 'Record Emergency Drill'}</DialogTitle>
+            <DialogDescription>
+              {drillEditMode ? 'Update emergency drill record' : 'Document emergency drill exercise and observations'}
+            </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div>
