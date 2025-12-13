@@ -819,6 +819,7 @@ class AMSAComprehensiveTester:
         
         # Run all test modules
         test_methods = [
+            self.test_backup_import,  # Test backup import first as requested
             self.test_other_account_logins,
             self.test_dashboard_stats,
             self.test_user_management,
