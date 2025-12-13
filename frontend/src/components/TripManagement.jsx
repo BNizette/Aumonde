@@ -69,7 +69,7 @@ const TripManagement = () => {
     if (filters.statuses.length > 0) {
       const now = new Date();
       filtered = filtered.filter(trip => {
-        const departDate = trip.depart_datetime ? new Date(trip.depart_datetime) : null;
+        const departDate = trip.planned_depart_datetime ? new Date(trip.planned_depart_datetime) : (trip.depart_datetime ? new Date(trip.depart_datetime) : null);
         const returnDate = trip.return_datetime ? new Date(trip.return_datetime) : null;
         
         return filters.statuses.some(status => {
