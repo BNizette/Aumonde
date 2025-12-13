@@ -583,12 +583,7 @@ const Emergency = () => {
               <div className="grid grid-cols-1 md:grid-cols-4 gap-3 mb-6">
                 <Card 
                   className="cursor-pointer hover:shadow-lg transition-shadow"
-                  onClick={() => {
-                    setContactSearch('');
-                    setContactTypeFilter('all');
-                    setContactPriorityFilter('all');
-                    setContactSort('priority');
-                  }}
+                  onClick={() => clearContactFilters()}
                 >
                   <CardHeader className="pb-2">
                     <CardTitle className="text-xs font-medium text-gray-500">Total Contacts</CardTitle>
@@ -600,7 +595,7 @@ const Emergency = () => {
                 </Card>
                 <Card 
                   className="cursor-pointer hover:shadow-lg transition-shadow"
-                  onClick={() => setContactPriorityFilter('1')}
+                  onClick={() => setContactFilters({...contactFilters, priorities: [1]})}
                 >
                   <CardHeader className="pb-2">
                     <CardTitle className="text-xs font-medium text-gray-500">Priority 1</CardTitle>
@@ -614,7 +609,7 @@ const Emergency = () => {
                 </Card>
                 <Card 
                   className="cursor-pointer hover:shadow-lg transition-shadow"
-                  onClick={() => setContactTypeFilter('Medical')}
+                  onClick={() => setContactFilters({...contactFilters, types: ['Medical']})}
                 >
                   <CardHeader className="pb-2">
                     <CardTitle className="text-xs font-medium text-gray-500">Medical</CardTitle>
@@ -628,7 +623,7 @@ const Emergency = () => {
                 </Card>
                 <Card 
                   className="cursor-pointer hover:shadow-lg transition-shadow"
-                  onClick={() => setContactTypeFilter('Authority')}
+                  onClick={() => setContactFilters({...contactFilters, types: ['Authority']})}
                 >
                   <CardHeader className="pb-2">
                     <CardTitle className="text-xs font-medium text-gray-500">Authorities</CardTitle>
