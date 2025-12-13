@@ -462,8 +462,12 @@ const CrewManagement = () => {
           className="cursor-pointer hover:shadow-lg transition-shadow"
           onClick={() => {
             setSearchQuery('');
-            setPositionFilter('all');
-            setRoleFilter('all');
+            setFilters({
+              positions: [],
+              roles: [],
+              start_date: '',
+              end_date: ''
+            });
             setSortBy('name');
           }}
         >
