@@ -2454,6 +2454,20 @@ async def get_emergency_drills(vessel_id: Optional[str] = None, current_user: di
     drills = await db.emergency_drills.find(query, {"_id": 0}).sort("drill_date", -1).to_list(1000)
     return drills
 
+@api_router.put("/emergency/drills/{drill_id}")
+async def update_emergency_drill(drill_id: str, drill_data: dict, current_user: dict = Depends(require_access_level(AccessLevel.EDIT))):
+    if 'drill_date' in drill_data and drill_data['drill_date']:
+        drill_data['drill_date'] = datetime.fromisoformat(drill_data['drill_date'].replace('Z', '+00:00'))
+    
+    drill_data['updated_at'] = datetime.now(timezone.utc)
+    await db.emergency_drills.update_one({"id": drill_id}, {"$set": drill_data})
+    return {"status": "success"}
+
+@api_router.delete("/emergency/drills/{drill_id}")
+async def delete_emergency_drill(drill_id: str, current_user: dict = Depends(require_access_level(AccessLevel.FULL))):
+    await db.emergency_drills.delete_one({"id": drill_id})
+    return {"status": "success"}
+
 # ============================================================================
 # COMPLIANCE MODULE (PHASE 2)
 # ============================================================================
