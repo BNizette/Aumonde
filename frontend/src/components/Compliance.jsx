@@ -1227,7 +1227,7 @@ const Compliance = () => {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setReqDialogOpen(false)}>Cancel</Button>
-            <Button onClick={handleReqSubmit}>Add Requirement</Button>
+            <Button onClick={handleReqSubmit}>{reqEditMode ? 'Update Requirement' : 'Add Requirement'}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
