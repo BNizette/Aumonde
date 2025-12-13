@@ -312,7 +312,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Trip Summary Cards Runtime Errors Investigation"
+    - "Maintenance Summary Cards Runtime Errors Investigation"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
