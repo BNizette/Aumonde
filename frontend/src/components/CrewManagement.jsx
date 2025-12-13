@@ -481,7 +481,15 @@ const CrewManagement = () => {
         </Card>
         <Card 
           className="cursor-pointer hover:shadow-lg transition-shadow"
-          onClick={() => setPositionFilter('master')}
+          onClick={() => {
+            setSearchQuery('');
+            setFilters({
+              positions: ['Master'],
+              roles: [],
+              start_date: '',
+              end_date: ''
+            });
+          }}
         >
           <CardHeader className="pb-2">
             <CardTitle className="text-xs font-medium text-gray-500">Masters</CardTitle>
