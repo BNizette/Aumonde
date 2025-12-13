@@ -467,11 +467,20 @@ const Emergency = () => {
 
     try {
       const token = localStorage.getItem('token');
-      await axios.post(`${API}/emergency/drills`, drillForm, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setMessage('Emergency drill recorded successfully');
+      if (drillEditMode) {
+        await axios.put(`${API}/emergency/drills/${editingDrillId}`, drillForm, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setMessage('Drill updated successfully');
+      } else {
+        await axios.post(`${API}/emergency/drills`, drillForm, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setMessage('Drill created successfully');
+      }
       setDrillDialogOpen(false);
+      setDrillEditMode(false);
+      setEditingDrillId(null);
       resetDrillForm();
       fetchData();
       setTimeout(() => setMessage(''), 3000);
