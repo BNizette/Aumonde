@@ -470,7 +470,7 @@ const Compliance = () => {
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
         <Card 
           className="cursor-pointer hover:shadow-lg transition-shadow"
-          onClick={() => setCertStatusFilter('valid')}
+          onClick={() => setCertFilters({...certFilters, statuses: ['valid']})}
         >
           <CardContent className="pt-6">
             <div className="text-center">
@@ -482,7 +482,7 @@ const Compliance = () => {
         </Card>
         <Card 
           className="cursor-pointer hover:shadow-lg transition-shadow"
-          onClick={() => setCertStatusFilter('expiring')}
+          onClick={() => setCertFilters({...certFilters, statuses: ['expiring']})}
         >
           <CardContent className="pt-6">
             <div className="text-center">
@@ -494,7 +494,7 @@ const Compliance = () => {
         </Card>
         <Card 
           className="cursor-pointer hover:shadow-lg transition-shadow"
-          onClick={() => setCertStatusFilter('expired')}
+          onClick={() => setCertFilters({...certFilters, statuses: ['expired']})}
         >
           <CardContent className="pt-6">
             <div className="text-center">
@@ -506,7 +506,7 @@ const Compliance = () => {
         </Card>
         <Card 
           className="cursor-pointer hover:shadow-lg transition-shadow"
-          onClick={() => setReqStatusFilter('Compliant')}
+          onClick={() => setReqFilters({...reqFilters, statuses: ['Compliant']})}
         >
           <CardContent className="pt-6">
             <div className="text-center">
@@ -518,7 +518,7 @@ const Compliance = () => {
         </Card>
         <Card 
           className="cursor-pointer hover:shadow-lg transition-shadow"
-          onClick={() => setReqStatusFilter('Non-Compliant')}
+          onClick={() => setReqFilters({...reqFilters, statuses: ['Non-Compliant']})}
         >
           <CardContent className="pt-6">
             <div className="text-center">
