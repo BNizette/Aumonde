@@ -1150,59 +1150,139 @@ const Emergency = () => {
 
               {/* Filter Section */}
               <div className="space-y-4 mb-6">
-                <div className="flex flex-col md:flex-row gap-4">
-                  <div className="relative flex-1">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                {hasActiveDrillFilters && (
+                  <div className="flex justify-end">
+                    <Button variant="ghost" size="sm" onClick={clearDrillFilters}>
+                      <X className="h-4 w-4 mr-2" />
+                      Clear All Filters
+                    </Button>
+                  </div>
+                )}
+
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  <Input
+                    placeholder="Search drills by type, vessel, or observations..."
+                    value={drillSearch}
+                    onChange={(e) => setDrillSearch(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label>Drill Type</Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button variant="outline" className="w-full justify-between">
+                          <span className="truncate">
+                            {drillFilters.types.length === 0
+                              ? 'All Drill Types'
+                              : drillFilters.types.length === 1
+                              ? drillFilters.types[0]
+                              : `${drillFilters.types.length} selected`}
+                          </span>
+                          <ChevronDown className="h-4 w-4 ml-2 shrink-0" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-80 p-0" align="start">
+                        <div className="p-2">
+                          <div className="flex items-center justify-between px-2 py-1.5 mb-1">
+                            <span className="text-sm font-medium">Select Drill Types</span>
+                            {drillFilters.types.length > 0 && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => clearDrillFilterType('types')}
+                                className="h-auto p-1 text-xs"
+                              >
+                                Clear
+                              </Button>
+                            )}
+                          </div>
+                          {drillTypes.map(type => (
+                            <div
+                              key={type}
+                              className="flex items-center space-x-2 px-2 py-2 hover:bg-gray-100 rounded cursor-pointer"
+                              onClick={() => toggleDrillFilter('types', type)}
+                            >
+                              <Checkbox
+                                checked={drillFilters.types.includes(type)}
+                                onCheckedChange={() => toggleDrillFilter('types', type)}
+                              />
+                              <span className="text-sm">{type}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+
+                  <div>
+                    <Label>Vessel</Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button variant="outline" className="w-full justify-between">
+                          <span className="truncate">
+                            {drillFilters.vessels.length === 0
+                              ? 'All Vessels'
+                              : drillFilters.vessels.length === 1
+                              ? drillFilters.vessels[0]
+                              : `${drillFilters.vessels.length} selected`}
+                          </span>
+                          <ChevronDown className="h-4 w-4 ml-2 shrink-0" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-64 p-0" align="start">
+                        <div className="p-2">
+                          <div className="flex items-center justify-between px-2 py-1.5 mb-1">
+                            <span className="text-sm font-medium">Select Vessels</span>
+                            {drillFilters.vessels.length > 0 && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => clearDrillFilterType('vessels')}
+                                className="h-auto p-1 text-xs"
+                              >
+                                Clear
+                              </Button>
+                            )}
+                          </div>
+                          {[...new Set(drills.map(d => d.vessel_name).filter(Boolean))].map(vessel => (
+                            <div
+                              key={vessel}
+                              className="flex items-center space-x-2 px-2 py-2 hover:bg-gray-100 rounded cursor-pointer"
+                              onClick={() => toggleDrillFilter('vessels', vessel)}
+                            >
+                              <Checkbox
+                                checked={drillFilters.vessels.includes(vessel)}
+                                onCheckedChange={() => toggleDrillFilter('vessels', vessel)}
+                              />
+                              <span className="text-sm">{vessel}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label>Drill Date From</Label>
                     <Input
-                      placeholder="Search drills by type, vessel, or observations..."
-                      value={drillSearch}
-                      onChange={(e) => setDrillSearch(e.target.value)}
-                      className="pl-10"
+                      type="date"
+                      value={drillFilters.start_date}
+                      onChange={(e) => setDrillFilters({...drillFilters, start_date: e.target.value})}
                     />
                   </div>
-                  
-                  <div className="w-full md:w-56">
-                    <Select value={drillTypeFilter} onValueChange={setDrillTypeFilter}>
-                      <SelectTrigger>
-                        <div className="flex items-center gap-2">
-                          <Filter className="h-4 w-4" />
-                          <SelectValue placeholder="Drill Type" />
-                        </div>
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Types</SelectItem>
-                        {drillTypes.map(type => (
-                          <SelectItem key={type} value={type}>{type}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="w-full md:w-48">
-                    <Select value={drillVesselFilter} onValueChange={setDrillVesselFilter}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Vessel" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Vessels</SelectItem>
-                        {[...new Set(drills.map(d => d.vessel_name).filter(Boolean))].map(vessel => (
-                          <SelectItem key={vessel} value={vessel}>{vessel}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="w-full md:w-48">
-                    <Select value={drillSort} onValueChange={setDrillSort}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Sort by" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="date">Date (Newest)</SelectItem>
-                        <SelectItem value="type">Drill Type</SelectItem>
-                        <SelectItem value="vessel">Vessel</SelectItem>
-                      </SelectContent>
-                    </Select>
+                  <div>
+                    <Label>Drill Date To</Label>
+                    <Input
+                      type="date"
+                      value={drillFilters.end_date}
+                      onChange={(e) => setDrillFilters({...drillFilters, end_date: e.target.value})}
+                    />
                   </div>
                 </div>
 
@@ -1210,12 +1290,6 @@ const Emergency = () => {
                   <p className="text-sm text-gray-600">
                     Showing {filteredDrills.length} of {drills.length} drills
                   </p>
-                  {hasActiveDrillFilters && (
-                    <Button variant="outline" size="sm" onClick={clearDrillFilters}>
-                      <X className="mr-2 h-4 w-4" />
-                      Clear Filters
-                    </Button>
-                  )}
                 </div>
               </div>
 
