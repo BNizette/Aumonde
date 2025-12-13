@@ -489,10 +489,16 @@ const Emergency = () => {
                   </CardTitle>
                   <CardDescription>Critical contacts for emergency situations</CardDescription>
                 </div>
-                <Button onClick={() => setContactDialogOpen(true)}>
-                  <Plus className="mr-2 h-4 w-4" />
-                  Add Contact
-                </Button>
+                <div className="flex gap-2">
+                  <Button variant="outline" onClick={exportContactsToCSV}>
+                    <Download className="mr-2 h-4 w-4" />
+                    Export CSV
+                  </Button>
+                  <Button onClick={() => setContactDialogOpen(true)}>
+                    <Plus className="mr-2 h-4 w-4" />
+                    Add Contact
+                  </Button>
+                </div>
               </div>
             </CardHeader>
             <CardContent>
