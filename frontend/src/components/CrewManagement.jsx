@@ -1045,6 +1045,7 @@ const CrewManagement = () => {
                         </TableBody>
                       </Table>
                     </div>
+                    </>
                   )}
                 </TabsContent>
                 
