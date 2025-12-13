@@ -12,6 +12,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import MaintenanceForm from './MaintenanceForm';
 import MaintenanceDetails from './MaintenanceDetails';
+import useAdvancedFilters from '../hooks/useAdvancedFilters';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -24,12 +25,6 @@ const Maintenance = () => {
   const [statuses, setStatuses] = useState([]);
   const [priorities, setPriorities] = useState([]);
   const [sortBy, setSortBy] = useState('priority');
-  const [filters, setFilters] = useState({
-    statuses: [],
-    priorities: [],
-    start_date: '',
-    end_date: ''
-  });
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [formOpen, setFormOpen] = useState(false);
@@ -37,6 +32,22 @@ const Maintenance = () => {
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [formMode, setFormMode] = useState('create');
   const [user, setUser] = useState(null);
+
+  // Use custom hook for advanced filtering
+  const {
+    filters,
+    setFilters,
+    toggleFilter,
+    clearFilter,
+    clearDateFilters,
+    clearAllFilters: clearAllFiltersHook,
+    setFilterValue
+  } = useAdvancedFilters({
+    statuses: [],
+    priorities: [],
+    start_date: '',
+    end_date: ''
+  });
 
   useEffect(() => {
     const userData = localStorage.getItem('user');
@@ -91,17 +102,10 @@ const Maintenance = () => {
     setFilteredRecords(filtered);
   };
 
-  const toggleFilter = (filterType, value) => {
-    setFilters(prev => {
-      const currentArray = prev[filterType];
-      const isSelected = currentArray.includes(value);
-      return {...prev, [filterType]: isSelected ? currentArray.filter(item => item !== value) : [...currentArray, value]};
-    });
+  const clearAllFilters = () => { 
+    setSearchQuery(''); 
+    clearAllFiltersHook(); 
   };
-
-  const clearFilter = (filterType) => { setFilters(prev => ({...prev, [filterType]: []})); };
-  const clearDateFilters = () => { setFilters(prev => ({...prev, start_date: '', end_date: ''})); };
-  const clearAllFilters = () => { setSearchQuery(''); setFilters({statuses: [], priorities: [], start_date: '', end_date: ''}); };
 
   const exportToCSV = () => {
     if (filteredRecords.length === 0) { setError('No maintenance records to export'); setTimeout(() => setError(''), 3000); return; }
@@ -372,8 +376,8 @@ const Maintenance = () => {
               <div><Label>Sort By</Label><Select value={sortBy} onValueChange={setSortBy}><SelectTrigger><SelectValue placeholder="Sort by" /></SelectTrigger><SelectContent><SelectItem value="priority">Priority (High to Low)</SelectItem><SelectItem value="dueDate">Due Date</SelectItem><SelectItem value="equipment">Equipment</SelectItem><SelectItem value="status">Status</SelectItem></SelectContent></Select></div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
-              <div><Label htmlFor="start_date">From Date</Label><Input id="start_date" type="date" value={filters.start_date} onChange={(e) => setFilters({...filters, start_date: e.target.value})} /></div>
-              <div><Label htmlFor="end_date">To Date</Label><Input id="end_date" type="date" value={filters.end_date} onChange={(e) => setFilters({...filters, end_date: e.target.value})} /></div>
+              <div><Label htmlFor="start_date">From Date</Label><Input id="start_date" type="date" value={filters.start_date} onChange={(e) => setFilterValue('start_date', e.target.value)} /></div>
+              <div><Label htmlFor="end_date">To Date</Label><Input id="end_date" type="date" value={filters.end_date} onChange={(e) => setFilterValue('end_date', e.target.value)} /></div>
               <div>{(filters.start_date || filters.end_date) && (<Button variant="outline" size="sm" onClick={clearDateFilters} className="w-full"><X className="h-4 w-4 mr-2" />Clear Date Range</Button>)}</div>
             </div>
             <div className="text-sm text-gray-500">Showing {filteredRecords.length} of {maintenanceRecords.length} maintenance records</div>
