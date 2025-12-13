@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Plus, Edit, Trash2, Calendar, Clock, User, FileText, Activity, Gauge } from 'lucide-react';
+import { Plus, Edit, Trash2, Calendar, Clock, User, FileText, Activity, Gauge, Download } from 'lucide-react';
 import TripLogForm from './TripLogForm';
 import RunningLogForm from './RunningLogForm';
 import EngineRunningLogForm from './EngineRunningLogForm';
