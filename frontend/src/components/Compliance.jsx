@@ -486,10 +486,16 @@ const Compliance = () => {
                   </CardTitle>
                   <CardDescription>Track certification status and expiry dates</CardDescription>
                 </div>
-                <Button onClick={() => setCertDialogOpen(true)}>
-                  <Plus className="mr-2 h-4 w-4" />
-                  Add Certificate
-                </Button>
+                <div className="flex gap-2">
+                  <Button variant="outline" onClick={exportCertificatesToCSV}>
+                    <Download className="mr-2 h-4 w-4" />
+                    Export CSV
+                  </Button>
+                  <Button onClick={() => setCertDialogOpen(true)}>
+                    <Plus className="mr-2 h-4 w-4" />
+                    Add Certificate
+                  </Button>
+                </div>
               </div>
             </CardHeader>
             <CardContent>
