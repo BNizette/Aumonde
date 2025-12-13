@@ -487,6 +487,8 @@ const Compliance = () => {
       crew_name: '',
       notes: ''
     });
+    setCertEditMode(false);
+    setEditingCertId(null);
   };
 
   const resetReqForm = () => {
@@ -499,6 +501,8 @@ const Compliance = () => {
       responsible_person: '',
       notes: ''
     });
+    setReqEditMode(false);
+    setEditingReqId(null);
   };
 
   const getStatusColor = (status) => {
