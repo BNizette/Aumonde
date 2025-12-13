@@ -258,7 +258,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Admin Panel User Creation"
+    - "Summary Card Click Errors Investigation"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
