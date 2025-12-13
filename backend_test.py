@@ -169,12 +169,62 @@ class AMSAComprehensiveTester:
         """Test user management endpoints"""
         print("\n👤 Testing User Management...")
         
-        # Get all users
+        # Get all users - SPECIFIC TEST for backward compatibility with missing fields
         success, response, status = self.make_request('GET', 'users')
         if success and isinstance(response, list):
-            self.log_test("Get All Users", True, f"Retrieved {len(response)} users")
+            self.log_test("Get All Users (200 OK)", True, f"Retrieved {len(response)} users")
+            
+            # Verify each user has required fields with defaults
+            users_with_defaults = 0
+            field_issues = []
+            
+            for user in response:
+                # Check that access_level exists and has a valid value
+                if 'access_level' not in user:
+                    field_issues.append(f"User {user.get('email', 'unknown')} missing access_level")
+                elif user['access_level'] not in ['View', 'Edit', 'Full']:
+                    field_issues.append(f"User {user.get('email', 'unknown')} has invalid access_level: {user['access_level']}")
+                
+                # Check that account_status exists and has a valid value
+                if 'account_status' not in user:
+                    field_issues.append(f"User {user.get('email', 'unknown')} missing account_status")
+                elif user['account_status'] not in ['Active', 'Disabled', 'Suspended']:
+                    field_issues.append(f"User {user.get('email', 'unknown')} has invalid account_status: {user['account_status']}")
+                
+                # Count users with default values (backward compatibility)
+                if user.get('access_level') == 'Edit' and user.get('account_status') == 'Active':
+                    users_with_defaults += 1
+            
+            if not field_issues:
+                self.log_test("Users Field Validation (access_level & account_status)", True, 
+                            f"All users have required fields. {users_with_defaults} users have default values")
+            else:
+                self.log_test("Users Field Validation (access_level & account_status)", False, 
+                            error=f"Field issues: {field_issues[:3]}")  # Show first 3 issues
+            
+            # Verify response structure for backward compatibility
+            required_user_fields = ['id', 'email', 'full_name', 'role', 'access_level', 'account_status', 'created_at']
+            structure_valid = True
+            structure_issues = []
+            
+            for user in response[:3]:  # Check first 3 users
+                for field in required_user_fields:
+                    if field not in user:
+                        structure_valid = False
+                        structure_issues.append(f"User {user.get('email', 'unknown')} missing field: {field}")
+            
+            if structure_valid:
+                self.log_test("User Response Structure Validation", True, "All required fields present")
+            else:
+                self.log_test("User Response Structure Validation", False, 
+                            error=f"Structure issues: {structure_issues}")
+                
         else:
-            self.log_test("Get All Users", False, error=f"Status: {status}")
+            self.log_test("Get All Users (200 OK)", False, error=f"Status: {status}, Expected 200 but got {status}")
+            # This is a critical failure - the endpoint should not return 500
+            if status == 500:
+                self.log_test("CRITICAL: Users Endpoint 500 Error", False, 
+                            error="Users endpoint returning 500 - Pydantic validation error likely")
         
         # Get activity logs
         success, response, status = self.make_request('GET', 'activity-logs')
