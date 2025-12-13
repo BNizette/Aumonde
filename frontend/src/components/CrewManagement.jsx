@@ -188,6 +188,88 @@ const CrewManagement = () => {
     });
   };
 
+  // Export Allocated Ships to CSV
+  const exportAllocatedShipsToCSV = () => {
+    if (crewTrips.length === 0) {
+      setError('No allocated ships data to export');
+      setTimeout(() => setError(''), 3000);
+      return;
+    }
+
+    const headers = [
+      'Trip Name',
+      'Vessel',
+      'Position',
+      'Departure Date',
+      'Return Date',
+      'Status',
+      'Trip ID'
+    ];
+
+    const csvRows = [headers.join(','), ...crewTrips.map(allocation => [
+      `"${allocation.trip?.trip_name || 'N/A'}"`,
+      `"${allocation.trip?.vessel_name || 'N/A'}"`,
+      `"${allocation.position || 'N/A'}"`,
+      `"${allocation.trip?.depart_datetime ? new Date(allocation.trip.depart_datetime).toLocaleDateString() : 'N/A'}"`,
+      `"${allocation.trip?.return_datetime ? new Date(allocation.trip.return_datetime).toLocaleDateString() : 'N/A'}"`,
+      `"${allocation.trip?.status || 'N/A'}"`,
+      `"${allocation.trip_id || 'N/A'}"`
+    ].join(','))];
+
+    const csvString = csvRows.join('\n');
+    const blob = new Blob([csvString], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `allocated_ships_${selectedCrew?.staff_name?.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+    setMessage('Allocated ships exported to CSV successfully');
+    setTimeout(() => setMessage(''), 3000);
+  };
+
+  // Export Crew Shifts to CSV
+  const exportCrewShiftsToCSV = () => {
+    if (crewShifts.length === 0) {
+      setError('No crew shifts data to export');
+      setTimeout(() => setError(''), 3000);
+      return;
+    }
+
+    const headers = [
+      'Date & Time',
+      'Activity',
+      'Details',
+      'Trip ID',
+      'Crew Name',
+      'Log ID'
+    ];
+
+    const csvRows = [headers.join(','), ...crewShifts.map(shift => [
+      `"${new Date(shift.log_datetime).toLocaleString()}"`,
+      `"${shift.activity || 'N/A'}"`,
+      `"${shift.activity_details || '-'}"`,
+      `"${shift.trip_id || 'N/A'}"`,
+      `"${selectedCrew?.staff_name || 'N/A'}"`,
+      `"${shift.id || 'N/A'}"`
+    ].join(','))];
+
+    const csvString = csvRows.join('\n');
+    const blob = new Blob([csvString], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `crew_shifts_${selectedCrew?.staff_name?.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+    setMessage('Crew shifts exported to CSV successfully');
+    setTimeout(() => setMessage(''), 3000);
+  };
+
   const exportToCSV = () => {
     if (filteredCrew.length === 0) {
       setError('No crew to export');
