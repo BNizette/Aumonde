@@ -1058,9 +1058,7 @@ const Emergency = () => {
                   className="cursor-pointer hover:shadow-lg transition-shadow"
                   onClick={() => {
                     setDrillSearch('');
-                    setDrillTypeFilter('all');
-                    setDrillVesselFilter('all');
-                    setDrillSort('date');
+                    clearDrillFilters();
                   }}
                 >
                   <CardHeader className="pb-2">
@@ -1073,7 +1071,7 @@ const Emergency = () => {
                 </Card>
                 <Card 
                   className="cursor-pointer hover:shadow-lg transition-shadow"
-                  onClick={() => setDrillTypeFilter('Fire Drill')}
+                  onClick={() => setDrillFilters({...drillFilters, types: ['Fire Drill']})}
                 >
                   <CardHeader className="pb-2">
                     <CardTitle className="text-xs font-medium text-gray-500">Fire Drills</CardTitle>
@@ -1087,7 +1085,7 @@ const Emergency = () => {
                 </Card>
                 <Card 
                   className="cursor-pointer hover:shadow-lg transition-shadow"
-                  onClick={() => setDrillTypeFilter('Abandon Ship Drill')}
+                  onClick={() => setDrillFilters({...drillFilters, types: ['Abandon Ship Drill']})}
                 >
                   <CardHeader className="pb-2">
                     <CardTitle className="text-xs font-medium text-gray-500">Abandon Ship</CardTitle>
@@ -1101,7 +1099,7 @@ const Emergency = () => {
                 </Card>
                 <Card 
                   className="cursor-pointer hover:shadow-lg transition-shadow"
-                  onClick={() => setDrillTypeFilter('Man Overboard Drill')}
+                  onClick={() => setDrillFilters({...drillFilters, types: ['Man Overboard Drill']})}
                 >
                   <CardHeader className="pb-2">
                     <CardTitle className="text-xs font-medium text-gray-500">Man Overboard</CardTitle>
