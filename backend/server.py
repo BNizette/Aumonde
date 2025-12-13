@@ -1343,7 +1343,7 @@ async def get_trips(vessel_id: Optional[str] = None, current_user: dict = Depend
     if vessel_id:
         query["vessel_id"] = vessel_id
     
-    trips = await db.trips.find(query, {"_id": 0}).sort("depart_datetime", -1).to_list(1000)
+    trips = await db.trips.find(query, {"_id": 0}).sort([("planned_depart_datetime", -1), ("depart_datetime", -1)]).to_list(1000)
     
     # Batch query optimization: Fetch all vessels at once
     vessel_ids = list(set(trip["vessel_id"] for trip in trips if trip.get("vessel_id")))
