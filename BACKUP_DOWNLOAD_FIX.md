@@ -62,7 +62,7 @@ python3 download_backup.py
 ```bash
 $ python3 download_backup.py
 
-Enter your backend URL: https://fleet-safety-portal.preview.emergentagent.com
+Enter your backend URL: https://maritime-hub-11.preview.emergentagent.com
 
 🔐 Login
 Email [admin@test.com]: 

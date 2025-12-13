@@ -29,7 +29,7 @@ Role:     Owner (Full Access)
 
 ## 🚀 PREVIEW URL
 
-**Direct Access:** https://fleet-safety-portal.preview.emergentagent.com
+**Direct Access:** https://maritime-hub-11.preview.emergentagent.com
 
 **What happens:**
 1. Page loads
@@ -258,7 +258,7 @@ if (process.env.REACT_APP_AUTO_LOGIN !== 'false') {
 
 ## 📞 SUPPORT
 
-**Preview URL:** https://fleet-safety-portal.preview.emergentagent.com
+**Preview URL:** https://maritime-hub-11.preview.emergentagent.com
 
 **Expected Behavior:**
 1. Open URL → Auto-login (1-2 sec) → Dashboard
