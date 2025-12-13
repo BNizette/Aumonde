@@ -1054,18 +1054,30 @@ const Compliance = () => {
                 ) : (
                   filteredRequirements.map((req) => (
                     <div key={req.id} className="border rounded-lg p-4 hover:bg-gray-50">
-                      <div className="flex items-center gap-2 mb-2">
-                        <h3 className="font-semibold">{req.requirement_name}</h3>
-                        <Badge className={getComplianceColor(req.compliance_status)}>{req.compliance_status}</Badge>
-                        <Badge variant="outline">{req.category}</Badge>
+                      <div className="flex justify-between items-start">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-2">
+                            <h3 className="font-semibold">{req.requirement_name}</h3>
+                            <Badge className={getComplianceColor(req.compliance_status)}>{req.compliance_status}</Badge>
+                            <Badge variant="outline">{req.category}</Badge>
+                          </div>
+                          <p className="text-sm text-gray-700 mb-2">{req.description}</p>
+                          {req.regulatory_reference && (
+                            <p className="text-sm text-gray-600"><strong>Reference:</strong> {req.regulatory_reference}</p>
+                          )}
+                          {req.responsible_person && (
+                            <p className="text-sm text-gray-600"><strong>Responsible:</strong> {req.responsible_person}</p>
+                          )}
+                        </div>
+                        <div className="flex gap-2 ml-4">
+                          <Button variant="outline" size="sm" onClick={() => handleEditReq(req)}>
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button variant="destructive" size="sm" onClick={() => handleDeleteReq(req.id, req.requirement_name)}>
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
                       </div>
-                      <p className="text-sm text-gray-700 mb-2">{req.description}</p>
-                      {req.regulatory_reference && (
-                        <p className="text-sm text-gray-600"><strong>Reference:</strong> {req.regulatory_reference}</p>
-                      )}
-                      {req.responsible_person && (
-                        <p className="text-sm text-gray-600"><strong>Responsible:</strong> {req.responsible_person}</p>
-                      )}
                     </div>
                   ))
                 )}
