@@ -629,6 +629,119 @@ class AMSAComprehensiveTester:
             self.log_test("Create Risk Assessment (5x5 Matrix)", False, error=f"Status: {status}, Response: {response}")
 
     # ============================================================================
+    # BACKUP/IMPORT TESTS
+    # ============================================================================
+
+    def test_backup_import(self):
+        """Test backup import functionality with users_export.json"""
+        print("\n💾 Testing Backup Import...")
+        
+        # Check if users_export.json exists
+        export_file_path = "/app/users_export.json"
+        if not os.path.exists(export_file_path):
+            self.log_test("Users Export File Check", False, error="users_export.json not found")
+            return False
+        
+        self.log_test("Users Export File Check", True, "users_export.json found")
+        
+        # Read and validate JSON structure
+        try:
+            with open(export_file_path, 'r') as f:
+                export_data = json.load(f)
+            
+            # Validate JSON structure
+            if "collections" not in export_data:
+                self.log_test("JSON Structure Validation", False, error="Missing 'collections' key")
+                return False
+            
+            if "users" not in export_data["collections"]:
+                self.log_test("JSON Structure Validation", False, error="Missing 'users' collection")
+                return False
+            
+            users_count = len(export_data["collections"]["users"])
+            self.log_test("JSON Structure Validation", True, f"Valid structure with {users_count} users")
+            
+            # Check datetime field formats
+            datetime_fields_valid = True
+            datetime_issues = []
+            
+            for user in export_data["collections"]["users"]:
+                for field in ["created_at", "last_login", "last_active"]:
+                    if field in user and user[field] is not None:
+                        # Check if it's already in ISO format or needs conversion
+                        if isinstance(user[field], str):
+                            try:
+                                # Try to parse as ISO format
+                                datetime.fromisoformat(user[field].replace('Z', '+00:00'))
+                            except ValueError:
+                                # Try to parse as other format
+                                try:
+                                    datetime.strptime(user[field], "%Y-%m-%d %H:%M:%S.%f")
+                                except ValueError:
+                                    datetime_fields_valid = False
+                                    datetime_issues.append(f"User {user.get('email', 'unknown')}: {field} = {user[field]}")
+            
+            if datetime_fields_valid:
+                self.log_test("Datetime Fields Validation", True, "All datetime fields are in valid format")
+            else:
+                self.log_test("Datetime Fields Validation", False, error=f"Invalid datetime formats: {datetime_issues[:3]}")
+            
+        except json.JSONDecodeError as e:
+            self.log_test("JSON Structure Validation", False, error=f"Invalid JSON: {str(e)}")
+            return False
+        except Exception as e:
+            self.log_test("JSON Structure Validation", False, error=f"Error reading file: {str(e)}")
+            return False
+        
+        # Test the import endpoint
+        try:
+            with open(export_file_path, 'rb') as f:
+                files = {'file': ('users_export.json', f, 'application/json')}
+                
+                success, response, status = self.make_request(
+                    'POST', 'backup/import', 
+                    files=files,
+                    expected_status=200
+                )
+                
+                if success:
+                    # Check response structure
+                    if "message" in response and "collections_restored" in response:
+                        restored_users = response.get("collections_restored", {}).get("users", 0)
+                        expected_users = 13
+                        
+                        if restored_users == expected_users:
+                            self.log_test("Backup Import Success", True, 
+                                        f"Successfully imported {restored_users} users")
+                        else:
+                            self.log_test("Backup Import Success", False, 
+                                        error=f"Expected {expected_users} users, got {restored_users}")
+                        
+                        # Verify the response message
+                        if "Database restored successfully" in response.get("message", ""):
+                            self.log_test("Import Response Message", True, "Correct success message")
+                        else:
+                            self.log_test("Import Response Message", False, 
+                                        error=f"Unexpected message: {response.get('message')}")
+                    else:
+                        self.log_test("Backup Import Success", False, 
+                                    error=f"Missing expected response fields: {response}")
+                else:
+                    self.log_test("Backup Import Success", False, 
+                                error=f"Status: {status}, Response: {response}")
+                    
+        except Exception as e:
+            self.log_test("Backup Import Success", False, error=f"Exception during import: {str(e)}")
+        
+        # Test backup info endpoint
+        success, response, status = self.make_request('GET', 'backup/info')
+        if success and isinstance(response, dict):
+            total_users = response.get("collections", {}).get("users", 0)
+            self.log_test("Backup Info Endpoint", True, f"Database now has {total_users} users")
+        else:
+            self.log_test("Backup Info Endpoint", False, error=f"Status: {status}")
+
+    # ============================================================================
     # ACCESS CONTROL TESTS
     # ============================================================================
 
