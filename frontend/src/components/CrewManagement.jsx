@@ -540,7 +540,7 @@ const CrewManagement = () => {
           </CardHeader>
           <CardContent className="pt-0">
             <div className="text-lg font-bold text-purple-600">
-              {crewList.filter(c => c.position?.toLowerCase() === 'crew' || c.position?.toLowerCase().includes('deckhand')).length}
+              {crewList.filter(c => c.position === 'Crew' || c.position === 'Deckhand').length}
             </div>
             <p className="text-[10px] text-gray-500 mt-0.5">Click to filter</p>
           </CardContent>
