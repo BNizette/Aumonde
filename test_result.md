@@ -231,6 +231,9 @@ frontend:
         - working: "NA"
           agent: "main"
           comment: "NEW TASK: User reports summary cards displaying '0' count but when clicked, they filter and show actual records (e.g., showing 2 records). The filtering works correctly, but the counting logic is broken. Need to test all modules with summary cards: Dashboard, Vessels (Total, Passenger, Active Fleet, etc.), Crew (Total, Masters, Engineers, Crew Members), Trips, Emergency (Contacts, Procedures, Drills tabs), Compliance (Certificates, Requirements tabs). Focus on finding cards that show '0' but filter to show actual records."
+        - working: false
+          agent: "testing"
+          comment: "🔍 CRITICAL ISSUE IDENTIFIED: Found 4 summary cards with incorrect quantities displaying '0' but filtering to actual records. BROKEN CARDS: 1) Vessels - Total Capacity: Shows 0, filters to 6 vessels. 2) Crew - Masters: Shows 0, filters to 2 crew members. 3) Crew - Engineers: Shows 0, filters to 4 crew members. 4) Crew - Crew Members: Shows 0, filters to 2 crew members. WORKING CARDS: All other cards tested correctly (27 total cards tested across Dashboard, Vessels, Crew, Trips, Emergency, Compliance modules). Root cause: Calculation logic errors in specific summary cards - filtering works correctly but count display is broken. Emergency and Compliance modules working perfectly."
 
   - task: "Admin Panel User Creation"
     implemented: true
