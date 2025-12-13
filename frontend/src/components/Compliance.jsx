@@ -563,73 +563,148 @@ const Compliance = () => {
             <CardContent>
               {/* Filter Section */}
               <div className="space-y-4 mb-6">
-                <div className="flex flex-col md:flex-row gap-4">
-                  <div className="relative flex-1">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                {/* Clear All Filters Button */}
+                {hasActiveCertFilters && (
+                  <div className="flex justify-end">
+                    <Button variant="ghost" size="sm" onClick={clearCertFilters}>
+                      <X className="h-4 w-4 mr-2" />
+                      Clear All Filters
+                    </Button>
+                  </div>
+                )}
+
+                {/* Search Bar */}
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  <Input
+                    placeholder="Search certificates by name, number, authority, vessel, or crew..."
+                    value={certSearch}
+                    onChange={(e) => setCertSearch(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
+
+                {/* Multi-Select Filters Row */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Certificate Type Multi-Select */}
+                  <div>
+                    <Label>Certificate Type</Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button variant="outline" className="w-full justify-between">
+                          <span className="truncate">
+                            {certFilters.types.length === 0
+                              ? 'All Types'
+                              : certFilters.types.length === 1
+                              ? certFilters.types[0]
+                              : `${certFilters.types.length} selected`}
+                          </span>
+                          <ChevronDown className="h-4 w-4 ml-2 shrink-0" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-64 p-0" align="start">
+                        <div className="p-2">
+                          <div className="flex items-center justify-between px-2 py-1.5 mb-1">
+                            <span className="text-sm font-medium">Select Types</span>
+                            {certFilters.types.length > 0 && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => clearCertFilterType('types')}
+                                className="h-auto p-1 text-xs"
+                              >
+                                Clear
+                              </Button>
+                            )}
+                          </div>
+                          {certTypes.map(type => (
+                            <div
+                              key={type}
+                              className="flex items-center space-x-2 px-2 py-2 hover:bg-gray-100 rounded cursor-pointer"
+                              onClick={() => toggleCertFilter('types', type)}
+                            >
+                              <Checkbox
+                                checked={certFilters.types.includes(type)}
+                                onCheckedChange={() => toggleCertFilter('types', type)}
+                              />
+                              <span className="text-sm">{type}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+
+                  {/* Certificate Status Multi-Select */}
+                  <div>
+                    <Label>Status</Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button variant="outline" className="w-full justify-between">
+                          <span className="truncate">
+                            {certFilters.statuses.length === 0
+                              ? 'All Statuses'
+                              : certFilters.statuses.length === 1
+                              ? certFilters.statuses[0].charAt(0).toUpperCase() + certFilters.statuses[0].slice(1)
+                              : `${certFilters.statuses.length} selected`}
+                          </span>
+                          <ChevronDown className="h-4 w-4 ml-2 shrink-0" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-64 p-0" align="start">
+                        <div className="p-2">
+                          <div className="flex items-center justify-between px-2 py-1.5 mb-1">
+                            <span className="text-sm font-medium">Select Statuses</span>
+                            {certFilters.statuses.length > 0 && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => clearCertFilterType('statuses')}
+                                className="h-auto p-1 text-xs"
+                              >
+                                Clear
+                              </Button>
+                            )}
+                          </div>
+                          {['valid', 'expiring', 'expired'].map(status => (
+                            <div
+                              key={status}
+                              className="flex items-center space-x-2 px-2 py-2 hover:bg-gray-100 rounded cursor-pointer"
+                              onClick={() => toggleCertFilter('statuses', status)}
+                            >
+                              <Checkbox
+                                checked={certFilters.statuses.includes(status)}
+                                onCheckedChange={() => toggleCertFilter('statuses', status)}
+                              />
+                              <span className="text-sm">
+                                {status === 'valid' ? 'Valid (30+ days)' : 
+                                 status === 'expiring' ? 'Expiring Soon (30 days)' : 'Expired'}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                </div>
+
+                {/* Date Range Filters */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label>Issue Date From</Label>
                     <Input
-                      placeholder="Search certificates by name, number, authority, vessel, or crew..."
-                      value={certSearch}
-                      onChange={(e) => setCertSearch(e.target.value)}
-                      className="pl-10"
+                      type="date"
+                      value={certFilters.start_date}
+                      onChange={(e) => setCertFilters({...certFilters, start_date: e.target.value})}
                     />
                   </div>
-                  
-                  <div className="w-full md:w-48">
-                    <Select value={certTypeFilter} onValueChange={setCertTypeFilter}>
-                      <SelectTrigger>
-                        <div className="flex items-center gap-2">
-                          <Filter className="h-4 w-4" />
-                          <SelectValue placeholder="Type" />
-                        </div>
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Types</SelectItem>
-                        {certTypes.map(type => (
-                          <SelectItem key={type} value={type}>{type}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="w-full md:w-48">
-                    <Select value={certStatusFilter} onValueChange={setCertStatusFilter}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Status</SelectItem>
-                        <SelectItem value="valid">Valid (30+ days)</SelectItem>
-                        <SelectItem value="expiring">Expiring Soon (30 days)</SelectItem>
-                        <SelectItem value="expired">Expired</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="w-full md:w-48">
-                    <Select value={certVesselFilter} onValueChange={setCertVesselFilter}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Vessel" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Vessels</SelectItem>
-                        {[...new Set(certificates.map(c => c.vessel_name).filter(Boolean))].map(vessel => (
-                          <SelectItem key={vessel} value={vessel}>{vessel}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="w-full md:w-48">
-                    <Select value={certSort} onValueChange={setCertSort}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Sort by" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="expiry">Expiry Date</SelectItem>
-                        <SelectItem value="name">Name</SelectItem>
-                        <SelectItem value="type">Type</SelectItem>
-                      </SelectContent>
-                    </Select>
+                  <div>
+                    <Label>Issue Date To</Label>
+                    <Input
+                      type="date"
+                      value={certFilters.end_date}
+                      onChange={(e) => setCertFilters({...certFilters, end_date: e.target.value})}
+                    />
                   </div>
                 </div>
 
@@ -637,12 +712,6 @@ const Compliance = () => {
                   <p className="text-sm text-gray-600">
                     Showing {filteredCertificates.length} of {certificates.length} certificates
                   </p>
-                  {hasActiveCertFilters && (
-                    <Button variant="outline" size="sm" onClick={clearCertFilters}>
-                      <X className="mr-2 h-4 w-4" />
-                      Clear Filters
-                    </Button>
-                  )}
                 </div>
               </div>
 
