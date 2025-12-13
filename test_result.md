@@ -256,6 +256,21 @@ frontend:
           agent: "testing"
           comment: "✅ TRIP SUMMARY CARDS RUNTIME ERRORS FIXED: Successfully resolved all uncaught runtime errors in Trip Management module summary cards. FIXES APPLIED: 1) Fixed Total Trips card onClick to use clearAllFilters() instead of undefined setStatusFilter('all') and setVesselFilter('all'). 2) Fixed Active card onClick to use setFilters(prev => ({...prev, statuses: ['active'], vessels: [], start_date: '', end_date: ''})) instead of undefined setStatusFilter('active'). 3) Fixed Upcoming card onClick to use setFilters(prev => ({...prev, statuses: ['upcoming'], vessels: [], start_date: '', end_date: ''})) instead of undefined setStatusFilter('upcoming'). 4) Fixed Completed card onClick to use setFilters(prev => ({...prev, statuses: ['completed'], vessels: [], start_date: '', end_date: ''})) instead of undefined setStatusFilter('completed'). VERIFICATION COMPLETE: All 4 summary cards now click without runtime errors. No console errors detected. All filtering functionality working correctly. User-reported runtime errors completely resolved."
 
+  - task: "Maintenance Summary Cards Runtime Errors Investigation"
+    implemented: true
+    working: false
+    file: "/app/frontend/src/components/Maintenance.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "NEW TASK: User reports 'uncaught runtime error' when clicking on summary cards in the Maintenance module. This is the same pattern we've fixed in Risk Assessment, Crew Management, Vessel Management, and Trips modules where summary cards call non-existent filter functions. Need to test all summary cards (Total Maintenance, Pending, In Progress, Completed, Overdue, etc.) and capture exact JavaScript error messages and stack traces."
+        - working: false
+          agent: "testing"
+          comment: "🚨 CRITICAL RUNTIME ERROR CONFIRMED: Successfully reproduced the exact 'uncaught runtime error' reported by user when clicking Maintenance summary cards. ROOT CAUSE IDENTIFIED: Summary card onClick handlers call undefined functions that don't exist in component state. SPECIFIC ERROR: 'setStatusFilter is not defined' when clicking Total Records card (lines 275-282). AFFECTED CARDS: 1) Total Records card calls setStatusFilter('all'), setPriorityFilter('all'), setTypeFilter('all'), setVesselFilter('all') - all undefined functions. 2) Scheduled card calls setStatusFilter('Scheduled') - undefined function. 3) In Progress card calls setStatusFilter('In Progress') - undefined function. 4) Overdue card calls setStatusFilter('Overdue') - undefined function. 5) Completed card calls setStatusFilter('Completed') - undefined function. The component uses filters object state with setFilters function (line 27-32), but onClick handlers reference non-existent individual setter functions. This is identical to the pattern found and fixed in Risk Assessment, Crew Management, Vessel Management, and Trips modules. Error overlay blocks UI interaction after first click, preventing further testing."
+
   - task: "Risk Assessment Module Filtering Runtime Errors Investigation"
     implemented: true
     working: true
