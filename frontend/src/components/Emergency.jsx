@@ -1414,21 +1414,33 @@ const Emergency = () => {
                 ) : (
                   filteredDrills.map((drill) => (
                     <div key={drill.id} className="border rounded-lg p-4 hover:bg-gray-50">
-                      <div className="flex items-center gap-2 mb-2">
-                        <h3 className="font-semibold text-lg">{drill.drill_type}</h3>
-                        <Badge variant="outline">{drill.duration_minutes ? `${drill.duration_minutes} min` : 'N/A'}</Badge>
-                      </div>
-                      <p className="text-sm text-gray-600">
-                        <strong>Date:</strong> {new Date(drill.drill_date).toLocaleString()}
-                      </p>
-                      {drill.vessel_name && <p className="text-sm"><strong>Vessel:</strong> {drill.vessel_name}</p>}
-                      {drill.participants && <p className="text-sm"><strong>Participants:</strong> {drill.participants}</p>}
-                      {drill.observations && (
-                        <div className="mt-2 text-sm">
-                          <strong>Observations:</strong>
-                          <p className="text-gray-700">{drill.observations}</p>
+                      <div className="flex justify-between items-start">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-2">
+                            <h3 className="font-semibold text-lg">{drill.drill_type}</h3>
+                            <Badge variant="outline">{drill.duration_minutes ? `${drill.duration_minutes} min` : 'N/A'}</Badge>
+                          </div>
+                          <p className="text-sm text-gray-600">
+                            <strong>Date:</strong> {new Date(drill.drill_date).toLocaleString()}
+                          </p>
+                          {drill.vessel_name && <p className="text-sm"><strong>Vessel:</strong> {drill.vessel_name}</p>}
+                          {drill.participants && <p className="text-sm"><strong>Participants:</strong> {drill.participants}</p>}
+                          {drill.observations && (
+                            <div className="mt-2 text-sm">
+                              <strong>Observations:</strong>
+                              <p className="text-gray-700">{drill.observations}</p>
+                            </div>
+                          )}
                         </div>
-                      )}
+                        <div className="flex gap-2">
+                          <Button variant="outline" size="sm" onClick={() => handleEditDrill(drill)}>
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button variant="destructive" size="sm" onClick={() => handleDeleteDrill(drill.id, drill.drill_type)}>
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
                     </div>
                   ))
                 )}
