@@ -91,8 +91,8 @@ class UserResponse(BaseModel):
     email: str
     full_name: str
     role: str
-    access_level: str
-    account_status: str
+    access_level: str = AccessLevel.EDIT  # Default for backward compatibility
+    account_status: str = AccountStatus.ACTIVE  # Default for backward compatibility
     created_at: datetime
     last_login: Optional[datetime] = None
 
