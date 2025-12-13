@@ -42,6 +42,47 @@ const TripForm = ({ open, onClose, onSave, trip, mode = 'create' }) => {
     }
   };
 
+  useEffect(() => {
+    if (open) {
+      fetchVessels();
+    }
+  }, [open]);
+
+  useEffect(() => {
+    if (trip && mode === 'edit') {
+      setFormData({
+        trip_name: trip.trip_name || '',
+        vessel_id: trip.vessel_id || '',
+        trip_type: trip.trip_type || '',
+        operating_area: trip.operating_area || '',
+        planned_depart_datetime: trip.planned_depart_datetime ? new Date(trip.planned_depart_datetime).toISOString().slice(0, 16) : (trip.depart_datetime ? new Date(trip.depart_datetime).toISOString().slice(0, 16) : ''),
+        planned_arrival_datetime: trip.planned_arrival_datetime ? new Date(trip.planned_arrival_datetime).toISOString().slice(0, 16) : (trip.arrival_datetime ? new Date(trip.arrival_datetime).toISOString().slice(0, 16) : ''),
+        actual_depart_datetime: trip.actual_depart_datetime ? new Date(trip.actual_depart_datetime).toISOString().slice(0, 16) : '',
+        actual_arrival_datetime: trip.actual_arrival_datetime ? new Date(trip.actual_arrival_datetime).toISOString().slice(0, 16) : '',
+        depart_location: trip.depart_location || '',
+        arrival_location: trip.arrival_location || '',
+        number_of_passengers: trip.number_of_passengers || 0,
+        number_of_crew: trip.number_of_crew || 0
+      });
+    } else if (mode === 'create') {
+      setFormData({
+        trip_name: '',
+        vessel_id: '',
+        trip_type: '',
+        operating_area: '',
+        planned_depart_datetime: '',
+        planned_arrival_datetime: '',
+        actual_depart_datetime: '',
+        actual_arrival_datetime: '',
+        depart_location: '',
+        arrival_location: '',
+        number_of_passengers: 0,
+        number_of_crew: 0
+      });
+    }
+    setError('');
+  }, [trip, mode, open]);
+
   const handleChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
