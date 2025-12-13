@@ -237,8 +237,9 @@ metadata:
 
 test_plan:
   current_focus:
-    - "User Export File Import Functionality"
-  stuck_tasks: []
+    - "Admin Panel User Creation"
+  stuck_tasks:
+    - "Admin Panel User Creation"
   test_all: false
   test_priority: "high_first"
 
