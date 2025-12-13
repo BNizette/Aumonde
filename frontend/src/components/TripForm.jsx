@@ -185,22 +185,66 @@ const TripForm = ({ open, onClose, onSave, trip, mode = 'create' }) => {
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="depart_datetime">Depart Date & Time *</Label>
+              <Label htmlFor="depart_location">Depart Location</Label>
               <Input
-                id="depart_datetime"
-                type="datetime-local"
-                value={formData.depart_datetime}
-                onChange={(e) => handleChange('depart_datetime', e.target.value)}
+                id="depart_location"
+                value={formData.depart_location}
+                onChange={(e) => handleChange('depart_location', e.target.value)}
+                placeholder="e.g., Sydney Harbor"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="arrival_datetime">Arrival Date & Time</Label>
+              <Label htmlFor="arrival_location">Arrival Location</Label>
               <Input
-                id="arrival_datetime"
+                id="arrival_location"
+                value={formData.arrival_location}
+                onChange={(e) => handleChange('arrival_location', e.target.value)}
+                placeholder="e.g., Whitsundays"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="planned_depart_datetime">Planned Depart Date & Time *</Label>
+              <Input
+                id="planned_depart_datetime"
                 type="datetime-local"
-                value={formData.arrival_datetime}
-                onChange={(e) => handleChange('arrival_datetime', e.target.value)}
+                value={formData.planned_depart_datetime}
+                onChange={(e) => handleChange('planned_depart_datetime', e.target.value)}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="planned_arrival_datetime">Planned Arrival Date & Time</Label>
+              <Input
+                id="planned_arrival_datetime"
+                type="datetime-local"
+                value={formData.planned_arrival_datetime}
+                onChange={(e) => handleChange('planned_arrival_datetime', e.target.value)}
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="actual_depart_datetime">Actual Depart Date & Time</Label>
+              <Input
+                id="actual_depart_datetime"
+                type="datetime-local"
+                value={formData.actual_depart_datetime}
+                onChange={(e) => handleChange('actual_depart_datetime', e.target.value)}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="actual_arrival_datetime">Actual Arrival Date & Time</Label>
+              <Input
+                id="actual_arrival_datetime"
+                type="datetime-local"
+                value={formData.actual_arrival_datetime}
+                onChange={(e) => handleChange('actual_arrival_datetime', e.target.value)}
               />
             </div>
           </div>
