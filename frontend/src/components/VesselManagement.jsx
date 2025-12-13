@@ -128,8 +128,6 @@ const VesselManagement = () => {
     setSearchQuery('');
     clearAllFiltersHook();
     setSortBy('name');
-      end_date: ''
-    });
   };
 
   const exportToCSV = () => {
