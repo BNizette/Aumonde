@@ -1170,7 +1170,7 @@ const Compliance = () => {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setCertDialogOpen(false)}>Cancel</Button>
-            <Button onClick={handleCertSubmit}>Add Certificate</Button>
+            <Button onClick={handleCertSubmit}>{certEditMode ? 'Update Certificate' : 'Add Certificate'}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
