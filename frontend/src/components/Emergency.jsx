@@ -1519,11 +1519,16 @@ const Emergency = () => {
       </Dialog>
 
       {/* Procedure Dialog */}
-      <Dialog open={procedureDialogOpen} onOpenChange={setProcedureDialogOpen}>
+      <Dialog open={procedureDialogOpen} onOpenChange={(open) => {
+        setProcedureDialogOpen(open);
+        if (!open) resetProcedureForm();
+      }}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Add Emergency Procedure</DialogTitle>
-            <DialogDescription>Document emergency response procedures</DialogDescription>
+            <DialogTitle>{procedureEditMode ? 'Edit Emergency Procedure' : 'Add Emergency Procedure'}</DialogTitle>
+            <DialogDescription>
+              {procedureEditMode ? 'Update emergency response procedure' : 'Document emergency response procedures'}
+            </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div>
