@@ -13,6 +13,7 @@ import { Shield, Plus, AlertTriangle, CheckCircle, Clock, Search, Filter, X, Dow
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import useAdvancedFilters from '../hooks/useAdvancedFilters';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -38,7 +39,17 @@ const Compliance = () => {
   const [filteredCertificates, setFilteredCertificates] = useState([]);
   const [certTypes, setCertTypes] = useState([]);
   const [certStatuses, setCertStatuses] = useState([]);
-  const [certFilters, setCertFilters] = useState({
+
+  // Use custom hook for Certificate filters
+  const {
+    filters: certFilters,
+    setFilters: setCertFilters,
+    toggleFilter: toggleCertFilter,
+    clearFilter: clearCertFilterType,
+    clearDateFilters: clearCertDateFilters,
+    clearAllFilters: clearAllCertFilters,
+    setFilterValue: setCertFilterValue
+  } = useAdvancedFilters({
     types: [],
     statuses: [],
     start_date: '',
@@ -51,7 +62,17 @@ const Compliance = () => {
   const [filteredRequirements, setFilteredRequirements] = useState([]);
   const [reqCategories, setReqCategories] = useState([]);
   const [reqStatuses, setReqStatuses] = useState([]);
-  const [reqFilters, setReqFilters] = useState({
+
+  // Use custom hook for Requirement filters
+  const {
+    filters: reqFilters,
+    setFilters: setReqFilters,
+    toggleFilter: toggleReqFilter,
+    clearFilter: clearReqFilterType,
+    clearDateFilters: clearReqDateFilters,
+    clearAllFilters: clearAllReqFilters,
+    setFilterValue: setReqFilterValue
+  } = useAdvancedFilters({
     categories: [],
     statuses: [],
     start_date: '',
@@ -334,12 +355,12 @@ const Compliance = () => {
 
   const clearCertFilters = () => {
     setCertSearch('');
-    setCertFilters({types: [], statuses: [], start_date: '', end_date: ''});
+    clearAllCertFilters();
   };
 
   const clearReqFilters = () => {
     setReqSearch('');
-    setReqFilters({categories: [], statuses: [], start_date: '', end_date: ''});
+    clearAllReqFilters();
   };
 
   const hasActiveCertFilters = certSearch || certFilters.types.length > 0 || certFilters.statuses.length > 0 || certFilters.start_date || certFilters.end_date;
