@@ -1057,8 +1057,14 @@ class Trip(BaseModel):
     vessel_id: str
     trip_type: Optional[str] = None
     operating_area: Optional[str] = None
-    depart_datetime: datetime
-    arrival_datetime: Optional[datetime] = None
+    depart_datetime: Optional[datetime] = None  # Keep for backward compatibility
+    arrival_datetime: Optional[datetime] = None  # Keep for backward compatibility
+    planned_depart_datetime: Optional[datetime] = None
+    planned_arrival_datetime: Optional[datetime] = None
+    actual_depart_datetime: Optional[datetime] = None
+    actual_arrival_datetime: Optional[datetime] = None
+    depart_location: Optional[str] = None
+    arrival_location: Optional[str] = None
     number_of_passengers: Optional[int] = 0
     number_of_crew: Optional[int] = 0
     created_by: str
@@ -1070,8 +1076,12 @@ class TripCreate(BaseModel):
     vessel_id: str
     trip_type: Optional[str] = None
     operating_area: Optional[str] = None
-    depart_datetime: datetime
-    arrival_datetime: Optional[datetime] = None
+    planned_depart_datetime: datetime
+    planned_arrival_datetime: Optional[datetime] = None
+    actual_depart_datetime: Optional[datetime] = None
+    actual_arrival_datetime: Optional[datetime] = None
+    depart_location: Optional[str] = None
+    arrival_location: Optional[str] = None
     number_of_passengers: Optional[int] = 0
     number_of_crew: Optional[int] = 0
 
