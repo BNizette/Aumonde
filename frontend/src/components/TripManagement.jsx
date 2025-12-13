@@ -126,7 +126,7 @@ const TripManagement = () => {
     const headers = ['ID', 'Trip Name', 'Vessel Name', 'Trip Type', 'Depart Date', 'Return Date', 'Operating Area', 'Passengers', 'Crew', 'Master', 'Engineer', 'Deckhand', 'Host', 'Notes', 'Created At'];
     const csvRows = [headers.join(','), ...filteredTrips.map(t => [
       `"${t.id || ''}"`, `"${(t.trip_name || '').replace(/"/g, '""')}"`, `"${(t.vessel_name || '').replace(/"/g, '""')}"`,
-      `"${t.trip_type || ''}"`, `"${t.depart_datetime ? new Date(t.depart_datetime).toLocaleString() : ''}"`,
+      `"${t.trip_type || ''}"`, `"${(t.planned_depart_datetime || t.depart_datetime) ? new Date(t.planned_depart_datetime || t.depart_datetime).toLocaleString() : ''}"`,
       `"${t.return_datetime ? new Date(t.return_datetime).toLocaleString() : ''}"`, `"${(t.operating_area || '').replace(/"/g, '""')}"`,
       `"${t.number_of_passengers || ''}"`, `"${t.number_of_crew || ''}"`, `"${t.master || ''}"`, `"${t.engineer || ''}"`,
       `"${t.deckhand || ''}"`, `"${t.host || ''}"`, `"${(t.notes || '').replace(/"/g, '""')}"`,
