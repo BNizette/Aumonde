@@ -943,9 +943,14 @@ const Emergency = () => {
                             {contact.email && <p><strong>Email:</strong> {contact.email}</p>}
                           </div>
                         </div>
-                        <Button variant="destructive" size="sm" onClick={() => deleteContact(contact.id)}>
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
+                        <div className="flex gap-2">
+                          <Button variant="outline" size="sm" onClick={() => handleEditContact(contact)}>
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button variant="destructive" size="sm" onClick={() => handleDeleteContact(contact.id, contact.name)}>
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   ))
