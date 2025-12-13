@@ -330,12 +330,28 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
                     <p className="text-gray-600">{trip.operating_area || '-'}</p>
                   </div>
                   <div>
-                    <span className="font-semibold">Depart:</span>
-                    <p className="text-gray-600">{formatDateTime(trip.depart_datetime)}</p>
+                    <span className="font-semibold">Depart Location:</span>
+                    <p className="text-gray-600">{trip.depart_location || '-'}</p>
                   </div>
                   <div>
-                    <span className="font-semibold">Arrival:</span>
-                    <p className="text-gray-600">{formatDateTime(trip.arrival_datetime)}</p>
+                    <span className="font-semibold">Arrival Location:</span>
+                    <p className="text-gray-600">{trip.arrival_location || '-'}</p>
+                  </div>
+                  <div>
+                    <span className="font-semibold">Planned Depart:</span>
+                    <p className="text-gray-600">{formatDateTime(trip.planned_depart_datetime || trip.depart_datetime)}</p>
+                  </div>
+                  <div>
+                    <span className="font-semibold">Planned Arrival:</span>
+                    <p className="text-gray-600">{formatDateTime(trip.planned_arrival_datetime || trip.arrival_datetime)}</p>
+                  </div>
+                  <div>
+                    <span className="font-semibold">Actual Depart:</span>
+                    <p className="text-gray-600">{trip.actual_depart_datetime ? formatDateTime(trip.actual_depart_datetime) : '-'}</p>
+                  </div>
+                  <div>
+                    <span className="font-semibold">Actual Arrival:</span>
+                    <p className="text-gray-600">{trip.actual_arrival_datetime ? formatDateTime(trip.actual_arrival_datetime) : '-'}</p>
                   </div>
                   <div>
                     <span className="font-semibold">Passengers / Crew:</span>
