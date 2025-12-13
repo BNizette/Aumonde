@@ -496,7 +496,7 @@ const CrewManagement = () => {
           </CardHeader>
           <CardContent className="pt-0">
             <div className="text-lg font-bold text-blue-600">
-              {crewList.filter(c => c.position === 'Master').length}
+              {crewList.filter(c => c.default_position === 'Master').length}
             </div>
             <p className="text-[10px] text-gray-500 mt-0.5">Click to filter</p>
           </CardContent>
