@@ -393,30 +393,6 @@ const Emergency = () => {
     setTimeout(() => setMessage(''), 3000);
   };
 
-  const clearContactFilters = () => {
-    setContactSearch('');
-    setContactTypeFilter('all');
-    setContactPriorityFilter('all');
-    setContactSort('priority');
-  };
-
-  const clearProcedureFilters = () => {
-    setProcedureSearch('');
-    setProcedureTypeFilter('all');
-    setProcedureSort('type');
-  };
-
-  const clearDrillFilters = () => {
-    setDrillSearch('');
-    setDrillTypeFilter('all');
-    setDrillVesselFilter('all');
-    setDrillSort('date');
-  };
-
-  const hasActiveContactFilters = contactSearch || contactTypeFilter !== 'all' || contactPriorityFilter !== 'all' || contactSort !== 'priority';
-  const hasActiveProcedureFilters = procedureSearch || procedureTypeFilter !== 'all' || procedureSort !== 'type';
-  const hasActiveDrillFilters = drillSearch || drillTypeFilter !== 'all' || drillVesselFilter !== 'all' || drillSort !== 'date';
-
   const handleContactSubmit = async () => {
     if (!contactForm.name || !contactForm.phone_primary) {
       setError('Please fill in required fields');
