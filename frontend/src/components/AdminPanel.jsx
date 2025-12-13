@@ -1257,7 +1257,7 @@ const AdminPanel = () => {
                 password: '',
                 full_name: '',
                 role: 'Crew',
-                access_level: ''
+                access_level: 'auto'
               });
             }}>Cancel</Button>
             <Button onClick={handleCreateUser}>Create User</Button>
