@@ -220,6 +220,21 @@ backend:
           comment: "Risk assessment with 5x5 matrix calculations working correctly. CRUD operations functional."
 
 frontend:
+  - task: "Summary Card Click Errors Investigation"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/components/CrewManagement.jsx, /app/frontend/src/components/VesselManagement.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: false
+          agent: "testing"
+          comment: "CRITICAL RUNTIME ERRORS IDENTIFIED: Successfully reproduced uncaught runtime errors when clicking summary cards across multiple modules. Specific errors found: 1) Crew Management: 'setPositionFilter is not defined' error when clicking 'Total Crew' card - functions setPositionFilter and setRoleFilter don't exist, should use filters state. 2) Vessel Management: 'Cannot read properties of undefined (reading length)' error when clicking 'Passenger Vessels' card - filter object structure incorrect, using 'types' instead of 'vessel_types'. 3) Other modules (Emergency, Compliance) working correctly. Root cause: Incorrect onClick handlers in summary cards calling non-existent functions or using wrong filter state structure."
+        - working: true
+          agent: "testing"
+          comment: "✅ FIXED: All summary card click errors resolved successfully. Fixed Issues: 1) CrewManagement.jsx: Replaced non-existent setPositionFilter/setRoleFilter calls with proper filters state updates using setFilters() function. Updated all 4 crew summary cards (Total Crew, Masters, Engineers, Crew Members) to use correct filter structure. 2) VesselManagement.jsx: Fixed filter object structure from {types: [], statuses: []} to {vessel_types: [], statuses: []} to match component's filter state. Updated Passenger Vessels and Active Fleet cards. 3) Verified Emergency and Compliance modules already working correctly. All summary cards now function without runtime errors and properly apply filters when clicked."
+
   - task: "Admin Panel User Creation"
     implemented: true
     working: true
