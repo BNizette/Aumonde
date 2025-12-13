@@ -31,23 +31,32 @@ const Emergency = () => {
 
   // Filter states for Contacts
   const [contactSearch, setContactSearch] = useState('');
-  const [contactTypeFilter, setContactTypeFilter] = useState('all');
-  const [contactPriorityFilter, setContactPriorityFilter] = useState('all');
-  const [contactSort, setContactSort] = useState('priority');
   const [filteredContacts, setFilteredContacts] = useState([]);
+  const [contactFilters, setContactFilters] = useState({
+    types: [],
+    priorities: [],
+    start_date: '',
+    end_date: ''
+  });
 
   // Filter states for Procedures
   const [procedureSearch, setProcedureSearch] = useState('');
-  const [procedureTypeFilter, setProcedureTypeFilter] = useState('all');
-  const [procedureSort, setProcedureSort] = useState('type');
   const [filteredProcedures, setFilteredProcedures] = useState([]);
+  const [procedureFilters, setProcedureFilters] = useState({
+    types: [],
+    start_date: '',
+    end_date: ''
+  });
 
   // Filter states for Drills
   const [drillSearch, setDrillSearch] = useState('');
-  const [drillTypeFilter, setDrillTypeFilter] = useState('all');
-  const [drillVesselFilter, setDrillVesselFilter] = useState('all');
-  const [drillSort, setDrillSort] = useState('date');
   const [filteredDrills, setFilteredDrills] = useState([]);
+  const [drillFilters, setDrillFilters] = useState({
+    types: [],
+    vessels: [],
+    start_date: '',
+    end_date: ''
+  });
 
   const [contactForm, setContactForm] = useState({
     contact_type: 'Shore',
