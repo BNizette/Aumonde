@@ -429,7 +429,7 @@ const Emergency = () => {
     }
   };
 
-  const handleProcedureSubmit = async () => {
+  const handleSaveProcedure = async () => {
     if (!procedureForm.title || !procedureForm.procedure_steps) {
       setError('Please fill in required fields');
       return;
