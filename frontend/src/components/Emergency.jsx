@@ -935,44 +935,89 @@ const Emergency = () => {
 
               {/* Filter Section */}
               <div className="space-y-4 mb-6">
-                <div className="flex flex-col md:flex-row gap-4">
-                  <div className="relative flex-1">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                {hasActiveProcedureFilters && (
+                  <div className="flex justify-end">
+                    <Button variant="ghost" size="sm" onClick={clearProcedureFilters}>
+                      <X className="h-4 w-4 mr-2" />
+                      Clear All Filters
+                    </Button>
+                  </div>
+                )}
+
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  <Input
+                    placeholder="Search procedures by title, type, or steps..."
+                    value={procedureSearch}
+                    onChange={(e) => setProcedureSearch(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
+
+                <div>
+                  <Label>Emergency Type</Label>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button variant="outline" className="w-full justify-between">
+                        <span className="truncate">
+                          {procedureFilters.types.length === 0
+                            ? 'All Emergency Types'
+                            : procedureFilters.types.length === 1
+                            ? procedureFilters.types[0]
+                            : `${procedureFilters.types.length} selected`}
+                        </span>
+                        <ChevronDown className="h-4 w-4 ml-2 shrink-0" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-80 p-0" align="start">
+                      <div className="p-2">
+                        <div className="flex items-center justify-between px-2 py-1.5 mb-1">
+                          <span className="text-sm font-medium">Select Emergency Types</span>
+                          {procedureFilters.types.length > 0 && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => clearProcedureFilterType('types')}
+                              className="h-auto p-1 text-xs"
+                            >
+                              Clear
+                            </Button>
+                          )}
+                        </div>
+                        {emergencyTypes.map(type => (
+                          <div
+                            key={type}
+                            className="flex items-center space-x-2 px-2 py-2 hover:bg-gray-100 rounded cursor-pointer"
+                            onClick={() => toggleProcedureFilter('types', type)}
+                          >
+                            <Checkbox
+                              checked={procedureFilters.types.includes(type)}
+                              onCheckedChange={() => toggleProcedureFilter('types', type)}
+                            />
+                            <span className="text-sm">{type}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </PopoverContent>
+                  </Popover>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label>Created Date From</Label>
                     <Input
-                      placeholder="Search procedures by title, type, or steps..."
-                      value={procedureSearch}
-                      onChange={(e) => setProcedureSearch(e.target.value)}
-                      className="pl-10"
+                      type="date"
+                      value={procedureFilters.start_date}
+                      onChange={(e) => setProcedureFilters({...procedureFilters, start_date: e.target.value})}
                     />
                   </div>
-                  
-                  <div className="w-full md:w-56">
-                    <Select value={procedureTypeFilter} onValueChange={setProcedureTypeFilter}>
-                      <SelectTrigger>
-                        <div className="flex items-center gap-2">
-                          <Filter className="h-4 w-4" />
-                          <SelectValue placeholder="Emergency Type" />
-                        </div>
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Types</SelectItem>
-                        {emergencyTypes.map(type => (
-                          <SelectItem key={type} value={type}>{type}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="w-full md:w-48">
-                    <Select value={procedureSort} onValueChange={setProcedureSort}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Sort by" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="type">Emergency Type</SelectItem>
-                        <SelectItem value="title">Title</SelectItem>
-                      </SelectContent>
-                    </Select>
+                  <div>
+                    <Label>Created Date To</Label>
+                    <Input
+                      type="date"
+                      value={procedureFilters.end_date}
+                      onChange={(e) => setProcedureFilters({...procedureFilters, end_date: e.target.value})}
+                    />
                   </div>
                 </div>
 
@@ -980,12 +1025,6 @@ const Emergency = () => {
                   <p className="text-sm text-gray-600">
                     Showing {filteredProcedures.length} of {procedures.length} procedures
                   </p>
-                  {hasActiveProcedureFilters && (
-                    <Button variant="outline" size="sm" onClick={clearProcedureFilters}>
-                      <X className="mr-2 h-4 w-4" />
-                      Clear Filters
-                    </Button>
-                  )}
                 </div>
               </div>
 
