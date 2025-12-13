@@ -227,6 +227,71 @@ const Emergency = () => {
     setFilteredDrills(filtered);
   };
 
+  const exportContactsToCSV = () => {
+    if (filteredContacts.length === 0) { setError('No contacts to export'); setTimeout(() => setError(''), 3000); return; }
+    const headers = ['ID', 'Name', 'Title', 'Organization', 'Contact Type', 'Priority', 'Primary Phone', 'Secondary Phone', 'Email', 'Address', 'Available 24/7', 'Notes', 'Created At'];
+    const csvRows = [headers.join(','), ...filteredContacts.map(c => [
+      `"${c.id || ''}"`, `"${(c.name || '').replace(/"/g, '""')}"`, `"${(c.title || '').replace(/"/g, '""')}"`,
+      `"${(c.organization || '').replace(/"/g, '""')}"`, `"${c.contact_type || ''}"`, `"${c.priority || ''}"`,
+      `"${c.phone_primary || ''}"`, `"${c.phone_secondary || ''}"`, `"${c.email || ''}"`,
+      `"${(c.address || '').replace(/"/g, '""')}"`, `"${c.available_24_7 ? 'Yes' : 'No'}"`,
+      `"${(c.notes || '').replace(/"/g, '""')}"`, `"${c.created_at ? new Date(c.created_at).toLocaleString() : ''}"`
+    ].join(','))];
+    const blob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.setAttribute('href', URL.createObjectURL(blob));
+    link.setAttribute('download', `emergency_contacts_export_${new Date().toISOString().slice(0, 10)}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setMessage(`Exported ${filteredContacts.length} emergency contacts to CSV`);
+    setTimeout(() => setMessage(''), 3000);
+  };
+
+  const exportProceduresToCSV = () => {
+    if (filteredProcedures.length === 0) { setError('No procedures to export'); setTimeout(() => setError(''), 3000); return; }
+    const headers = ['ID', 'Procedure Name', 'Procedure Type', 'Description', 'Steps', 'Equipment Required', 'Response Time', 'Created At'];
+    const csvRows = [headers.join(','), ...filteredProcedures.map(p => [
+      `"${p.id || ''}"`, `"${(p.procedure_name || '').replace(/"/g, '""')}"`, `"${p.procedure_type || ''}"`,
+      `"${(p.description || '').replace(/"/g, '""')}"`, `"${(p.steps || '').replace(/"/g, '""')}"`,
+      `"${(p.equipment_required || '').replace(/"/g, '""')}"`, `"${p.response_time || ''}"`,
+      `"${p.created_at ? new Date(p.created_at).toLocaleString() : ''}"`
+    ].join(','))];
+    const blob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.setAttribute('href', URL.createObjectURL(blob));
+    link.setAttribute('download', `emergency_procedures_export_${new Date().toISOString().slice(0, 10)}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setMessage(`Exported ${filteredProcedures.length} emergency procedures to CSV`);
+    setTimeout(() => setMessage(''), 3000);
+  };
+
+  const exportDrillsToCSV = () => {
+    if (filteredDrills.length === 0) { setError('No drills to export'); setTimeout(() => setError(''), 3000); return; }
+    const headers = ['ID', 'Drill Type', 'Vessel Name', 'Drill Date', 'Duration', 'Participants', 'Conducted By', 'Observations', 'Areas for Improvement', 'Overall Rating', 'Created At'];
+    const csvRows = [headers.join(','), ...filteredDrills.map(d => [
+      `"${d.id || ''}"`, `"${d.drill_type || ''}"`, `"${(d.vessel_name || '').replace(/"/g, '""')}"`,
+      `"${d.drill_date ? new Date(d.drill_date).toLocaleDateString() : ''}"`, `"${d.duration_minutes || ''}"`,
+      `"${d.participants_count || ''}"`, `"${(d.conducted_by || '').replace(/"/g, '""')}"`,
+      `"${(d.observations || '').replace(/"/g, '""')}"`, `"${(d.areas_for_improvement || '').replace(/"/g, '""')}"`,
+      `"${d.overall_rating || ''}"`, `"${d.created_at ? new Date(d.created_at).toLocaleString() : ''}"`
+    ].join(','))];
+    const blob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.setAttribute('href', URL.createObjectURL(blob));
+    link.setAttribute('download', `emergency_drills_export_${new Date().toISOString().slice(0, 10)}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setMessage(`Exported ${filteredDrills.length} emergency drills to CSV`);
+    setTimeout(() => setMessage(''), 3000);
+  };
+
   const clearContactFilters = () => {
     setContactSearch('');
     setContactTypeFilter('all');
