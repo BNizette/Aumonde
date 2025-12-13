@@ -1176,11 +1176,16 @@ const Compliance = () => {
       </Dialog>
 
       {/* Requirement Dialog */}
-      <Dialog open={reqDialogOpen} onOpenChange={setReqDialogOpen}>
+      <Dialog open={reqDialogOpen} onOpenChange={(open) => {
+        setReqDialogOpen(open);
+        if (!open) resetReqForm();
+      }}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Add Compliance Requirement</DialogTitle>
-            <DialogDescription>Add a new regulatory requirement</DialogDescription>
+            <DialogTitle>{reqEditMode ? 'Edit Compliance Requirement' : 'Add Compliance Requirement'}</DialogTitle>
+            <DialogDescription>
+              {reqEditMode ? 'Update requirement information' : 'Add a new regulatory requirement'}
+            </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div>
