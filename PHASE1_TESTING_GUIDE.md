@@ -45,7 +45,7 @@
 ### Testing Instructions
 
 1. **Access the Application:**
-   - Open: https://amsa-safety-system.preview.emergentagent.com
+   - Open: https://fleet-safety-portal.preview.emergentagent.com
    - You should see the login page
 
 2. **Test Registration:**
