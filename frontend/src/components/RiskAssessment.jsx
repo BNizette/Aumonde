@@ -277,7 +277,7 @@ const RiskAssessment = () => {
         <Card 
           className="cursor-pointer hover:shadow-lg transition-shadow" 
           onClick={() => {
-            clearFilters();
+            clearAllFilters();
           }}
         >
           <CardHeader className="pb-2">
