@@ -87,8 +87,8 @@ const TripManagement = () => {
 
     if (filters.start_date || filters.end_date) {
       filtered = filtered.filter(trip => {
-        if (!trip.depart_datetime) return false;
-        const tripDate = new Date(trip.depart_datetime);
+        const tripDate = trip.planned_depart_datetime ? new Date(trip.planned_depart_datetime) : (trip.depart_datetime ? new Date(trip.depart_datetime) : null);
+        if (!tripDate) return false;
         const startDate = filters.start_date ? new Date(filters.start_date) : null;
         const endDate = filters.end_date ? new Date(filters.end_date + 'T23:59:59') : null;
         if (startDate && tripDate < startDate) return false;
