@@ -1236,12 +1236,12 @@ const AdminPanel = () => {
             </div>
             <div className="space-y-2">
               <Label htmlFor="create-access">Access Level (Optional)</Label>
-              <Select value={newUser.access_level} onValueChange={(value) => setNewUser({ ...newUser, access_level: value })}>
+              <Select value={newUser.access_level || 'auto'} onValueChange={(value) => setNewUser({ ...newUser, access_level: value === 'auto' ? '' : value })}>
                 <SelectTrigger>
                   <SelectValue placeholder="Auto-assign based on role" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Auto-assign based on role</SelectItem>
+                  <SelectItem value="auto">Auto-assign based on role</SelectItem>
                   <SelectItem value="View">View (Read-only)</SelectItem>
                   <SelectItem value="Edit">Edit (Modify)</SelectItem>
                   <SelectItem value="Full">Full (Delete)</SelectItem>
