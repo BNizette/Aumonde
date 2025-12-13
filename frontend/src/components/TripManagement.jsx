@@ -99,7 +99,7 @@ const TripManagement = () => {
 
     filtered.sort((a, b) => {
       switch (sortBy) {
-        case 'date': return new Date(b.depart_datetime || 0) - new Date(a.depart_datetime || 0);
+        case 'date': return new Date(b.planned_depart_datetime || b.depart_datetime || 0) - new Date(a.planned_depart_datetime || a.depart_datetime || 0);
         case 'vessel': return (a.vessel_name || '').localeCompare(b.vessel_name || '');
         case 'name': return (a.trip_name || '').localeCompare(b.trip_name || '');
         default: return 0;
