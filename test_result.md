@@ -255,7 +255,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Summary Card Click Errors Investigation"
+    - "Summary Card Incorrect Quantity Display Investigation"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
