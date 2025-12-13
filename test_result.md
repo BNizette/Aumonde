@@ -146,12 +146,15 @@ backend:
     working: true
     file: "/app/backend/server.py"
     stuck_count: 0
-    priority: "medium"
+    priority: "high"
     needs_retesting: false
     status_history:
         - working: true
           agent: "testing"
           comment: "All user management endpoints working. Get users, activity logs, audit logs, and sessions all functional. User CRUD operations tested and working."
+        - working: true
+          agent: "testing"
+          comment: "BACKWARD COMPATIBILITY VERIFIED: /api/users endpoint successfully handles users without account_status and access_level fields. Returns 200 OK (not 500 error). All users have required fields with proper defaults: access_level='Edit', account_status='Active'. Pydantic validation error resolved. Field validation passed for all users in response."
 
   - task: "Vessel Management System"
     implemented: true
