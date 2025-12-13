@@ -209,12 +209,28 @@ const Compliance = () => {
       );
     }
 
-    if (reqCategoryFilter !== 'all') {
-      filtered = filtered.filter(req => req.category === reqCategoryFilter);
+    // Apply multi-select category filter
+    if (reqFilters.categories.length > 0) {
+      filtered = filtered.filter(req => reqFilters.categories.includes(req.category));
     }
 
-    if (reqStatusFilter !== 'all') {
-      filtered = filtered.filter(req => req.compliance_status === reqStatusFilter);
+    // Apply multi-select status filter
+    if (reqFilters.statuses.length > 0) {
+      filtered = filtered.filter(req => reqFilters.statuses.includes(req.compliance_status));
+    }
+
+    // Apply date range filter (created_at)
+    if (reqFilters.start_date || reqFilters.end_date) {
+      filtered = filtered.filter(req => {
+        if (!req.created_at) return false;
+        const createdDate = new Date(req.created_at);
+        const startDate = reqFilters.start_date ? new Date(reqFilters.start_date) : null;
+        const endDate = reqFilters.end_date ? new Date(reqFilters.end_date + 'T23:59:59') : null;
+
+        if (startDate && createdDate < startDate) return false;
+        if (endDate && createdDate > endDate) return false;
+        return true;
+      });
     }
 
     filtered.sort((a, b) => {
