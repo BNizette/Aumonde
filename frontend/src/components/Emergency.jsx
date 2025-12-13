@@ -227,26 +227,32 @@ const Emergency = () => {
       );
     }
 
-    if (drillTypeFilter !== 'all') {
-      filtered = filtered.filter(drill => drill.drill_type === drillTypeFilter);
+    // Apply multi-select type filter
+    if (drillFilters.types.length > 0) {
+      filtered = filtered.filter(drill => drillFilters.types.includes(drill.drill_type));
     }
 
-    if (drillVesselFilter !== 'all') {
-      filtered = filtered.filter(drill => drill.vessel_name === drillVesselFilter);
+    // Apply multi-select vessel filter
+    if (drillFilters.vessels.length > 0) {
+      filtered = filtered.filter(drill => drillFilters.vessels.includes(drill.vessel_name));
     }
 
-    filtered.sort((a, b) => {
-      switch (drillSort) {
-        case 'date':
-          return new Date(b.drill_date || 0) - new Date(a.drill_date || 0);
-        case 'type':
-          return (a.drill_type || '').localeCompare(b.drill_type || '');
-        case 'vessel':
-          return (a.vessel_name || '').localeCompare(b.vessel_name || '');
-        default:
-          return 0;
-      }
-    });
+    // Apply date range filter (drill_date)
+    if (drillFilters.start_date || drillFilters.end_date) {
+      filtered = filtered.filter(drill => {
+        if (!drill.drill_date) return false;
+        const drillDate = new Date(drill.drill_date);
+        const startDate = drillFilters.start_date ? new Date(drillFilters.start_date) : null;
+        const endDate = drillFilters.end_date ? new Date(drillFilters.end_date + 'T23:59:59') : null;
+
+        if (startDate && drillDate < startDate) return false;
+        if (endDate && drillDate > endDate) return false;
+        return true;
+      });
+    }
+
+    // Sort by drill date (most recent first)
+    filtered.sort((a, b) => new Date(b.drill_date || 0) - new Date(a.drill_date || 0));
 
     setFilteredDrills(filtered);
   };
