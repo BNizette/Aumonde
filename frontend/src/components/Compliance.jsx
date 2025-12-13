@@ -249,6 +249,41 @@ const Compliance = () => {
     setFilteredRequirements(filtered);
   };
 
+  // Toggle functions for multi-select filters
+  const toggleCertFilter = (filterType, value) => {
+    setCertFilters(prev => {
+      const currentArray = prev[filterType];
+      const isSelected = currentArray.includes(value);
+      return {
+        ...prev,
+        [filterType]: isSelected
+          ? currentArray.filter(item => item !== value)
+          : [...currentArray, value]
+      };
+    });
+  };
+
+  const toggleReqFilter = (filterType, value) => {
+    setReqFilters(prev => {
+      const currentArray = prev[filterType];
+      const isSelected = currentArray.includes(value);
+      return {
+        ...prev,
+        [filterType]: isSelected
+          ? currentArray.filter(item => item !== value)
+          : [...currentArray, value]
+      };
+    });
+  };
+
+  const clearCertFilterType = (filterType) => {
+    setCertFilters(prev => ({ ...prev, [filterType]: [] }));
+  };
+
+  const clearReqFilterType = (filterType) => {
+    setReqFilters(prev => ({ ...prev, [filterType]: [] }));
+  };
+
   const exportCertificatesToCSV = () => {
     if (filteredCertificates.length === 0) { setError('No certificates to export'); setTimeout(() => setError(''), 3000); return; }
     const headers = ['ID', 'Certificate Name', 'Certificate Number', 'Type', 'Issuing Authority', 'Issue Date', 'Expiry Date', 'Vessel Name', 'Crew Name', 'Status', 'Created At'];
