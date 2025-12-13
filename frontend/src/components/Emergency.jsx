@@ -190,20 +190,27 @@ const Emergency = () => {
       );
     }
 
-    if (procedureTypeFilter !== 'all') {
-      filtered = filtered.filter(proc => proc.emergency_type === procedureTypeFilter);
+    // Apply multi-select type filter
+    if (procedureFilters.types.length > 0) {
+      filtered = filtered.filter(proc => procedureFilters.types.includes(proc.emergency_type));
     }
 
-    filtered.sort((a, b) => {
-      switch (procedureSort) {
-        case 'type':
-          return (a.emergency_type || '').localeCompare(b.emergency_type || '');
-        case 'title':
-          return (a.title || '').localeCompare(b.title || '');
-        default:
-          return 0;
-      }
-    });
+    // Apply date range filter (created_at)
+    if (procedureFilters.start_date || procedureFilters.end_date) {
+      filtered = filtered.filter(proc => {
+        if (!proc.created_at) return false;
+        const createdDate = new Date(proc.created_at);
+        const startDate = procedureFilters.start_date ? new Date(procedureFilters.start_date) : null;
+        const endDate = procedureFilters.end_date ? new Date(procedureFilters.end_date + 'T23:59:59') : null;
+
+        if (startDate && createdDate < startDate) return false;
+        if (endDate && createdDate > endDate) return false;
+        return true;
+      });
+    }
+
+    // Sort by emergency type
+    filtered.sort((a, b) => (a.emergency_type || '').localeCompare(b.emergency_type || ''));
 
     setFilteredProcedures(filtered);
   };
