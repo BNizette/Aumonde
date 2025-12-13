@@ -29,7 +29,15 @@ const Incidents = () => {
   const [error, setError] = useState('');
 
   // Use custom hook for advanced filtering
-  const { filters } = useAdvancedFilters({
+  const {
+    filters,
+    toggleFilter,
+    clearFilter,
+    clearDateFilters,
+    clearAllFilters,
+    updateFilters,
+    setFilterValue
+  } = useAdvancedFilters({
     incident_types: [],
     severities: [],
     statuses: [],
@@ -382,7 +390,7 @@ const Incidents = () => {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
         <Card 
           className="cursor-pointer hover:shadow-lg transition-shadow"
-          onClick={() => setFilters({ incident_type: 'all', severity: 'all', status: 'all' })}
+          onClick={() => clearAllFilters()}
         >
           <CardHeader className="pb-2">
             <CardTitle className="text-xs font-medium text-gray-500">Total Incidents</CardTitle>
@@ -394,7 +402,7 @@ const Incidents = () => {
         </Card>
         <Card 
           className="cursor-pointer hover:shadow-lg transition-shadow"
-          onClick={() => setFilters({ ...filters, severity: 'Critical' })}
+          onClick={() => updateFilters({ severities: ['Critical'] })}
         >
           <CardHeader className="pb-2">
             <CardTitle className="text-xs font-medium text-gray-500">Critical</CardTitle>
@@ -408,7 +416,7 @@ const Incidents = () => {
         </Card>
         <Card 
           className="cursor-pointer hover:shadow-lg transition-shadow"
-          onClick={() => setFilters({ ...filters, severity: 'Serious' })}
+          onClick={() => updateFilters({ severities: ['Serious'] })}
         >
           <CardHeader className="pb-2">
             <CardTitle className="text-xs font-medium text-gray-500">Serious</CardTitle>
@@ -422,7 +430,7 @@ const Incidents = () => {
         </Card>
         <Card 
           className="cursor-pointer hover:shadow-lg transition-shadow"
-          onClick={() => setFilters({ ...filters, status: 'Under Investigation' })}
+          onClick={() => updateFilters({ statuses: ['Under Investigation'] })}
         >
           <CardHeader className="pb-2">
             <CardTitle className="text-xs font-medium text-gray-500">Under Investigation</CardTitle>
