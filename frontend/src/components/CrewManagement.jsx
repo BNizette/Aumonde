@@ -31,12 +31,6 @@ const CrewManagement = () => {
   const [positions, setPositions] = useState([]);
   const [roles, setRoles] = useState([]);
   const [sortBy, setSortBy] = useState('name');
-  const [filters, setFilters] = useState({
-    positions: [],
-    roles: [],
-    start_date: '',
-    end_date: ''
-  });
   const [formOpen, setFormOpen] = useState(false);
   const [formMode, setFormMode] = useState('create');
   const [selectedCrew, setSelectedCrew] = useState(null);
@@ -53,6 +47,20 @@ const CrewManagement = () => {
   const [crewTrips, setCrewTrips] = useState([]);
   const [crewShifts, setCrewShifts] = useState([]);
   const [loadingLogs, setLoadingLogs] = useState(false);
+
+  // Use custom hook for advanced filtering
+  const {
+    filters,
+    toggleFilter,
+    clearFilter,
+    clearDateFilters,
+    clearAllFilters: clearAllFiltersHook
+  } = useAdvancedFilters({
+    positions: [],
+    roles: [],
+    start_date: '',
+    end_date: ''
+  });
 
   const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
   const canEdit = currentUser.access_level === 'Edit' || currentUser.access_level === 'Full';
@@ -150,43 +158,9 @@ const CrewManagement = () => {
     setFilteredCrew(filtered);
   };
 
-  const toggleFilter = (filterType, value) => {
-    setFilters(prev => {
-      const currentArray = prev[filterType];
-      const isSelected = currentArray.includes(value);
-      
-      return {
-        ...prev,
-        [filterType]: isSelected
-          ? currentArray.filter(item => item !== value)
-          : [...currentArray, value]
-      };
-    });
-  };
-
-  const clearFilter = (filterType) => {
-    setFilters(prev => ({
-      ...prev,
-      [filterType]: []
-    }));
-  };
-
-  const clearDateFilters = () => {
-    setFilters(prev => ({
-      ...prev,
-      start_date: '',
-      end_date: ''
-    }));
-  };
-
   const clearAllFilters = () => {
     setSearchQuery('');
-    setFilters({
-      positions: [],
-      roles: [],
-      start_date: '',
-      end_date: ''
-    });
+    clearAllFiltersHook();
   };
 
   // Export Allocated Ships to CSV
