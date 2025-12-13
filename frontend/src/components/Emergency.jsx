@@ -846,11 +846,7 @@ const Emergency = () => {
               <div className="grid grid-cols-1 md:grid-cols-4 gap-3 mb-6">
                 <Card 
                   className="cursor-pointer hover:shadow-lg transition-shadow"
-                  onClick={() => {
-                    setProcedureSearch('');
-                    setProcedureTypeFilter('all');
-                    setProcedureSort('type');
-                  }}
+                  onClick={() => clearProcedureFilters()}
                 >
                   <CardHeader className="pb-2">
                     <CardTitle className="text-xs font-medium text-gray-500">Total Procedures</CardTitle>
@@ -862,7 +858,7 @@ const Emergency = () => {
                 </Card>
                 <Card 
                   className="cursor-pointer hover:shadow-lg transition-shadow"
-                  onClick={() => setProcedureTypeFilter('Fire')}
+                  onClick={() => setProcedureFilters({...procedureFilters, types: ['Fire']})}
                 >
                   <CardHeader className="pb-2">
                     <CardTitle className="text-xs font-medium text-gray-500">Fire</CardTitle>
@@ -876,7 +872,7 @@ const Emergency = () => {
                 </Card>
                 <Card 
                   className="cursor-pointer hover:shadow-lg transition-shadow"
-                  onClick={() => setProcedureTypeFilter('Man Overboard')}
+                  onClick={() => setProcedureFilters({...procedureFilters, types: ['Man Overboard']})}
                 >
                   <CardHeader className="pb-2">
                     <CardTitle className="text-xs font-medium text-gray-500">Man Overboard</CardTitle>
@@ -890,7 +886,7 @@ const Emergency = () => {
                 </Card>
                 <Card 
                   className="cursor-pointer hover:shadow-lg transition-shadow"
-                  onClick={() => setProcedureTypeFilter('Medical Emergency')}
+                  onClick={() => setProcedureFilters({...procedureFilters, types: ['Medical Emergency']})}
                 >
                   <CardHeader className="pb-2">
                     <CardTitle className="text-xs font-medium text-gray-500">Medical</CardTitle>
