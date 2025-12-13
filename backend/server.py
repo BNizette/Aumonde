@@ -27,7 +27,7 @@ db = client[os.environ['DB_NAME']]
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 security = HTTPBearer()
-SECRET_KEY = os.environ.get('JWT_SECRET_KEY', 'amsa-secret-key-change-in-production-2024')
+SECRET_KEY = os.environ['JWT_SECRET_KEY']  # No fallback - must be set in .env
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24
 
