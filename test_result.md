@@ -101,3 +101,134 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+user_problem_statement: "Test the user export file import functionality with /app/users_export.json containing 13 user accounts via the /api/backup/import endpoint"
+
+backend:
+  - task: "User Export File Import Functionality"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "Successfully tested backup import functionality. Admin login works correctly (admin@test.com, Admin123!). Import endpoint accepts users_export.json file and returns 200 status with message 'Database restored successfully'. Response shows collections_restored with users: 13 as expected. JSON structure validation passed - file contains valid collections.users array with 13 user records. Datetime fields are properly formatted and can be parsed. All authentication, validation, and import processes working correctly."
+
+  - task: "Authentication System"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "Admin authentication working perfectly. Login with admin@test.com and Admin123! successful. JWT token generation and validation working. Full access level verified for admin user. /auth/me endpoint returns correct user information."
+
+  - task: "Backup/Import API Endpoints"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "Backup import endpoint /api/backup/import working correctly. Accepts file uploads, validates JSON structure, processes collections data, and returns proper success response. Access control working - requires Full access level. Backup info endpoint also functional."
+
+  - task: "User Management System"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "All user management endpoints working. Get users, activity logs, audit logs, and sessions all functional. User CRUD operations tested and working."
+
+  - task: "Vessel Management System"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "Vessel CRUD operations working with all new fields (boat_phone, flag, port_of_registry, IMO number, MMSI, call sign, AIS class, etc.). Create, read, update operations tested successfully."
+
+  - task: "Crew Management System"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "Crew management with qualifications array working correctly. Create, read, update operations preserve qualification data structure properly."
+
+  - task: "Trip Management System"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "Trip CRUD operations working. Trip logs (crew shift logs, running logs, engine running logs) all functional. Allocated crew functionality working correctly."
+
+  - task: "Document Management System"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "Document management endpoints working. Create and retrieve documents functional."
+
+  - task: "Risk Assessment System"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "Risk assessment with 5x5 matrix calculations working correctly. CRUD operations functional."
+
+frontend:
+  # No frontend testing performed as per instructions
+
+metadata:
+  created_by: "testing_agent"
+  version: "1.0"
+  test_sequence: 1
+  run_ui: false
+
+test_plan:
+  current_focus:
+    - "User Export File Import Functionality"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+    - agent: "testing"
+      message: "Completed comprehensive backend testing with focus on backup import functionality. All 43 tests passed successfully. The users_export.json file import works perfectly - admin login successful, file structure validated, import endpoint returns correct response with 13 users imported. No critical issues found. All backend APIs are functional and working as expected."
