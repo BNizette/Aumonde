@@ -789,59 +789,145 @@ const Compliance = () => {
             <CardContent>
               {/* Filter Section */}
               <div className="space-y-4 mb-6">
-                <div className="flex flex-col md:flex-row gap-4">
-                  <div className="relative flex-1">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                {/* Clear All Filters Button */}
+                {hasActiveReqFilters && (
+                  <div className="flex justify-end">
+                    <Button variant="ghost" size="sm" onClick={clearReqFilters}>
+                      <X className="h-4 w-4 mr-2" />
+                      Clear All Filters
+                    </Button>
+                  </div>
+                )}
+
+                {/* Search Bar */}
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  <Input
+                    placeholder="Search requirements by name, description, or reference..."
+                    value={reqSearch}
+                    onChange={(e) => setReqSearch(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
+
+                {/* Multi-Select Filters Row */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Category Multi-Select */}
+                  <div>
+                    <Label>Category</Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button variant="outline" className="w-full justify-between">
+                          <span className="truncate">
+                            {reqFilters.categories.length === 0
+                              ? 'All Categories'
+                              : reqFilters.categories.length === 1
+                              ? reqFilters.categories[0]
+                              : `${reqFilters.categories.length} selected`}
+                          </span>
+                          <ChevronDown className="h-4 w-4 ml-2 shrink-0" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-64 p-0" align="start">
+                        <div className="p-2">
+                          <div className="flex items-center justify-between px-2 py-1.5 mb-1">
+                            <span className="text-sm font-medium">Select Categories</span>
+                            {reqFilters.categories.length > 0 && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => clearReqFilterType('categories')}
+                                className="h-auto p-1 text-xs"
+                              >
+                                Clear
+                              </Button>
+                            )}
+                          </div>
+                          {reqCategories.map(category => (
+                            <div
+                              key={category}
+                              className="flex items-center space-x-2 px-2 py-2 hover:bg-gray-100 rounded cursor-pointer"
+                              onClick={() => toggleReqFilter('categories', category)}
+                            >
+                              <Checkbox
+                                checked={reqFilters.categories.includes(category)}
+                                onCheckedChange={() => toggleReqFilter('categories', category)}
+                              />
+                              <span className="text-sm">{category}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+
+                  {/* Status Multi-Select */}
+                  <div>
+                    <Label>Compliance Status</Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button variant="outline" className="w-full justify-between">
+                          <span className="truncate">
+                            {reqFilters.statuses.length === 0
+                              ? 'All Statuses'
+                              : reqFilters.statuses.length === 1
+                              ? reqFilters.statuses[0]
+                              : `${reqFilters.statuses.length} selected`}
+                          </span>
+                          <ChevronDown className="h-4 w-4 ml-2 shrink-0" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-64 p-0" align="start">
+                        <div className="p-2">
+                          <div className="flex items-center justify-between px-2 py-1.5 mb-1">
+                            <span className="text-sm font-medium">Select Statuses</span>
+                            {reqFilters.statuses.length > 0 && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => clearReqFilterType('statuses')}
+                                className="h-auto p-1 text-xs"
+                              >
+                                Clear
+                              </Button>
+                            )}
+                          </div>
+                          {reqStatuses.map(status => (
+                            <div
+                              key={status}
+                              className="flex items-center space-x-2 px-2 py-2 hover:bg-gray-100 rounded cursor-pointer"
+                              onClick={() => toggleReqFilter('statuses', status)}
+                            >
+                              <Checkbox
+                                checked={reqFilters.statuses.includes(status)}
+                                onCheckedChange={() => toggleReqFilter('statuses', status)}
+                              />
+                              <span className="text-sm">{status}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                </div>
+
+                {/* Date Range Filters */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label>Created Date From</Label>
                     <Input
-                      placeholder="Search requirements by name, description, or reference..."
-                      value={reqSearch}
-                      onChange={(e) => setReqSearch(e.target.value)}
-                      className="pl-10"
+                      type="date"
+                      value={reqFilters.start_date}
+                      onChange={(e) => setReqFilters({...reqFilters, start_date: e.target.value})}
                     />
                   </div>
-                  
-                  <div className="w-full md:w-48">
-                    <Select value={reqCategoryFilter} onValueChange={setReqCategoryFilter}>
-                      <SelectTrigger>
-                        <div className="flex items-center gap-2">
-                          <Filter className="h-4 w-4" />
-                          <SelectValue placeholder="Category" />
-                        </div>
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Categories</SelectItem>
-                        {categories.map(cat => (
-                          <SelectItem key={cat} value={cat}>{cat}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="w-full md:w-48">
-                    <Select value={reqStatusFilter} onValueChange={setReqStatusFilter}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Status</SelectItem>
-                        {statuses.map(status => (
-                          <SelectItem key={status} value={status}>{status}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="w-full md:w-48">
-                    <Select value={reqSort} onValueChange={setReqSort}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Sort by" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="category">Category</SelectItem>
-                        <SelectItem value="name">Name</SelectItem>
-                        <SelectItem value="status">Status</SelectItem>
-                      </SelectContent>
-                    </Select>
+                  <div>
+                    <Label>Created Date To</Label>
+                    <Input
+                      type="date"
+                      value={reqFilters.end_date}
+                      onChange={(e) => setReqFilters({...reqFilters, end_date: e.target.value})}
+                    />
                   </div>
                 </div>
 
