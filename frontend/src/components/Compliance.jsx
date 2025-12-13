@@ -331,18 +331,15 @@ const Compliance = () => {
   const clearCertFilters = () => {
     setCertSearch('');
     setCertFilters({types: [], statuses: [], start_date: '', end_date: ''});
-    setCertSort('expiry');
   };
 
   const clearReqFilters = () => {
     setReqSearch('');
-    setReqCategoryFilter('all');
-    setReqStatusFilter('all');
-    setReqSort('category');
+    setReqFilters({categories: [], statuses: [], start_date: '', end_date: ''});
   };
 
-  const hasActiveCertFilters = certSearch || certTypeFilter !== 'all' || certStatusFilter !== 'all' || certVesselFilter !== 'all' || certSort !== 'expiry';
-  const hasActiveReqFilters = reqSearch || reqCategoryFilter !== 'all' || reqStatusFilter !== 'all' || reqSort !== 'category';
+  const hasActiveCertFilters = certSearch || certFilters.types.length > 0 || certFilters.statuses.length > 0 || certFilters.start_date || certFilters.end_date;
+  const hasActiveReqFilters = reqSearch || reqFilters.categories.length > 0 || reqFilters.statuses.length > 0 || reqFilters.start_date || reqFilters.end_date;
 
   const handleCertSubmit = async () => {
     if (!certForm.certificate_name || !certForm.expiry_date) {
