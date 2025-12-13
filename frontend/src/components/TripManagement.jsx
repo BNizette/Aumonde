@@ -312,9 +312,7 @@ const TripManagement = () => {
         <Card 
           className="cursor-pointer hover:shadow-lg transition-shadow" 
           onClick={() => {
-            setSearchQuery('');
-            setStatusFilter('all');
-            setVesselFilter('all');
+            clearAllFilters();
             setSortBy('date');
           }}
         >
