@@ -558,12 +558,25 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
                     <p className="text-sm text-gray-500">
                       {allocatedCrew.length} crew {allocatedCrew.length === 1 ? 'member' : 'members'} allocated
                     </p>
-                    {canEdit && (
-                      <Button size="sm" onClick={handleAddCrewMember}>
-                        <Plus className="h-4 w-4 mr-2" />
-                        Allocate Crew
-                      </Button>
-                    )}
+                    <div className="flex gap-2">
+                      {allocatedCrew.length > 0 && (
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          onClick={exportAllocatedCrewToCSV}
+                          className="flex items-center gap-2"
+                        >
+                          <Download className="h-4 w-4" />
+                          Export CSV
+                        </Button>
+                      )}
+                      {canEdit && (
+                        <Button size="sm" onClick={handleAddCrewMember}>
+                          <Plus className="h-4 w-4 mr-2" />
+                          Allocate Crew
+                        </Button>
+                      )}
+                    </div>
                   </div>
 
                   {allocatedCrew.length === 0 ? (
