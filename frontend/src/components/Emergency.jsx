@@ -683,9 +683,16 @@ const Emergency = () => {
                   </CardTitle>
                   <CardDescription>Standard operating procedures for emergencies</CardDescription>
                 </div>
-                <Button onClick={() => setProcedureDialogOpen(true)}>
-                  <Plus className="mr-2 h-4 w-4" />
-                  Add Procedure
+                <div className="flex gap-2">
+                  <Button variant="outline" onClick={exportProceduresToCSV}>
+                    <Download className="mr-2 h-4 w-4" />
+                    Export CSV
+                  </Button>
+                  <Button onClick={() => setProcedureDialogOpen(true)}>
+                    <Plus className="mr-2 h-4 w-4" />
+                    Add Procedure
+                  </Button>
+                </div>
                 </Button>
               </div>
             </CardHeader>
