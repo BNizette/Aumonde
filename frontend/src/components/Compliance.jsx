@@ -1088,11 +1088,16 @@ const Compliance = () => {
       </Tabs>
 
       {/* Certificate Dialog */}
-      <Dialog open={certDialogOpen} onOpenChange={setCertDialogOpen}>
+      <Dialog open={certDialogOpen} onOpenChange={(open) => {
+        setCertDialogOpen(open);
+        if (!open) resetCertForm();
+      }}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Add Certificate</DialogTitle>
-            <DialogDescription>Add a new compliance certificate</DialogDescription>
+            <DialogTitle>{certEditMode ? 'Edit Certificate' : 'Add Certificate'}</DialogTitle>
+            <DialogDescription>
+              {certEditMode ? 'Update certificate information' : 'Add a new compliance certificate'}
+            </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div>
