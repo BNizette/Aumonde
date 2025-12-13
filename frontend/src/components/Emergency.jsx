@@ -459,7 +459,7 @@ const Emergency = () => {
     }
   };
 
-  const handleDrillSubmit = async () => {
+  const handleSaveDrill = async () => {
     if (!drillForm.drill_type || !drillForm.drill_date) {
       setError('Please fill in required fields');
       return;
