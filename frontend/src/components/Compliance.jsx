@@ -643,10 +643,16 @@ const Compliance = () => {
                   </CardTitle>
                   <CardDescription>Regulatory and operational compliance tracking</CardDescription>
                 </div>
-                <Button onClick={() => setReqDialogOpen(true)}>
-                  <Plus className="mr-2 h-4 w-4" />
-                  Add Requirement
-                </Button>
+                <div className="flex gap-2">
+                  <Button variant="outline" onClick={exportRequirementsToCSV}>
+                    <Download className="mr-2 h-4 w-4" />
+                    Export CSV
+                  </Button>
+                  <Button onClick={() => setReqDialogOpen(true)}>
+                    <Plus className="mr-2 h-4 w-4" />
+                    Add Requirement
+                  </Button>
+                </div>
               </div>
             </CardHeader>
             <CardContent>
