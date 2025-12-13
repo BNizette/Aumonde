@@ -1555,7 +1555,7 @@ const Emergency = () => {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setProcedureDialogOpen(false)}>Cancel</Button>
-            <Button onClick={handleProcedureSubmit}>Add Procedure</Button>
+            <Button onClick={handleSaveProcedure}>{procedureEditMode ? 'Update Procedure' : 'Add Procedure'}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
