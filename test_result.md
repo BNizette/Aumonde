@@ -217,7 +217,17 @@ backend:
           comment: "Risk assessment with 5x5 matrix calculations working correctly. CRUD operations functional."
 
 frontend:
-  # No frontend testing performed as per instructions
+  - task: "Admin Panel User Creation"
+    implemented: true
+    working: false
+    file: "/app/frontend/src/components/AdminPanel.jsx"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: false
+          agent: "testing"
+          comment: "CRITICAL ISSUE REPRODUCED: User creation in Admin Panel fails with 'uncaught runtime error'. Error occurs when clicking 'Create User' button. Root cause: React 19 compatibility issue with Radix UI Select component. Error message: 'A <Select.Item /> must have a value prop that is not an empty string'. The Select component for Access Level has an empty string value option ('Auto-assign based on role') which violates React 19 + Radix UI requirements. This prevents the Create User dialog from opening properly and blocks all user creation functionality."
 
 metadata:
   created_by: "testing_agent"
