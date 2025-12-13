@@ -437,11 +437,20 @@ const Emergency = () => {
 
     try {
       const token = localStorage.getItem('token');
-      await axios.post(`${API}/emergency/procedures`, procedureForm, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setMessage('Emergency procedure added successfully');
+      if (procedureEditMode) {
+        await axios.put(`${API}/emergency/procedures/${editingProcedureId}`, procedureForm, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setMessage('Procedure updated successfully');
+      } else {
+        await axios.post(`${API}/emergency/procedures`, procedureForm, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setMessage('Procedure created successfully');
+      }
       setProcedureDialogOpen(false);
+      setProcedureEditMode(false);
+      setEditingProcedureId(null);
       resetProcedureForm();
       fetchData();
       setTimeout(() => setMessage(''), 3000);
