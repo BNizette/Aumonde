@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Test the user export file import functionality with /app/users_export.json containing 13 user accounts via the /api/backup/import endpoint"
+user_problem_statement: "Investigate uncaught runtime errors when clicking summary cards across different modules (Vessels, Crew, Trips, Risk, Maintenance, Incidents, Emergency, Compliance)"
 
 backend:
   - task: "User Export File Import Functionality"
