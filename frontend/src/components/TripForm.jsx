@@ -20,8 +20,12 @@ const TripForm = ({ open, onClose, onSave, trip, mode = 'create' }) => {
     vessel_id: '',
     trip_type: '',
     operating_area: '',
-    depart_datetime: '',
-    arrival_datetime: '',
+    planned_depart_datetime: '',
+    planned_arrival_datetime: '',
+    actual_depart_datetime: '',
+    actual_arrival_datetime: '',
+    depart_location: '',
+    arrival_location: '',
     number_of_passengers: 0,
     number_of_crew: 0
   });
