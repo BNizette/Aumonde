@@ -846,6 +846,14 @@ const Compliance = () => {
                               {cert.crew_name && <p><strong>Crew:</strong> {cert.crew_name}</p>}
                             </div>
                           </div>
+                          <div className="flex gap-2 ml-4">
+                            <Button variant="outline" size="sm" onClick={() => handleEditCert(cert)}>
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                            <Button variant="destructive" size="sm" onClick={() => handleDeleteCert(cert.id, cert.certificate_name)}>
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
                         </div>
                       </div>
                     );
