@@ -476,7 +476,7 @@ const TripManagement = () => {
                       
                       <div className="flex items-center gap-2 text-gray-600">
                         <Calendar className="h-4 w-4 text-purple-600" />
-                        <span>{formatDateTime(trip.depart_datetime)}</span>
+                        <span>{formatDateTime(trip.planned_depart_datetime || trip.depart_datetime)}</span>
                       </div>
                       
                       <div className="flex items-center gap-2 text-gray-600">
