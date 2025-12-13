@@ -693,7 +693,6 @@ const Emergency = () => {
                     Add Procedure
                   </Button>
                 </div>
-                </Button>
               </div>
             </CardHeader>
             <CardContent>
