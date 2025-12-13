@@ -407,11 +407,20 @@ const Emergency = () => {
 
     try {
       const token = localStorage.getItem('token');
-      await axios.post(`${API}/emergency/contacts`, contactForm, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setMessage('Emergency contact added successfully');
+      if (contactEditMode) {
+        await axios.put(`${API}/emergency/contacts/${editingContactId}`, contactForm, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setMessage('Contact updated successfully');
+      } else {
+        await axios.post(`${API}/emergency/contacts`, contactForm, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setMessage('Contact created successfully');
+      }
       setContactDialogOpen(false);
+      setContactEditMode(false);
+      setEditingContactId(null);
       resetContactForm();
       fetchData();
       setTimeout(() => setMessage(''), 3000);
