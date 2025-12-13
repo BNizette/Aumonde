@@ -1451,11 +1451,16 @@ const Emergency = () => {
       </Tabs>
 
       {/* Contact Dialog */}
-      <Dialog open={contactDialogOpen} onOpenChange={setContactDialogOpen}>
+      <Dialog open={contactDialogOpen} onOpenChange={(open) => {
+        setContactDialogOpen(open);
+        if (!open) resetContactForm();
+      }}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Add Emergency Contact</DialogTitle>
-            <DialogDescription>Add a new emergency contact person or organization</DialogDescription>
+            <DialogTitle>{contactEditMode ? 'Edit Emergency Contact' : 'Add Emergency Contact'}</DialogTitle>
+            <DialogDescription>
+              {contactEditMode ? 'Update emergency contact information' : 'Add a new emergency contact person or organization'}
+            </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
