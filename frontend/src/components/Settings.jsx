@@ -73,6 +73,14 @@ const Settings = () => {
   }, []);
 
   useEffect(() => {
+    if (selectedModule) {
+      // Auto-select first category when module changes
+      const firstCategory = Object.keys(modules[selectedModule].categories)[0];
+      setSelectedCategory(firstCategory);
+    }
+  }, [selectedModule]);
+
+  useEffect(() => {
     if (selectedModule && selectedCategory) {
       fetchSetting();
     }
