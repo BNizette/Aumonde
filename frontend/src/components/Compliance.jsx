@@ -577,7 +577,10 @@ const Compliance = () => {
         </Card>
         <Card 
           className="cursor-pointer hover:shadow-lg transition-shadow"
-          onClick={() => setReqFilters({...reqFilters, statuses: ['Compliant']})}
+          onClick={() => {
+            clearReqFilterType('statuses');
+            toggleReqFilter('statuses', 'Compliant');
+          }}
         >
           <CardContent className="pt-6">
             <div className="text-center">
@@ -589,7 +592,10 @@ const Compliance = () => {
         </Card>
         <Card 
           className="cursor-pointer hover:shadow-lg transition-shadow"
-          onClick={() => setReqFilters({...reqFilters, statuses: ['Non-Compliant']})}
+          onClick={() => {
+            clearReqFilterType('statuses');
+            toggleReqFilter('statuses', 'Non-Compliant');
+          }}
         >
           <CardContent className="pt-6">
             <div className="text-center">
