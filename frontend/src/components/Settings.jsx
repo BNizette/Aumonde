@@ -357,8 +357,15 @@ const Settings = () => {
               <div className="space-y-4">
                 <div className="space-y-2">
                   {newOptions.map((option, index) => (
-                    <div key={option.id || index} className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
-                      <GripVertical className="h-4 w-4 text-gray-400" />
+                    <div 
+                      key={option.id || index} 
+                      className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg cursor-move hover:bg-gray-100 transition-colors"
+                      draggable
+                      onDragStart={(e) => handleDragStart(e, index)}
+                      onDragOver={(e) => handleDragOver(e, index)}
+                      onDrop={(e) => handleDrop(e, index)}
+                    >
+                      <GripVertical className="h-4 w-4 text-gray-400 cursor-grab active:cursor-grabbing" />
                       <Input
                         value={option.value}
                         onChange={(e) => handleOptionChange(index, 'value', e.target.value)}
