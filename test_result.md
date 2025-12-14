@@ -286,6 +286,18 @@ frontend:
           agent: "testing"
           comment: "🚨 CRITICAL RUNTIME ERROR CONFIRMED: Successfully reproduced the exact 'uncaught runtime error' reported by user when clicking Maintenance summary cards. ROOT CAUSE IDENTIFIED: Summary card onClick handlers call undefined functions that don't exist in component state. SPECIFIC ERROR: 'setStatusFilter is not defined' when clicking Total Records card (lines 275-282). AFFECTED CARDS: 1) Total Records card calls setStatusFilter('all'), setPriorityFilter('all'), setTypeFilter('all'), setVesselFilter('all') - all undefined functions. 2) Scheduled card calls setStatusFilter('Scheduled') - undefined function. 3) In Progress card calls setStatusFilter('In Progress') - undefined function. 4) Overdue card calls setStatusFilter('Overdue') - undefined function. 5) Completed card calls setStatusFilter('Completed') - undefined function. The component uses filters object state with setFilters function (line 27-32), but onClick handlers reference non-existent individual setter functions. This is identical to the pattern found and fixed in Risk Assessment, Crew Management, Vessel Management, and Trips modules. Error overlay blocks UI interaction after first click, preventing further testing."
 
+  - task: "VesselForm New Tabs Implementation Testing"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/VesselForm.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "NEW TASK: Test the VesselForm component with new tab structure. Changes include: 1) Combined 'Specifications' and 'Safety' tabs into single 'Specs & Safety' tab, 2) Added new 'Incidents' tab showing vessel incidents, 3) Added new 'Maintenance' tab showing vessel maintenance records, 4) Replaced static 'Certificates' tab with dynamic compliance certificates list. Need to test all tabs load correctly, display proper data, and 'Manage in...' buttons navigate to appropriate modules. Test with vessel 'MV Coral Queen' using admin@test.com / Admin123! credentials."
+
   - task: "Risk Assessment Module Filtering Runtime Errors Investigation"
     implemented: true
     working: true
