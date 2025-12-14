@@ -20,9 +20,12 @@ const RunningLogForm = ({ open, onClose, onSave, log, tripId, mode = 'create' })
     crew_id: '',
     crew_name: '',
     log_datetime: '',
+    category: '',
     activity: '',
     activity_details: ''
   });
+
+  const categories = ['Radio', 'Conditions', 'Safety', 'Vessel Operation'];
 
   useEffect(() => {
     if (open) {
@@ -37,6 +40,7 @@ const RunningLogForm = ({ open, onClose, onSave, log, tripId, mode = 'create' })
         crew_id: log.crew_id || '',
         crew_name: log.crew_name || '',
         log_datetime: log.log_datetime ? new Date(log.log_datetime).toISOString().slice(0, 16) : '',
+        category: log.category || '',
         activity: log.activity || '',
         activity_details: log.activity_details || ''
       });
@@ -46,6 +50,7 @@ const RunningLogForm = ({ open, onClose, onSave, log, tripId, mode = 'create' })
         crew_id: '',
         crew_name: '',
         log_datetime: '',
+        category: '',
         activity: '',
         activity_details: ''
       });
