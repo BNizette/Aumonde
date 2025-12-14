@@ -249,20 +249,6 @@ const Compliance = () => {
       filtered = filtered.filter(req => reqFilters.statuses.includes(req.compliance_status));
     }
 
-    // Apply date range filter (created_at)
-    if (reqFilters.start_date || reqFilters.end_date) {
-      filtered = filtered.filter(req => {
-        if (!req.created_at) return false;
-        const createdDate = new Date(req.created_at);
-        const startDate = reqFilters.start_date ? new Date(reqFilters.start_date) : null;
-        const endDate = reqFilters.end_date ? new Date(reqFilters.end_date + 'T23:59:59') : null;
-
-        if (startDate && createdDate < startDate) return false;
-        if (endDate && createdDate > endDate) return false;
-        return true;
-      });
-    }
-
     filtered.sort((a, b) => {
       switch (reqSort) {
         case 'category':
