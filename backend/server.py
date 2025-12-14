@@ -1113,6 +1113,7 @@ class RunningLog(BaseModel):
     crew_id: str
     crew_name: str
     log_datetime: datetime
+    category: Optional[str] = None  # Radio, Conditions, Safety, Vessel Operation
     activity: str
     activity_details: Optional[str] = None
     created_by: str
@@ -1123,6 +1124,7 @@ class RunningLogCreate(BaseModel):
     crew_id: str
     crew_name: str
     log_datetime: datetime
+    category: Optional[str] = None  # Radio, Conditions, Safety, Vessel Operation
     activity: str
     activity_details: Optional[str] = None
 
