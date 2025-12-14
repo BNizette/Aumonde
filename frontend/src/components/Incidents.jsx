@@ -66,13 +66,29 @@ const Incidents = () => {
     target_completion_date: ''
   });
 
-  const incidentTypes = ['Injury', 'Medical', 'Near Miss', 'Equipment Failure', 'Environmental', 'Security', 'Other'];
+  const [incidentTypes, setIncidentTypes] = useState(['Injury', 'Medical', 'Near Miss', 'Equipment Failure', 'Environmental', 'Security', 'Other']);
   const severityLevels = ['Minor', 'Moderate', 'Serious', 'Critical'];
   const statuses = ['Reported', 'Under Investigation', 'Completed', 'Closed'];
 
   useEffect(() => {
     fetchData();
+    fetchSettings();
   }, [filters]);
+
+  const fetchSettings = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const headers = { Authorization: `Bearer ${token}` };
+      
+      const response = await fetch(`${API}/settings/incident/incident_types`, { headers });
+      const data = await response.json();
+      if (data.options && data.options.length > 0) {
+        setIncidentTypes(data.options.filter(o => o.is_active !== false).map(o => o.value));
+      }
+    } catch (err) {
+      console.error('Error fetching incident type settings:', err);
+    }
+  };
 
   const fetchData = async () => {
     try {
