@@ -764,7 +764,7 @@ class AMSAComprehensiveTester:
             "task_performed": "Testing crew shifts endpoint"
         }
         
-        success, response, status = self.make_request('POST', 'crew-shifts', data=crew_shift_data)
+        success, response, status = self.make_request('POST', 'trip-logs', data=crew_shift_data)
         if success and 'id' in response:
             crew_shift_id = response['id']
             self.log_test("Create Crew Shift via /crew-shifts", True, f"Created: {crew_shift_id}")
