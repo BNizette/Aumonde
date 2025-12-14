@@ -166,6 +166,47 @@ const Settings = () => {
     setNewOptions(updated);
   };
 
+  const handleDragStart = (e, index) => {
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/html', index);
+  };
+
+  const handleDragOver = (e, index) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  };
+
+  const handleDrop = (e, dropIndex) => {
+    e.preventDefault();
+    const dragIndex = parseInt(e.dataTransfer.getData('text/html'));
+    
+    if (dragIndex === dropIndex) return;
+    
+    const updated = [...newOptions];
+    const [draggedItem] = updated.splice(dragIndex, 1);
+    updated.splice(dropIndex, 0, draggedItem);
+    
+    setNewOptions(updated);
+  };
+
+  const handlePopulateFromExisting = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.post(
+        `${API}/settings/${selectedModule}/${selectedCategory}/populate`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      
+      setMessage(response.data.message || 'Populated successfully');
+      fetchSetting();
+      setTimeout(() => setMessage(''), 3000);
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Error populating settings');
+      setTimeout(() => setError(''), 3000);
+    }
+  };
+
   const handleCancel = () => {
     setEditMode(false);
     setNewOptions(currentSetting?.options || []);
