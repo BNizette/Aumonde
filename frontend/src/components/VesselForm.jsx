@@ -343,12 +343,27 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create' }) => {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="vessel_type">Vessel Type</Label>
-                  <Input
-                    id="vessel_type"
-                    value={formData.vessel_type}
-                    onChange={(e) => handleChange('vessel_type', e.target.value)}
-                    placeholder="e.g., Passenger, Cargo, Fishing"
-                  />
+                  {vesselTypes.length > 0 ? (
+                    <Select value={formData.vessel_type} onValueChange={(value) => handleChange('vessel_type', value)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select vessel type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {vesselTypes.filter(v => v.is_active !== false).map((type) => (
+                          <SelectItem key={type.id} value={type.value}>
+                            {type.value}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  ) : (
+                    <Input
+                      id="vessel_type"
+                      value={formData.vessel_type}
+                      onChange={(e) => handleChange('vessel_type', e.target.value)}
+                      placeholder="e.g., Passenger, Cargo, Fishing"
+                    />
+                  )}
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="owner_name">Owner Name</Label>
