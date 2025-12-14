@@ -48,6 +48,7 @@ const CrewManagement = () => {
   const [crewTrips, setCrewTrips] = useState([]);
   const [crewShifts, setCrewShifts] = useState([]);
   const [loadingLogs, setLoadingLogs] = useState(false);
+  const [manualCrewLogOpen, setManualCrewLogOpen] = useState(false);
 
   // Use custom hook for advanced filtering
   const {
