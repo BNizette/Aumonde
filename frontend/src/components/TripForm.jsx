@@ -180,12 +180,27 @@ const TripForm = ({ open, onClose, onSave, trip, mode = 'create' }) => {
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="trip_type">Trip Type</Label>
-              <Input
-                id="trip_type"
-                value={formData.trip_type}
-                onChange={(e) => handleChange('trip_type', e.target.value)}
-                placeholder="e.g., Charter, Commercial"
-              />
+              {tripTypes.length > 0 ? (
+                <Select value={formData.trip_type} onValueChange={(value) => handleChange('trip_type', value)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select trip type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {tripTypes.filter(t => t.is_active !== false).map((type) => (
+                      <SelectItem key={type.id} value={type.value}>
+                        {type.value}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              ) : (
+                <Input
+                  id="trip_type"
+                  value={formData.trip_type}
+                  onChange={(e) => handleChange('trip_type', e.target.value)}
+                  placeholder="e.g., Charter, Commercial"
+                />
+              )}
             </div>
 
             <div className="space-y-2">
