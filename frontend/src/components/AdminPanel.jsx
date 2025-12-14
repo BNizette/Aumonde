@@ -1120,6 +1120,10 @@ const AdminPanel = () => {
         <TabsContent value="backup">
           <BackupManagement />
         </TabsContent>
+
+        <TabsContent value="settings">
+          <Settings />
+        </TabsContent>
       </Tabs>
 
       {/* Edit User Dialog */}
