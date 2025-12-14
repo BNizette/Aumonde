@@ -53,10 +53,12 @@ const CrewManagement = () => {
   // Use custom hook for advanced filtering
   const {
     filters,
+    setFilters,
     toggleFilter,
     clearFilter,
     clearDateFilters,
-    clearAllFilters: clearAllFiltersHook
+    clearAllFilters: clearAllFiltersHook,
+    updateFilters
   } = useAdvancedFilters({
     positions: [],
     roles: [],
