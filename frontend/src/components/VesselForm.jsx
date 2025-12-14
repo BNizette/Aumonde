@@ -112,14 +112,16 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create' }) => {
     vessel_photo_url: ''
   });
 
-  // Fetch compliance certificates for this vessel
+  // Fetch compliance certificates, incidents, and maintenance for this vessel
   useEffect(() => {
-    const fetchVesselCertificates = async () => {
+    const fetchVesselData = async () => {
       if (vessel && vessel.id && mode === 'edit') {
+        const API = process.env.REACT_APP_BACKEND_URL;
+        const token = localStorage.getItem('token');
+
+        // Fetch certificates
         setLoadingCertificates(true);
         try {
-          const API = process.env.REACT_APP_BACKEND_URL;
-          const token = localStorage.getItem('token');
           const response = await axios.get(`${API}/api/compliance/certificates`, {
             params: { vessel_id: vessel.id },
             headers: { Authorization: `Bearer ${token}` }
@@ -131,12 +133,50 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create' }) => {
         } finally {
           setLoadingCertificates(false);
         }
+
+        // Fetch incidents
+        setLoadingIncidents(true);
+        try {
+          const response = await axios.get(`${API}/api/incidents`, {
+            params: { vessel_id: vessel.id },
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          setVesselIncidents(response.data || []);
+        } catch (err) {
+          console.error('Error fetching vessel incidents:', err);
+          setVesselIncidents([]);
+        } finally {
+          setLoadingIncidents(false);
+        }
+
+        // Fetch maintenance records (newest first)
+        setLoadingMaintenance(true);
+        try {
+          const response = await axios.get(`${API}/api/maintenance`, {
+            params: { vessel_id: vessel.id },
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          // Sort by due_date descending (newest first)
+          const sorted = (response.data || []).sort((a, b) => {
+            const dateA = new Date(a.due_date || a.created_at);
+            const dateB = new Date(b.due_date || b.created_at);
+            return dateB - dateA;
+          });
+          setVesselMaintenance(sorted);
+        } catch (err) {
+          console.error('Error fetching vessel maintenance:', err);
+          setVesselMaintenance([]);
+        } finally {
+          setLoadingMaintenance(false);
+        }
       } else {
         setVesselCertificates([]);
+        setVesselIncidents([]);
+        setVesselMaintenance([]);
       }
     };
 
-    fetchVesselCertificates();
+    fetchVesselData();
   }, [vessel, mode]);
 
   useEffect(() => {
