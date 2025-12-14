@@ -114,6 +114,27 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create' }) => {
     vessel_photo_url: ''
   });
 
+  // Fetch settings
+  useEffect(() => {
+    if (open) {
+      fetchSettings();
+    }
+  }, [open]);
+
+  const fetchSettings = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const headers = { Authorization: `Bearer ${token}` };
+      
+      const response = await fetch(`${API}/settings/vessel/vessel_types`, { headers });
+      const data = await response.json();
+      setVesselTypes(data.options || []);
+    } catch (err) {
+      console.error('Error fetching vessel type settings:', err);
+      setVesselTypes([]);
+    }
+  };
+
   // Fetch compliance certificates, incidents, and maintenance for this vessel
   useEffect(() => {
     const fetchVesselData = async () => {
