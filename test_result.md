@@ -220,6 +220,21 @@ backend:
           comment: "Risk assessment with 5x5 matrix calculations working correctly. CRUD operations functional."
 
 frontend:
+  - task: "Trip Logs Vessel vs Trip Filtering Feature"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/components/TripDetailsDialog.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "NEW TASK: Test the Trip Logs feature to verify that Running Logs and Engine Logs are now filtered by vessel instead of trip. Expected behavior: Allocated Crew and Crew Shifts tabs show logs filtered by trip_id (trip-specific), while Running Logs and Engine Logs tabs show logs filtered by vessel_id (vessel-specific across all trips for that vessel). Backend changes: GET /api/running-logs?vessel_id={id} and GET /api/engine-running-logs?vessel_id={id} now supported. Frontend changes: TripDetailsDialog now fetches running and engine logs using vessel_id instead of trip_id."
+        - working: true
+          agent: "testing"
+          comment: "✅ TRIP LOGS VESSEL vs TRIP FILTERING SUCCESSFULLY VERIFIED: Comprehensive testing completed with both API verification and UI testing. API VERIFICATION: 1) Allocated Crew (trip-specific): 5 entries via trip_id. 2) Crew Shifts (trip-specific): 1 entry via trip_id. 3) Running Logs (vessel-specific): 3 entries via vessel_id vs 0 entries via trip_id - correctly shows MORE data when filtered by vessel. 4) Engine Logs (vessel-specific): 2 entries via vessel_id vs 0 entries via trip_id - correctly shows MORE data when filtered by vessel. UI VERIFICATION: Successfully opened trip details dialog, confirmed all 4 tabs present ['Allocated Crew (5)', 'Crew Shifts (1)', 'Running (3)', 'Engine (2)'], all tabs load data correctly, and filtering behavior matches expected implementation. EXPECTED BEHAVIOR CONFIRMED: ✅ Allocated Crew shows trip-specific data (5 crew members for this trip). ✅ Crew Shifts shows trip-specific data (1 shift log for this trip). ✅ Running Logs shows vessel-specific data (3 logs across all trips for this vessel). ✅ Engine Logs shows vessel-specific data (2 logs across all trips for this vessel). The implementation correctly differentiates between trip-specific and vessel-specific log filtering as requested."
+
   - task: "Summary Card Incorrect Quantity Display Investigation"
     implemented: true
     working: true
