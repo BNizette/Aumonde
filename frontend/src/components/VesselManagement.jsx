@@ -394,9 +394,8 @@ const VesselManagement = () => {
             setSearchQuery('Operational');
             setFilters({
               vessel_types: [],
-              statuses: [],
-              start_date: '',
-              end_date: ''
+              min_length: '',
+              max_length: ''
             });
           }}
         >
