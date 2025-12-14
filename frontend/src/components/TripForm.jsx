@@ -13,6 +13,7 @@ const API = `${BACKEND_URL}/api`;
 
 const TripForm = ({ open, onClose, onSave, trip, mode = 'create' }) => {
   const [vessels, setVessels] = useState([]);
+  const [tripTypes, setTripTypes] = useState([]);
   const [error, setError] = useState('');
 
   const [formData, setFormData] = useState({
