@@ -410,8 +410,8 @@ class AMSAComprehensiveTester:
             "vessel_id": vessel['id'],
             "trip_type": "Inspection",
             "operating_area": "Port Phillip Bay",
-            "depart_datetime": "2024-01-15T09:00:00Z",
-            "arrival_datetime": "2024-01-15T17:00:00Z",
+            "planned_depart_datetime": "2024-01-15T09:00:00Z",
+            "planned_arrival_datetime": "2024-01-15T17:00:00Z",
             "number_of_passengers": 10,
             "number_of_crew": 3
         }
