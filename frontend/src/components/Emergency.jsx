@@ -67,7 +67,8 @@ const Emergency = () => {
     clearFilter: clearProcedureFilterType,
     clearDateFilters: clearProcedureDateFilters,
     clearAllFilters: clearAllProcedureFilters,
-    setFilterValue: setProcedureFilterValue
+    setFilterValue: setProcedureFilterValue,
+    updateFilters: updateProcedureFilters
   } = useAdvancedFilters({
     types: [],
     start_date: '',
