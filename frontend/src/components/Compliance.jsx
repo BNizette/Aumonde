@@ -108,6 +108,23 @@ const Compliance = () => {
     fetchData();
   }, []);
 
+  // Handle URL parameters for pre-filtering (e.g., from vessel edit)
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const vesselParam = params.get('vessel');
+    
+    if (vesselParam && vessels.length > 0) {
+      // Find vessel name from ID
+      const vessel = vessels.find(v => v.id === vesselParam);
+      if (vessel) {
+        setCertFilters(prev => ({
+          ...prev,
+          vessels: [vessel.vessel_name]
+        }));
+      }
+    }
+  }, [location.search, vessels]);
+
   useEffect(() => {
     applyCertFilters();
   }, [certSearch, certFilters, certSort, certificates]);
