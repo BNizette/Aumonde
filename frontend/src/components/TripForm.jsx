@@ -43,9 +43,24 @@ const TripForm = ({ open, onClose, onSave, trip, mode = 'create' }) => {
     }
   };
 
+  const fetchSettings = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const headers = { Authorization: `Bearer ${token}` };
+      
+      const response = await fetch(`${API}/settings/trip/trip_types`, { headers });
+      const data = await response.json();
+      setTripTypes(data.options || []);
+    } catch (err) {
+      console.error('Error fetching trip type settings:', err);
+      setTripTypes([]);
+    }
+  };
+
   useEffect(() => {
     if (open) {
       fetchVessels();
+      fetchSettings();
     }
   }, [open]);
 
