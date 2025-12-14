@@ -579,6 +579,60 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create' }) => {
                     onChange={(e) => handleChange('max_crew', e.target.value)}
                   />
                 </div>
+                </div>
+              </div>
+
+              {/* Safety Equipment Section */}
+              <div>
+                <h3 className="text-lg font-semibold mb-4 text-gray-900 border-b pb-2">Safety Equipment</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="life_rafts">Life Rafts (Quantity)</Label>
+                    <Input
+                      id="life_rafts"
+                      type="number"
+                      value={formData.life_rafts}
+                      onChange={(e) => handleChange('life_rafts', e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="life_jackets">Life Jackets (Quantity)</Label>
+                    <Input
+                      id="life_jackets"
+                      type="number"
+                      value={formData.life_jackets}
+                      onChange={(e) => handleChange('life_jackets', e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="fire_extinguishers">Fire Extinguishers (Quantity)</Label>
+                    <Input
+                      id="fire_extinguishers"
+                      type="number"
+                      value={formData.fire_extinguishers}
+                      onChange={(e) => handleChange('fire_extinguishers', e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="flares">Flares (Quantity)</Label>
+                    <Input
+                      id="flares"
+                      type="number"
+                      value={formData.flares}
+                      onChange={(e) => handleChange('flares', e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-2 col-span-2">
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="epirb"
+                        checked={formData.epirb}
+                        onCheckedChange={(checked) => handleChange('epirb', checked)}
+                      />
+                      <Label htmlFor="epirb">EPIRB (Emergency Position Indicating Radio Beacon)</Label>
+                    </div>
+                  </div>
+                </div>
               </div>
             </TabsContent>
 
