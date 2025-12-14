@@ -606,6 +606,15 @@ const TripManagement = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <ManualLogEntry
+        open={manualLogOpen}
+        onClose={() => {
+          setManualLogOpen(false);
+          fetchTrips(); // Refresh data
+        }}
+        type={manualLogType}
+      />
     </div>
   );
 };
