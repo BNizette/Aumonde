@@ -39,6 +39,12 @@ const Settings = () => {
         operational_status: 'Operational Status'
       }
     },
+    trip: {
+      label: 'Trip Management',
+      categories: {
+        trip_types: 'Trip Types'
+      }
+    },
     document: {
       label: 'Document Management',
       categories: {
@@ -50,6 +56,14 @@ const Settings = () => {
       categories: {
         incident_types: 'Incident Types',
         severities: 'Severity Levels'
+      }
+    },
+    emergency: {
+      label: 'Emergency Response',
+      categories: {
+        contact_types: 'Contact Types',
+        emergency_types: 'Emergency Types',
+        drill_types: 'Drill Types'
       }
     }
   };
