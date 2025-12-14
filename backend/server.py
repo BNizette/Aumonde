@@ -3646,6 +3646,115 @@ async def delete_setting_option(
         logger.error(f"Error deleting setting option: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Error deleting setting option: {str(e)}")
 
+@api_router.post("/settings/{module}/{category}/populate")
+async def populate_setting_from_existing(
+    module: str,
+    category: str,
+    current_user: dict = Depends(get_current_user)
+):
+    """Populate settings from existing records in the database"""
+    if current_user.get("access_level") != AccessLevel.FULL:
+        raise HTTPException(status_code=403, detail="Only users with Full access can populate settings")
+    
+    try:
+        unique_values = []
+        
+        # Document categories
+        if module == "document" and category == "categories":
+            documents = await db.documents.find({}, {"_id": 0, "category": 1}).to_list(10000)
+            unique_values = list(set([doc.get("category") for doc in documents if doc.get("category")]))
+        
+        # Incident types
+        elif module == "incident" and category == "incident_types":
+            incidents = await db.incidents.find({}, {"_id": 0, "incident_type": 1}).to_list(10000)
+            unique_values = list(set([inc.get("incident_type") for inc in incidents if inc.get("incident_type")]))
+        
+        # Incident severities
+        elif module == "incident" and category == "severities":
+            incidents = await db.incidents.find({}, {"_id": 0, "severity": 1}).to_list(10000)
+            unique_values = list(set([inc.get("severity") for inc in incidents if inc.get("severity")]))
+        
+        else:
+            raise HTTPException(status_code=400, detail="Population not supported for this module/category")
+        
+        if not unique_values:
+            return {"message": "No existing values found to populate", "count": 0}
+        
+        # Sort values
+        unique_values.sort()
+        
+        # Get existing setting
+        existing = await db.settings.find_one(
+            {"module": module, "category": category},
+            {"_id": 0}
+        )
+        
+        existing_option_values = []
+        if existing and existing.get("options"):
+            existing_option_values = [opt.get("value") for opt in existing.get("options", [])]
+        
+        # Only add new unique values
+        new_values = [v for v in unique_values if v not in existing_option_values]
+        
+        if not new_values:
+            return {"message": "All existing values are already in settings", "count": 0}
+        
+        # Create new options
+        new_options = []
+        start_order = len(existing_option_values) if existing else 0
+        
+        for idx, value in enumerate(new_values):
+            new_options.append({
+                "id": str(uuid.uuid4()),
+                "value": value,
+                "is_active": True,
+                "order": start_order + idx,
+                "created_at": datetime.now(timezone.utc).isoformat()
+            })
+        
+        # Update or create setting
+        if existing:
+            all_options = existing.get("options", []) + new_options
+            await db.settings.update_one(
+                {"module": module, "category": category},
+                {"$set": {
+                    "options": all_options,
+                    "updated_at": datetime.now(timezone.utc).isoformat()
+                }}
+            )
+        else:
+            new_setting = {
+                "id": str(uuid.uuid4()),
+                "module": module,
+                "category": category,
+                "label": category.replace("_", " ").title(),
+                "options": new_options,
+                "created_at": datetime.now(timezone.utc).isoformat(),
+                "updated_at": datetime.now(timezone.utc).isoformat()
+            }
+            await db.settings.insert_one(new_setting)
+        
+        await log_audit(
+            current_user["id"],
+            current_user["full_name"],
+            "populate_setting",
+            "settings",
+            f"{module}.{category}",
+            f"Populated {len(new_values)} new values from existing records"
+        )
+        
+        return {
+            "message": f"Successfully populated {len(new_values)} new values",
+            "count": len(new_values),
+            "values": new_values
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error populating setting: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error populating setting: {str(e)}")
+
 
 # ============================================================================
 # PLACEHOLDER ENDPOINTS FOR FUTURE PHASES
