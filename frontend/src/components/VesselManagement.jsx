@@ -45,9 +45,8 @@ const VesselManagement = () => {
     setFilterValue
   } = useAdvancedFilters({
     vessel_types: [],
-    statuses: [],
-    start_date: '',
-    end_date: ''
+    min_length: '',
+    max_length: ''
   });
 
   const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
