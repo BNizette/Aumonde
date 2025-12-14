@@ -529,7 +529,7 @@ const CrewManagement = () => {
           className="cursor-pointer hover:shadow-lg transition-shadow"
           onClick={() => {
             setSearchQuery('');
-            setFilters({
+            updateFilters({
               positions: [],
               roles: [],
               start_date: '',
