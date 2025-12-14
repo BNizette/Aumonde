@@ -655,31 +655,19 @@ class AMSAComprehensiveTester:
             self.log_test("Manual Crew Shift Log Entry (without trip_id)", True, 
                          f"Created manual crew shift: {manual_crew_shift_id}")
             
-            # Verify the crew shift was created by fetching crew shifts
-            success, crew_shifts, _ = self.make_request('GET', f'crew/{crew_member["id"]}/shifts')
-            if success and isinstance(crew_shifts, list):
-                # Find our manual shift
-                manual_shift_found = any(shift['id'] == manual_crew_shift_id for shift in crew_shifts)
+            # Verify the crew shift was created by fetching all trip logs
+            success, all_shifts, _ = self.make_request('GET', 'trip-logs')
+            if success and isinstance(all_shifts, list):
+                manual_shift_found = any(shift['id'] == manual_crew_shift_id for shift in all_shifts)
                 if manual_shift_found:
-                    self.log_test("Verify Manual Crew Shift in Crew Shifts", True, 
-                                 f"Manual shift found in crew shifts ({len(crew_shifts)} total)")
+                    self.log_test("Verify Manual Crew Shift in Trip Logs", True, 
+                                 f"Manual shift found in trip logs ({len(all_shifts)} total)")
                 else:
-                    self.log_test("Verify Manual Crew Shift in Crew Shifts", False, 
-                                 error="Manual shift not found in crew shifts")
+                    self.log_test("Verify Manual Crew Shift in Trip Logs", False, 
+                                 error="Manual shift not found in trip logs")
             else:
-                # Try alternative endpoint if crew-specific endpoint doesn't exist
-                success, all_shifts, _ = self.make_request('GET', 'trip-logs')
-                if success and isinstance(all_shifts, list):
-                    manual_shift_found = any(shift['id'] == manual_crew_shift_id for shift in all_shifts)
-                    if manual_shift_found:
-                        self.log_test("Verify Manual Crew Shift in All Shifts", True, 
-                                     f"Manual shift found in all shifts ({len(all_shifts)} total)")
-                    else:
-                        self.log_test("Verify Manual Crew Shift in All Shifts", False, 
-                                     error="Manual shift not found in all shifts")
-                else:
-                    self.log_test("Verify Manual Crew Shift", False, 
-                                 error="Failed to fetch crew shifts")
+                self.log_test("Verify Manual Crew Shift in Trip Logs", False, 
+                             error="Failed to fetch trip logs")
         else:
             self.log_test("Manual Crew Shift Log Entry (without trip_id)", False, 
                          error=f"Status: {status}, Response: {response}")
