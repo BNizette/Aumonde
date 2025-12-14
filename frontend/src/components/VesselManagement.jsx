@@ -40,7 +40,6 @@ const VesselManagement = () => {
     setFilters,
     toggleFilter,
     clearFilter,
-    clearDateFilters,
     clearAllFilters: clearAllFiltersHook,
     setFilterValue
   } = useAdvancedFilters({
