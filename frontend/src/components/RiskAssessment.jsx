@@ -36,6 +36,7 @@ const RiskAssessment = () => {
   // Use custom hook for advanced filtering
   const {
     filters,
+    setFilters,
     toggleFilter,
     clearFilter,
     clearDateFilters,
