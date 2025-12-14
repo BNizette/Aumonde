@@ -339,6 +339,7 @@ metadata:
 
 test_plan:
   current_focus:
+    - "VesselForm New Tabs Implementation Testing"
     - "Maintenance Summary Cards Runtime Errors Investigation"
   stuck_tasks: []
   test_all: false
