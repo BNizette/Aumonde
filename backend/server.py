@@ -1594,13 +1594,27 @@ async def get_running_logs(trip_id: Optional[str] = None, vessel_id: Optional[st
     if trip_id:
         query["trip_id"] = trip_id
     elif vessel_id:
-        # Get all trips for this vessel, then filter logs
+        # Get logs for this vessel from two sources:
+        # 1. Logs from trips associated with this vessel
+        # 2. Manual logs directly associated with this vessel (vessel_id set, trip_id is None)
         trips = await db.trips.find({"vessel_id": vessel_id}, {"_id": 0, "id": 1}).to_list(1000)
         trip_ids = [t["id"] for t in trips]
+        
+        # Build OR query to include both trip-based and manual logs
+        or_conditions = []
+        
+        # Include logs from trips for this vessel
         if trip_ids:
-            query["trip_id"] = {"$in": trip_ids}
+            or_conditions.append({"trip_id": {"$in": trip_ids}})
+        
+        # Include manual logs directly associated with this vessel
+        or_conditions.append({"vessel_id": vessel_id, "trip_id": None})
+        
+        if or_conditions:
+            query["$or"] = or_conditions
         else:
-            return []  # No trips for this vessel
+            # No trips and no manual logs - return empty
+            return []
     
     logs = await db.running_logs.find(query, {"_id": 0}).sort("log_datetime", -1).to_list(1000)
     return logs
