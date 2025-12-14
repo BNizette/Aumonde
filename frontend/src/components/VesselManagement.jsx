@@ -82,23 +82,15 @@ const VesselManagement = () => {
     }
 
     // Apply multi-select status filter
-    if (filters.statuses.length > 0) {
-      filtered = filtered.filter(vessel => 
-        filters.statuses.includes(vessel.operational_status)
-      );
-    }
-
-    // Apply date range filter
-    if (filters.start_date || filters.end_date) {
+    // Apply length range filter
+    if (filters.min_length || filters.max_length) {
       filtered = filtered.filter(vessel => {
-        if (!vessel.created_at) return false;
-        
-        const vesselDate = new Date(vessel.created_at);
-        const startDate = filters.start_date ? new Date(filters.start_date) : null;
-        const endDate = filters.end_date ? new Date(filters.end_date + 'T23:59:59') : null;
+        const length = parseFloat(vessel.length_overall) || 0;
+        const minLength = parseFloat(filters.min_length) || 0;
+        const maxLength = parseFloat(filters.max_length) || Infinity;
 
-        if (startDate && vesselDate < startDate) return false;
-        if (endDate && vesselDate > endDate) return false;
+        if (minLength && length < minLength) return false;
+        if (maxLength !== Infinity && length > maxLength) return false;
         
         return true;
       });
