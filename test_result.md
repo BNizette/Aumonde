@@ -219,6 +219,18 @@ backend:
           agent: "testing"
           comment: "Risk assessment with 5x5 matrix calculations working correctly. CRUD operations functional."
 
+  - task: "Manual Log Entry Features"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "✅ MANUAL LOG ENTRY FEATURES SUCCESSFULLY TESTED: Both manual vessel log entry and manual crew shift log entry features are working perfectly. COMPREHENSIVE TESTING RESULTS: 🔧 MANUAL VESSEL LOG ENTRY: Successfully tested /api/running-logs endpoint with optional trip_id. Created manual vessel log without trip_id using vessel_id, crew_id, log_datetime, category, activity, and activity_details. Log was successfully created and retrieved via GET /api/running-logs?vessel_id={id}. Backend correctly handles both trip-based logs and manual logs with vessel_id. 🔧 MANUAL CREW SHIFT LOG ENTRY: Successfully tested /api/trip-logs endpoint (crew shifts) with optional trip_id. Created manual crew shift without trip_id using crew_id, crew_name, shift_start_datetime, shift_stop_datetime, and task_performed. Shift was successfully created and retrieved via GET /api/trip-logs. 🔧 DATA VALIDATION: Confirmed required field validation works correctly - missing crew_id properly rejected with 422 status. Optional fields (vessel_id, category, activity_details, shift_stop_datetime, task_performed) work correctly. 🔧 BACKEND FIXES APPLIED: Updated GET /api/running-logs endpoint to support both trip-based filtering and direct vessel_id filtering for manual logs using $or query with conditions: trip_id in vessel's trips OR (vessel_id matches AND trip_id is null). All manual log entry functionality working as specified in review request."
+
 frontend:
   - task: "Trip Logs Vessel vs Trip Filtering Feature"
     implemented: true
