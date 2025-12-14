@@ -345,7 +345,7 @@ const TripManagement = () => {
         </Card>
         <Card 
           className="cursor-pointer hover:shadow-lg transition-shadow" 
-          onClick={() => setFilters(prev => ({...prev, statuses: ['active'], vessels: [], start_date: '', end_date: ''}))}
+          onClick={() => updateFilters({ statuses: ['active'], vessels: [], start_date: '', end_date: '' })}
         >
           <CardHeader className="pb-2">
             <CardTitle className="text-xs font-medium text-gray-500">Active</CardTitle>
