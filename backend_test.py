@@ -581,6 +581,228 @@ class AMSAComprehensiveTester:
             self.log_test("Get Trip Logs", False, error=f"Status: {status}")
 
     # ============================================================================
+    # MANUAL LOG ENTRY TESTS (NEW FEATURE)
+    # ============================================================================
+
+    def test_manual_log_entry(self):
+        """Test manual log entry functionality without trip_id"""
+        print("\n📝 Testing Manual Log Entry Features (NEW)...")
+        
+        if not hasattr(self, 'existing_crew') or not self.existing_crew:
+            self.log_test("Manual Log Entry Setup", False, error="No crew members available")
+            return False
+        
+        if not hasattr(self, 'existing_vessels') or not self.existing_vessels:
+            self.log_test("Manual Log Entry Setup", False, error="No vessels available")
+            return False
+        
+        crew_member = self.existing_crew[0]
+        vessel = self.existing_vessels[0]
+        
+        # Test 1: Manual Vessel Log Entry (Running Log without trip_id)
+        print("\n   Testing Manual Vessel Log Entry...")
+        
+        manual_running_log_data = {
+            # No trip_id - this is manual entry
+            "vessel_id": vessel['id'],
+            "crew_id": crew_member['id'],
+            "crew_name": crew_member['staff_name'],
+            "log_datetime": "2024-12-14T10:00:00Z",
+            "category": "Safety",
+            "activity": "Manual safety inspection",
+            "activity_details": "Checked all safety equipment during routine maintenance"
+        }
+        
+        success, response, status = self.make_request('POST', 'running-logs', data=manual_running_log_data)
+        if success and 'id' in response:
+            manual_running_log_id = response['id']
+            self.log_test("Manual Vessel Log Entry (without trip_id)", True, 
+                         f"Created manual running log: {manual_running_log_id}")
+            
+            # Verify the log was created by fetching vessel logs
+            success, vessel_logs, _ = self.make_request('GET', f'running-logs?vessel_id={vessel["id"]}')
+            if success and isinstance(vessel_logs, list):
+                # Find our manual log
+                manual_log_found = any(log['id'] == manual_running_log_id for log in vessel_logs)
+                if manual_log_found:
+                    self.log_test("Verify Manual Vessel Log in Vessel Logs", True, 
+                                 f"Manual log found in vessel logs ({len(vessel_logs)} total)")
+                else:
+                    self.log_test("Verify Manual Vessel Log in Vessel Logs", False, 
+                                 error="Manual log not found in vessel logs")
+            else:
+                self.log_test("Verify Manual Vessel Log in Vessel Logs", False, 
+                             error="Failed to fetch vessel logs")
+        else:
+            self.log_test("Manual Vessel Log Entry (without trip_id)", False, 
+                         error=f"Status: {status}, Response: {response}")
+        
+        # Test 2: Manual Crew Shift Log Entry (Crew Shift without trip_id)
+        print("\n   Testing Manual Crew Shift Log Entry...")
+        
+        manual_crew_shift_data = {
+            # No trip_id - this is manual entry
+            "crew_id": crew_member['id'],
+            "crew_name": crew_member['staff_name'],
+            "shift_start_datetime": "2024-12-14T08:00:00Z",
+            "shift_stop_datetime": "2024-12-14T16:00:00Z",
+            "task_performed": "Maintenance and inspection duties"
+        }
+        
+        success, response, status = self.make_request('POST', 'crew-shifts', data=manual_crew_shift_data)
+        if success and 'id' in response:
+            manual_crew_shift_id = response['id']
+            self.log_test("Manual Crew Shift Log Entry (without trip_id)", True, 
+                         f"Created manual crew shift: {manual_crew_shift_id}")
+            
+            # Verify the crew shift was created by fetching crew shifts
+            success, crew_shifts, _ = self.make_request('GET', f'crew/{crew_member["id"]}/shifts')
+            if success and isinstance(crew_shifts, list):
+                # Find our manual shift
+                manual_shift_found = any(shift['id'] == manual_crew_shift_id for shift in crew_shifts)
+                if manual_shift_found:
+                    self.log_test("Verify Manual Crew Shift in Crew Shifts", True, 
+                                 f"Manual shift found in crew shifts ({len(crew_shifts)} total)")
+                else:
+                    self.log_test("Verify Manual Crew Shift in Crew Shifts", False, 
+                                 error="Manual shift not found in crew shifts")
+            else:
+                # Try alternative endpoint if crew-specific endpoint doesn't exist
+                success, all_shifts, _ = self.make_request('GET', 'trip-logs')
+                if success and isinstance(all_shifts, list):
+                    manual_shift_found = any(shift['id'] == manual_crew_shift_id for shift in all_shifts)
+                    if manual_shift_found:
+                        self.log_test("Verify Manual Crew Shift in All Shifts", True, 
+                                     f"Manual shift found in all shifts ({len(all_shifts)} total)")
+                    else:
+                        self.log_test("Verify Manual Crew Shift in All Shifts", False, 
+                                     error="Manual shift not found in all shifts")
+                else:
+                    self.log_test("Verify Manual Crew Shift", False, 
+                                 error="Failed to fetch crew shifts")
+        else:
+            self.log_test("Manual Crew Shift Log Entry (without trip_id)", False, 
+                         error=f"Status: {status}, Response: {response}")
+        
+        # Test 3: Data Validation - Test required fields
+        print("\n   Testing Manual Log Entry Validation...")
+        
+        # Test missing crew_id in running log
+        invalid_running_log = {
+            "vessel_id": vessel['id'],
+            # Missing crew_id
+            "crew_name": "Test Crew",
+            "log_datetime": "2024-12-14T10:00:00Z",
+            "activity": "Test activity"
+        }
+        
+        success, response, status = self.make_request('POST', 'running-logs', 
+                                                     data=invalid_running_log, expected_status=422)
+        if status == 422:
+            self.log_test("Manual Running Log Validation (missing crew_id)", True, 
+                         "Correctly rejected invalid data")
+        else:
+            self.log_test("Manual Running Log Validation (missing crew_id)", False, 
+                         error=f"Expected 422, got {status}")
+        
+        # Test missing crew_id in crew shift
+        invalid_crew_shift = {
+            # Missing crew_id
+            "crew_name": "Test Crew",
+            "shift_start_datetime": "2024-12-14T08:00:00Z"
+        }
+        
+        success, response, status = self.make_request('POST', 'crew-shifts', 
+                                                     data=invalid_crew_shift, expected_status=422)
+        if status == 422:
+            self.log_test("Manual Crew Shift Validation (missing crew_id)", True, 
+                         "Correctly rejected invalid data")
+        else:
+            self.log_test("Manual Crew Shift Validation (missing crew_id)", False, 
+                         error=f"Expected 422, got {status}")
+        
+        # Test 4: Optional fields work correctly
+        print("\n   Testing Optional Fields...")
+        
+        # Test running log with minimal required fields
+        minimal_running_log = {
+            "crew_id": crew_member['id'],
+            "crew_name": crew_member['staff_name'],
+            "log_datetime": "2024-12-14T11:00:00Z",
+            "activity": "Minimal test activity"
+            # No vessel_id, category, or activity_details
+        }
+        
+        success, response, status = self.make_request('POST', 'running-logs', data=minimal_running_log)
+        if success and 'id' in response:
+            self.log_test("Manual Running Log with Minimal Fields", True, 
+                         "Created log with only required fields")
+        else:
+            self.log_test("Manual Running Log with Minimal Fields", False, 
+                         error=f"Status: {status}")
+        
+        # Test crew shift with minimal required fields
+        minimal_crew_shift = {
+            "crew_id": crew_member['id'],
+            "crew_name": crew_member['staff_name'],
+            "shift_start_datetime": "2024-12-14T09:00:00Z"
+            # No shift_stop_datetime or task_performed
+        }
+        
+        success, response, status = self.make_request('POST', 'crew-shifts', data=minimal_crew_shift)
+        if success and 'id' in response:
+            self.log_test("Manual Crew Shift with Minimal Fields", True, 
+                         "Created shift with only required fields")
+        else:
+            self.log_test("Manual Crew Shift with Minimal Fields", False, 
+                         error=f"Status: {status}")
+
+    def test_crew_shifts_endpoint(self):
+        """Test crew-shifts endpoint specifically"""
+        print("\n👥 Testing Crew Shifts Endpoint...")
+        
+        if not hasattr(self, 'existing_crew') or not self.existing_crew:
+            self.log_test("Crew Shifts Endpoint Test", False, error="No crew members available")
+            return False
+        
+        crew_member = self.existing_crew[0]
+        
+        # Test crew-shifts endpoint (might be different from trip-logs)
+        crew_shift_data = {
+            "crew_id": crew_member['id'],
+            "crew_name": crew_member['staff_name'],
+            "shift_start_datetime": "2024-12-14T07:00:00Z",
+            "shift_stop_datetime": "2024-12-14T15:00:00Z",
+            "task_performed": "Testing crew shifts endpoint"
+        }
+        
+        success, response, status = self.make_request('POST', 'crew-shifts', data=crew_shift_data)
+        if success and 'id' in response:
+            crew_shift_id = response['id']
+            self.log_test("Create Crew Shift via /crew-shifts", True, f"Created: {crew_shift_id}")
+            
+            # Try to get crew shifts
+            success, shifts, _ = self.make_request('GET', 'crew-shifts')
+            if success and isinstance(shifts, list):
+                self.log_test("Get All Crew Shifts", True, f"Retrieved {len(shifts)} shifts")
+            else:
+                self.log_test("Get All Crew Shifts", False, error="Failed to get shifts")
+                
+        else:
+            # If crew-shifts endpoint doesn't exist, it might be using trip-logs
+            self.log_test("Create Crew Shift via /crew-shifts", False, 
+                         error=f"Status: {status} - might be using /trip-logs instead")
+            
+            # Try with trip-logs endpoint as fallback
+            success, response, status = self.make_request('POST', 'trip-logs', data=crew_shift_data)
+            if success and 'id' in response:
+                self.log_test("Create Crew Shift via /trip-logs (fallback)", True, 
+                             f"Created: {response['id']}")
+            else:
+                self.log_test("Create Crew Shift via /trip-logs (fallback)", False, 
+                             error=f"Status: {status}")
+
+    # ============================================================================
     # DOCUMENT MANAGEMENT TESTS
     # ============================================================================
 
