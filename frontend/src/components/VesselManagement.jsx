@@ -80,7 +80,6 @@ const VesselManagement = () => {
       );
     }
 
-    // Apply multi-select status filter
     // Apply length range filter
     if (filters.min_length || filters.max_length) {
       filtered = filtered.filter(vessel => {
