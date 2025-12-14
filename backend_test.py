@@ -13,7 +13,7 @@ from pathlib import Path
 import tempfile
 
 class AMSAComprehensiveTester:
-    def __init__(self, base_url="https://maritime-hub-11.preview.emergentagent.com"):
+    def __init__(self, base_url="https://vessel-dashboard-2.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.token = None
