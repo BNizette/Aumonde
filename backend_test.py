@@ -737,7 +737,7 @@ class AMSAComprehensiveTester:
             # No shift_stop_datetime or task_performed
         }
         
-        success, response, status = self.make_request('POST', 'crew-shifts', data=minimal_crew_shift)
+        success, response, status = self.make_request('POST', 'trip-logs', data=minimal_crew_shift)
         if success and 'id' in response:
             self.log_test("Manual Crew Shift with Minimal Fields", True, 
                          "Created shift with only required fields")
