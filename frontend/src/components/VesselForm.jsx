@@ -736,9 +736,175 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create' }) => {
               </div>
             </TabsContent>
 
-            {/* TAB 4: INCIDENTS - See full implementation above (already added) */}
-            
-            {/* TAB 5: MAINTENANCE - See full implementation above (already added) */}
+            {/* TAB 4: INCIDENTS */}
+            <TabsContent value="incidents" className="space-y-4">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h3 className="font-semibold text-lg">Vessel Incidents</h3>
+                  <p className="text-sm text-gray-500">
+                    {mode === 'create' 
+                      ? 'Save the vessel first to view incidents' 
+                      : `Incidents linked to ${formData.vessel_name || 'this vessel'}`}
+                  </p>
+                </div>
+                {mode === 'edit' && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => window.location.href = `/incidents?vessel=${vessel.id}`}
+                  >
+                    <AlertTriangle className="h-4 w-4 mr-2" />
+                    Manage in Incidents
+                  </Button>
+                )}
+              </div>
+
+              {mode === 'create' ? (
+                <div className="flex flex-col items-center justify-center py-12 text-center">
+                  <AlertTriangle className="h-16 w-16 text-gray-300 mb-4" />
+                  <h3 className="text-lg font-semibold text-gray-700 mb-2">No Incidents Yet</h3>
+                  <p className="text-sm text-gray-500 max-w-md">
+                    Save this vessel first, then incidents can be viewed here.
+                  </p>
+                </div>
+              ) : loadingIncidents ? (
+                <div className="flex items-center justify-center py-12">
+                  <div className="text-gray-500">Loading incidents...</div>
+                </div>
+              ) : vesselIncidents.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-12 text-center border-2 border-dashed rounded-lg">
+                  <AlertTriangle className="h-16 w-16 text-gray-300 mb-4" />
+                  <h3 className="text-lg font-semibold text-gray-700 mb-2">No Incidents Found</h3>
+                  <p className="text-sm text-gray-500 mb-4 max-w-md">
+                    This vessel doesn't have any incidents recorded.
+                  </p>
+                  <Button type="button" onClick={() => window.location.href = `/incidents?vessel=${vessel.id}`}>
+                    <AlertTriangle className="h-4 w-4 mr-2" />
+                    Report Incident
+                  </Button>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {vesselIncidents.slice(0, 10).map((incident) => {
+                    const getSeverityColor = () => {
+                      switch (incident.severity) {
+                        case 'Critical': return 'text-red-600';
+                        case 'Serious': return 'text-orange-600';
+                        case 'Moderate': return 'text-yellow-600';
+                        default: return 'text-blue-600';
+                      }
+                    };
+
+                    return (
+                      <div key={incident.id} className="flex items-start gap-4 p-4 border rounded-lg hover:bg-gray-50">
+                        <AlertTriangle className={`h-5 w-5 mt-1 ${getSeverityColor()}`} />
+                        <div className="flex-1">
+                          <div className="flex justify-between">
+                            <h4 className="font-semibold">{incident.incident_type}</h4>
+                            <Badge variant="outline">{incident.severity}</Badge>
+                          </div>
+                          <p className="text-sm text-gray-600 mt-1">
+                            {new Date(incident.incident_date).toLocaleDateString()}
+                          </p>
+                          {incident.description && (
+                            <p className="text-sm text-gray-500 mt-2 line-clamp-2">{incident.description}</p>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                  <Button type="button" variant="outline" size="sm" className="w-full" onClick={() => window.location.href = `/incidents?vessel=${vessel.id}`}>
+                    View All in Incidents Module
+                  </Button>
+                </div>
+              )}
+            </TabsContent>
+
+            {/* TAB 5: MAINTENANCE */}
+            <TabsContent value="maintenance" className="space-y-4">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h3 className="font-semibold text-lg">Maintenance Records</h3>
+                  <p className="text-sm text-gray-500">
+                    {mode === 'create' 
+                      ? 'Save the vessel first to view maintenance' 
+                      : `Maintenance for ${formData.vessel_name || 'this vessel'} (newest first)`}
+                  </p>
+                </div>
+                {mode === 'edit' && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => window.location.href = `/maintenance?vessel=${vessel.id}`}
+                  >
+                    <Wrench className="h-4 w-4 mr-2" />
+                    Manage in Maintenance
+                  </Button>
+                )}
+              </div>
+
+              {mode === 'create' ? (
+                <div className="flex flex-col items-center justify-center py-12 text-center">
+                  <Wrench className="h-16 w-16 text-gray-300 mb-4" />
+                  <h3 className="text-lg font-semibold text-gray-700 mb-2">No Maintenance Records Yet</h3>
+                  <p className="text-sm text-gray-500 max-w-md">
+                    Save this vessel first, then maintenance can be tracked here.
+                  </p>
+                </div>
+              ) : loadingMaintenance ? (
+                <div className="flex items-center justify-center py-12">
+                  <div className="text-gray-500">Loading maintenance...</div>
+                </div>
+              ) : vesselMaintenance.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-12 text-center border-2 border-dashed rounded-lg">
+                  <Wrench className="h-16 w-16 text-gray-300 mb-4" />
+                  <h3 className="text-lg font-semibold text-gray-700 mb-2">No Maintenance Records</h3>
+                  <p className="text-sm text-gray-500 mb-4 max-w-md">
+                    This vessel doesn't have any maintenance records.
+                  </p>
+                  <Button type="button" onClick={() => window.location.href = `/maintenance?vessel=${vessel.id}`}>
+                    <Wrench className="h-4 w-4 mr-2" />
+                    Add Maintenance
+                  </Button>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {vesselMaintenance.slice(0, 10).map((maint) => {
+                    const getStatusColor = () => {
+                      switch (maint.status) {
+                        case 'Completed': return 'text-green-600';
+                        case 'In Progress': return 'text-yellow-600';
+                        case 'Overdue': return 'text-red-600';
+                        default: return 'text-blue-600';
+                      }
+                    };
+
+                    return (
+                      <div key={maint.id} className="flex items-start gap-4 p-4 border rounded-lg hover:bg-gray-50">
+                        <Wrench className={`h-5 w-5 mt-1 ${getStatusColor()}`} />
+                        <div className="flex-1">
+                          <div className="flex justify-between">
+                            <h4 className="font-semibold">{maint.maintenance_type}</h4>
+                            <Badge variant="outline">{maint.status}</Badge>
+                          </div>
+                          <p className="text-sm text-gray-600 mt-1">
+                            Due: {maint.due_date ? new Date(maint.due_date).toLocaleDateString() : 'N/A'}
+                          </p>
+                          {maint.description && (
+                            <p className="text-sm text-gray-500 mt-2 line-clamp-2">{maint.description}</p>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                  <Button type="button" variant="outline" size="sm" className="w-full" onClick={() => window.location.href = `/maintenance?vessel=${vessel.id}`}>
+                    View All in Maintenance Module
+                  </Button>
+                </div>
+              )}
+            </TabsContent>
 
             {/* TAB 6: COMPLIANCE CERTIFICATES */}
             <TabsContent value="certificates" className="space-y-4">
