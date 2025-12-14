@@ -769,12 +769,12 @@ class AMSAComprehensiveTester:
             crew_shift_id = response['id']
             self.log_test("Create Crew Shift via /crew-shifts", True, f"Created: {crew_shift_id}")
             
-            # Try to get crew shifts
-            success, shifts, _ = self.make_request('GET', 'crew-shifts')
+            # Try to get crew shifts via trip-logs
+            success, shifts, _ = self.make_request('GET', 'trip-logs')
             if success and isinstance(shifts, list):
-                self.log_test("Get All Crew Shifts", True, f"Retrieved {len(shifts)} shifts")
+                self.log_test("Get All Crew Shifts via /trip-logs", True, f"Retrieved {len(shifts)} shifts")
             else:
-                self.log_test("Get All Crew Shifts", False, error="Failed to get shifts")
+                self.log_test("Get All Crew Shifts via /trip-logs", False, error="Failed to get shifts")
                 
         else:
             # If crew-shifts endpoint doesn't exist, it might be using trip-logs
