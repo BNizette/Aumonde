@@ -56,10 +56,12 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
       setLoading(true);
       const token = localStorage.getItem('token');
       
+      // Crew Shifts and Allocated Crew: filter by trip_id (trip-specific)
+      // Running Logs and Engine Logs: filter by vessel_id (vessel-specific across all trips)
       const [shiftRes, runningRes, engineRes, crewRes] = await Promise.all([
         axios.get(`${API}/trip-logs?trip_id=${trip.id}`, { headers: { Authorization: `Bearer ${token}` } }),
-        axios.get(`${API}/running-logs?trip_id=${trip.id}`, { headers: { Authorization: `Bearer ${token}` } }),
-        axios.get(`${API}/engine-running-logs?trip_id=${trip.id}`, { headers: { Authorization: `Bearer ${token}` } }),
+        axios.get(`${API}/running-logs?vessel_id=${trip.vessel_id}`, { headers: { Authorization: `Bearer ${token}` } }),
+        axios.get(`${API}/engine-running-logs?vessel_id=${trip.vessel_id}`, { headers: { Authorization: `Bearer ${token}` } }),
         axios.get(`${API}/allocated-crew?trip_id=${trip.id}`, { headers: { Authorization: `Bearer ${token}` } })
       ]);
       
