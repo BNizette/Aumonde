@@ -1011,7 +1011,7 @@ const Emergency = () => {
                 </Card>
                 <Card 
                   className="cursor-pointer hover:shadow-lg transition-shadow"
-                  onClick={() => setProcedureFilters({...procedureFilters, types: ['Fire']})}
+                  onClick={() => updateProcedureFilters({ types: ['Fire']})}
                 >
                   <CardHeader className="pb-2">
                     <CardTitle className="text-xs font-medium text-gray-500">Fire</CardTitle>
@@ -1025,7 +1025,7 @@ const Emergency = () => {
                 </Card>
                 <Card 
                   className="cursor-pointer hover:shadow-lg transition-shadow"
-                  onClick={() => setProcedureFilters({...procedureFilters, types: ['Man Overboard']})}
+                  onClick={() => updateProcedureFilters({ types: ['Man Overboard']})}
                 >
                   <CardHeader className="pb-2">
                     <CardTitle className="text-xs font-medium text-gray-500">Man Overboard</CardTitle>
@@ -1039,7 +1039,7 @@ const Emergency = () => {
                 </Card>
                 <Card 
                   className="cursor-pointer hover:shadow-lg transition-shadow"
-                  onClick={() => setProcedureFilters({...procedureFilters, types: ['Medical Emergency']})}
+                  onClick={() => updateProcedureFilters({ types: ['Medical Emergency']})}
                 >
                   <CardHeader className="pb-2">
                     <CardTitle className="text-xs font-medium text-gray-500">Medical</CardTitle>
@@ -1128,7 +1128,7 @@ const Emergency = () => {
                     <Input
                       type="date"
                       value={procedureFilters.start_date}
-                      onChange={(e) => setProcedureFilters({...procedureFilters, start_date: e.target.value})}
+                      onChange={(e) => updateProcedureFilters({ start_date: e.target.value})}
                     />
                   </div>
                   <div>
@@ -1136,7 +1136,7 @@ const Emergency = () => {
                     <Input
                       type="date"
                       value={procedureFilters.end_date}
-                      onChange={(e) => setProcedureFilters({...procedureFilters, end_date: e.target.value})}
+                      onChange={(e) => updateProcedureFilters({ end_date: e.target.value})}
                     />
                   </div>
                 </div>
