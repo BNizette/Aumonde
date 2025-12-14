@@ -609,7 +609,7 @@ const VesselManagement = () => {
         </CardContent>
       </Card>
 
-      {/* Vessels Grid */}
+      {/* Vessels List - Responsive Card Layout */}
       {filteredVessels.length === 0 ? (
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-12">
@@ -627,79 +627,103 @@ const VesselManagement = () => {
           </CardContent>
         </Card>
       ) : (
-        <div className="border rounded-lg overflow-hidden">
-          <table className="w-full">
-            <thead className="bg-gray-50 border-b">
-              <tr>
-                <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Vessel Name</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Registration</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Type</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Owner</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Specifications</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Status</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Survey Expiry</th>
-                <th className="px-4 py-3 text-right text-sm font-medium text-gray-700">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y">
+        <Card>
+          <CardContent className="p-0">
+            <div className="divide-y">
               {filteredVessels.map((vessel) => (
-                <tr key={vessel.id} className="hover:bg-gray-50">
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-2">
-                      <Ship className="h-4 w-4 text-blue-600" />
-                      <span className="font-medium text-gray-900">{vessel.vessel_name}</span>
+                <div
+                  key={vessel.id}
+                  className="flex items-center gap-4 p-4 hover:bg-gray-50 transition-colors"
+                >
+                  {/* Icon */}
+                  <div className="flex-shrink-0">
+                    <Ship className="h-5 w-5 text-blue-600" />
+                  </div>
+
+                  {/* Vessel Name */}
+                  <div className="flex-1 min-w-0">
+                    <div className="font-semibold text-gray-900 truncate">
+                      {vessel.vessel_name}
                     </div>
-                  </td>
-                  <td className="px-4 py-3 text-sm text-gray-600">
-                    {vessel.registration_number || '-'}
-                  </td>
-                  <td className="px-4 py-3">
-                    <Badge variant="outline" className="text-xs">{vessel.vessel_type || 'N/A'}</Badge>
-                  </td>
-                  <td className="px-4 py-3 text-sm text-gray-600">
-                    {vessel.owner_name || '-'}
-                  </td>
-                  <td className="px-4 py-3 text-sm text-gray-600">
-                    {vessel.length_overall ? `${vessel.length_overall}m × ${vessel.beam}m` : '-'}
-                  </td>
-                  <td className="px-4 py-3">
+                    <div className="text-sm text-gray-500 truncate sm:hidden">
+                      {vessel.vessel_type || 'N/A'}
+                    </div>
+                  </div>
+
+                  {/* Registration */}
+                  <div className="hidden sm:block w-32 flex-shrink-0">
+                    <span className="text-sm text-gray-600">
+                      {vessel.registration_number || '-'}
+                    </span>
+                  </div>
+
+                  {/* Type Badge */}
+                  <div className="hidden sm:block flex-shrink-0">
+                    <Badge variant="outline" className="whitespace-nowrap text-xs">
+                      {vessel.vessel_type || 'N/A'}
+                    </Badge>
+                  </div>
+
+                  {/* Owner */}
+                  <div className="hidden md:block w-36 flex-shrink-0">
+                    <span className="text-sm text-gray-600 truncate block">
+                      {vessel.owner_name || '-'}
+                    </span>
+                  </div>
+
+                  {/* Specifications */}
+                  <div className="hidden lg:block w-28 flex-shrink-0 text-center">
+                    <span className="text-sm text-gray-600">
+                      {vessel.length_overall ? `${vessel.length_overall}m × ${vessel.beam}m` : '-'}
+                    </span>
+                  </div>
+
+                  {/* Status Badge */}
+                  <div className="hidden xl:block flex-shrink-0">
                     <Badge 
                       variant={vessel.operational_status === 'Operational' ? 'default' : 'secondary'}
-                      className="text-xs"
+                      className="text-xs whitespace-nowrap"
                     >
                       {vessel.operational_status || 'Unknown'}
                     </Badge>
-                  </td>
-                  <td className="px-4 py-3 text-sm text-gray-600">
-                    {vessel.cert_survey_expiry ? formatDate(vessel.cert_survey_expiry) : '-'}
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex justify-end gap-2">
-                      {canEdit && (
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => handleEdit(vessel)}
-                        >
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                      )}
-                      {canDelete && (
-                        <Button
-                          size="sm"
-                          variant="destructive"
-                          onClick={() => handleDelete(vessel.id, vessel.vessel_name)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      )}
-                    </div>
-                  </td>
-                </tr>
+                  </div>
+
+                  {/* Survey Expiry */}
+                  <div className="hidden xl:block w-28 flex-shrink-0">
+                    <span className="text-sm text-gray-600">
+                      {vessel.cert_survey_expiry ? formatDate(vessel.cert_survey_expiry) : '-'}
+                    </span>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    {canEdit && (
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => handleEdit(vessel)}
+                        title="Edit vessel"
+                      >
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                    )}
+                    {canDelete && (
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                        onClick={() => handleDelete(vessel.id, vessel.vessel_name)}
+                        title="Delete vessel"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
+                </div>
               ))}
-            </tbody>
-          </table>
-        </div>
+            </div>
+          </CardContent>
+        </Card>
       )}
 
       {/* Vessel Form Dialog */}
