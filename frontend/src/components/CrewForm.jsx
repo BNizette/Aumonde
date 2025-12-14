@@ -323,12 +323,27 @@ const CrewForm = ({ open, onClose, onSave, crew, mode = 'create', prefilledData 
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="default_position">Default Position</Label>
-                  <Input
-                    id="default_position"
-                    value={formData.default_position}
-                    onChange={(e) => handleChange('default_position', e.target.value)}
-                    placeholder="e.g., Master, Deckhand, Engineer"
-                  />
+                  {positions.length > 0 ? (
+                    <Select value={formData.default_position} onValueChange={(value) => handleChange('default_position', value)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select position" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {positions.filter(p => p.is_active !== false).map((position) => (
+                          <SelectItem key={position.id} value={position.value}>
+                            {position.value}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  ) : (
+                    <Input
+                      id="default_position"
+                      value={formData.default_position}
+                      onChange={(e) => handleChange('default_position', e.target.value)}
+                      placeholder="e.g., Master, Deckhand, Engineer"
+                    />
+                  )}
                 </div>
                 <div className="space-y-2 col-span-2">
                   <Label htmlFor="role">Role</Label>
