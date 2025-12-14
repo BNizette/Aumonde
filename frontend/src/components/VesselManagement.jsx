@@ -439,7 +439,7 @@ const VesselManagement = () => {
         <CardContent>
           <div className="space-y-4">
             {/* Clear All Button */}
-            {(filters.vessel_types.length > 0 || filters.statuses.length > 0 || filters.start_date || filters.end_date || searchQuery) && (
+            {(filters.vessel_types.length > 0 || filters.min_length || filters.max_length || searchQuery) && (
               <div className="flex justify-end">
                 <Button variant="ghost" size="sm" onClick={clearAllFilters}>
                   <X className="h-4 w-4 mr-2" />
