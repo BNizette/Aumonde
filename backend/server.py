@@ -3437,6 +3437,217 @@ async def load_backup_schedules():
 
 
 # ============================================================================
+# SETTINGS MANAGEMENT
+# ============================================================================
+
+class SettingOption(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    value: str
+    is_active: bool = True
+    order: int = 0
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class Setting(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    module: str  # e.g., "crew", "vessel", "document"
+    category: str  # e.g., "positions", "roles", "vessel_types"
+    label: str  # Human-readable label
+    options: List[SettingOption] = []
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class SettingOptionCreate(BaseModel):
+    value: str
+    is_active: bool = True
+    order: int = 0
+
+class SettingUpdate(BaseModel):
+    label: Optional[str] = None
+    options: Optional[List[SettingOptionCreate]] = None
+
+@api_router.get("/settings")
+async def get_all_settings(current_user: dict = Depends(get_current_user)):
+    """Get all system settings"""
+    try:
+        settings = await db.settings.find({}, {"_id": 0}).to_list(1000)
+        return settings
+    except Exception as e:
+        logger.error(f"Error fetching settings: {str(e)}")
+        raise HTTPException(status_code=500, detail="Error fetching settings")
+
+@api_router.get("/settings/{module}")
+async def get_module_settings(module: str, current_user: dict = Depends(get_current_user)):
+    """Get settings for a specific module"""
+    try:
+        settings = await db.settings.find({"module": module}, {"_id": 0}).to_list(1000)
+        return settings
+    except Exception as e:
+        logger.error(f"Error fetching module settings: {str(e)}")
+        raise HTTPException(status_code=500, detail="Error fetching module settings")
+
+@api_router.get("/settings/{module}/{category}")
+async def get_setting(module: str, category: str, current_user: dict = Depends(get_current_user)):
+    """Get a specific setting"""
+    try:
+        setting = await db.settings.find_one(
+            {"module": module, "category": category}, 
+            {"_id": 0}
+        )
+        
+        if not setting:
+            # Return default empty setting structure
+            return {
+                "module": module,
+                "category": category,
+                "label": category.replace("_", " ").title(),
+                "options": []
+            }
+        
+        return setting
+    except Exception as e:
+        logger.error(f"Error fetching setting: {str(e)}")
+        raise HTTPException(status_code=500, detail="Error fetching setting")
+
+@api_router.put("/settings/{module}/{category}")
+async def update_setting(
+    module: str, 
+    category: str, 
+    setting_update: SettingUpdate,
+    current_user: dict = Depends(get_current_user)
+):
+    """Update or create a setting"""
+    if current_user.get("access_level") != AccessLevel.FULL:
+        raise HTTPException(status_code=403, detail="Only users with Full access can update settings")
+    
+    try:
+        existing = await db.settings.find_one(
+            {"module": module, "category": category},
+            {"_id": 0}
+        )
+        
+        if existing:
+            # Update existing setting
+            update_data = {"updated_at": datetime.now(timezone.utc)}
+            
+            if setting_update.label:
+                update_data["label"] = setting_update.label
+            
+            if setting_update.options is not None:
+                # Convert options to dict format
+                options = []
+                for idx, opt in enumerate(setting_update.options):
+                    options.append({
+                        "id": str(uuid.uuid4()),
+                        "value": opt.value,
+                        "is_active": opt.is_active,
+                        "order": opt.order if opt.order > 0 else idx,
+                        "created_at": datetime.now(timezone.utc).isoformat()
+                    })
+                update_data["options"] = options
+            
+            await db.settings.update_one(
+                {"module": module, "category": category},
+                {"$set": update_data}
+            )
+        else:
+            # Create new setting
+            options = []
+            if setting_update.options:
+                for idx, opt in enumerate(setting_update.options):
+                    options.append({
+                        "id": str(uuid.uuid4()),
+                        "value": opt.value,
+                        "is_active": opt.is_active,
+                        "order": opt.order if opt.order > 0 else idx,
+                        "created_at": datetime.now(timezone.utc).isoformat()
+                    })
+            
+            new_setting = {
+                "id": str(uuid.uuid4()),
+                "module": module,
+                "category": category,
+                "label": setting_update.label or category.replace("_", " ").title(),
+                "options": options,
+                "created_at": datetime.now(timezone.utc).isoformat(),
+                "updated_at": datetime.now(timezone.utc).isoformat()
+            }
+            
+            await db.settings.insert_one(new_setting)
+        
+        await log_audit(
+            current_user["id"],
+            current_user["full_name"],
+            "update_setting",
+            "settings",
+            f"{module}.{category}",
+            f"Updated {module} {category}"
+        )
+        
+        # Fetch and return updated setting
+        updated = await db.settings.find_one(
+            {"module": module, "category": category},
+            {"_id": 0}
+        )
+        return updated
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error updating setting: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error updating setting: {str(e)}")
+
+@api_router.delete("/settings/{module}/{category}/option/{option_id}")
+async def delete_setting_option(
+    module: str,
+    category: str,
+    option_id: str,
+    current_user: dict = Depends(get_current_user)
+):
+    """Delete a specific option from a setting"""
+    if current_user.get("access_level") != AccessLevel.FULL:
+        raise HTTPException(status_code=403, detail="Only users with Full access can delete setting options")
+    
+    try:
+        setting = await db.settings.find_one(
+            {"module": module, "category": category},
+            {"_id": 0}
+        )
+        
+        if not setting:
+            raise HTTPException(status_code=404, detail="Setting not found")
+        
+        # Remove the option
+        updated_options = [opt for opt in setting.get("options", []) if opt.get("id") != option_id]
+        
+        await db.settings.update_one(
+            {"module": module, "category": category},
+            {"$set": {
+                "options": updated_options,
+                "updated_at": datetime.now(timezone.utc).isoformat()
+            }}
+        )
+        
+        await log_audit(
+            current_user["id"],
+            current_user["full_name"],
+            "delete_setting_option",
+            "settings",
+            f"{module}.{category}",
+            f"Deleted option {option_id}"
+        )
+        
+        return {"message": "Option deleted successfully"}
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error deleting setting option: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error deleting setting option: {str(e)}")
+
+
+# ============================================================================
 # PLACEHOLDER ENDPOINTS FOR FUTURE PHASES
 # ============================================================================
 
