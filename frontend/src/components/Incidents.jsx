@@ -153,7 +153,7 @@ const Incidents = () => {
       'Injuries',
       'Injury Details',
       'Witnesses',
-      'Immediate Actions',
+      'Immediate Action/Treatment Performed',
       'Investigation Status',
       'Root Cause',
       'Corrective Actions',
@@ -842,7 +842,7 @@ const Incidents = () => {
             </div>
 
             <div>
-              <Label>Immediate Actions Taken</Label>
+              <Label>Immediate Action/Treatment Performed</Label>
               <Textarea
                 value={formData.immediate_actions}
                 onChange={(e) => setFormData({...formData, immediate_actions: e.target.value})}
@@ -961,7 +961,7 @@ const Incidents = () => {
 
               {viewingIncident.immediate_actions && (
                 <div>
-                  <h4 className="font-semibold mb-2">Immediate Actions</h4>
+                  <h4 className="font-semibold mb-2">Immediate Action/Treatment Performed</h4>
                   <p className="text-sm text-gray-700">{viewingIncident.immediate_actions}</p>
                 </div>
               )}
