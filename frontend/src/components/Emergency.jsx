@@ -86,7 +86,8 @@ const Emergency = () => {
     clearFilter: clearDrillFilterType,
     clearDateFilters: clearDrillDateFilters,
     clearAllFilters: clearAllDrillFilters,
-    setFilterValue: setDrillFilterValue
+    setFilterValue: setDrillFilterValue,
+    updateFilters: updateDrillFilters
   } = useAdvancedFilters({
     types: [],
     vessels: [],
