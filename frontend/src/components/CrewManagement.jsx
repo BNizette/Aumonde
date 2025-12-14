@@ -1140,6 +1140,13 @@ const CrewManagement = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Manual Crew Log Entry Dialog */}
+      <ManualLogEntry
+        open={manualCrewLogOpen}
+        onClose={() => setManualCrewLogOpen(false)}
+        type="crew"
+      />
     </div>
   );
 };
