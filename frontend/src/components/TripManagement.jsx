@@ -13,6 +13,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import TripForm from './TripForm';
 import TripDetailsDialog from './TripDetailsDialog';
+import ManualLogEntry from './ManualLogEntry';
 import useAdvancedFilters from '../hooks/useAdvancedFilters';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -36,6 +37,8 @@ const TripManagement = () => {
   const [duplicateWarning, setDuplicateWarning] = useState(null);
   const [showDuplicateDialog, setShowDuplicateDialog] = useState(false);
   const [pendingFormData, setPendingFormData] = useState(null);
+  const [manualLogOpen, setManualLogOpen] = useState(false);
+  const [manualLogType, setManualLogType] = useState('running');
 
   // Use custom hook for advanced filtering
   const {
@@ -289,12 +292,24 @@ const TripManagement = () => {
           <h1 className="text-3xl font-bold text-gray-900">Trip Management</h1>
           <p className="text-gray-500 mt-1">Manage vessel trips and crew shift logs</p>
         </div>
-        {canEdit && (
-          <Button onClick={handleCreate}>
-            <Plus className="mr-2 h-4 w-4" />
-            Create Trip
-          </Button>
-        )}
+        <div className="flex gap-2">
+          {canEdit && (
+            <>
+              <Button variant="outline" onClick={() => { setManualLogType('crew'); setManualLogOpen(true); }}>
+                <Users className="mr-2 h-4 w-4" />
+                Manual Crew Log
+              </Button>
+              <Button variant="outline" onClick={() => { setManualLogType('running'); setManualLogOpen(true); }}>
+                <FileText className="mr-2 h-4 w-4" />
+                Manual Running Log
+              </Button>
+              <Button onClick={handleCreate}>
+                <Plus className="mr-2 h-4 w-4" />
+                Create Trip
+              </Button>
+            </>
+          )}
+        </div>
       </div>
 
       {message && (
