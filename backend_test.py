@@ -700,7 +700,7 @@ class AMSAComprehensiveTester:
             "shift_start_datetime": "2024-12-14T08:00:00Z"
         }
         
-        success, response, status = self.make_request('POST', 'crew-shifts', 
+        success, response, status = self.make_request('POST', 'trip-logs', 
                                                      data=invalid_crew_shift, expected_status=422)
         if status == 422:
             self.log_test("Manual Crew Shift Validation (missing crew_id)", True, 
