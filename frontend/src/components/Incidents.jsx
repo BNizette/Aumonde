@@ -700,7 +700,7 @@ const Incidents = () => {
         ) : (
           incidents.map((incident) => (
             <Card key={incident.id}>
-              <CardContent className="pt-6">
+              <CardContent className="pt-3 pb-3">
                 <div className="flex justify-between items-start">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-2">

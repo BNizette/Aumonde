@@ -543,7 +543,7 @@ const Compliance = () => {
           className="cursor-pointer hover:shadow-lg transition-shadow"
           onClick={() => setCertFilters({...certFilters, statuses: ['valid']})}
         >
-          <CardContent className="pt-6">
+          <CardContent className="pt-3 pb-3">
             <div className="text-center">
               <div className="text-lg font-bold text-green-600">{validCerts}</div>
               <div className="text-sm text-gray-600">Valid</div>
@@ -555,7 +555,7 @@ const Compliance = () => {
           className="cursor-pointer hover:shadow-lg transition-shadow"
           onClick={() => setCertFilters({...certFilters, statuses: ['expiring']})}
         >
-          <CardContent className="pt-6">
+          <CardContent className="pt-3 pb-3">
             <div className="text-center">
               <div className="text-lg font-bold text-yellow-600">{expiringSoon}</div>
               <div className="text-sm text-gray-600">Expiring Soon</div>
@@ -567,7 +567,7 @@ const Compliance = () => {
           className="cursor-pointer hover:shadow-lg transition-shadow"
           onClick={() => setCertFilters({...certFilters, statuses: ['expired']})}
         >
-          <CardContent className="pt-6">
+          <CardContent className="pt-3 pb-3">
             <div className="text-center">
               <div className="text-lg font-bold text-red-600">{expired}</div>
               <div className="text-sm text-gray-600">Expired</div>
@@ -582,7 +582,7 @@ const Compliance = () => {
             toggleReqFilter('statuses', 'Compliant');
           }}
         >
-          <CardContent className="pt-6">
+          <CardContent className="pt-3 pb-3">
             <div className="text-center">
               <div className="text-lg font-bold text-green-600">{compliant}</div>
               <div className="text-sm text-gray-600">Compliant</div>
@@ -597,7 +597,7 @@ const Compliance = () => {
             toggleReqFilter('statuses', 'Non-Compliant');
           }}
         >
-          <CardContent className="pt-6">
+          <CardContent className="pt-3 pb-3">
             <div className="text-center">
               <div className="text-lg font-bold text-red-600">{nonCompliant}</div>
               <div className="text-sm text-gray-600">Non-Compliant</div>

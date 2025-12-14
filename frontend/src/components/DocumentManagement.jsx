@@ -237,7 +237,7 @@ const DocumentManagement = () => {
 
       {/* Search and Filter Bar */}
       <Card>
-        <CardContent className="pt-6">
+        <CardContent className="pt-3 pb-3">
           <div className="space-y-4">
             <div className="flex flex-col md:flex-row gap-4">
               <div className="relative flex-1">
