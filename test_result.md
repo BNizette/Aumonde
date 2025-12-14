@@ -354,7 +354,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Maintenance Summary Cards Runtime Errors Investigation"
+    - "Manual Log Entry Features"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
