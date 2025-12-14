@@ -66,7 +66,7 @@ const Incidents = () => {
     target_completion_date: ''
   });
 
-  const incidentTypes = ['Injury', 'Near Miss', 'Equipment Failure', 'Environmental', 'Security', 'Other'];
+  const incidentTypes = ['Injury', 'Medical', 'Near Miss', 'Equipment Failure', 'Environmental', 'Security', 'Other'];
   const severityLevels = ['Minor', 'Moderate', 'Serious', 'Critical'];
   const statuses = ['Reported', 'Under Investigation', 'Completed', 'Closed'];
 
