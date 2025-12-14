@@ -578,6 +578,7 @@ const AdminPanel = () => {
           <TabsTrigger value="audit">Audit Trail</TabsTrigger>
           <TabsTrigger value="sessions">Sessions ({sessions.length})</TabsTrigger>
           <TabsTrigger value="backup">Backup & Restore</TabsTrigger>
+          <TabsTrigger value="settings">Settings</TabsTrigger>
         </TabsList>
 
         {/* USERS TAB */}
