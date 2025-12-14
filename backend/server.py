@@ -1585,10 +1585,18 @@ async def create_running_log(log_data: RunningLogCreate, current_user: dict = De
     return running_log
 
 @api_router.get("/running-logs")
-async def get_running_logs(trip_id: Optional[str] = None, current_user: dict = Depends(get_current_user)):
+async def get_running_logs(trip_id: Optional[str] = None, vessel_id: Optional[str] = None, current_user: dict = Depends(get_current_user)):
     query = {}
     if trip_id:
         query["trip_id"] = trip_id
+    elif vessel_id:
+        # Get all trips for this vessel, then filter logs
+        trips = await db.trips.find({"vessel_id": vessel_id}, {"_id": 0, "id": 1}).to_list(1000)
+        trip_ids = [t["id"] for t in trips]
+        if trip_ids:
+            query["trip_id"] = {"$in": trip_ids}
+        else:
+            return []  # No trips for this vessel
     
     logs = await db.running_logs.find(query, {"_id": 0}).sort("log_datetime", -1).to_list(1000)
     return logs
@@ -1659,10 +1667,18 @@ async def create_engine_running_log(log_data: EngineRunningLogCreate, current_us
     return engine_log
 
 @api_router.get("/engine-running-logs")
-async def get_engine_running_logs(trip_id: Optional[str] = None, current_user: dict = Depends(get_current_user)):
+async def get_engine_running_logs(trip_id: Optional[str] = None, vessel_id: Optional[str] = None, current_user: dict = Depends(get_current_user)):
     query = {}
     if trip_id:
         query["trip_id"] = trip_id
+    elif vessel_id:
+        # Get all trips for this vessel, then filter logs
+        trips = await db.trips.find({"vessel_id": vessel_id}, {"_id": 0, "id": 1}).to_list(1000)
+        trip_ids = [t["id"] for t in trips]
+        if trip_ids:
+            query["trip_id"] = {"$in": trip_ids}
+        else:
+            return []  # No trips for this vessel
     
     logs = await db.engine_running_logs.find(query, {"_id": 0}).sort("log_datetime", -1).to_list(1000)
     return logs
