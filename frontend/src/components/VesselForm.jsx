@@ -380,9 +380,12 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create' }) => {
               </div>
             </TabsContent>
 
-            {/* TAB 2: SPECIFICATIONS */}
-            <TabsContent value="specs" className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+            {/* TAB 2: SPECIFICATIONS & SAFETY */}
+            <TabsContent value="specs" className="space-y-6">
+              {/* Specifications Section */}
+              <div>
+                <h3 className="text-lg font-semibold mb-4 text-gray-900 border-b pb-2">Specifications</h3>
+                <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="ce_category">CE Category</Label>
                   <Input
