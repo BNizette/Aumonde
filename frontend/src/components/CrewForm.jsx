@@ -12,6 +12,10 @@ import { Badge } from '@/components/ui/badge';
 import { Plus, Trash2 } from 'lucide-react';
 
 const CrewForm = ({ open, onClose, onSave, crew, mode = 'create', prefilledData = null }) => {
+  const API = process.env.REACT_APP_BACKEND_URL + '/api';
+  const [positions, setPositions] = useState([]);
+  const [roles, setRoles] = useState([]);
+  
   const [formData, setFormData] = useState({
     // Tab 1: Crew Details
     staff_name: '',
