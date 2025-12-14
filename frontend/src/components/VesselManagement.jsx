@@ -200,7 +200,7 @@ const VesselManagement = () => {
     setSortBy('name');
   };
 
-  const hasActiveFilters = searchQuery || filters.vessel_types.length > 0 || filters.statuses.length > 0 || filters.start_date || filters.end_date || sortBy !== 'name';
+  const hasActiveFilters = searchQuery || filters.vessel_types.length > 0 || filters.min_length || filters.max_length || sortBy !== 'name';
 
   const fetchVessels = async () => {
     try {
