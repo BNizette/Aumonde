@@ -686,284 +686,165 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create' }) => {
               </div>
             </TabsContent>
 
-            {/* TAB 5: CERTIFICATE RECORD */}
-            <TabsContent value="certificates" className="space-y-6">
-              {/* Statutory Certificates */}
-              <div className="space-y-4">
-                <h3 className="font-semibold text-lg">Statutory Certificates</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label>Certificate of Survey - Issue Date</Label>
-                    <Input
-                      type="date"
-                      value={formData.cert_survey_issue}
-                      onChange={(e) => handleChange('cert_survey_issue', e.target.value)}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Certificate of Survey - Expiry Date</Label>
-                    <Input
-                      type="date"
-                      value={formData.cert_survey_expiry}
-                      onChange={(e) => handleChange('cert_survey_expiry', e.target.value)}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Certificate of Operation - Issue Date</Label>
-                    <Input
-                      type="date"
-                      value={formData.cert_operation_issue}
-                      onChange={(e) => handleChange('cert_operation_issue', e.target.value)}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Certificate of Operation - Expiry Date</Label>
-                    <Input
-                      type="date"
-                      value={formData.cert_operation_expiry}
-                      onChange={(e) => handleChange('cert_operation_expiry', e.target.value)}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Load Line Certificate - Issue Date</Label>
-                    <Input
-                      type="date"
-                      value={formData.cert_loadline_issue}
-                      onChange={(e) => handleChange('cert_loadline_issue', e.target.value)}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Load Line Certificate - Expiry Date</Label>
-                    <Input
-                      type="date"
-                      value={formData.cert_loadline_expiry}
-                      onChange={(e) => handleChange('cert_loadline_expiry', e.target.value)}
-                    />
-                  </div>
+            {/* TAB 5: COMPLIANCE CERTIFICATES */}
+            <TabsContent value="certificates" className="space-y-4">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h3 className="font-semibold text-lg">Compliance Certificates</h3>
+                  <p className="text-sm text-gray-500">
+                    {mode === 'create' 
+                      ? 'Save the vessel first to manage certificates' 
+                      : `Certificates linked to ${formData.vessel_name || 'this vessel'}`}
+                  </p>
                 </div>
+                {mode === 'edit' && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      // Navigate to Compliance module with vessel filter
+                      window.location.href = `/compliance?vessel=${vessel.id}`;
+                    }}
+                  >
+                    <Shield className="h-4 w-4 mr-2" />
+                    Manage in Compliance
+                  </Button>
+                )}
               </div>
 
-              {/* Operational Documentation */}
-              <div className="space-y-4">
-                <h3 className="font-semibold text-lg">Operational Documentation</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label>Stability Book - Date</Label>
-                    <Input
-                      type="date"
-                      value={formData.stability_book_date}
-                      onChange={(e) => handleChange('stability_book_date', e.target.value)}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Stability Book - Expiry Date</Label>
-                    <Input
-                      type="date"
-                      value={formData.stability_book_expiry}
-                      onChange={(e) => handleChange('stability_book_expiry', e.target.value)}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Safety Management System - Date</Label>
-                    <Input
-                      type="date"
-                      value={formData.safety_mgmt_date}
-                      onChange={(e) => handleChange('safety_mgmt_date', e.target.value)}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Safety Management System - Expiry Date</Label>
-                    <Input
-                      type="date"
-                      value={formData.safety_mgmt_expiry}
-                      onChange={(e) => handleChange('safety_mgmt_expiry', e.target.value)}
-                    />
-                  </div>
+              {mode === 'create' ? (
+                <div className="flex flex-col items-center justify-center py-12 text-center">
+                  <Shield className="h-16 w-16 text-gray-300 mb-4" />
+                  <h3 className="text-lg font-semibold text-gray-700 mb-2">No Certificates Yet</h3>
+                  <p className="text-sm text-gray-500 max-w-md">
+                    Save this vessel first, then you can add and manage compliance certificates from the Compliance module.
+                  </p>
                 </div>
-              </div>
+              ) : loadingCertificates ? (
+                <div className="flex items-center justify-center py-12">
+                  <div className="text-gray-500">Loading certificates...</div>
+                </div>
+              ) : vesselCertificates.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-12 text-center border-2 border-dashed rounded-lg">
+                  <FileText className="h-16 w-16 text-gray-300 mb-4" />
+                  <h3 className="text-lg font-semibold text-gray-700 mb-2">No Certificates Found</h3>
+                  <p className="text-sm text-gray-500 mb-4 max-w-md">
+                    This vessel doesn't have any compliance certificates registered yet. Add certificates from the Compliance module.
+                  </p>
+                  <Button
+                    type="button"
+                    onClick={() => {
+                      window.location.href = `/compliance?vessel=${vessel.id}`;
+                    }}
+                  >
+                    <Shield className="h-4 w-4 mr-2" />
+                    Add Certificate
+                  </Button>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {vesselCertificates.map((cert) => {
+                    const getStatusIcon = () => {
+                      switch (cert.status) {
+                        case 'Valid': return <CheckCircle className="h-5 w-5 text-green-600" />;
+                        case 'Expiring Soon': return <Clock className="h-5 w-5 text-yellow-600" />;
+                        case 'Expired': return <AlertTriangle className="h-5 w-5 text-red-600" />;
+                        default: return <FileText className="h-5 w-5 text-gray-400" />;
+                      }
+                    };
 
-              {/* Third Party Certificates */}
-              <div className="space-y-4">
-                <h3 className="font-semibold text-lg">Third Party Certificates</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label>Classification Certificate - Issue</Label>
-                    <Input
-                      type="date"
-                      value={formData.cert_classification_issue}
-                      onChange={(e) => handleChange('cert_classification_issue', e.target.value)}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Classification Certificate - Expiry</Label>
-                    <Input
-                      type="date"
-                      value={formData.cert_classification_expiry}
-                      onChange={(e) => handleChange('cert_classification_expiry', e.target.value)}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Lifting Gear Test - Issue</Label>
-                    <Input
-                      type="date"
-                      value={formData.cert_lifting_gear_issue}
-                      onChange={(e) => handleChange('cert_lifting_gear_issue', e.target.value)}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Lifting Gear Test - Expiry</Label>
-                    <Input
-                      type="date"
-                      value={formData.cert_lifting_gear_expiry}
-                      onChange={(e) => handleChange('cert_lifting_gear_expiry', e.target.value)}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Life Raft Certificate - Issue</Label>
-                    <Input
-                      type="date"
-                      value={formData.cert_life_raft_issue}
-                      onChange={(e) => handleChange('cert_life_raft_issue', e.target.value)}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Life Raft Certificate - Expiry</Label>
-                    <Input
-                      type="date"
-                      value={formData.cert_life_raft_expiry}
-                      onChange={(e) => handleChange('cert_life_raft_expiry', e.target.value)}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>EPIRB/PLB Registration - Issue</Label>
-                    <Input
-                      type="date"
-                      value={formData.cert_epirb_issue}
-                      onChange={(e) => handleChange('cert_epirb_issue', e.target.value)}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>EPIRB/PLB Registration - Expiry</Label>
-                    <Input
-                      type="date"
-                      value={formData.cert_epirb_expiry}
-                      onChange={(e) => handleChange('cert_epirb_expiry', e.target.value)}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Fire Extinguisher Test - Issue</Label>
-                    <Input
-                      type="date"
-                      value={formData.cert_fire_extinguisher_issue}
-                      onChange={(e) => handleChange('cert_fire_extinguisher_issue', e.target.value)}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Fire Extinguisher Test - Expiry</Label>
-                    <Input
-                      type="date"
-                      value={formData.cert_fire_extinguisher_expiry}
-                      onChange={(e) => handleChange('cert_fire_extinguisher_expiry', e.target.value)}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Inflatable Lifejacket Test - Issue</Label>
-                    <Input
-                      type="date"
-                      value={formData.cert_lifejacket_issue}
-                      onChange={(e) => handleChange('cert_lifejacket_issue', e.target.value)}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Inflatable Lifejacket Test - Expiry</Label>
-                    <Input
-                      type="date"
-                      value={formData.cert_lifejacket_expiry}
-                      onChange={(e) => handleChange('cert_lifejacket_expiry', e.target.value)}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Gas Certificate - Issue</Label>
-                    <Input
-                      type="date"
-                      value={formData.cert_gas_issue}
-                      onChange={(e) => handleChange('cert_gas_issue', e.target.value)}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Gas Certificate - Expiry</Label>
-                    <Input
-                      type="date"
-                      value={formData.cert_gas_expiry}
-                      onChange={(e) => handleChange('cert_gas_expiry', e.target.value)}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Electrical Report - Issue</Label>
-                    <Input
-                      type="date"
-                      value={formData.cert_electrical_issue}
-                      onChange={(e) => handleChange('cert_electrical_issue', e.target.value)}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Electrical Report - Expiry</Label>
-                    <Input
-                      type="date"
-                      value={formData.cert_electrical_expiry}
-                      onChange={(e) => handleChange('cert_electrical_expiry', e.target.value)}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Compass Deviation Card - Issue</Label>
-                    <Input
-                      type="date"
-                      value={formData.cert_compass_issue}
-                      onChange={(e) => handleChange('cert_compass_issue', e.target.value)}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Compass Deviation Card - Expiry</Label>
-                    <Input
-                      type="date"
-                      value={formData.cert_compass_expiry}
-                      onChange={(e) => handleChange('cert_compass_expiry', e.target.value)}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>EIAPP Certificate - Issue</Label>
-                    <Input
-                      type="date"
-                      value={formData.cert_eiapp_issue}
-                      onChange={(e) => handleChange('cert_eiapp_issue', e.target.value)}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>EIAPP Certificate - Expiry</Label>
-                    <Input
-                      type="date"
-                      value={formData.cert_eiapp_expiry}
-                      onChange={(e) => handleChange('cert_eiapp_expiry', e.target.value)}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Other Certificate - Issue</Label>
-                    <Input
-                      type="date"
-                      value={formData.cert_other_issue}
-                      onChange={(e) => handleChange('cert_other_issue', e.target.value)}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Other Certificate - Expiry</Label>
-                    <Input
-                      type="date"
-                      value={formData.cert_other_expiry}
-                      onChange={(e) => handleChange('cert_other_expiry', e.target.value)}
-                    />
+                    const getStatusBadge = () => {
+                      const variants = {
+                        'Valid': 'default',
+                        'Expiring Soon': 'secondary',
+                        'Expired': 'destructive'
+                      };
+                      return (
+                        <Badge variant={variants[cert.status] || 'outline'} className="text-xs">
+                          {cert.status}
+                        </Badge>
+                      );
+                    };
+
+                    const formatDate = (dateStr) => {
+                      if (!dateStr) return '-';
+                      try {
+                        return new Date(dateStr).toLocaleDateString('en-GB', {
+                          day: '2-digit',
+                          month: 'short',
+                          year: 'numeric'
+                        });
+                      } catch {
+                        return '-';
+                      }
+                    };
+
+                    return (
+                      <div
+                        key={cert.id}
+                        className="flex items-start gap-4 p-4 border rounded-lg hover:bg-gray-50 transition-colors"
+                      >
+                        {/* Status Icon */}
+                        <div className="flex-shrink-0 mt-1">
+                          {getStatusIcon()}
+                        </div>
+
+                        {/* Certificate Details */}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-start justify-between gap-2 mb-1">
+                            <h4 className="font-semibold text-gray-900">
+                              {cert.certificate_name}
+                            </h4>
+                            {getStatusBadge()}
+                          </div>
+                          
+                          <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm text-gray-600 mt-2">
+                            <div>
+                              <span className="font-medium">Type:</span> {cert.certificate_type}
+                            </div>
+                            {cert.certificate_number && (
+                              <div>
+                                <span className="font-medium">Number:</span> {cert.certificate_number}
+                              </div>
+                            )}
+                            <div>
+                              <span className="font-medium">Authority:</span> {cert.issuing_authority}
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <Calendar className="h-3 w-3" />
+                              <span className="font-medium">Issue:</span> {formatDate(cert.issue_date)}
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <Calendar className="h-3 w-3" />
+                              <span className="font-medium">Expiry:</span> {formatDate(cert.expiry_date)}
+                            </div>
+                          </div>
+
+                          {cert.notes && (
+                            <p className="text-sm text-gray-500 mt-2 italic">
+                              {cert.notes}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                  
+                  <div className="pt-2 text-center">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        window.location.href = `/compliance?vessel=${vessel.id}`;
+                      }}
+                    >
+                      View All in Compliance Module
+                    </Button>
                   </div>
                 </div>
-              </div>
+              )}
             </TabsContent>
 
             {/* TAB 6: PHOTO */}

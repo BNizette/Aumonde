@@ -85,3 +85,4 @@ frontend/node_modules/.cache/default-development/8.pack
 
 # NOTE: .env files are NOT ignored - they contain non-sensitive configuration
 # that is required for deployment and will be updated by Emergent during deployment
+frontend/node_modules/.cache/default-development/11.pack
