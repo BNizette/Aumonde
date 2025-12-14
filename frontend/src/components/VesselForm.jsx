@@ -14,6 +14,10 @@ import { Shield, Calendar, AlertTriangle, CheckCircle, Clock, FileText } from 'l
 const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create' }) => {
   const [vesselCertificates, setVesselCertificates] = useState([]);
   const [loadingCertificates, setLoadingCertificates] = useState(false);
+  const [vesselIncidents, setVesselIncidents] = useState([]);
+  const [loadingIncidents, setLoadingIncidents] = useState(false);
+  const [vesselMaintenance, setVesselMaintenance] = useState([]);
+  const [loadingMaintenance, setLoadingMaintenance] = useState(false);
   const [formData, setFormData] = useState({
     // Tab 1: Basic Details
     vessel_name: '',
