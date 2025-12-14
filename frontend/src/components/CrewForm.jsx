@@ -352,9 +352,19 @@ const CrewForm = ({ open, onClose, onSave, crew, mode = 'create', prefilledData 
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="Crew">Crew</SelectItem>
-                      <SelectItem value="Host">Host</SelectItem>
-                      <SelectItem value="Both">Both</SelectItem>
+                      {roles.length > 0 ? (
+                        roles.filter(r => r.is_active !== false).map((role) => (
+                          <SelectItem key={role.id} value={role.value}>
+                            {role.value}
+                          </SelectItem>
+                        ))
+                      ) : (
+                        <>
+                          <SelectItem value="Crew">Crew</SelectItem>
+                          <SelectItem value="Host">Host</SelectItem>
+                          <SelectItem value="Both">Both</SelectItem>
+                        </>
+                      )}
                     </SelectContent>
                   </Select>
                 </div>
