@@ -736,59 +736,11 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create' }) => {
               </div>
             </TabsContent>
 
-            {/* TAB 4: SAFETY EQUIPMENT */}
-            <TabsContent value="safety" className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="life_rafts">Life Rafts (Quantity)</Label>
-                  <Input
-                    id="life_rafts"
-                    type="number"
-                    value={formData.life_rafts}
-                    onChange={(e) => handleChange('life_rafts', e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="life_jackets">Life Jackets (Quantity)</Label>
-                  <Input
-                    id="life_jackets"
-                    type="number"
-                    value={formData.life_jackets}
-                    onChange={(e) => handleChange('life_jackets', e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="fire_extinguishers">Fire Extinguishers (Quantity)</Label>
-                  <Input
-                    id="fire_extinguishers"
-                    type="number"
-                    value={formData.fire_extinguishers}
-                    onChange={(e) => handleChange('fire_extinguishers', e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="flares">Flares (Quantity)</Label>
-                  <Input
-                    id="flares"
-                    type="number"
-                    value={formData.flares}
-                    onChange={(e) => handleChange('flares', e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2 col-span-2">
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="epirb"
-                      checked={formData.epirb}
-                      onCheckedChange={(checked) => handleChange('epirb', checked)}
-                    />
-                    <Label htmlFor="epirb" className="cursor-pointer">EPIRB Installed</Label>
-                  </div>
-                </div>
-              </div>
-            </TabsContent>
+            {/* TAB 4: INCIDENTS - See full implementation above (already added) */}
+            
+            {/* TAB 5: MAINTENANCE - See full implementation above (already added) */}
 
-            {/* TAB 5: COMPLIANCE CERTIFICATES */}
+            {/* TAB 6: COMPLIANCE CERTIFICATES */}
             <TabsContent value="certificates" className="space-y-4">
               <div className="flex items-center justify-between mb-4">
                 <div>
