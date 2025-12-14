@@ -13,6 +13,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Trash2, Edit, RefreshCw, Key, XCircle, UserPlus, Users as UsersIcon, Download, Upload, Database, AlertCircle, Search, Filter, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import BackupManagement from './BackupManagement';
+import Settings from './Settings';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
