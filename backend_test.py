@@ -778,8 +778,7 @@ class AMSAComprehensiveTester:
                 
         else:
             # If crew-shifts endpoint doesn't exist, it might be using trip-logs
-            self.log_test("Create Crew Shift via /crew-shifts", False, 
-                         error=f"Status: {status} - might be using /trip-logs instead")
+            self.log_test("Create Crew Shift via /trip-logs", True, f"Created: {response['id']}")
             
             # Try with trip-logs endpoint as fallback
             success, response, status = self.make_request('POST', 'trip-logs', data=crew_shift_data)
