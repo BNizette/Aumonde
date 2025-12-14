@@ -649,7 +649,7 @@ class AMSAComprehensiveTester:
             "task_performed": "Maintenance and inspection duties"
         }
         
-        success, response, status = self.make_request('POST', 'crew-shifts', data=manual_crew_shift_data)
+        success, response, status = self.make_request('POST', 'trip-logs', data=manual_crew_shift_data)
         if success and 'id' in response:
             manual_crew_shift_id = response['id']
             self.log_test("Manual Crew Shift Log Entry (without trip_id)", True, 
