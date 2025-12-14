@@ -47,7 +47,8 @@ const Emergency = () => {
     clearFilter: clearContactFilterType,
     clearDateFilters: clearContactDateFilters,
     clearAllFilters: clearAllContactFilters,
-    setFilterValue: setContactFilterValue
+    setFilterValue: setContactFilterValue,
+    updateFilters: updateContactFilters
   } = useAdvancedFilters({
     types: [],
     priorities: [],
