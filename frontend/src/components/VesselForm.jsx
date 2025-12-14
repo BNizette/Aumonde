@@ -12,6 +12,8 @@ import { Badge } from '@/components/ui/badge';
 import { Shield, Calendar, AlertTriangle, CheckCircle, Clock, FileText } from 'lucide-react';
 
 const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create' }) => {
+  const [vesselCertificates, setVesselCertificates] = useState([]);
+  const [loadingCertificates, setLoadingCertificates] = useState(false);
   const [formData, setFormData] = useState({
     // Tab 1: Basic Details
     vessel_name: '',
@@ -105,6 +107,33 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create' }) => {
     // Tab 6: Photo
     vessel_photo_url: ''
   });
+
+  // Fetch compliance certificates for this vessel
+  useEffect(() => {
+    const fetchVesselCertificates = async () => {
+      if (vessel && vessel.id && mode === 'edit') {
+        setLoadingCertificates(true);
+        try {
+          const API = process.env.REACT_APP_BACKEND_URL;
+          const token = localStorage.getItem('token');
+          const response = await axios.get(`${API}/api/compliance/certificates`, {
+            params: { vessel_id: vessel.id },
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          setVesselCertificates(response.data || []);
+        } catch (err) {
+          console.error('Error fetching vessel certificates:', err);
+          setVesselCertificates([]);
+        } finally {
+          setLoadingCertificates(false);
+        }
+      } else {
+        setVesselCertificates([]);
+      }
+    };
+
+    fetchVesselCertificates();
+  }, [vessel, mode]);
 
   useEffect(() => {
     if (vessel && mode === 'edit') {
