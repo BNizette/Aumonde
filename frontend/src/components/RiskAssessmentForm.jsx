@@ -238,12 +238,12 @@ const RiskAssessmentForm = ({ open, onClose, onSave, risk, mode = 'create' }) =>
 
                 <div className="space-y-2">
                   <Label htmlFor="vessel_id">Vessel</Label>
-                  <Select value={formData.vessel_id} onValueChange={handleVesselSelect} disabled={loading}>
+                  <Select value={formData.vessel_id || "none"} onValueChange={handleVesselSelect} disabled={loading}>
                     <SelectTrigger>
                       <SelectValue placeholder={loading ? "Loading vessels..." : "Select vessel (optional)"} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">None (General)</SelectItem>
+                      <SelectItem value="none">None (General)</SelectItem>
                       {vessels.map((vessel) => (
                         <SelectItem key={vessel.id} value={vessel.id}>
                           {vessel.vessel_name}
