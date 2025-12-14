@@ -186,8 +186,8 @@ const DocumentManagement = () => {
 
   const getCategoryColor = (category) => {
     const colors = {
-      'Vessel': 'bg-purple-100 text-purple-800',
-      'Crew': 'bg-orange-100 text-orange-800',
+      'Regulations': 'bg-purple-100 text-purple-800',
+      'Navigation': 'bg-orange-100 text-orange-800',
       'Safety': 'bg-red-100 text-red-800',
       'Compliance': 'bg-blue-100 text-blue-800',
       'Other': 'bg-gray-100 text-gray-800'
