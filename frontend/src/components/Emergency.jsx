@@ -126,13 +126,44 @@ const Emergency = () => {
     areas_for_improvement: ''
   });
 
-  const contactTypes = ['Crew', 'Shore', 'Authority', 'Medical', 'Supplier'];
-  const emergencyTypes = ['Fire', 'Medical Emergency', 'Man Overboard', 'Grounding', 'Collision', 'Flooding', 'Abandon Ship', 'Search and Rescue'];
-  const drillTypes = ['Fire Drill', 'Abandon Ship Drill', 'Man Overboard Drill', 'Medical Emergency Drill', 'Collision Drill'];
+  const [contactTypes, setContactTypes] = useState(['Crew', 'Shore', 'Authority', 'Medical', 'Supplier']);
+  const [emergencyTypes, setEmergencyTypes] = useState(['Fire', 'Medical Emergency', 'Man Overboard', 'Grounding', 'Collision', 'Flooding', 'Abandon Ship', 'Search and Rescue']);
+  const [drillTypes, setDrillTypes] = useState(['Fire Drill', 'Abandon Ship Drill', 'Man Overboard Drill', 'Medical Emergency Drill', 'Collision Drill']);
 
   useEffect(() => {
     fetchData();
+    fetchSettings();
   }, []);
+
+  const fetchSettings = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const headers = { Authorization: `Bearer ${token}` };
+      
+      // Fetch contact types
+      const contactRes = await fetch(`${API}/settings/emergency/contact_types`, { headers });
+      const contactData = await contactRes.json();
+      if (contactData.options && contactData.options.length > 0) {
+        setContactTypes(contactData.options.filter(o => o.is_active !== false).map(o => o.value));
+      }
+      
+      // Fetch emergency types
+      const emergencyRes = await fetch(`${API}/settings/emergency/emergency_types`, { headers });
+      const emergencyData = await emergencyRes.json();
+      if (emergencyData.options && emergencyData.options.length > 0) {
+        setEmergencyTypes(emergencyData.options.filter(o => o.is_active !== false).map(o => o.value));
+      }
+      
+      // Fetch drill types
+      const drillRes = await fetch(`${API}/settings/emergency/drill_types`, { headers });
+      const drillData = await drillRes.json();
+      if (drillData.options && drillData.options.length > 0) {
+        setDrillTypes(drillData.options.filter(o => o.is_active !== false).map(o => o.value));
+      }
+    } catch (err) {
+      console.error('Error fetching emergency settings:', err);
+    }
+  };
 
   useEffect(() => {
     applyContactFilters();
