@@ -260,8 +260,8 @@ const DocumentManagement = () => {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Categories</SelectItem>
-                    <SelectItem value="vessel">Vessel</SelectItem>
-                    <SelectItem value="crew">Crew</SelectItem>
+                    <SelectItem value="regulations">Regulations</SelectItem>
+                    <SelectItem value="navigation">Navigation</SelectItem>
                     <SelectItem value="safety">Safety</SelectItem>
                     <SelectItem value="compliance">Compliance</SelectItem>
                     <SelectItem value="other">Other</SelectItem>
