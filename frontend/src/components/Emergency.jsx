@@ -743,7 +743,7 @@ const Emergency = () => {
                 </Card>
                 <Card 
                   className="cursor-pointer hover:shadow-lg transition-shadow"
-                  onClick={() => setContactFilters({...contactFilters, priorities: [1]})}
+                  onClick={() => updateContactFilters({ priorities: [1]})}
                 >
                   <CardHeader className="pb-2">
                     <CardTitle className="text-xs font-medium text-gray-500">Priority 1</CardTitle>
@@ -757,7 +757,7 @@ const Emergency = () => {
                 </Card>
                 <Card 
                   className="cursor-pointer hover:shadow-lg transition-shadow"
-                  onClick={() => setContactFilters({...contactFilters, types: ['Medical']})}
+                  onClick={() => updateContactFilters({ types: ['Medical']})}
                 >
                   <CardHeader className="pb-2">
                     <CardTitle className="text-xs font-medium text-gray-500">Medical</CardTitle>
@@ -771,7 +771,7 @@ const Emergency = () => {
                 </Card>
                 <Card 
                   className="cursor-pointer hover:shadow-lg transition-shadow"
-                  onClick={() => setContactFilters({...contactFilters, types: ['Authority']})}
+                  onClick={() => updateContactFilters({ types: ['Authority']})}
                 >
                   <CardHeader className="pb-2">
                     <CardTitle className="text-xs font-medium text-gray-500">Authorities</CardTitle>
@@ -910,7 +910,7 @@ const Emergency = () => {
                     <Input
                       type="date"
                       value={contactFilters.start_date}
-                      onChange={(e) => setContactFilters({...contactFilters, start_date: e.target.value})}
+                      onChange={(e) => updateContactFilters({ start_date: e.target.value})}
                     />
                   </div>
                   <div>
@@ -918,7 +918,7 @@ const Emergency = () => {
                     <Input
                       type="date"
                       value={contactFilters.end_date}
-                      onChange={(e) => setContactFilters({...contactFilters, end_date: e.target.value})}
+                      onChange={(e) => updateContactFilters({ end_date: e.target.value})}
                     />
                   </div>
                 </div>
