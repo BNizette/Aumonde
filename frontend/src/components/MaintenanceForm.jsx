@@ -111,19 +111,27 @@ const MaintenanceForm = ({ open, onClose, onSave, record, mode = 'create' }) => 
   };
 
   const handleVesselSelect = (vesselId) => {
-    const selectedVessel = vessels.find(v => v.id === vesselId);
-    if (selectedVessel) {
-      setFormData(prev => ({
-        ...prev,
-        vessel_id: selectedVessel.id,
-        vessel_name: selectedVessel.vessel_name
-      }));
-    } else {
+    if (vesselId === "none") {
       setFormData(prev => ({
         ...prev,
         vessel_id: '',
         vessel_name: ''
       }));
+    } else {
+      const selectedVessel = vessels.find(v => v.id === vesselId);
+      if (selectedVessel) {
+        setFormData(prev => ({
+          ...prev,
+          vessel_id: selectedVessel.id,
+          vessel_name: selectedVessel.vessel_name
+        }));
+      } else {
+        setFormData(prev => ({
+          ...prev,
+          vessel_id: '',
+          vessel_name: ''
+        }));
+      }
     }
   };
 
