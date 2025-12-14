@@ -12,6 +12,8 @@ import { Badge } from '@/components/ui/badge';
 import { Shield, Calendar, AlertTriangle, CheckCircle, Clock, FileText, Wrench } from 'lucide-react';
 
 const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create' }) => {
+  const API = process.env.REACT_APP_BACKEND_URL + '/api';
+  const [vesselTypes, setVesselTypes] = useState([]);
   const [vesselCertificates, setVesselCertificates] = useState([]);
   const [loadingCertificates, setLoadingCertificates] = useState(false);
   const [vesselIncidents, setVesselIncidents] = useState([]);
