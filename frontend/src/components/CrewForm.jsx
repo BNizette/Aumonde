@@ -56,6 +56,34 @@ const CrewForm = ({ open, onClose, onSave, crew, mode = 'create', prefilledData 
   });
 
   useEffect(() => {
+    if (open) {
+      fetchSettings();
+    }
+  }, [open]);
+
+  const fetchSettings = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const headers = { Authorization: `Bearer ${token}` };
+      
+      // Fetch positions
+      const positionsRes = await fetch(`${API}/settings/crew/positions`, { headers });
+      const positionsData = await positionsRes.json();
+      setPositions(positionsData.options || []);
+      
+      // Fetch roles
+      const rolesRes = await fetch(`${API}/settings/crew/roles`, { headers });
+      const rolesData = await rolesRes.json();
+      setRoles(rolesData.options || []);
+    } catch (err) {
+      console.error('Error fetching settings:', err);
+      // Fallback to defaults if settings not available
+      setPositions([]);
+      setRoles([{ value: 'Crew' }, { value: 'Host' }, { value: 'Both' }]);
+    }
+  };
+
+  useEffect(() => {
     if (crew && mode === 'edit') {
       setFormData({
         ...crew,
