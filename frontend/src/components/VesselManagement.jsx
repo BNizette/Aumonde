@@ -507,50 +507,27 @@ const VesselManagement = () => {
                 )}
               </div>
 
-              {/* Status Multi-Select */}
+              {/* Length Range Filters */}
               <div>
-                <Label>Status</Label>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button variant="outline" className="w-full justify-between">
-                      <span className="truncate">
-                        {filters.statuses.length === 0 ? 'All Statuses' :
-                         filters.statuses.length === 1 ? filters.statuses[0] :
-                         `${filters.statuses.length} selected`}
-                      </span>
-                      <ChevronDown className="h-4 w-4 ml-2 shrink-0" />
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-64 p-0" align="start">
-                    <div className="p-2">
-                      <div className="flex items-center justify-between px-2 py-1.5 mb-1">
-                        <span className="text-sm font-medium">Select Statuses</span>
-                        {filters.statuses.length > 0 && (
-                          <Button variant="ghost" size="sm" onClick={() => clearFilter('statuses')} className="h-auto p-1 text-xs">
-                            Clear
-                          </Button>
-                        )}
-                      </div>
-                      {statusTypes.map(status => (
-                        <div key={status} className="flex items-center space-x-2 px-2 py-1.5 hover:bg-gray-100 rounded cursor-pointer"
-                          onClick={() => toggleFilter('statuses', status)}>
-                          <Checkbox checked={filters.statuses.includes(status)} onCheckedChange={() => toggleFilter('statuses', status)} />
-                          <label className="text-sm flex-1 cursor-pointer">{status}</label>
-                        </div>
-                      ))}
-                    </div>
-                  </PopoverContent>
-                </Popover>
-                {filters.statuses.length > 0 && (
-                  <div className="flex flex-wrap gap-1 mt-2">
-                    {filters.statuses.map(status => (
-                      <Badge key={status} variant="secondary" className="text-xs">
-                        {status}
-                        <X className="h-3 w-3 ml-1 cursor-pointer" onClick={() => toggleFilter('statuses', status)} />
-                      </Badge>
-                    ))}
-                  </div>
-                )}
+                <Label htmlFor="min_length">From Length (m)</Label>
+                <Input 
+                  id="min_length" 
+                  type="number" 
+                  placeholder="Min length"
+                  value={filters.min_length}
+                  onChange={(e) => setFilterValue('min_length', e.target.value)} 
+                />
+              </div>
+              
+              <div>
+                <Label htmlFor="max_length">To Length (m)</Label>
+                <Input 
+                  id="max_length" 
+                  type="number" 
+                  placeholder="Max length"
+                  value={filters.max_length}
+                  onChange={(e) => setFilterValue('max_length', e.target.value)} 
+                />
               </div>
 
               {/* Sort By */}
@@ -567,28 +544,6 @@ const VesselManagement = () => {
                     <SelectItem value="registration">Registration</SelectItem>
                   </SelectContent>
                 </Select>
-              </div>
-            </div>
-
-            {/* Date Range Row */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
-              <div>
-                <Label htmlFor="start_date">From Date</Label>
-                <Input id="start_date" type="date" value={filters.start_date}
-                  onChange={(e) => setFilterValue('start_date', e.target.value)} />
-              </div>
-              <div>
-                <Label htmlFor="end_date">To Date</Label>
-                <Input id="end_date" type="date" value={filters.end_date}
-                  onChange={(e) => setFilterValue('end_date', e.target.value)} />
-              </div>
-              <div>
-                {(filters.start_date || filters.end_date) && (
-                  <Button variant="outline" size="sm" onClick={clearDateFilters} className="w-full">
-                    <X className="h-4 w-4 mr-2" />
-                    Clear Date Range
-                  </Button>
-                )}
               </div>
             </div>
 
