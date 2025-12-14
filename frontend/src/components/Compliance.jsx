@@ -319,8 +319,8 @@ const Compliance = () => {
     clearAllReqFilters();
   };
 
-  const hasActiveCertFilters = certSearch || certFilters.types.length > 0 || certFilters.statuses.length > 0 || certFilters.start_date || certFilters.end_date;
-  const hasActiveReqFilters = reqSearch || reqFilters.categories.length > 0 || reqFilters.statuses.length > 0 || reqFilters.start_date || reqFilters.end_date;
+  const hasActiveCertFilters = certSearch || certFilters.types.length > 0 || certFilters.statuses.length > 0 || certFilters.vessels.length > 0;
+  const hasActiveReqFilters = reqSearch || reqFilters.categories.length > 0 || reqFilters.statuses.length > 0;
 
   const handleCertSubmit = async () => {
     if (!certForm.certificate_name || !certForm.expiry_date) {
