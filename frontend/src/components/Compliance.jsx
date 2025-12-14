@@ -656,7 +656,7 @@ const Compliance = () => {
                 </div>
 
                 {/* Multi-Select Filters Row */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {/* Certificate Type Multi-Select */}
                   <div>
                     <Label>Certificate Type</Label>
@@ -757,25 +757,64 @@ const Compliance = () => {
                       </PopoverContent>
                     </Popover>
                   </div>
-                </div>
 
-                {/* Date Range Filters */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Vessel Multi-Select */}
                   <div>
-                    <Label>Issue Date From</Label>
-                    <Input
-                      type="date"
-                      value={certFilters.start_date}
-                      onChange={(e) => setCertFilters({...certFilters, start_date: e.target.value})}
-                    />
-                  </div>
-                  <div>
-                    <Label>Issue Date To</Label>
-                    <Input
-                      type="date"
-                      value={certFilters.end_date}
-                      onChange={(e) => setCertFilters({...certFilters, end_date: e.target.value})}
-                    />
+                    <Label>Vessel</Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button variant="outline" className="w-full justify-between">
+                          <span className="truncate">
+                            {certFilters.vessels.length === 0
+                              ? 'All Vessels'
+                              : certFilters.vessels.length === 1
+                              ? certFilters.vessels[0]
+                              : `${certFilters.vessels.length} selected`}
+                          </span>
+                          <ChevronDown className="h-4 w-4 ml-2 shrink-0" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-64 p-0" align="start">
+                        <div className="p-2">
+                          <div className="flex items-center justify-between px-2 py-1.5 mb-1">
+                            <span className="text-sm font-medium">Select Vessels</span>
+                            {certFilters.vessels.length > 0 && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => clearCertFilterType('vessels')}
+                                className="h-auto p-1 text-xs"
+                              >
+                                Clear
+                              </Button>
+                            )}
+                          </div>
+                          {vessels.map(vessel => (
+                            <div
+                              key={vessel.id}
+                              className="flex items-center space-x-2 px-2 py-2 hover:bg-gray-100 rounded cursor-pointer"
+                              onClick={() => toggleCertFilter('vessels', vessel.vessel_name)}
+                            >
+                              <Checkbox
+                                checked={certFilters.vessels.includes(vessel.vessel_name)}
+                                onCheckedChange={() => toggleCertFilter('vessels', vessel.vessel_name)}
+                              />
+                              <span className="text-sm">{vessel.vessel_name}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+                    {certFilters.vessels.length > 0 && (
+                      <div className="flex flex-wrap gap-1 mt-2">
+                        {certFilters.vessels.map(vesselName => (
+                          <Badge key={vesselName} variant="secondary" className="text-xs">
+                            {vesselName}
+                            <X className="h-3 w-3 ml-1 cursor-pointer" onClick={() => toggleCertFilter('vessels', vesselName)} />
+                          </Badge>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
 
