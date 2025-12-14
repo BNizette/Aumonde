@@ -388,10 +388,18 @@ const Settings = () => {
                   Add Option
                 </Button>
 
+                {/* Show Populate button for specific categories */}
+                {((selectedModule === 'document' && selectedCategory === 'categories') ||
+                  (selectedModule === 'incident' && (selectedCategory === 'incident_types' || selectedCategory === 'severities'))) && (
+                  <Button variant="outline" onClick={handlePopulateFromExisting} className="w-full">
+                    <RefreshCw className="mr-2 h-4 w-4" />
+                    Populate from Existing Records
+                  </Button>
+                )}
+
                 <div className="pt-4 border-t">
                   <p className="text-sm text-gray-600">
-                    💡 <strong>Tip:</strong> These options will appear in dropdown menus throughout the system.
-                    Changes take effect immediately after saving.
+                    💡 <strong>Tip:</strong> Drag options by the grip icon to reorder them. Changes take effect immediately after saving.
                   </p>
                 </div>
               </div>
