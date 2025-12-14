@@ -496,10 +496,16 @@ const CrewManagement = () => {
           <p className="text-gray-500 mt-1">Manage crew members and their qualifications</p>
         </div>
         {canEdit && (
-          <Button onClick={handleCreate}>
-            <Plus className="mr-2 h-4 w-4" />
-            Add Crew Member
-          </Button>
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={() => setManualCrewLogOpen(true)}>
+              <FileText className="mr-2 h-4 w-4" />
+              Add Crew Log
+            </Button>
+            <Button onClick={handleCreate}>
+              <Plus className="mr-2 h-4 w-4" />
+              Add Crew Member
+            </Button>
+          </div>
         )}
       </div>
 
