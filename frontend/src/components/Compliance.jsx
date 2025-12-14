@@ -206,18 +206,9 @@ const Compliance = () => {
       });
     }
 
-    // Apply date range filter (issue date)
-    if (certFilters.start_date || certFilters.end_date) {
-      filtered = filtered.filter(cert => {
-        if (!cert.issue_date) return false;
-        const issueDate = new Date(cert.issue_date);
-        const startDate = certFilters.start_date ? new Date(certFilters.start_date) : null;
-        const endDate = certFilters.end_date ? new Date(certFilters.end_date + 'T23:59:59') : null;
-
-        if (startDate && issueDate < startDate) return false;
-        if (endDate && issueDate > endDate) return false;
-        return true;
-      });
+    // Apply vessel filter
+    if (certFilters.vessels.length > 0) {
+      filtered = filtered.filter(cert => certFilters.vessels.includes(cert.vessel_name));
     }
 
     filtered.sort((a, b) => {
