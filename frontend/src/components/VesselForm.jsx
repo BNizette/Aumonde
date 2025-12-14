@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Shield, Calendar, AlertTriangle, CheckCircle, Clock, FileText, Wrench } from 'lucide-react';
 
 const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create' }) => {
