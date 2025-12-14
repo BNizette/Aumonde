@@ -3659,23 +3659,59 @@ async def populate_setting_from_existing(
     try:
         unique_values = []
         
-        # Document categories
-        if module == "document" and category == "categories":
+        # Crew module
+        if module == "crew" and category == "positions":
+            crew = await db.crew.find({}, {"_id": 0, "default_position": 1}).to_list(10000)
+            unique_values = list(set([c.get("default_position") for c in crew if c.get("default_position")]))
+        
+        elif module == "crew" and category == "roles":
+            crew = await db.crew.find({}, {"_id": 0, "role": 1}).to_list(10000)
+            unique_values = list(set([c.get("role") for c in crew if c.get("role")]))
+        
+        # Vessel module
+        elif module == "vessel" and category == "vessel_types":
+            vessels = await db.vessels.find({}, {"_id": 0, "vessel_type": 1}).to_list(10000)
+            unique_values = list(set([v.get("vessel_type") for v in vessels if v.get("vessel_type")]))
+        
+        elif module == "vessel" and category == "operational_status":
+            vessels = await db.vessels.find({}, {"_id": 0, "operational_status": 1}).to_list(10000)
+            unique_values = list(set([v.get("operational_status") for v in vessels if v.get("operational_status")]))
+        
+        # Trip module
+        elif module == "trip" and category == "trip_types":
+            trips = await db.trips.find({}, {"_id": 0, "trip_type": 1}).to_list(10000)
+            unique_values = list(set([t.get("trip_type") for t in trips if t.get("trip_type")]))
+        
+        # Document module
+        elif module == "document" and category == "categories":
             documents = await db.documents.find({}, {"_id": 0, "category": 1}).to_list(10000)
             unique_values = list(set([doc.get("category") for doc in documents if doc.get("category")]))
         
-        # Incident types
+        # Incident module
         elif module == "incident" and category == "incident_types":
             incidents = await db.incidents.find({}, {"_id": 0, "incident_type": 1}).to_list(10000)
             unique_values = list(set([inc.get("incident_type") for inc in incidents if inc.get("incident_type")]))
         
-        # Incident severities
         elif module == "incident" and category == "severities":
             incidents = await db.incidents.find({}, {"_id": 0, "severity": 1}).to_list(10000)
             unique_values = list(set([inc.get("severity") for inc in incidents if inc.get("severity")]))
         
+        # Emergency module
+        elif module == "emergency" and category == "contact_types":
+            contacts = await db.emergency_contacts.find({}, {"_id": 0, "contact_type": 1}).to_list(10000)
+            unique_values = list(set([c.get("contact_type") for c in contacts if c.get("contact_type")]))
+        
+        elif module == "emergency" and category == "emergency_types":
+            procedures = await db.emergency_procedures.find({}, {"_id": 0, "emergency_type": 1}).to_list(10000)
+            unique_values = list(set([p.get("emergency_type") for p in procedures if p.get("emergency_type")]))
+        
+        elif module == "emergency" and category == "drill_types":
+            drills = await db.emergency_drills.find({}, {"_id": 0, "drill_type": 1}).to_list(10000)
+            unique_values = list(set([d.get("drill_type") for d in drills if d.get("drill_type")]))
+        
         else:
-            raise HTTPException(status_code=400, detail="Population not supported for this module/category")
+            # If no matching category, return empty
+            unique_values = []
         
         if not unique_values:
             return {"message": "No existing values found to populate", "count": 0}
