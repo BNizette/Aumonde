@@ -623,7 +623,7 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create' }) => {
                     onChange={(e) => handleChange('max_crew', e.target.value)}
                   />
                 </div>
-                </div>
+              </div>
               </div>
 
               {/* Safety Equipment Section */}
