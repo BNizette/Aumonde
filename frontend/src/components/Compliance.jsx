@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -19,6 +20,7 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
 const Compliance = () => {
+  const location = useLocation();
   const [certificates, setCertificates] = useState([]);
   const [requirements, setRequirements] = useState([]);
   const [vessels, setVessels] = useState([]);
@@ -46,14 +48,12 @@ const Compliance = () => {
     setFilters: setCertFilters,
     toggleFilter: toggleCertFilter,
     clearFilter: clearCertFilterType,
-    clearDateFilters: clearCertDateFilters,
     clearAllFilters: clearAllCertFilters,
     setFilterValue: setCertFilterValue
   } = useAdvancedFilters({
     types: [],
     statuses: [],
-    start_date: '',
-    end_date: ''
+    vessels: []
   });
 
   // Filter states for Requirements
@@ -69,14 +69,11 @@ const Compliance = () => {
     setFilters: setReqFilters,
     toggleFilter: toggleReqFilter,
     clearFilter: clearReqFilterType,
-    clearDateFilters: clearReqDateFilters,
     clearAllFilters: clearAllReqFilters,
     setFilterValue: setReqFilterValue
   } = useAdvancedFilters({
     categories: [],
-    statuses: [],
-    start_date: '',
-    end_date: ''
+    statuses: []
   });
 
   const [certForm, setCertForm] = useState({
