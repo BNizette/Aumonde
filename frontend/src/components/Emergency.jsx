@@ -1229,7 +1229,7 @@ const Emergency = () => {
                 </Card>
                 <Card 
                   className="cursor-pointer hover:shadow-lg transition-shadow"
-                  onClick={() => setDrillFilters({...drillFilters, types: ['Fire Drill']})}
+                  onClick={() => updateDrillFilters({ types: ['Fire Drill']})}
                 >
                   <CardHeader className="pb-2">
                     <CardTitle className="text-xs font-medium text-gray-500">Fire Drills</CardTitle>
@@ -1243,7 +1243,7 @@ const Emergency = () => {
                 </Card>
                 <Card 
                   className="cursor-pointer hover:shadow-lg transition-shadow"
-                  onClick={() => setDrillFilters({...drillFilters, types: ['Abandon Ship Drill']})}
+                  onClick={() => updateDrillFilters({ types: ['Abandon Ship Drill']})}
                 >
                   <CardHeader className="pb-2">
                     <CardTitle className="text-xs font-medium text-gray-500">Abandon Ship</CardTitle>
@@ -1257,7 +1257,7 @@ const Emergency = () => {
                 </Card>
                 <Card 
                   className="cursor-pointer hover:shadow-lg transition-shadow"
-                  onClick={() => setDrillFilters({...drillFilters, types: ['Man Overboard Drill']})}
+                  onClick={() => updateDrillFilters({ types: ['Man Overboard Drill']})}
                 >
                   <CardHeader className="pb-2">
                     <CardTitle className="text-xs font-medium text-gray-500">Man Overboard</CardTitle>
@@ -1396,7 +1396,7 @@ const Emergency = () => {
                     <Input
                       type="date"
                       value={drillFilters.start_date}
-                      onChange={(e) => setDrillFilters({...drillFilters, start_date: e.target.value})}
+                      onChange={(e) => updateDrillFilters({ start_date: e.target.value})}
                     />
                   </div>
                   <div>
@@ -1404,7 +1404,7 @@ const Emergency = () => {
                     <Input
                       type="date"
                       value={drillFilters.end_date}
-                      onChange={(e) => setDrillFilters({...drillFilters, end_date: e.target.value})}
+                      onChange={(e) => updateDrillFilters({ end_date: e.target.value})}
                     />
                   </div>
                 </div>
