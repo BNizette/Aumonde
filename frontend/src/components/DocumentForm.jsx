@@ -241,8 +241,8 @@ const DocumentForm = ({ open, onClose, onSave, document, mode = 'create' }) => {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="Vessel">Vessel</SelectItem>
-                <SelectItem value="Crew">Crew</SelectItem>
+                <SelectItem value="Regulations">Regulations</SelectItem>
+                <SelectItem value="Navigation">Navigation</SelectItem>
                 <SelectItem value="Safety">Safety</SelectItem>
                 <SelectItem value="Compliance">Compliance</SelectItem>
                 <SelectItem value="Other">Other</SelectItem>
