@@ -411,7 +411,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Crew Shifts Data Consistency"
+    - "Crew Logs Vessel Column Implementation"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
