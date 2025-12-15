@@ -6,10 +6,11 @@ import { Input } from '@/components/ui/input';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Plus, Edit, Trash2, Wrench, Eye, Calendar, Search, Filter, X, Download, ChevronDown } from 'lucide-react';
+import { Plus, Edit, Trash2, Wrench, Eye, Calendar, Search, Filter, X, Download, ChevronDown, Info } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import MaintenanceForm from './MaintenanceForm';
 import MaintenanceDetails from './MaintenanceDetails';
 import useAdvancedFilters from '../hooks/useAdvancedFilters';
@@ -249,7 +250,30 @@ const Maintenance = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Maintenance Management</h1>
+          <div className="flex items-center gap-2">
+            <h1 className="text-3xl font-bold text-gray-900">Maintenance Management</h1>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Info className="h-5 w-5 text-blue-500 cursor-help" />
+                </TooltipTrigger>
+                <TooltipContent className="max-w-sm">
+                  <p className="font-semibold mb-1">Marine Order 504 (2024)</p>
+                  <p className="text-sm mb-2">
+                    Requires documented maintenance procedures, records of alterations affecting vessel systems, and risk management for vessel integrity and equipment reliability.
+                  </p>
+                  <a 
+                    href="https://www.amsa.gov.au/about/regulations-and-standards/marine-order-504-certificates-operation"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-500 hover:underline text-sm"
+                  >
+                    View AMSA MO504 Regulations →
+                  </a>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
           <p className="text-gray-500 mt-1">Track and manage vessel maintenance activities</p>
         </div>
         {canEdit && (
