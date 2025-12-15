@@ -138,6 +138,15 @@ const Emergency = () => {
     areas_for_improvement: ''
   });
 
+  const [recordForm, setRecordForm] = useState({
+    record_date: new Date().toISOString().slice(0, 16),
+    crew_members: [],
+    status: 'Pass',
+    authorized_by: '',
+    authorized_by_id: '',
+    notes: ''
+  });
+
   const [contactTypes, setContactTypes] = useState(['Crew', 'Shore', 'Authority', 'Medical', 'Supplier']);
   const [emergencyTypes, setEmergencyTypes] = useState(['Fire', 'Medical Emergency', 'Man Overboard', 'Grounding', 'Collision', 'Flooding', 'Abandon Ship', 'Search and Rescue']);
   const [drillTypes, setDrillTypes] = useState(['Fire Drill', 'Abandon Ship Drill', 'Man Overboard Drill', 'Medical Emergency Drill', 'Collision Drill']);
