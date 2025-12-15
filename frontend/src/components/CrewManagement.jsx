@@ -937,13 +937,28 @@ const CrewManagement = () => {
         prefilledData={prefilledData}
       />
 
-      {/* View Details Dialog */}
+      {/* View Details & Logs Dialog */}
       <Dialog open={viewDialogOpen} onOpenChange={setViewDialogOpen}>
-        <DialogContent className="max-w-3xl max-h-[90vh]">
+        <DialogContent className="max-w-5xl max-h-[90vh] overflow-auto">
           <DialogHeader>
-            <DialogTitle>{viewingCrew?.staff_name}</DialogTitle>
-            <DialogDescription>Crew member details and qualifications</DialogDescription>
+            <DialogTitle>👤 {viewingCrew?.staff_name} - Details & Activity</DialogTitle>
+            <DialogDescription>View crew member information, trip allocations and shift logs</DialogDescription>
           </DialogHeader>
+          
+          {loadingLogs ? (
+            <div className="flex items-center justify-center py-8">
+              <div className="text-gray-500">Loading data...</div>
+            </div>
+          ) : (
+            <Tabs defaultValue="details" className="w-full">
+              <TabsList>
+                <TabsTrigger value="details">Crew Details</TabsTrigger>
+                <TabsTrigger value="trips">Trip Allocations ({crewTrips.length})</TabsTrigger>
+                <TabsTrigger value="shifts">Crew Shifts ({crewShifts.length})</TabsTrigger>
+              </TabsList>
+
+              {/* Details Tab */}
+              <TabsContent value="details">
           <ScrollArea className="h-[500px] pr-4">
             {viewingCrew && (
               <div className="space-y-6">
