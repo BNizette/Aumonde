@@ -334,10 +334,16 @@ const VesselManagement = () => {
           <p className="text-gray-500 mt-1">Manage your fleet of vessels and their certificates</p>
         </div>
         {canEdit && (
-          <Button onClick={handleCreate}>
-            <Plus className="mr-2 h-4 w-4" />
-            Add Vessel
-          </Button>
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={() => setManualLogOpen(true)}>
+              <FileText className="mr-2 h-4 w-4" />
+              Add Vessel Log
+            </Button>
+            <Button onClick={handleCreate}>
+              <Plus className="mr-2 h-4 w-4" />
+              Add Vessel
+            </Button>
+          </div>
         )}
       </div>
 
