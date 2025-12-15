@@ -1407,8 +1407,8 @@ const Emergency = () => {
                           )}
                         </div>
                         <div className="flex gap-2">
-                          <Button variant="outline" size="sm" onClick={() => handleAddTraining(proc.id)} title="Add training record">
-                            <FileText className="h-4 w-4" />
+                          <Button variant="outline" size="sm" onClick={() => handleViewProcedure(proc)} title="View details & records">
+                            <Eye className="h-4 w-4" />
                           </Button>
                           <Button variant="outline" size="sm" onClick={() => handleEditProcedure(proc)}>
                             <Edit className="h-4 w-4" />
@@ -1419,47 +1419,12 @@ const Emergency = () => {
                         </div>
                       </div>
 
-                      {/* Training Records Table */}
+                      {/* Training record count indicator */}
                       {trainingRecords[proc.id] && trainingRecords[proc.id].length > 0 && (
-                        <div className="mt-4 pt-4 border-t">
-                          <h4 className="font-semibold text-sm mb-2">Training Records</h4>
-                          <div className="overflow-x-auto">
-                            <table className="w-full text-sm">
-                              <thead className="bg-gray-50">
-                                <tr>
-                                  <th className="text-left p-2 border">Date</th>
-                                  <th className="text-left p-2 border">Crew</th>
-                                  <th className="text-left p-2 border">Status</th>
-                                  <th className="text-left p-2 border">Authorized By</th>
-                                  <th className="text-left p-2 border">Actions</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                {trainingRecords[proc.id].map((training) => (
-                                  <tr key={training.id} className="hover:bg-gray-50">
-                                    <td className="p-2 border">{new Date(training.training_date).toLocaleString()}</td>
-                                    <td className="p-2 border">{training.crew_members.join(', ')}</td>
-                                    <td className="p-2 border">
-                                      <Badge variant={training.status === 'Pass' ? 'default' : 'destructive'}>
-                                        {training.status}
-                                      </Badge>
-                                    </td>
-                                    <td className="p-2 border">{training.authorized_by}</td>
-                                    <td className="p-2 border">
-                                      <div className="flex gap-1">
-                                        <Button variant="ghost" size="sm" onClick={() => handleEditTraining(training)}>
-                                          <Edit className="h-3 w-3" />
-                                        </Button>
-                                        <Button variant="ghost" size="sm" onClick={() => handleDeleteTraining(training.id)}>
-                                          <Trash2 className="h-3 w-3 text-red-500" />
-                                        </Button>
-                                      </div>
-                                    </td>
-                                  </tr>
-                                ))}
-                              </tbody>
-                            </table>
-                          </div>
+                        <div className="mt-2">
+                          <Badge variant="secondary" className="text-xs">
+                            {trainingRecords[proc.id].length} training record{trainingRecords[proc.id].length !== 1 ? 's' : ''}
+                          </Badge>
                         </div>
                       )}
                     </div>
