@@ -732,111 +732,93 @@ const CrewManagement = () => {
       </Card>
 
       {/* Crew List */}
-      {filteredCrew.length === 0 ? (
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center py-12">
-            <Users className="h-12 w-12 text-gray-400 mb-4" />
-            <h3 className="text-lg font-semibold mb-2">No crew members found</h3>
-            <p className="text-gray-500 text-sm mb-4">
-              {searchQuery || hasActiveFilters ? 'Try adjusting your search criteria' : 'Get started by adding your first crew member'}
-            </p>
-            {canEdit && !searchQuery && (
-              <Button onClick={handleCreate}>
-                <Plus className="mr-2 h-4 w-4" />
-                Add Crew Member
+      <ResponsiveListCard
+        items={filteredCrew}
+        renderIcon={(member) => <Users className="h-5 w-5 text-orange-600" />}
+        renderContent={(member) => (
+          <>
+            {/* Name */}
+            <div className="flex-1 min-w-0">
+              <div className="font-semibold text-gray-900 truncate">
+                {member.staff_name}
+              </div>
+            </div>
+
+            {/* Position */}
+            <div className="hidden sm:block w-32 flex-shrink-0">
+              <span className="text-sm text-gray-600">
+                {member.default_position || '-'}
+              </span>
+            </div>
+
+            {/* Role Badge */}
+            <div className="hidden md:block flex-shrink-0">
+              <Badge variant="outline" className="whitespace-nowrap">
+                {member.role || 'Crew'}
+              </Badge>
+            </div>
+
+            {/* Mobile */}
+            <div className="hidden lg:block w-36 flex-shrink-0">
+              <span className="text-sm text-gray-600">
+                {member.mobile || '-'}
+              </span>
+            </div>
+
+            {/* Qualifications Count */}
+            <div className="hidden xl:block w-24 flex-shrink-0 text-center">
+              <span className="text-sm text-gray-600">
+                {member.qualifications && member.qualifications.length > 0 
+                  ? `${member.qualifications.length} quals`
+                  : '-'}
+              </span>
+            </div>
+          </>
+        )}
+        renderActions={(member) => (
+          <>
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => handleView(member)}
+              title="View details & logs"
+            >
+              <Eye className="h-4 w-4" />
+            </Button>
+            {canEdit && (
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => handleEdit(member)}
+                title="Edit crew member"
+              >
+                <Edit className="h-4 w-4" />
               </Button>
             )}
-          </CardContent>
-        </Card>
-      ) : (
-        <Card>
-          <CardContent className="p-0">
-            <div className="divide-y">
-              {filteredCrew.map((member) => (
-                <div
-                  key={member.id}
-                  className="flex items-center gap-4 p-4 hover:bg-gray-50 transition-colors"
-                >
-                  {/* Icon */}
-                  <div className="flex-shrink-0">
-                    <Users className="h-5 w-5 text-orange-600" />
-                  </div>
-
-                  {/* Name */}
-                  <div className="flex-1 min-w-0">
-                    <div className="font-semibold text-gray-900 truncate">
-                      {member.staff_name}
-                    </div>
-                  </div>
-
-                  {/* Position */}
-                  <div className="hidden sm:block w-32 flex-shrink-0">
-                    <span className="text-sm text-gray-600">
-                      {member.default_position || '-'}
-                    </span>
-                  </div>
-
-                  {/* Role Badge */}
-                  <div className="hidden md:block flex-shrink-0">
-                    <Badge variant="outline" className="whitespace-nowrap">
-                      {member.role || 'Crew'}
-                    </Badge>
-                  </div>
-
-                  {/* Mobile */}
-                  <div className="hidden lg:block w-36 flex-shrink-0">
-                    <span className="text-sm text-gray-600">
-                      {member.mobile || '-'}
-                    </span>
-                  </div>
-
-                  {/* Qualifications Count */}
-                  <div className="hidden xl:block w-24 flex-shrink-0 text-center">
-                    <span className="text-sm text-gray-600">
-                      {member.qualifications && member.qualifications.length > 0 
-                        ? `${member.qualifications.length} quals`
-                        : '-'}
-                    </span>
-                  </div>
-
-                  {/* Action Buttons */}
-                  <div className="flex items-center gap-2 flex-shrink-0">
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => handleView(member)}
-                      title="View details & logs"
-                    >
-                      <Eye className="h-4 w-4" />
-                    </Button>
-                    {canEdit && (
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => handleEdit(member)}
-                        title="Edit crew member"
-                      >
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                    )}
-                    {canDelete && (
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                        onClick={() => handleDelete(member.id, member.staff_name)}
-                        title="Delete crew member"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      )}
+            {canDelete && (
+              <Button
+                size="sm"
+                variant="ghost"
+                className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                onClick={() => handleDelete(member.id, member.staff_name)}
+                title="Delete crew member"
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            )}
+          </>
+        )}
+        emptyState={{
+          icon: Users,
+          title: 'No crew members found',
+          message: (searchQuery || hasActiveFilters) ? 'Try adjusting your search criteria' : 'Get started by adding your first crew member',
+          action: canEdit && !searchQuery ? {
+            label: 'Add Crew Member',
+            onClick: handleCreate,
+            icon: Plus
+          } : undefined
+        }}
+      />
 
       {/* Crew Form Dialog */}
       <CrewForm
