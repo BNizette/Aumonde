@@ -37,6 +37,14 @@ const Emergency = () => {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
 
+  // Drill Records states
+  const [drillRecords, setDrillRecords] = useState({});
+  const [recordDialogOpen, setRecordDialogOpen] = useState(false);
+  const [selectedDrillId, setSelectedDrillId] = useState(null);
+  const [recordEditMode, setRecordEditMode] = useState(false);
+  const [editingRecordId, setEditingRecordId] = useState(null);
+  const [crewList, setCrewList] = useState([]);
+
   // Filter states for Contacts
   const [contactSearch, setContactSearch] = useState('');
   const [filteredContacts, setFilteredContacts] = useState([]);
