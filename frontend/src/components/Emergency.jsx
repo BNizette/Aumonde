@@ -2063,6 +2063,118 @@ const Emergency = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Training Record Dialog */}
+      <Dialog open={trainingDialogOpen} onOpenChange={(open) => {
+        setTrainingDialogOpen(open);
+        if (!open) {
+          setTrainingEditMode(false);
+          setEditingTrainingId(null);
+        }
+      }}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>{trainingEditMode ? 'Edit Training Record' : 'Add Training Record'}</DialogTitle>
+            <DialogDescription>
+              Record procedure training details including crew participation and outcomes
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label>Training Date & Time *</Label>
+              <Input 
+                type="datetime-local" 
+                value={trainingForm.training_date} 
+                onChange={(e) => setTrainingForm({...trainingForm, training_date: e.target.value})} 
+              />
+            </div>
+            
+            <div>
+              <Label>Crew Members *</Label>
+              <Select 
+                value={trainingForm.crew_members.length > 0 ? trainingForm.crew_members[0] : ''} 
+                onValueChange={(value) => {
+                  if (!trainingForm.crew_members.includes(value)) {
+                    setTrainingForm({...trainingForm, crew_members: [...trainingForm.crew_members, value]});
+                  }
+                }}
+              >
+                <SelectTrigger><SelectValue placeholder="Select crew members" /></SelectTrigger>
+                <SelectContent>
+                  {crewList.map(crew => (
+                    <SelectItem key={crew.id} value={crew.staff_name}>{crew.staff_name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {trainingForm.crew_members.length > 0 && (
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {trainingForm.crew_members.map((member, idx) => (
+                    <Badge key={idx} variant="secondary">
+                      {member}
+                      <button 
+                        className="ml-2 text-xs" 
+                        onClick={() => setTrainingForm({
+                          ...trainingForm, 
+                          crew_members: trainingForm.crew_members.filter((_, i) => i !== idx)
+                        })}
+                      >
+                        ×
+                      </button>
+                    </Badge>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div>
+              <Label>Status *</Label>
+              <Select value={trainingForm.status} onValueChange={(value) => setTrainingForm({...trainingForm, status: value})}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Pass">Pass</SelectItem>
+                  <SelectItem value="Fail">Fail</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <Label>Authorized By *</Label>
+              <Select 
+                value={trainingForm.authorized_by} 
+                onValueChange={(value) => {
+                  const crew = crewList.find(c => c.staff_name === value);
+                  setTrainingForm({
+                    ...trainingForm, 
+                    authorized_by: value,
+                    authorized_by_id: crew?.id || ''
+                  });
+                }}
+              >
+                <SelectTrigger><SelectValue placeholder="Select authorizing crew" /></SelectTrigger>
+                <SelectContent>
+                  {crewList.map(crew => (
+                    <SelectItem key={crew.id} value={crew.staff_name}>{crew.staff_name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <Label>Notes</Label>
+              <textarea
+                className="w-full p-2 border rounded-md min-h-[80px]"
+                value={trainingForm.notes}
+                onChange={(e) => setTrainingForm({...trainingForm, notes: e.target.value})}
+                placeholder="Any additional notes or observations..."
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setTrainingDialogOpen(false)}>Cancel</Button>
+            <Button onClick={handleSaveTraining}>{trainingEditMode ? 'Update Record' : 'Add Record'}</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
