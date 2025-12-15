@@ -399,7 +399,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Manual Log Entry Features"
+    - "Crew Shifts Data Consistency"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
