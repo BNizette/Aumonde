@@ -130,11 +130,11 @@ async def test_crew_logs_vessel_column():
             
         except Exception as error:
             print(f"❌ Error during testing: {error}")
-            await page.screenshot({
-                'path': '.screenshots/crew_logs_error_test.png',
-                'quality': 40,
-                'full_page': False
-            })
+            await page.screenshot(
+                path='.screenshots/crew_logs_error_test.png',
+                quality=40,
+                full_page=False
+            )
         
         finally:
             await browser.close()
