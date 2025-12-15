@@ -9,12 +9,13 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
-import { Ship, Plus, Edit, Trash2, Search, Calendar, Filter, X, AlertTriangle, Download, ChevronDown, FileText, Eye } from 'lucide-react';
+import { Ship, Plus, Edit, Trash2, Search, Calendar, Filter, X, AlertTriangle, Download, ChevronDown, FileText, Eye, Info } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { ResponsiveListCard } from '@/components/ui/responsive-list-card';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import VesselForm from './VesselForm';
 import ManualLogEntry from './ManualLogEntry';
 import useAdvancedFilters from '../hooks/useAdvancedFilters';
@@ -383,7 +384,30 @@ const VesselManagement = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-3xl font-bold text-gray-900">Vessel Management</h2>
+          <div className="flex items-center gap-2">
+            <h2 className="text-3xl font-bold text-gray-900">Vessel Management</h2>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Info className="h-5 w-5 text-blue-500 cursor-help" />
+                </TooltipTrigger>
+                <TooltipContent className="max-w-sm">
+                  <p className="font-semibold mb-1">Marine Order 504 (2024)</p>
+                  <p className="text-sm mb-2">
+                    Requires certificates of operation, vessel stability risk management, notification of vessel alterations, and documented SMS for operational integrity.
+                  </p>
+                  <a 
+                    href="https://www.amsa.gov.au/about/regulations-and-standards/marine-order-504-certificates-operation"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-500 hover:underline text-sm"
+                  >
+                    View AMSA MO504 Regulations →
+                  </a>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
           <p className="text-gray-500 mt-1">Manage your fleet of vessels and their certificates</p>
         </div>
         {canEdit && (
