@@ -802,6 +802,139 @@ const VesselManagement = () => {
         }}
         type="running"
       />
+
+      {/* Vessel Logs Dialog */}
+      <Dialog open={logsDialogOpen} onOpenChange={setLogsDialogOpen}>
+        <DialogContent className="max-w-5xl max-h-[90vh] overflow-auto">
+          <DialogHeader>
+            <DialogTitle>
+              {selectedVesselForLogs?.vessel_name || 'Vessel'} - Activity Logs
+            </DialogTitle>
+            <DialogDescription>
+              View trip logs and allocated staff activity for this vessel
+            </DialogDescription>
+          </DialogHeader>
+
+          {loadingLogs ? (
+            <div className="flex items-center justify-center py-8">
+              <div className="text-gray-500">Loading logs...</div>
+            </div>
+          ) : (
+            <Tabs defaultValue="running" className="w-full">
+              <TabsList>
+                <TabsTrigger value="running">Trip Logs ({vesselRunningLogs.length})</TabsTrigger>
+                <TabsTrigger value="staff">Allocated Staff ({vesselStaffLogs.length})</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="running" className="space-y-4">
+                <div className="text-sm text-gray-600 mb-2">
+                  Running logs and activity entries for {selectedVesselForLogs?.vessel_name}
+                </div>
+                {vesselRunningLogs.length > 0 ? (
+                  <div className="border rounded-lg overflow-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Date & Time</TableHead>
+                          <TableHead>Category</TableHead>
+                          <TableHead>Activity</TableHead>
+                          <TableHead>Details</TableHead>
+                          <TableHead>Crew</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {vesselRunningLogs.map((log) => (
+                          <TableRow key={log.id}>
+                            <TableCell className="font-medium">
+                              {log.log_datetime ? new Date(log.log_datetime).toLocaleString() : 'N/A'}
+                            </TableCell>
+                            <TableCell>
+                              <Badge variant="outline" className="bg-blue-50 text-blue-700">
+                                {log.category || 'General'}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>{log.activity || '-'}</TableCell>
+                            <TableCell className="max-w-xs truncate">
+                              {log.activity_details || '-'}
+                            </TableCell>
+                            <TableCell className="text-sm text-gray-600">
+                              {log.crew_name || '-'}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                ) : (
+                  <div className="text-center py-8 text-gray-500">
+                    No trip logs recorded for this vessel
+                  </div>
+                )}
+              </TabsContent>
+
+              <TabsContent value="staff" className="space-y-4">
+                <div className="text-sm text-gray-600 mb-2">
+                  Crew shift logs for staff allocated to {selectedVesselForLogs?.vessel_name}
+                </div>
+                {vesselStaffLogs.length > 0 ? (
+                  <div className="border rounded-lg overflow-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Shift Start</TableHead>
+                          <TableHead>Shift End</TableHead>
+                          <TableHead>Crew Member</TableHead>
+                          <TableHead>Task Performed</TableHead>
+                          <TableHead>Total Hours</TableHead>
+                          <TableHead>Trip ID</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {vesselStaffLogs.map((shift) => (
+                          <TableRow key={shift.id}>
+                            <TableCell className="font-medium">
+                              {shift.shift_start_datetime ? new Date(shift.shift_start_datetime).toLocaleString() : 'N/A'}
+                            </TableCell>
+                            <TableCell>
+                              {shift.shift_stop_datetime ? new Date(shift.shift_stop_datetime).toLocaleString() : 'N/A'}
+                            </TableCell>
+                            <TableCell>
+                              <Badge variant="outline" className="bg-orange-50 text-orange-700">
+                                👤 {shift.crew_name || 'Unknown'}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="max-w-xs truncate">
+                              {shift.task_performed || '-'}
+                            </TableCell>
+                            <TableCell>
+                              <Badge variant="outline" className="bg-blue-50 text-blue-700">
+                                {shift.total_hours ? `${shift.total_hours}h` : 'N/A'}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="text-xs text-gray-500">
+                              {shift.trip_id ? `${shift.trip_id.substring(0, 8)}...` : 'Manual'}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                ) : (
+                  <div className="text-center py-8 text-gray-500">
+                    No staff shift logs recorded for this vessel
+                  </div>
+                )}
+              </TabsContent>
+            </Tabs>
+          )}
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setLogsDialogOpen(false)}>
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
