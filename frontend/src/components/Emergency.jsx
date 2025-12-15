@@ -656,6 +656,80 @@ const Emergency = () => {
     }
   };
 
+  // Drill Record Functions
+  const handleAddRecord = (drillId) => {
+    setSelectedDrillId(drillId);
+    setRecordEditMode(false);
+    setRecordForm({
+      record_date: new Date().toISOString().slice(0, 16),
+      crew_members: [],
+      status: 'Pass',
+      authorized_by: '',
+      authorized_by_id: '',
+      notes: ''
+    });
+    setRecordDialogOpen(true);
+  };
+
+  const handleEditRecord = (record) => {
+    setSelectedDrillId(record.drill_id);
+    setRecordEditMode(true);
+    setEditingRecordId(record.id);
+    setRecordForm({
+      record_date: new Date(record.record_date).toISOString().slice(0, 16),
+      crew_members: record.crew_members || [],
+      status: record.status,
+      authorized_by: record.authorized_by,
+      authorized_by_id: record.authorized_by_id || '',
+      notes: record.notes || ''
+    });
+    setRecordDialogOpen(true);
+  };
+
+  const handleSaveRecord = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const recordData = {
+        ...recordForm,
+        drill_id: selectedDrillId
+      };
+
+      if (recordEditMode) {
+        await axios.put(`${API}/emergency/drill-records/${editingRecordId}`, recordData, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setMessage('Drill record updated successfully');
+      } else {
+        await axios.post(`${API}/emergency/drill-records`, recordData, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setMessage('Drill record added successfully');
+      }
+
+      setRecordDialogOpen(false);
+      fetchData();
+      setTimeout(() => setMessage(''), 3000);
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Error saving drill record');
+    }
+  };
+
+  const handleDeleteRecord = async (recordId) => {
+    if (!window.confirm('Are you sure you want to delete this drill record?')) return;
+
+    try {
+      const token = localStorage.getItem('token');
+      await axios.delete(`${API}/emergency/drill-records/${recordId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setMessage('Drill record deleted successfully');
+      fetchData();
+      setTimeout(() => setMessage(''), 3000);
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Error deleting drill record');
+    }
+  };
+
   const resetContactForm = () => {
     setContactForm({
       contact_type: 'Shore',
