@@ -147,9 +147,12 @@ const Incidents = () => {
 
       // Apply multi-select filters on client side
       if (filters.incident_types.length > 0) {
-        filteredIncidents = filteredIncidents.filter(incident => 
-          filters.incident_types.includes(incident.incident_type)
-        );
+        filteredIncidents = filteredIncidents.filter(incident => {
+          const incidentTypes = Array.isArray(incident.incident_type) 
+            ? incident.incident_type 
+            : [incident.incident_type];
+          return incidentTypes.some(type => filters.incident_types.includes(type));
+        });
       }
 
       if (filters.severities.length > 0) {
@@ -228,7 +231,7 @@ const Incidents = () => {
       ...incidents.map(incident => [
         `"${incident.id || ''}"`,
         `"${(incident.title || '').replace(/"/g, '""')}"`,
-        `"${incident.incident_type || ''}"`,
+        `"${Array.isArray(incident.incident_type) ? incident.incident_type.join(', ') : (incident.incident_type || '')}"`,
         `"${incident.severity || ''}"`,
         `"${incident.investigation_status || ''}"`,
         `"${(incident.description || '').replace(/"/g, '""')}"`,
