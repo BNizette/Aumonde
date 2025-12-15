@@ -203,17 +203,27 @@ const Emergency = () => {
       const token = localStorage.getItem('token');
       const headers = { Authorization: `Bearer ${token}` };
 
-      const [contactsRes, proceduresRes, drillsRes, vesselsRes] = await Promise.all([
+      const [contactsRes, proceduresRes, drillsRes, vesselsRes, crewRes] = await Promise.all([
         axios.get(`${API}/emergency/contacts`, { headers }),
         axios.get(`${API}/emergency/procedures`, { headers }),
         axios.get(`${API}/emergency/drills`, { headers }),
-        axios.get(`${API}/vessels`, { headers })
+        axios.get(`${API}/vessels`, { headers }),
+        axios.get(`${API}/crew`, { headers })
       ]);
 
       setContacts(contactsRes.data);
       setProcedures(proceduresRes.data);
       setDrills(drillsRes.data);
       setVessels(vesselsRes.data);
+      setCrewList(crewRes.data);
+      
+      // Fetch drill records for all drills
+      const recordsMap = {};
+      for (const drill of drillsRes.data) {
+        const recordsRes = await axios.get(`${API}/emergency/drill-records/${drill.id}`, { headers });
+        recordsMap[drill.id] = recordsRes.data;
+      }
+      setDrillRecords(recordsMap);
     } catch (err) {
       setError('Error fetching emergency data');
     } finally {
