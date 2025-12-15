@@ -1728,8 +1728,8 @@ const Emergency = () => {
                           )}
                         </div>
                         <div className="flex gap-2">
-                          <Button variant="outline" size="sm" onClick={() => handleAddRecord(drill.id)} title="Add drill record">
-                            <FileText className="h-4 w-4" />
+                          <Button variant="outline" size="sm" onClick={() => handleViewDrill(drill)} title="View details & records">
+                            <Eye className="h-4 w-4" />
                           </Button>
                           <Button variant="outline" size="sm" onClick={() => handleEditDrill(drill)}>
                             <Edit className="h-4 w-4" />
@@ -1739,48 +1739,13 @@ const Emergency = () => {
                           </Button>
                         </div>
                       </div>
-
-                      {/* Drill Records Table */}
+                      
+                      {/* Record count indicator */}
                       {drillRecords[drill.id] && drillRecords[drill.id].length > 0 && (
-                        <div className="mt-4 pt-4 border-t">
-                          <h4 className="font-semibold text-sm mb-2">Drill Records</h4>
-                          <div className="overflow-x-auto">
-                            <table className="w-full text-sm">
-                              <thead className="bg-gray-50">
-                                <tr>
-                                  <th className="text-left p-2 border">Date</th>
-                                  <th className="text-left p-2 border">Crew</th>
-                                  <th className="text-left p-2 border">Status</th>
-                                  <th className="text-left p-2 border">Authorized By</th>
-                                  <th className="text-left p-2 border">Actions</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                {drillRecords[drill.id].map((record) => (
-                                  <tr key={record.id} className="hover:bg-gray-50">
-                                    <td className="p-2 border">{new Date(record.record_date).toLocaleString()}</td>
-                                    <td className="p-2 border">{record.crew_members.join(', ')}</td>
-                                    <td className="p-2 border">
-                                      <Badge variant={record.status === 'Pass' ? 'default' : 'destructive'}>
-                                        {record.status}
-                                      </Badge>
-                                    </td>
-                                    <td className="p-2 border">{record.authorized_by}</td>
-                                    <td className="p-2 border">
-                                      <div className="flex gap-1">
-                                        <Button variant="ghost" size="sm" onClick={() => handleEditRecord(record)}>
-                                          <Edit className="h-3 w-3" />
-                                        </Button>
-                                        <Button variant="ghost" size="sm" onClick={() => handleDeleteRecord(record.id)}>
-                                          <Trash2 className="h-3 w-3 text-red-500" />
-                                        </Button>
-                                      </div>
-                                    </td>
-                                  </tr>
-                                ))}
-                              </tbody>
-                            </table>
-                          </div>
+                        <div className="mt-2">
+                          <Badge variant="secondary" className="text-xs">
+                            {drillRecords[drill.id].length} record{drillRecords[drill.id].length !== 1 ? 's' : ''}
+                          </Badge>
                         </div>
                       )}
                     </div>
