@@ -487,6 +487,18 @@ frontend:
           agent: "testing"
           comment: "✅ EMERGENCY DRILL & TRAINING RECORDS FEATURE SUCCESSFULLY VERIFIED: Comprehensive testing completed with excellent results. BACKEND API VERIFICATION: All drill and training record APIs working correctly - backend logs show successful 200 OK responses for GET /api/emergency/drill-records/{id}, GET /api/emergency/training-records/{id}, GET /api/crew/{crew_name}/drill-records, and GET /api/crew/{crew_name}/training-records endpoints. FRONTEND FUNCTIONALITY VERIFIED: 1) Emergency Module - Drills Tab: ✅ Found 6 drill cards with 7 FileText buttons for adding drill records. ✅ Drill record functionality detected and working. 2) Emergency Module - Procedures Tab: ✅ Found 8 procedures with FileText buttons for adding training records. ✅ Training record functionality detected and working. 3) Crew Management - Drills & Training Tab: ✅ Successfully verified new 'Drills & Training (0)' tab in crew member details dialog. ✅ Tab contains both 'Emergency Drills' and 'Procedure Training' sections as specified. ✅ Tab shows correct count (0) indicating no records yet for test crew member. COMPREHENSIVE VERIFICATION: All three main components of the feature are implemented and functional - drill records in Emergency module, training records in Emergency module, and combined drill/training view in Crew Management. The feature is working as specified in the review request."
 
+  - task: "Updated Incidents Module with New Fields"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/Incidents.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "NEW TASK: Test the updated Incidents module with extensive new fields and enhancements. NEW FIELDS ADDED: 1) After Location: Trip From, Trip To, GPS Location (text inputs), 2) UTC Time Display: Shows UTC time next to local incident date/time in both list and detail views, 3) New Checkboxes: Pilot on Board, Cargo on Board, 4) Activity Field: Multiselect dropdown with options (Anchored, Being towed, Berthed, Berthing/Unberthing, Fishing/Unloading, Loading/Unloading, Towing, Underway, Other), 5) Incident Type: Changed to multiselect with comprehensive list (21 types including Contact with something other than a vessel, Collision with another vessel, Damage, Dangerous occurrence, Death, Disabled, Equipment/machinery failure, Fire/smoke, Flooding, etc.). Test with admin@test.com / Admin123! credentials. EXPECTED BEHAVIOR: Create incident form shows all new fields with multiselect functionality, incident cards display multiple types (comma-separated), local time with UTC time in parentheses, trip from/to information, GPS location, activity badges, pilot/cargo indicators with emojis. View dialog shows all new fields properly formatted."
+
 agent_communication:
     - agent: "testing"
       message: "✅ AMSA REGULATORY TOOLTIPS TESTING COMPLETE: Successfully verified all 8 regulatory tooltips across the AMSA Safety Management application with 100% success rate. COMPREHENSIVE RESULTS: All modules (Risk Assessment, Crew Management, Vessel Management, Trip Management, Maintenance Management, Incident Management, Emergency Response, Compliance Management) have working tooltips with proper Marine Order 504 regulatory references, relevant compliance descriptions, and functional AMSA links. Each tooltip appears correctly on hover over the Info icon positioned next to module headings. The implementation provides essential regulatory compliance information as specified in the review request."
