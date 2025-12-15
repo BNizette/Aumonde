@@ -231,6 +231,18 @@ backend:
           agent: "testing"
           comment: "✅ MANUAL LOG ENTRY FEATURES SUCCESSFULLY TESTED: Both manual vessel log entry and manual crew shift log entry features are working perfectly. COMPREHENSIVE TESTING RESULTS: 🔧 MANUAL VESSEL LOG ENTRY: Successfully tested /api/running-logs endpoint with optional trip_id. Created manual vessel log without trip_id using vessel_id, crew_id, log_datetime, category, activity, and activity_details. Log was successfully created and retrieved via GET /api/running-logs?vessel_id={id}. Backend correctly handles both trip-based logs and manual logs with vessel_id. 🔧 MANUAL CREW SHIFT LOG ENTRY: Successfully tested /api/trip-logs endpoint (crew shifts) with optional trip_id. Created manual crew shift without trip_id using crew_id, crew_name, shift_start_datetime, shift_stop_datetime, and task_performed. Shift was successfully created and retrieved via GET /api/trip-logs. 🔧 DATA VALIDATION: Confirmed required field validation works correctly - missing crew_id properly rejected with 422 status. Optional fields (vessel_id, category, activity_details, shift_stop_datetime, task_performed) work correctly. 🔧 BACKEND FIXES APPLIED: Updated GET /api/running-logs endpoint to support both trip-based filtering and direct vessel_id filtering for manual logs using $or query with conditions: trip_id in vessel's trips OR (vessel_id matches AND trip_id is null). All manual log entry functionality working as specified in review request."
 
+  - task: "Crew Shifts Data Consistency"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "✅ CREW SHIFTS DATA CONSISTENCY SUCCESSFULLY VERIFIED: Comprehensive testing completed confirming both Crew Management and Trip Management modules now query the same /api/trip-logs endpoint for consistent data. TESTING RESULTS: 🔧 SAME DATA SOURCE VERIFIED: Both modules query /api/trip-logs endpoint (65/65 tests passed). Retrieved all crew shifts successfully with proper data structure containing expected fields: id, crew_id, crew_name, shift_start_datetime, shift_stop_datetime, task_performed, total_hours. 🔧 FILTERING CONSISTENCY: Successfully tested filtering by crew_id (client-side) and trip_id (server-side parameter). Both filtering methods work correctly and return consistent data structure. 🔧 DATA STRUCTURE VALIDATION: Confirmed all expected trip_logs model fields are present. Verified NO old running_logs fields (log_datetime, activity, activity_details) are present in crew shifts data. 🔧 ENDPOINT CONSISTENCY: Verified no separate /crew-shifts endpoint exists - both modules correctly use /api/trip-logs. 🔧 CRUD OPERATIONS: Successfully created test crew shift, verified it appears in both all-shifts query and trip-specific query, then cleaned up test data. 🔧 COMPREHENSIVE VERIFICATION: Created and verified test shift appears in: 1) GET /api/trip-logs (all shifts), 2) GET /api/trip-logs?trip_id={id} (trip-specific). Data consistency maintained across both Crew Management and Trip Management modules as specified in review request."
+
 frontend:
   - task: "Settings Integration Across Multiple Modules"
     implemented: true
