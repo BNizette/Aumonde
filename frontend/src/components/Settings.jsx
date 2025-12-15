@@ -364,9 +364,9 @@ const Settings = () => {
                     <div 
                       key={option.id || index} 
                       className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg cursor-move hover:bg-gray-100 transition-colors"
-                      draggable
+                      draggable={true}
                       onDragStart={(e) => handleDragStart(e, index)}
-                      onDragOver={(e) => handleDragOver(e, index)}
+                      onDragOver={handleDragOver}
                       onDrop={(e) => handleDrop(e, index)}
                     >
                       <GripVertical className="h-4 w-4 text-gray-400 cursor-grab active:cursor-grabbing" />
@@ -375,11 +375,15 @@ const Settings = () => {
                         onChange={(e) => handleOptionChange(index, 'value', e.target.value)}
                         placeholder="Enter option value"
                         className="flex-1"
+                        onDragStart={(e) => e.stopPropagation()}
+                        draggable={false}
                       />
                       <Button
                         variant="ghost"
                         size="sm"
                         onClick={() => handleRemoveOption(index)}
+                        onDragStart={(e) => e.stopPropagation()}
+                        draggable={false}
                       >
                         <Trash2 className="h-4 w-4 text-red-500" />
                       </Button>
