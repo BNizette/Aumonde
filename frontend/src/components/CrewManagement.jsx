@@ -1164,10 +1164,18 @@ const CrewManagement = () => {
 
           {/* Drills Tab */}
           <TabsContent value="drills" className="space-y-4">
-            <h3 className="font-semibold text-lg mb-3 flex items-center gap-2">
-              <Activity className="h-5 w-5 text-blue-600" />
-              Emergency Drills
-            </h3>
+            <div className="flex justify-between items-center mb-3">
+              <h3 className="font-semibold text-lg flex items-center gap-2">
+                <Activity className="h-5 w-5 text-blue-600" />
+                Emergency Drills
+              </h3>
+              {crewDrillRecords.length > 0 && (
+                <Button variant="outline" size="sm" onClick={exportCrewDrillsToCSV}>
+                  <Download className="h-4 w-4 mr-2" />
+                  Export CSV
+                </Button>
+              )}
+            </div>
             {crewDrillRecords.length > 0 ? (
               <div className="overflow-x-auto">
                 <Table>
@@ -1206,10 +1214,18 @@ const CrewManagement = () => {
 
           {/* Training Tab */}
           <TabsContent value="training" className="space-y-4">
-            <h3 className="font-semibold text-lg mb-3 flex items-center gap-2">
-              <FileText className="h-5 w-5 text-orange-600" />
-              Procedure Training
-            </h3>
+            <div className="flex justify-between items-center mb-3">
+              <h3 className="font-semibold text-lg flex items-center gap-2">
+                <FileText className="h-5 w-5 text-orange-600" />
+                Procedure Training
+              </h3>
+              {crewTrainingRecords.length > 0 && (
+                <Button variant="outline" size="sm" onClick={exportCrewTrainingToCSV}>
+                  <Download className="h-4 w-4 mr-2" />
+                  Export CSV
+                </Button>
+              )}
+            </div>
             {crewTrainingRecords.length > 0 ? (
               <div className="overflow-x-auto">
                 <Table>
