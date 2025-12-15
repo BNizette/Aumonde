@@ -296,20 +296,10 @@ const TripManagement = () => {
         </div>
         <div className="flex gap-2">
           {canEdit && (
-            <>
-              <Button variant="outline" onClick={() => { setManualLogType('crew'); setManualLogOpen(true); }}>
-                <Users className="mr-2 h-4 w-4" />
-                Manual Crew Log
-              </Button>
-              <Button variant="outline" onClick={() => { setManualLogType('running'); setManualLogOpen(true); }}>
-                <FileText className="mr-2 h-4 w-4" />
-                Manual Running Log
-              </Button>
-              <Button onClick={handleCreate}>
-                <Plus className="mr-2 h-4 w-4" />
-                Create Trip
-              </Button>
-            </>
+            <Button onClick={handleCreate}>
+              <Plus className="mr-2 h-4 w-4" />
+              Create Trip
+            </Button>
           )}
         </div>
       </div>
