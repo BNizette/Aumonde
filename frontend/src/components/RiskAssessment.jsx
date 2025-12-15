@@ -252,7 +252,30 @@ const RiskAssessment = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Risk Assessment</h1>
+          <div className="flex items-center gap-2">
+            <h1 className="text-3xl font-bold text-gray-900">Risk Assessment</h1>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Info className="h-5 w-5 text-blue-500 cursor-help" />
+                </TooltipTrigger>
+                <TooltipContent className="max-w-sm">
+                  <p className="font-semibold mb-1">AMSA Marine Order 504 (2024)</p>
+                  <p className="text-sm mb-2">
+                    Requires a documented Safety Management System (SMS) that identifies, assesses, and manages risks to vessel safety, people, and the environment.
+                  </p>
+                  <a 
+                    href="https://www.amsa.gov.au/about/regulations-and-standards/marine-order-504-certificates-operation"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-500 hover:underline text-sm"
+                  >
+                    View AMSA MO504 Regulations →
+                  </a>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
           <p className="text-gray-500 mt-1">Identify, assess, and manage operational risks</p>
         </div>
         {canEdit && (
