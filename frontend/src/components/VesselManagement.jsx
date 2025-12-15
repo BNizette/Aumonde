@@ -44,6 +44,9 @@ const VesselManagement = () => {
   const [selectedVesselForLogs, setSelectedVesselForLogs] = useState(null);
   const [vesselRunningLogs, setVesselRunningLogs] = useState([]);
   const [vesselStaffLogs, setVesselStaffLogs] = useState([]);
+  const [vesselRisks, setVesselRisks] = useState([]);
+  const [vesselMaintenance, setVesselMaintenance] = useState([]);
+  const [vesselIncidents, setVesselIncidents] = useState([]);
   const [loadingLogs, setLoadingLogs] = useState(false);
 
   // Use custom hook for advanced filtering
