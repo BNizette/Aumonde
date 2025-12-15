@@ -2554,6 +2554,56 @@ async def delete_drill_record(record_id: str, current_user: dict = Depends(requi
     await db.drill_records.delete_one({"id": record_id})
     return {"status": "success"}
 
+# Training Records Model and Endpoints
+class TrainingRecord(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    procedure_id: str
+    training_date: datetime
+    crew_members: List[str]  # List of crew member names
+    status: str  # "Pass" or "Fail"
+    authorized_by: str  # Crew member name who authorized
+    authorized_by_id: Optional[str] = None
+    notes: Optional[str] = None
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class TrainingRecordCreate(BaseModel):
+    procedure_id: str
+    training_date: str
+    crew_members: List[str]
+    status: str
+    authorized_by: str
+    authorized_by_id: Optional[str] = None
+    notes: Optional[str] = None
+
+@api_router.post("/emergency/training-records")
+async def create_training_record(record_data: TrainingRecordCreate, current_user: dict = Depends(require_access_level(AccessLevel.EDIT))):
+    training_date = datetime.fromisoformat(record_data.training_date.replace('Z', '+00:00'))
+    record_dict = record_data.model_dump()
+    record_dict['training_date'] = training_date
+    
+    record = TrainingRecord(**record_dict)
+    await db.training_records.insert_one(record.model_dump())
+    return record
+
+@api_router.get("/emergency/training-records/{procedure_id}")
+async def get_training_records(procedure_id: str, current_user: dict = Depends(get_current_user)):
+    records = await db.training_records.find({"procedure_id": procedure_id}, {"_id": 0}).sort("training_date", -1).to_list(1000)
+    return records
+
+@api_router.put("/emergency/training-records/{record_id}")
+async def update_training_record(record_id: str, record_data: dict, current_user: dict = Depends(require_access_level(AccessLevel.EDIT))):
+    if 'training_date' in record_data and record_data['training_date']:
+        record_data['training_date'] = datetime.fromisoformat(record_data['training_date'].replace('Z', '+00:00'))
+    
+    await db.training_records.update_one({"id": record_id}, {"$set": record_data})
+    return {"status": "success"}
+
+@api_router.delete("/emergency/training-records/{record_id}")
+async def delete_training_record(record_id: str, current_user: dict = Depends(require_access_level(AccessLevel.FULL))):
+    await db.training_records.delete_one({"id": record_id})
+    return {"status": "success"}
+
 # ============================================================================
 # COMPLIANCE MODULE (PHASE 2)
 # ============================================================================
