@@ -851,6 +851,9 @@ const VesselManagement = () => {
                 <TabsTrigger value="details">Vessel Details</TabsTrigger>
                 <TabsTrigger value="running">Trip Logs ({vesselRunningLogs.length})</TabsTrigger>
                 <TabsTrigger value="staff">Allocated Staff ({vesselStaffLogs.length})</TabsTrigger>
+                <TabsTrigger value="risks">Risk Assessments ({vesselRisks.length})</TabsTrigger>
+                <TabsTrigger value="maintenance">Maintenance ({vesselMaintenance.length})</TabsTrigger>
+                <TabsTrigger value="incidents">Incidents ({vesselIncidents.length})</TabsTrigger>
               </TabsList>
 
               {/* Vessel Details Tab */}
