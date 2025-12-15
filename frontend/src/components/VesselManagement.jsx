@@ -13,6 +13,7 @@ import { Ship, Plus, Edit, Trash2, Search, Calendar, Filter, X, AlertTriangle, D
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import VesselForm from './VesselForm';
 import ManualLogEntry from './ManualLogEntry';
 import useAdvancedFilters from '../hooks/useAdvancedFilters';
