@@ -1379,7 +1379,7 @@ const Emergency = () => {
                 ) : (
                   filteredProcedures.map((proc) => (
                     <div key={proc.id} className="border rounded-lg p-4 hover:bg-gray-50">
-                      <div className="flex justify-between items-start">
+                      <div className="flex justify-between items-start mb-3">
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-2">
                             <AlertTriangle className="h-5 w-5 text-orange-600" />
@@ -1392,6 +1392,9 @@ const Emergency = () => {
                           )}
                         </div>
                         <div className="flex gap-2">
+                          <Button variant="outline" size="sm" onClick={() => handleAddTraining(proc.id)} title="Add training record">
+                            <FileText className="h-4 w-4" />
+                          </Button>
                           <Button variant="outline" size="sm" onClick={() => handleEditProcedure(proc)}>
                             <Edit className="h-4 w-4" />
                           </Button>
@@ -1400,6 +1403,50 @@ const Emergency = () => {
                           </Button>
                         </div>
                       </div>
+
+                      {/* Training Records Table */}
+                      {trainingRecords[proc.id] && trainingRecords[proc.id].length > 0 && (
+                        <div className="mt-4 pt-4 border-t">
+                          <h4 className="font-semibold text-sm mb-2">Training Records</h4>
+                          <div className="overflow-x-auto">
+                            <table className="w-full text-sm">
+                              <thead className="bg-gray-50">
+                                <tr>
+                                  <th className="text-left p-2 border">Date</th>
+                                  <th className="text-left p-2 border">Crew</th>
+                                  <th className="text-left p-2 border">Status</th>
+                                  <th className="text-left p-2 border">Authorized By</th>
+                                  <th className="text-left p-2 border">Actions</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {trainingRecords[proc.id].map((training) => (
+                                  <tr key={training.id} className="hover:bg-gray-50">
+                                    <td className="p-2 border">{new Date(training.training_date).toLocaleString()}</td>
+                                    <td className="p-2 border">{training.crew_members.join(', ')}</td>
+                                    <td className="p-2 border">
+                                      <Badge variant={training.status === 'Pass' ? 'default' : 'destructive'}>
+                                        {training.status}
+                                      </Badge>
+                                    </td>
+                                    <td className="p-2 border">{training.authorized_by}</td>
+                                    <td className="p-2 border">
+                                      <div className="flex gap-1">
+                                        <Button variant="ghost" size="sm" onClick={() => handleEditTraining(training)}>
+                                          <Edit className="h-3 w-3" />
+                                        </Button>
+                                        <Button variant="ghost" size="sm" onClick={() => handleDeleteTraining(training.id)}>
+                                          <Trash2 className="h-3 w-3 text-red-500" />
+                                        </Button>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   ))
                 )}
