@@ -471,6 +471,19 @@ test_plan:
           agent: "testing"
           comment: "✅ AMSA REGULATORY TOOLTIPS SUCCESSFULLY VERIFIED: Comprehensive testing completed across all 8 modules with 100% success rate. ALL TOOLTIPS WORKING PERFECTLY: 1) Risk Assessment - AMSA Marine Order 504 (2024) with SMS requirements ✅, 2) Crew Management - MO504 Schedule 1 Clause 6(4) with crewing evaluation requirements ✅, 3) Vessel Management - Marine Order 504 (2024) with certificates of operation requirements ✅, 4) Trip Management - Marine Order 504 (2024) with voyage planning requirements ✅, 5) Maintenance Management - Marine Order 504 (2024) with maintenance procedures requirements ✅, 6) Incident Management - Marine Order 504 (2024) with incident reporting requirements ✅, 7) Emergency Response - Marine Order 504 (2024) with emergency procedures requirements ✅, 8) Compliance Management - Marine Order 504 (2024) with SMS compliance requirements ✅. TOOLTIP CONTENT VERIFICATION: Each tooltip contains proper regulatory reference (Marine Order 504 or MO504), relevant description of regulatory requirements, and functional AMSA link to official regulations. All Info icons (blue, 5x5) are properly positioned next to module headings and trigger tooltips on hover. The regulatory tooltips provide essential AMSA Marine Order 504 compliance information with direct links to official regulations as specified in the requirements."
 
+frontend:
+  - task: "Emergency Drill & Training Records Feature"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/Emergency.jsx, /app/frontend/src/components/CrewManagement.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "NEW TASK: Test the complete Emergency Drill & Training Records feature implementation. BACKEND APIs: POST/GET/PUT/DELETE /api/emergency/drill-records, POST/GET/PUT/DELETE /api/emergency/training-records, GET /api/crew/{crew_name}/drill-records, GET /api/crew/{crew_name}/training-records. FRONTEND FEATURES: 1) Emergency Module - Drills Tab: Each drill has records table with 'Add Record' button (FileText icon), records show Date/Crew/Status/Authorized By. 2) Emergency Module - Procedures Tab: Each procedure has training records table with 'Add Training' button (FileText icon), records show Date/Crew/Status/Authorized By. 3) Crew Management - View Dialog: New 'Drills & Training' tab shows all drills participated in and training completed by crew member. Test with admin@test.com / Admin123! credentials."
+
 agent_communication:
     - agent: "testing"
       message: "✅ AMSA REGULATORY TOOLTIPS TESTING COMPLETE: Successfully verified all 8 regulatory tooltips across the AMSA Safety Management application with 100% success rate. COMPREHENSIVE RESULTS: All modules (Risk Assessment, Crew Management, Vessel Management, Trip Management, Maintenance Management, Incident Management, Emergency Response, Compliance Management) have working tooltips with proper Marine Order 504 regulatory references, relevant compliance descriptions, and functional AMSA links. Each tooltip appears correctly on hover over the Info icon positioned next to module headings. The implementation provides essential regulatory compliance information as specified in the review request."
