@@ -218,18 +218,20 @@ const CrewManagement = () => {
     }
 
     const headers = [
-      'Date & Time',
-      'Activity',
-      'Details',
+      'Shift Start',
+      'Shift End',
+      'Task Performed',
+      'Total Hours',
       'Trip ID',
       'Crew Name',
       'Log ID'
     ];
 
     const csvRows = [headers.join(','), ...crewShifts.map(shift => [
-      `"${new Date(shift.log_datetime).toLocaleString()}"`,
-      `"${shift.activity || 'N/A'}"`,
-      `"${shift.activity_details || '-'}"`,
+      `"${shift.shift_start_datetime ? new Date(shift.shift_start_datetime).toLocaleString() : 'N/A'}"`,
+      `"${shift.shift_stop_datetime ? new Date(shift.shift_stop_datetime).toLocaleString() : 'N/A'}"`,
+      `"${shift.task_performed || '-'}"`,
+      `"${shift.total_hours || 'N/A'}"`,
       `"${shift.trip_id || 'N/A'}"`,
       `"${selectedCrew?.staff_name || 'N/A'}"`,
       `"${shift.id || 'N/A'}"`
