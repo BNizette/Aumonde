@@ -1173,8 +1173,16 @@ const VesselManagement = () => {
 
               {/* Risk Assessments Tab */}
               <TabsContent value="risks" className="space-y-4">
-                <div className="text-sm text-gray-600 mb-2">
-                  Risk assessments related to {selectedVesselForLogs?.vessel_name}
+                <div className="flex justify-between items-center mb-2">
+                  <div className="text-sm text-gray-600">
+                    Risk assessments related to {selectedVesselForLogs?.vessel_name}
+                  </div>
+                  {vesselRisks.length > 0 && (
+                    <Button variant="outline" size="sm" onClick={exportVesselRisksToCSV}>
+                      <Download className="h-4 w-4 mr-2" />
+                      Export CSV
+                    </Button>
+                  )}
                 </div>
                 {vesselRisks.length > 0 ? (
                   <div className="border rounded-lg overflow-auto">
@@ -1214,8 +1222,16 @@ const VesselManagement = () => {
 
               {/* Maintenance Tab */}
               <TabsContent value="maintenance" className="space-y-4">
-                <div className="text-sm text-gray-600 mb-2">
-                  Maintenance records for {selectedVesselForLogs?.vessel_name}
+                <div className="flex justify-between items-center mb-2">
+                  <div className="text-sm text-gray-600">
+                    Maintenance records for {selectedVesselForLogs?.vessel_name}
+                  </div>
+                  {vesselMaintenance.length > 0 && (
+                    <Button variant="outline" size="sm" onClick={exportVesselMaintenanceToCSV}>
+                      <Download className="h-4 w-4 mr-2" />
+                      Export CSV
+                    </Button>
+                  )}
                 </div>
                 {vesselMaintenance.length > 0 ? (
                   <div className="border rounded-lg overflow-auto">
@@ -1263,8 +1279,16 @@ const VesselManagement = () => {
 
               {/* Incidents Tab */}
               <TabsContent value="incidents" className="space-y-4">
-                <div className="text-sm text-gray-600 mb-2">
-                  Incidents involving {selectedVesselForLogs?.vessel_name}
+                <div className="flex justify-between items-center mb-2">
+                  <div className="text-sm text-gray-600">
+                    Incidents involving {selectedVesselForLogs?.vessel_name}
+                  </div>
+                  {vesselIncidents.length > 0 && (
+                    <Button variant="outline" size="sm" onClick={exportVesselIncidentsToCSV}>
+                      <Download className="h-4 w-4 mr-2" />
+                      Export CSV
+                    </Button>
+                  )}
                 </div>
                 {vesselIncidents.length > 0 ? (
                   <div className="border rounded-lg overflow-auto">
