@@ -1065,6 +1065,149 @@ const VesselManagement = () => {
                   </div>
                 )}
               </TabsContent>
+
+              {/* Risk Assessments Tab */}
+              <TabsContent value="risks" className="space-y-4">
+                <div className="text-sm text-gray-600 mb-2">
+                  Risk assessments related to {selectedVesselForLogs?.vessel_name}
+                </div>
+                {vesselRisks.length > 0 ? (
+                  <div className="border rounded-lg overflow-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Activity/Task</TableHead>
+                          <TableHead>Risk Level</TableHead>
+                          <TableHead>Hazard</TableHead>
+                          <TableHead>Control Measures</TableHead>
+                          <TableHead>Assessment Date</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {vesselRisks.map((risk) => (
+                          <TableRow key={risk.id}>
+                            <TableCell className="font-medium">{risk.activity_task}</TableCell>
+                            <TableCell>
+                              <Badge variant={risk.risk_level === 'High' ? 'destructive' : risk.risk_level === 'Medium' ? 'default' : 'secondary'}>
+                                {risk.risk_level}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="max-w-xs truncate">{risk.hazard_description || '-'}</TableCell>
+                            <TableCell className="max-w-xs truncate">{risk.control_measures || '-'}</TableCell>
+                            <TableCell>{risk.assessment_date ? new Date(risk.assessment_date).toLocaleDateString() : 'N/A'}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                ) : (
+                  <div className="text-center py-8 text-gray-500">
+                    No risk assessments for this vessel
+                  </div>
+                )}
+              </TabsContent>
+
+              {/* Maintenance Tab */}
+              <TabsContent value="maintenance" className="space-y-4">
+                <div className="text-sm text-gray-600 mb-2">
+                  Maintenance records for {selectedVesselForLogs?.vessel_name}
+                </div>
+                {vesselMaintenance.length > 0 ? (
+                  <div className="border rounded-lg overflow-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Type</TableHead>
+                          <TableHead>Item/System</TableHead>
+                          <TableHead>Status</TableHead>
+                          <TableHead>Next Service Date</TableHead>
+                          <TableHead>Last Service Date</TableHead>
+                          <TableHead>Priority</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {vesselMaintenance.map((maintenance) => (
+                          <TableRow key={maintenance.id}>
+                            <TableCell>
+                              <Badge variant="outline">{maintenance.maintenance_type}</Badge>
+                            </TableCell>
+                            <TableCell className="font-medium">{maintenance.item_system}</TableCell>
+                            <TableCell>
+                              <Badge variant={maintenance.status === 'Completed' ? 'default' : maintenance.status === 'Overdue' ? 'destructive' : 'secondary'}>
+                                {maintenance.status}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>{maintenance.next_service_date ? new Date(maintenance.next_service_date).toLocaleDateString() : 'N/A'}</TableCell>
+                            <TableCell>{maintenance.last_service_date ? new Date(maintenance.last_service_date).toLocaleDateString() : 'N/A'}</TableCell>
+                            <TableCell>
+                              <Badge variant={maintenance.priority === 'High' ? 'destructive' : 'secondary'}>
+                                {maintenance.priority || 'Normal'}
+                              </Badge>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                ) : (
+                  <div className="text-center py-8 text-gray-500">
+                    No maintenance records for this vessel
+                  </div>
+                )}
+              </TabsContent>
+
+              {/* Incidents Tab */}
+              <TabsContent value="incidents" className="space-y-4">
+                <div className="text-sm text-gray-600 mb-2">
+                  Incidents involving {selectedVesselForLogs?.vessel_name}
+                </div>
+                {vesselIncidents.length > 0 ? (
+                  <div className="border rounded-lg overflow-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Incident #</TableHead>
+                          <TableHead>Title</TableHead>
+                          <TableHead>Type</TableHead>
+                          <TableHead>Severity</TableHead>
+                          <TableHead>Date</TableHead>
+                          <TableHead>Status</TableHead>
+                          <TableHead>Location</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {vesselIncidents.map((incident) => (
+                          <TableRow key={incident.id}>
+                            <TableCell className="font-medium">{incident.incident_number}</TableCell>
+                            <TableCell className="max-w-xs truncate">{incident.title}</TableCell>
+                            <TableCell>
+                              <div className="text-xs">
+                                {Array.isArray(incident.incident_type) 
+                                  ? incident.incident_type.slice(0, 2).join(', ') + (incident.incident_type.length > 2 ? '...' : '')
+                                  : incident.incident_type}
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              <Badge variant={incident.severity === 'Critical' || incident.severity === 'Serious' ? 'destructive' : 'secondary'}>
+                                {incident.severity}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>{incident.incident_date ? new Date(incident.incident_date).toLocaleDateString() : 'N/A'}</TableCell>
+                            <TableCell>
+                              <Badge variant="outline">{incident.investigation_status}</Badge>
+                            </TableCell>
+                            <TableCell className="max-w-xs truncate">{incident.location || '-'}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                ) : (
+                  <div className="text-center py-8 text-gray-500">
+                    No incidents recorded for this vessel
+                  </div>
+                )}
+              </TabsContent>
             </Tabs>
           )}
 
