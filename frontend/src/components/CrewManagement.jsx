@@ -433,6 +433,90 @@ const CrewManagement = () => {
     }
   };
 
+  // CSV Export Functions
+  const exportCrewTripsToCSV = () => {
+    if (crewTrips.length === 0) return;
+    const headers = ['Trip Name', 'Vessel', 'Depart Date', 'Return Date', 'Position', 'Created At'];
+    const csvRows = [headers.join(','), ...crewTrips.map(t => [
+      `"${(t.trip_name || '').replace(/"/g, '""')}"`,
+      `"${(t.vessel_name || '').replace(/"/g, '""')}"`,
+      `"${t.depart_datetime ? new Date(t.depart_datetime).toLocaleString() : ''}"`,
+      `"${t.return_datetime ? new Date(t.return_datetime).toLocaleString() : ''}"`,
+      `"${t.position || ''}"`,
+      `"${t.created_at ? new Date(t.created_at).toLocaleString() : ''}"`
+    ].join(','))];
+    const blob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.setAttribute('href', URL.createObjectURL(blob));
+    link.setAttribute('download', `crew_trips_${selectedCrewForLogs?.staff_name}_${new Date().toISOString().slice(0, 10)}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const exportCrewShiftsToCSV = () => {
+    if (crewShifts.length === 0) return;
+    const headers = ['Shift Start', 'Shift End', 'Vessel', 'Task Performed', 'Total Hours', 'Trip ID'];
+    const csvRows = [headers.join(','), ...crewShifts.map(s => [
+      `"${s.shift_start_datetime ? new Date(s.shift_start_datetime).toLocaleString() : ''}"`,
+      `"${s.shift_stop_datetime ? new Date(s.shift_stop_datetime).toLocaleString() : ''}"`,
+      `"${(s.vessel_name || '').replace(/"/g, '""')}"`,
+      `"${(s.task_performed || '').replace(/"/g, '""')}"`,
+      `"${s.total_hours || ''}"`,
+      `"${s.trip_id || 'Manual'}"`
+    ].join(','))];
+    const blob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.setAttribute('href', URL.createObjectURL(blob));
+    link.setAttribute('download', `crew_shifts_${selectedCrewForLogs?.staff_name}_${new Date().toISOString().slice(0, 10)}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const exportCrewDrillsToCSV = () => {
+    if (crewDrillRecords.length === 0) return;
+    const headers = ['Drill Type', 'Record Date', 'Status', 'Authorized By', 'Notes'];
+    const csvRows = [headers.join(','), ...crewDrillRecords.map(d => [
+      `"${(d.drill_type || '').replace(/"/g, '""')}"`,
+      `"${d.record_date ? new Date(d.record_date).toLocaleString() : ''}"`,
+      `"${d.status || ''}"`,
+      `"${(d.authorized_by || '').replace(/"/g, '""')}"`,
+      `"${(d.notes || '').replace(/"/g, '""')}"`
+    ].join(','))];
+    const blob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.setAttribute('href', URL.createObjectURL(blob));
+    link.setAttribute('download', `crew_drills_${selectedCrewForLogs?.staff_name}_${new Date().toISOString().slice(0, 10)}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const exportCrewTrainingToCSV = () => {
+    if (crewTrainingRecords.length === 0) return;
+    const headers = ['Procedure', 'Emergency Type', 'Training Date', 'Status', 'Authorized By', 'Notes'];
+    const csvRows = [headers.join(','), ...crewTrainingRecords.map(t => [
+      `"${(t.procedure_title || '').replace(/"/g, '""')}"`,
+      `"${(t.emergency_type || '').replace(/"/g, '""')}"`,
+      `"${t.training_date ? new Date(t.training_date).toLocaleString() : ''}"`,
+      `"${t.status || ''}"`,
+      `"${(t.authorized_by || '').replace(/"/g, '""')}"`,
+      `"${(t.notes || '').replace(/"/g, '""')}"`
+    ].join(','))];
+    const blob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.setAttribute('href', URL.createObjectURL(blob));
+    link.setAttribute('download', `crew_training_${selectedCrewForLogs?.staff_name}_${new Date().toISOString().slice(0, 10)}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   const checkDuplicates = async (formData) => {
     try {
       const token = localStorage.getItem('token');
