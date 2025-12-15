@@ -613,129 +613,111 @@ const VesselManagement = () => {
       </Card>
 
       {/* Vessels List - Responsive Card Layout */}
-      {filteredVessels.length === 0 ? (
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center py-12">
-            <Ship className="h-12 w-12 text-gray-400 mb-4" />
-            <h3 className="text-lg font-semibold mb-2">No vessels found</h3>
-            <p className="text-gray-500 text-sm mb-4">
-              {searchQuery ? 'Try adjusting your search criteria' : 'Get started by adding your first vessel'}
-            </p>
-            {canEdit && !searchQuery && (
-              <Button onClick={handleCreate}>
-                <Plus className="mr-2 h-4 w-4" />
-                Add Vessel
+      <ResponsiveListCard
+        items={filteredVessels}
+        renderIcon={(vessel) => <Ship className="h-5 w-5 text-blue-600" />}
+        renderContent={(vessel) => (
+          <>
+            {/* Vessel Name */}
+            <div className="flex-1 min-w-0">
+              <div className="font-semibold text-gray-900 truncate">
+                {vessel.vessel_name}
+              </div>
+              <div className="text-sm text-gray-500 truncate sm:hidden">
+                {vessel.vessel_type || 'N/A'}
+              </div>
+            </div>
+
+            {/* Registration */}
+            <div className="hidden sm:block w-32 flex-shrink-0">
+              <span className="text-sm text-gray-600">
+                {vessel.registration_number || '-'}
+              </span>
+            </div>
+
+            {/* Type Badge */}
+            <div className="hidden sm:block flex-shrink-0">
+              <Badge variant="outline" className="whitespace-nowrap text-xs">
+                {vessel.vessel_type || 'N/A'}
+              </Badge>
+            </div>
+
+            {/* Owner */}
+            <div className="hidden md:block w-36 flex-shrink-0">
+              <span className="text-sm text-gray-600 truncate block">
+                {vessel.owner_name || '-'}
+              </span>
+            </div>
+
+            {/* Specifications */}
+            <div className="hidden lg:block w-28 flex-shrink-0 text-center">
+              <span className="text-sm text-gray-600">
+                {vessel.length_overall ? `${vessel.length_overall}m × ${vessel.beam}m` : '-'}
+              </span>
+            </div>
+
+            {/* Status Badge */}
+            <div className="hidden xl:block flex-shrink-0">
+              <Badge 
+                variant={vessel.operational_status === 'Operational' ? 'default' : 'secondary'}
+                className="text-xs whitespace-nowrap"
+              >
+                {vessel.operational_status || 'Unknown'}
+              </Badge>
+            </div>
+
+            {/* Survey Expiry */}
+            <div className="hidden xl:block w-28 flex-shrink-0">
+              <span className="text-sm text-gray-600">
+                {vessel.cert_survey_expiry ? formatDate(vessel.cert_survey_expiry) : '-'}
+              </span>
+            </div>
+          </>
+        )}
+        renderActions={(vessel) => (
+          <>
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => handleViewLogs(vessel)}
+              title="View logs"
+            >
+              <Eye className="h-4 w-4" />
+            </Button>
+            {canEdit && (
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => handleEdit(vessel)}
+                title="Edit vessel"
+              >
+                <Edit className="h-4 w-4" />
               </Button>
             )}
-          </CardContent>
-        </Card>
-      ) : (
-        <Card>
-          <CardContent className="p-0">
-            <div className="divide-y">
-              {filteredVessels.map((vessel) => (
-                <div
-                  key={vessel.id}
-                  className="flex items-center gap-4 p-4 hover:bg-gray-50 transition-colors"
-                >
-                  {/* Icon */}
-                  <div className="flex-shrink-0">
-                    <Ship className="h-5 w-5 text-blue-600" />
-                  </div>
-
-                  {/* Vessel Name */}
-                  <div className="flex-1 min-w-0">
-                    <div className="font-semibold text-gray-900 truncate">
-                      {vessel.vessel_name}
-                    </div>
-                    <div className="text-sm text-gray-500 truncate sm:hidden">
-                      {vessel.vessel_type || 'N/A'}
-                    </div>
-                  </div>
-
-                  {/* Registration */}
-                  <div className="hidden sm:block w-32 flex-shrink-0">
-                    <span className="text-sm text-gray-600">
-                      {vessel.registration_number || '-'}
-                    </span>
-                  </div>
-
-                  {/* Type Badge */}
-                  <div className="hidden sm:block flex-shrink-0">
-                    <Badge variant="outline" className="whitespace-nowrap text-xs">
-                      {vessel.vessel_type || 'N/A'}
-                    </Badge>
-                  </div>
-
-                  {/* Owner */}
-                  <div className="hidden md:block w-36 flex-shrink-0">
-                    <span className="text-sm text-gray-600 truncate block">
-                      {vessel.owner_name || '-'}
-                    </span>
-                  </div>
-
-                  {/* Specifications */}
-                  <div className="hidden lg:block w-28 flex-shrink-0 text-center">
-                    <span className="text-sm text-gray-600">
-                      {vessel.length_overall ? `${vessel.length_overall}m × ${vessel.beam}m` : '-'}
-                    </span>
-                  </div>
-
-                  {/* Status Badge */}
-                  <div className="hidden xl:block flex-shrink-0">
-                    <Badge 
-                      variant={vessel.operational_status === 'Operational' ? 'default' : 'secondary'}
-                      className="text-xs whitespace-nowrap"
-                    >
-                      {vessel.operational_status || 'Unknown'}
-                    </Badge>
-                  </div>
-
-                  {/* Survey Expiry */}
-                  <div className="hidden xl:block w-28 flex-shrink-0">
-                    <span className="text-sm text-gray-600">
-                      {vessel.cert_survey_expiry ? formatDate(vessel.cert_survey_expiry) : '-'}
-                    </span>
-                  </div>
-
-                  {/* Action Buttons */}
-                  <div className="flex items-center gap-2 flex-shrink-0">
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => handleViewLogs(vessel)}
-                      title="View logs"
-                    >
-                      <Eye className="h-4 w-4" />
-                    </Button>
-                    {canEdit && (
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => handleEdit(vessel)}
-                        title="Edit vessel"
-                      >
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                    )}
-                    {canDelete && (
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                        onClick={() => handleDelete(vessel.id, vessel.vessel_name)}
-                        title="Delete vessel"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      )}
+            {canDelete && (
+              <Button
+                size="sm"
+                variant="ghost"
+                className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                onClick={() => handleDelete(vessel.id, vessel.vessel_name)}
+                title="Delete vessel"
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            )}
+          </>
+        )}
+        emptyState={{
+          icon: Ship,
+          title: 'No vessels found',
+          message: searchQuery ? 'Try adjusting your search criteria' : 'Get started by adding your first vessel',
+          action: canEdit && !searchQuery ? {
+            label: 'Add Vessel',
+            onClick: handleCreate,
+            icon: Plus
+          } : undefined
+        }}
+      />
 
       {/* Vessel Form Dialog */}
       <VesselForm
