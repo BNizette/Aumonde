@@ -113,11 +113,11 @@ async def test_crew_logs_vessel_column():
                         
                         # Step 11: Take screenshot
                         print("Step 9: Taking screenshot of crew shifts table")
-                        await page.screenshot({
-                            'path': '.screenshots/crew_shifts_vessel_column_test.png',
-                            'quality': 40,
-                            'full_page': False
-                        })
+                        await page.screenshot(
+                            path='.screenshots/crew_shifts_vessel_column_test.png',
+                            quality=40,
+                            full_page=False
+                        )
                         
                     else:
                         print("❌ No table found in Crew Shifts section")
