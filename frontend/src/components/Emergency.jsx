@@ -28,6 +28,10 @@ const Emergency = () => {
   const [contactDialogOpen, setContactDialogOpen] = useState(false);
   const [procedureDialogOpen, setProcedureDialogOpen] = useState(false);
   const [drillDialogOpen, setDrillDialogOpen] = useState(false);
+  const [drillViewDialogOpen, setDrillViewDialogOpen] = useState(false);
+  const [viewingDrill, setViewingDrill] = useState(null);
+  const [procedureViewDialogOpen, setProcedureViewDialogOpen] = useState(false);
+  const [viewingProcedure, setViewingProcedure] = useState(null);
   const [contactEditMode, setContactEditMode] = useState(false);
   const [procedureEditMode, setProcedureEditMode] = useState(false);
   const [drillEditMode, setDrillEditMode] = useState(false);
