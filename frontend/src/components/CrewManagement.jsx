@@ -889,6 +889,7 @@ const CrewManagement = () => {
                 <TabsTrigger value="details">Crew Details</TabsTrigger>
                 <TabsTrigger value="trips">Trip Allocations ({crewTrips.length})</TabsTrigger>
                 <TabsTrigger value="shifts">Crew Shifts ({crewShifts.length})</TabsTrigger>
+                <TabsTrigger value="drills">Drills & Training ({crewDrillRecords.length + crewTrainingRecords.length})</TabsTrigger>
               </TabsList>
 
               {/* Details Tab */}
