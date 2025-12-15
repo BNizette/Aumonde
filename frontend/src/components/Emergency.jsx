@@ -2120,6 +2120,204 @@ const Emergency = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Drill View Dialog */}
+      <Dialog open={drillViewDialogOpen} onOpenChange={setDrillViewDialogOpen}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Drill Details & Records</DialogTitle>
+          </DialogHeader>
+          {viewingDrill && (
+            <Tabs defaultValue="details">
+              <TabsList>
+                <TabsTrigger value="details">Drill Details</TabsTrigger>
+                <TabsTrigger value="records">Records ({drillRecords[viewingDrill.id]?.length || 0})</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="details" className="space-y-4">
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div><strong>Drill Type:</strong> {viewingDrill.drill_type}</div>
+                  <div><strong>Duration:</strong> {viewingDrill.duration_minutes ? `${viewingDrill.duration_minutes} min` : 'N/A'}</div>
+                  <div className="col-span-2"><strong>Date:</strong> {new Date(viewingDrill.drill_date).toLocaleString()}</div>
+                  {viewingDrill.vessel_name && <div className="col-span-2"><strong>Vessel:</strong> {viewingDrill.vessel_name}</div>}
+                  {viewingDrill.participants && <div className="col-span-2"><strong>Participants:</strong> {viewingDrill.participants}</div>}
+                </div>
+                {viewingDrill.observations && (
+                  <div>
+                    <strong>Observations:</strong>
+                    <p className="text-sm text-gray-700 mt-1 whitespace-pre-wrap">{viewingDrill.observations}</p>
+                  </div>
+                )}
+                {viewingDrill.areas_for_improvement && (
+                  <div>
+                    <strong>Areas for Improvement:</strong>
+                    <p className="text-sm text-gray-700 mt-1 whitespace-pre-wrap">{viewingDrill.areas_for_improvement}</p>
+                  </div>
+                )}
+              </TabsContent>
+
+              <TabsContent value="records">
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <h3 className="font-semibold">Drill Execution Records</h3>
+                    <Button size="sm" onClick={() => {
+                      setDrillViewDialogOpen(false);
+                      handleAddRecord(viewingDrill.id);
+                    }}>
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add Record
+                    </Button>
+                  </div>
+                  {drillRecords[viewingDrill.id] && drillRecords[viewingDrill.id].length > 0 ? (
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Date</TableHead>
+                          <TableHead>Crew</TableHead>
+                          <TableHead>Status</TableHead>
+                          <TableHead>Authorized By</TableHead>
+                          <TableHead>Notes</TableHead>
+                          <TableHead>Actions</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {drillRecords[viewingDrill.id].map((record) => (
+                          <TableRow key={record.id}>
+                            <TableCell>{new Date(record.record_date).toLocaleString()}</TableCell>
+                            <TableCell>{record.crew_members.join(', ')}</TableCell>
+                            <TableCell>
+                              <Badge variant={record.status === 'Pass' ? 'default' : 'destructive'}>
+                                {record.status}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>{record.authorized_by}</TableCell>
+                            <TableCell className="max-w-xs truncate">{record.notes || '-'}</TableCell>
+                            <TableCell>
+                              <div className="flex gap-1">
+                                <Button variant="ghost" size="sm" onClick={() => {
+                                  setDrillViewDialogOpen(false);
+                                  handleEditRecord(record);
+                                }}>
+                                  <Edit className="h-3 w-3" />
+                                </Button>
+                                <Button variant="ghost" size="sm" onClick={() => handleDeleteRecord(record.id)}>
+                                  <Trash2 className="h-3 w-3 text-red-500" />
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  ) : (
+                    <div className="text-center py-8 text-gray-500">
+                      No records for this drill yet
+                    </div>
+                  )}
+                </div>
+              </TabsContent>
+            </Tabs>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDrillViewDialogOpen(false)}>Close</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Procedure View Dialog */}
+      <Dialog open={procedureViewDialogOpen} onOpenChange={setProcedureViewDialogOpen}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Procedure Details & Training Records</DialogTitle>
+          </DialogHeader>
+          {viewingProcedure && (
+            <Tabs defaultValue="details">
+              <TabsList>
+                <TabsTrigger value="details">Procedure Details</TabsTrigger>
+                <TabsTrigger value="records">Training Records ({trainingRecords[viewingProcedure.id]?.length || 0})</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="details" className="space-y-4">
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div><strong>Title:</strong> {viewingProcedure.title}</div>
+                  <div><strong>Emergency Type:</strong> <Badge>{viewingProcedure.emergency_type}</Badge></div>
+                  {viewingProcedure.equipment_required && <div className="col-span-2"><strong>Equipment Required:</strong> {viewingProcedure.equipment_required}</div>}
+                  {viewingProcedure.muster_station && <div className="col-span-2"><strong>Muster Station:</strong> {viewingProcedure.muster_station}</div>}
+                  {viewingProcedure.key_contacts && <div className="col-span-2"><strong>Key Contacts:</strong> {viewingProcedure.key_contacts}</div>}
+                </div>
+                <div>
+                  <strong>Procedure Steps:</strong>
+                  <p className="text-sm text-gray-700 mt-1 whitespace-pre-wrap">{viewingProcedure.procedure_steps}</p>
+                </div>
+              </TabsContent>
+
+              <TabsContent value="records">
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <h3 className="font-semibold">Training Records</h3>
+                    <Button size="sm" onClick={() => {
+                      setProcedureViewDialogOpen(false);
+                      handleAddTraining(viewingProcedure.id);
+                    }}>
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add Training Record
+                    </Button>
+                  </div>
+                  {trainingRecords[viewingProcedure.id] && trainingRecords[viewingProcedure.id].length > 0 ? (
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Date</TableHead>
+                          <TableHead>Crew</TableHead>
+                          <TableHead>Status</TableHead>
+                          <TableHead>Authorized By</TableHead>
+                          <TableHead>Notes</TableHead>
+                          <TableHead>Actions</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {trainingRecords[viewingProcedure.id].map((record) => (
+                          <TableRow key={record.id}>
+                            <TableCell>{new Date(record.training_date).toLocaleString()}</TableCell>
+                            <TableCell>{record.crew_members.join(', ')}</TableCell>
+                            <TableCell>
+                              <Badge variant={record.status === 'Pass' ? 'default' : 'destructive'}>
+                                {record.status}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>{record.authorized_by}</TableCell>
+                            <TableCell className="max-w-xs truncate">{record.notes || '-'}</TableCell>
+                            <TableCell>
+                              <div className="flex gap-1">
+                                <Button variant="ghost" size="sm" onClick={() => {
+                                  setProcedureViewDialogOpen(false);
+                                  handleEditTraining(record);
+                                }}>
+                                  <Edit className="h-3 w-3" />
+                                </Button>
+                                <Button variant="ghost" size="sm" onClick={() => handleDeleteTraining(record.id)}>
+                                  <Trash2 className="h-3 w-3 text-red-500" />
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  ) : (
+                    <div className="text-center py-8 text-gray-500">
+                      No training records for this procedure yet
+                    </div>
+                  )}
+                </div>
+              </TabsContent>
+            </Tabs>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setProcedureViewDialogOpen(false)}>Close</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
