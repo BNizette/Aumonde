@@ -1058,9 +1058,10 @@ const CrewManagement = () => {
                       <Table>
                         <TableHeader>
                           <TableRow>
-                            <TableHead>Date & Time</TableHead>
-                            <TableHead>Activity</TableHead>
-                            <TableHead>Details</TableHead>
+                            <TableHead>Shift Start</TableHead>
+                            <TableHead>Shift End</TableHead>
+                            <TableHead>Task Performed</TableHead>
+                            <TableHead>Total Hours</TableHead>
                             <TableHead>Trip ID</TableHead>
                           </TableRow>
                         </TableHeader>
@@ -1068,18 +1069,21 @@ const CrewManagement = () => {
                           {crewShifts.map((shift) => (
                             <TableRow key={shift.id}>
                               <TableCell className="font-medium">
-                                {new Date(shift.log_datetime).toLocaleString()}
+                                {shift.shift_start_datetime ? new Date(shift.shift_start_datetime).toLocaleString() : 'N/A'}
                               </TableCell>
                               <TableCell>
-                                <Badge variant="outline" className="bg-purple-50 text-purple-700">
-                                  {shift.activity}
-                                </Badge>
+                                {shift.shift_stop_datetime ? new Date(shift.shift_stop_datetime).toLocaleString() : 'N/A'}
                               </TableCell>
                               <TableCell className="max-w-xs truncate">
-                                {shift.activity_details || '-'}
+                                {shift.task_performed || '-'}
+                              </TableCell>
+                              <TableCell>
+                                <Badge variant="outline" className="bg-blue-50 text-blue-700">
+                                  {shift.total_hours ? `${shift.total_hours}h` : 'N/A'}
+                                </Badge>
                               </TableCell>
                               <TableCell className="text-xs text-gray-500">
-                                {shift.trip_id?.substring(0, 8)}...
+                                {shift.trip_id ? `${shift.trip_id.substring(0, 8)}...` : 'Manual'}
                               </TableCell>
                             </TableRow>
                           ))}
