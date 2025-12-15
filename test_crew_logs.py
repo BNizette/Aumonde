@@ -115,7 +115,6 @@ async def test_crew_logs_vessel_column():
                         print("Step 9: Taking screenshot of crew shifts table")
                         await page.screenshot(
                             path='.screenshots/crew_shifts_vessel_column_test.png',
-                            quality=40,
                             full_page=False
                         )
                         
