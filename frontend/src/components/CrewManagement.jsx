@@ -43,7 +43,6 @@ const CrewManagement = () => {
   const [duplicateWarning, setDuplicateWarning] = useState(null);
   const [showDuplicateDialog, setShowDuplicateDialog] = useState(false);
   const [pendingFormData, setPendingFormData] = useState(null);
-  const [logsDialogOpen, setLogsDialogOpen] = useState(false);
   const [selectedCrewForLogs, setSelectedCrewForLogs] = useState(null);
   const [crewTrips, setCrewTrips] = useState([]);
   const [crewShifts, setCrewShifts] = useState([]);
