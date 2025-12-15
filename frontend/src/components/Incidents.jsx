@@ -795,7 +795,7 @@ const Incidents = () => {
                         <p><strong>Trip:</strong> {incident.trip_from || 'N/A'} → {incident.trip_to || 'N/A'}</p>
                       )}
                       {incident.gps_location && <p><strong>GPS:</strong> {incident.gps_location}</p>}
-                      {incident.activity && incident.activity.length > 0 && (
+                      {incident.activity && Array.isArray(incident.activity) && incident.activity.length > 0 && (
                         <p><strong>Activity:</strong> {incident.activity.join(', ')}</p>
                       )}
                       {incident.vessel_name && <p><strong>Vessel:</strong> {incident.vessel_name}</p>}
@@ -1165,7 +1165,7 @@ const Incidents = () => {
                 {viewingIncident.gps_location && <div><strong>GPS:</strong> {viewingIncident.gps_location}</div>}
                 {viewingIncident.trip_from && <div><strong>Trip From:</strong> {viewingIncident.trip_from}</div>}
                 {viewingIncident.trip_to && <div><strong>Trip To:</strong> {viewingIncident.trip_to}</div>}
-                {viewingIncident.activity && viewingIncident.activity.length > 0 && (
+                {viewingIncident.activity && Array.isArray(viewingIncident.activity) && viewingIncident.activity.length > 0 && (
                   <div className="col-span-2"><strong>Activity:</strong> {viewingIncident.activity.join(', ')}</div>
                 )}
                 {viewingIncident.pilot_on_board && <div><strong>🧑‍✈️ Pilot on Board:</strong> Yes</div>}
