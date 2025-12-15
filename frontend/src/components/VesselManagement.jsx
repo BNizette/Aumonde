@@ -804,24 +804,141 @@ const VesselManagement = () => {
         type="running"
       />
 
-      {/* Vessel Logs Dialog */}
+      {/* Vessel Details & Logs Dialog */}
       <Dialog open={logsDialogOpen} onOpenChange={setLogsDialogOpen}>
         <DialogContent className="max-w-5xl max-h-[90vh] overflow-auto">
           <DialogHeader>
             <DialogTitle>
-              {selectedVesselForLogs?.vessel_name || 'Vessel'} - Activity Logs
+              🚢 {selectedVesselForLogs?.vessel_name || 'Vessel'} - Details & Activity
             </DialogTitle>
             <DialogDescription>
-              View trip logs and allocated staff activity for this vessel
+              View vessel information, trip logs and allocated staff activity
             </DialogDescription>
           </DialogHeader>
 
           {loadingLogs ? (
             <div className="flex items-center justify-center py-8">
-              <div className="text-gray-500">Loading logs...</div>
+              <div className="text-gray-500">Loading data...</div>
             </div>
           ) : (
-            <Tabs defaultValue="running" className="w-full">
+            <Tabs defaultValue="details" className="w-full">
+              <TabsList>
+                <TabsTrigger value="details">Vessel Details</TabsTrigger>
+                <TabsTrigger value="running">Trip Logs ({vesselRunningLogs.length})</TabsTrigger>
+                <TabsTrigger value="staff">Allocated Staff ({vesselStaffLogs.length})</TabsTrigger>
+              </TabsList>
+
+              {/* Vessel Details Tab */}
+              <TabsContent value="details" className="space-y-4">
+                {selectedVesselForLogs && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Basic Information */}
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="text-lg">Basic Information</CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-3">
+                        <div>
+                          <span className="text-sm text-gray-500">Vessel Name</span>
+                          <p className="font-medium">{selectedVesselForLogs.vessel_name || '-'}</p>
+                        </div>
+                        <div>
+                          <span className="text-sm text-gray-500">Registration Number</span>
+                          <p className="font-medium">{selectedVesselForLogs.registration_number || '-'}</p>
+                        </div>
+                        <div>
+                          <span className="text-sm text-gray-500">Vessel Type</span>
+                          <Badge variant="outline">{selectedVesselForLogs.vessel_type || 'N/A'}</Badge>
+                        </div>
+                        <div>
+                          <span className="text-sm text-gray-500">Owner Name</span>
+                          <p className="font-medium">{selectedVesselForLogs.owner_name || '-'}</p>
+                        </div>
+                        <div>
+                          <span className="text-sm text-gray-500">Operational Status</span>
+                          <Badge variant={selectedVesselForLogs.operational_status === 'Operational' ? 'default' : 'secondary'}>
+                            {selectedVesselForLogs.operational_status || 'Unknown'}
+                          </Badge>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    {/* Specifications */}
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="text-lg">Specifications</CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-3">
+                        <div>
+                          <span className="text-sm text-gray-500">Length Overall</span>
+                          <p className="font-medium">{selectedVesselForLogs.length_overall ? `${selectedVesselForLogs.length_overall}m` : '-'}</p>
+                        </div>
+                        <div>
+                          <span className="text-sm text-gray-500">Beam</span>
+                          <p className="font-medium">{selectedVesselForLogs.beam ? `${selectedVesselForLogs.beam}m` : '-'}</p>
+                        </div>
+                        <div>
+                          <span className="text-sm text-gray-500">Draft</span>
+                          <p className="font-medium">{selectedVesselForLogs.draft ? `${selectedVesselForLogs.draft}m` : '-'}</p>
+                        </div>
+                        <div>
+                          <span className="text-sm text-gray-500">Gross Tonnage</span>
+                          <p className="font-medium">{selectedVesselForLogs.gross_tonnage || '-'}</p>
+                        </div>
+                        <div>
+                          <span className="text-sm text-gray-500">Year Built</span>
+                          <p className="font-medium">{selectedVesselForLogs.year_built || '-'}</p>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    {/* Engine Details */}
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="text-lg">Engine Details</CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-3">
+                        <div>
+                          <span className="text-sm text-gray-500">Number of Engines</span>
+                          <p className="font-medium">{selectedVesselForLogs.number_of_engines || '-'}</p>
+                        </div>
+                        <div>
+                          <span className="text-sm text-gray-500">Engine Type</span>
+                          <p className="font-medium">{selectedVesselForLogs.engine_type || '-'}</p>
+                        </div>
+                        <div>
+                          <span className="text-sm text-gray-500">Engine Power</span>
+                          <p className="font-medium">{selectedVesselForLogs.engine_power ? `${selectedVesselForLogs.engine_power} kW` : '-'}</p>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    {/* Contact Information */}
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="text-lg">Contact Information</CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-3">
+                        <div>
+                          <span className="text-sm text-gray-500">Boat Phone</span>
+                          <p className="font-medium">{selectedVesselForLogs.boat_phone || '-'}</p>
+                        </div>
+                        <div>
+                          <span className="text-sm text-gray-500">Flag</span>
+                          <p className="font-medium">{selectedVesselForLogs.flag || '-'}</p>
+                        </div>
+                        <div>
+                          <span className="text-sm text-gray-500">Port of Registry</span>
+                          <p className="font-medium">{selectedVesselForLogs.port_of_registry || '-'}</p>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                )}
+              </TabsContent>
+
+              {/* Trip Logs Tab */}
+              <TabsContent value="running" className="space-y-4">
               <TabsList>
                 <TabsTrigger value="running">Trip Logs ({vesselRunningLogs.length})</TabsTrigger>
                 <TabsTrigger value="staff">Allocated Staff ({vesselStaffLogs.length})</TabsTrigger>
