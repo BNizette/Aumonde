@@ -2192,12 +2192,18 @@ class Incident(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     incident_number: str
-    incident_type: str  # Injury, Near Miss, Equipment Failure, Environmental, Security, Other
+    incident_type: List[str]  # Changed to list for multiselect
     severity: str  # Minor, Moderate, Serious, Critical
     title: str
     description: str
     incident_date: datetime
     location: str
+    trip_from: Optional[str] = None
+    trip_to: Optional[str] = None
+    gps_location: Optional[str] = None
+    pilot_on_board: bool = False
+    cargo_on_board: bool = False
+    activity: List[str] = []  # Multiselect activity field
     vessel_id: Optional[str] = None
     vessel_name: Optional[str] = None
     injuries: bool = False
@@ -2217,12 +2223,18 @@ class Incident(BaseModel):
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class IncidentCreate(BaseModel):
-    incident_type: str
+    incident_type: List[str]  # Changed to list for multiselect
     severity: str
     title: str
     description: str
     incident_date: str
     location: str
+    trip_from: Optional[str] = None
+    trip_to: Optional[str] = None
+    gps_location: Optional[str] = None
+    pilot_on_board: bool = False
+    cargo_on_board: bool = False
+    activity: List[str] = []  # Multiselect activity field
     vessel_id: Optional[str] = None
     vessel_name: Optional[str] = None
     injuries: bool = False
