@@ -1283,6 +1283,7 @@ class AMSAComprehensiveTester:
             self.test_trip_logs,
             self.test_manual_log_entry,  # NEW feature - Manual Log Entry
             self.test_crew_shifts_endpoint,  # NEW feature - Crew Shifts Endpoint
+            self.test_crew_shifts_data_consistency,  # NEW feature - Crew Shifts Data Consistency
             self.test_document_management,
             self.test_risk_assessment,  # NEW feature
             self.test_access_control,
