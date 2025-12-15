@@ -836,35 +836,54 @@ const Incidents = () => {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label>Incident Type * (Select multiple)</Label>
-                <Select 
-                  value={formData.incident_type.length > 0 ? formData.incident_type[0] : ''} 
-                  onValueChange={(value) => {
-                    if (!formData.incident_type.includes(value)) {
-                      setFormData({...formData, incident_type: [...formData.incident_type, value]});
-                    }
-                  }}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select incident types" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {incidentTypes.map(type => <SelectItem key={type} value={type}>{type}</SelectItem>)}
-                  </SelectContent>
-                </Select>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline" className="w-full justify-between">
+                      <span className="truncate">
+                        {formData.incident_type.length === 0 ? 'Select incident types' :
+                         formData.incident_type.length === 1 ? formData.incident_type[0] :
+                         `${formData.incident_type.length} selected`}
+                      </span>
+                      <ChevronDown className="h-4 w-4 ml-2 shrink-0" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-80 p-0 max-h-96 overflow-y-auto" align="start">
+                    <div className="p-2">
+                      <div className="flex items-center justify-between px-2 py-1.5 mb-1">
+                        <span className="text-sm font-medium">Select Types</span>
+                        {formData.incident_type.length > 0 && (
+                          <Button variant="ghost" size="sm" onClick={() => setFormData({...formData, incident_type: []})} className="h-auto p-1 text-xs">
+                            Clear
+                          </Button>
+                        )}
+                      </div>
+                      {incidentTypes.map(type => (
+                        <div key={type} className="flex items-center space-x-2 px-2 py-1.5 hover:bg-gray-100 rounded cursor-pointer"
+                          onClick={() => {
+                            const isSelected = formData.incident_type.includes(type);
+                            setFormData({
+                              ...formData,
+                              incident_type: isSelected 
+                                ? formData.incident_type.filter(t => t !== type)
+                                : [...formData.incident_type, type]
+                            });
+                          }}>
+                          <Checkbox checked={formData.incident_type.includes(type)} />
+                          <label className="text-sm flex-1 cursor-pointer">{type}</label>
+                        </div>
+                      ))}
+                    </div>
+                  </PopoverContent>
+                </Popover>
                 {formData.incident_type.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mt-2">
-                    {formData.incident_type.map((type, idx) => (
-                      <Badge key={idx} variant="secondary">
+                  <div className="flex flex-wrap gap-1 mt-2">
+                    {formData.incident_type.map(type => (
+                      <Badge key={type} variant="secondary" className="text-xs">
                         {type}
-                        <button 
-                          className="ml-2 text-xs" 
-                          onClick={() => setFormData({
-                            ...formData, 
-                            incident_type: formData.incident_type.filter((_, i) => i !== idx)
-                          })}
-                        >
-                          ×
-                        </button>
+                        <X className="h-3 w-3 ml-1 cursor-pointer" onClick={() => setFormData({
+                          ...formData, 
+                          incident_type: formData.incident_type.filter(t => t !== type)
+                        })} />
                       </Badge>
                     ))}
                   </div>
