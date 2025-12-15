@@ -891,18 +891,9 @@ const CrewManagement = () => {
                       size="sm"
                       variant="ghost"
                       onClick={() => handleView(member)}
-                      title="View details"
+                      title="View details & logs"
                     >
                       <Eye className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => handleViewLogs(member)}
-                      title="View logs"
-                      className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
-                    >
-                      <FileText className="h-4 w-4" />
                     </Button>
                     {canEdit && (
                       <Button
