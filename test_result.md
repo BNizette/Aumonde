@@ -435,7 +435,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Crew Logs Vessel Column Implementation"
+    - "Responsive List Card Component Refactoring"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
