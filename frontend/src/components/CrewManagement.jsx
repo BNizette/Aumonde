@@ -389,7 +389,45 @@ const CrewManagement = () => {
         headers: { Authorization: `Bearer ${token}` }
       });
       const crewLogs = logsResponse.data.filter(log => log.crew_id === crew.id);
-      setCrewShifts(crewLogs);
+      
+      // Fetch vessels to get vessel names
+      const vesselsResponse = await axios.get(`${API}/vessels`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const vessels = vesselsResponse.data;
+      
+      // Fetch trips to get vessel info from trips
+      const tripsResponse = await axios.get(`${API}/trips`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const trips = tripsResponse.data;
+      
+      // Enrich crew logs with vessel names
+      const enrichedLogs = crewLogs.map(log => {
+        let vesselName = null;
+        
+        // First try to get vessel from trip
+        if (log.trip_id) {
+          const trip = trips.find(t => t.id === log.trip_id);
+          if (trip && trip.vessel_id) {
+            const vessel = vessels.find(v => v.id === trip.vessel_id);
+            vesselName = vessel?.vessel_name || null;
+          }
+        }
+        
+        // If manual entry with vessel_id, get vessel directly
+        if (!vesselName && log.vessel_id) {
+          const vessel = vessels.find(v => v.id === log.vessel_id);
+          vesselName = vessel?.vessel_name || null;
+        }
+        
+        return {
+          ...log,
+          vessel_name: vesselName
+        };
+      });
+      
+      setCrewShifts(enrichedLogs);
       
     } catch (err) {
       console.error('Error fetching crew logs:', err);
