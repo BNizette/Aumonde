@@ -308,6 +308,111 @@ const VesselManagement = () => {
     }
   };
 
+  // CSV Export Functions
+  const exportVesselTripsToCSV = () => {
+    if (vesselRunningLogs.length === 0) return;
+    const headers = ['Trip Name', 'Depart Date', 'Return Date', 'Captain', 'Created At'];
+    const csvRows = [headers.join(','), ...vesselRunningLogs.map(t => [
+      `"${(t.trip_name || '').replace(/"/g, '""')}"`,
+      `"${t.depart_datetime ? new Date(t.depart_datetime).toLocaleString() : ''}"`,
+      `"${t.return_datetime ? new Date(t.return_datetime).toLocaleString() : ''}"`,
+      `"${(t.captain || '').replace(/"/g, '""')}"`,
+      `"${t.created_at ? new Date(t.created_at).toLocaleString() : ''}"`
+    ].join(','))];
+    const blob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.setAttribute('href', URL.createObjectURL(blob));
+    link.setAttribute('download', `vessel_trips_${selectedVesselForLogs?.vessel_name}_${new Date().toISOString().slice(0, 10)}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const exportVesselStaffToCSV = () => {
+    if (vesselStaffLogs.length === 0) return;
+    const headers = ['Staff Name', 'Shift Start', 'Shift End', 'Task Performed', 'Total Hours', 'Trip ID'];
+    const csvRows = [headers.join(','), ...vesselStaffLogs.map(s => [
+      `"${(s.staff_name || '').replace(/"/g, '""')}"`,
+      `"${s.shift_start_datetime ? new Date(s.shift_start_datetime).toLocaleString() : ''}"`,
+      `"${s.shift_stop_datetime ? new Date(s.shift_stop_datetime).toLocaleString() : ''}"`,
+      `"${(s.task_performed || '').replace(/"/g, '""')}"`,
+      `"${s.total_hours || ''}"`,
+      `"${s.trip_id || 'Manual'}"`
+    ].join(','))];
+    const blob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.setAttribute('href', URL.createObjectURL(blob));
+    link.setAttribute('download', `vessel_staff_${selectedVesselForLogs?.vessel_name}_${new Date().toISOString().slice(0, 10)}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const exportVesselRisksToCSV = () => {
+    if (vesselRisks.length === 0) return;
+    const headers = ['Activity/Task', 'Risk Level', 'Hazard', 'Control Measures', 'Assessment Date'];
+    const csvRows = [headers.join(','), ...vesselRisks.map(r => [
+      `"${(r.activity_task || '').replace(/"/g, '""')}"`,
+      `"${r.risk_level || ''}"`,
+      `"${(r.hazard_description || '').replace(/"/g, '""')}"`,
+      `"${(r.control_measures || '').replace(/"/g, '""')}"`,
+      `"${r.assessment_date ? new Date(r.assessment_date).toLocaleDateString() : ''}"`
+    ].join(','))];
+    const blob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.setAttribute('href', URL.createObjectURL(blob));
+    link.setAttribute('download', `vessel_risks_${selectedVesselForLogs?.vessel_name}_${new Date().toISOString().slice(0, 10)}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const exportVesselMaintenanceToCSV = () => {
+    if (vesselMaintenance.length === 0) return;
+    const headers = ['Type', 'Item/System', 'Status', 'Next Service Date', 'Last Service Date', 'Priority'];
+    const csvRows = [headers.join(','), ...vesselMaintenance.map(m => [
+      `"${(m.maintenance_type || '').replace(/"/g, '""')}"`,
+      `"${(m.item_system || '').replace(/"/g, '""')}"`,
+      `"${m.status || ''}"`,
+      `"${m.next_service_date ? new Date(m.next_service_date).toLocaleDateString() : ''}"`,
+      `"${m.last_service_date ? new Date(m.last_service_date).toLocaleDateString() : ''}"`,
+      `"${m.priority || ''}"`
+    ].join(','))];
+    const blob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.setAttribute('href', URL.createObjectURL(blob));
+    link.setAttribute('download', `vessel_maintenance_${selectedVesselForLogs?.vessel_name}_${new Date().toISOString().slice(0, 10)}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const exportVesselIncidentsToCSV = () => {
+    if (vesselIncidents.length === 0) return;
+    const headers = ['Incident #', 'Title', 'Type', 'Severity', 'Date', 'Status', 'Location'];
+    const csvRows = [headers.join(','), ...vesselIncidents.map(i => [
+      `"${i.incident_number || ''}"`,
+      `"${(i.title || '').replace(/"/g, '""')}"`,
+      `"${Array.isArray(i.incident_type) ? i.incident_type.join('; ') : (i.incident_type || '')}"`,
+      `"${i.severity || ''}"`,
+      `"${i.incident_date ? new Date(i.incident_date).toLocaleDateString() : ''}"`,
+      `"${i.investigation_status || ''}"`,
+      `"${(i.location || '').replace(/"/g, '""')}"`
+    ].join(','))];
+    const blob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.setAttribute('href', URL.createObjectURL(blob));
+    link.setAttribute('download', `vessel_incidents_${selectedVesselForLogs?.vessel_name}_${new Date().toISOString().slice(0, 10)}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   const checkDuplicates = async (formData) => {
     try {
       const token = localStorage.getItem('token');
