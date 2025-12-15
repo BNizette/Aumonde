@@ -49,7 +49,8 @@ const Compliance = () => {
     toggleFilter: toggleCertFilter,
     clearFilter: clearCertFilterType,
     clearAllFilters: clearAllCertFilters,
-    setFilterValue: setCertFilterValue
+    setFilterValue: setCertFilterValue,
+    updateFilters: updateCertFilters
   } = useAdvancedFilters({
     types: [],
     statuses: [],
