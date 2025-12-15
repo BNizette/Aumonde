@@ -939,12 +939,6 @@ const VesselManagement = () => {
 
               {/* Trip Logs Tab */}
               <TabsContent value="running" className="space-y-4">
-              <TabsList>
-                <TabsTrigger value="running">Trip Logs ({vesselRunningLogs.length})</TabsTrigger>
-                <TabsTrigger value="staff">Allocated Staff ({vesselStaffLogs.length})</TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="running" className="space-y-4">
                 <div className="text-sm text-gray-600 mb-2">
                   Running logs and activity entries for {selectedVesselForLogs?.vessel_name}
                 </div>
