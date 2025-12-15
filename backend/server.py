@@ -2606,6 +2606,41 @@ async def delete_training_record(record_id: str, current_user: dict = Depends(re
     await db.training_records.delete_one({"id": record_id})
     return {"status": "success"}
 
+# Get crew member's drill and training records
+@api_router.get("/crew/{crew_name}/drill-records")
+async def get_crew_drill_records(crew_name: str, current_user: dict = Depends(get_current_user)):
+    # Find all drill records where crew member participated
+    records = await db.drill_records.find(
+        {"crew_members": crew_name}, 
+        {"_id": 0}
+    ).sort("record_date", -1).to_list(1000)
+    
+    # Enrich with drill information
+    for record in records:
+        drill = await db.emergency_drills.find_one({"id": record["drill_id"]}, {"_id": 0})
+        if drill:
+            record["drill_type"] = drill.get("drill_type", "Unknown")
+            record["drill_date"] = drill.get("drill_date")
+    
+    return records
+
+@api_router.get("/crew/{crew_name}/training-records")
+async def get_crew_training_records(crew_name: str, current_user: dict = Depends(get_current_user)):
+    # Find all training records where crew member participated
+    records = await db.training_records.find(
+        {"crew_members": crew_name}, 
+        {"_id": 0}
+    ).sort("training_date", -1).to_list(1000)
+    
+    # Enrich with procedure information
+    for record in records:
+        procedure = await db.emergency_procedures.find_one({"id": record["procedure_id"]}, {"_id": 0})
+        if procedure:
+            record["procedure_title"] = procedure.get("title", "Unknown")
+            record["emergency_type"] = procedure.get("emergency_type", "Unknown")
+    
+    return records
+
 # ============================================================================
 # COMPLIANCE MODULE (PHASE 2)
 # ============================================================================
