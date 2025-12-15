@@ -511,12 +511,26 @@ const Compliance = () => {
 
   if (loading) return <div className="flex items-center justify-center h-64">Loading...</div>;
 
-  // Count statistics
+  // Count statistics for Certificates tab
   const validCerts = certificates.filter(c => c.status === 'Valid').length;
   const expiringSoon = certificates.filter(c => c.status === 'Expiring Soon').length;
   const expired = certificates.filter(c => c.status === 'Expired').length;
+  
+  // Count certificate types
+  const vesselCerts = certificates.filter(c => c.certificate_type === 'Vessel Certificate').length;
+  const crewCerts = certificates.filter(c => c.certificate_type === 'Crew Certificate').length;
+  const safetyEquipCerts = certificates.filter(c => c.certificate_type === 'Safety Equipment').length;
+  const insuranceCerts = certificates.filter(c => c.certificate_type === 'Insurance').length;
+  const otherCerts = certificates.filter(c => 
+    c.certificate_type && 
+    !['Vessel Certificate', 'Crew Certificate', 'Safety Equipment', 'Insurance'].includes(c.certificate_type)
+  ).length;
+  
+  // Count statistics for Requirements tab
   const compliant = requirements.filter(r => r.compliance_status === 'Compliant').length;
   const nonCompliant = requirements.filter(r => r.compliance_status === 'Non-Compliant').length;
+  const underReview = requirements.filter(r => r.compliance_status === 'Under Review').length;
+  const partial = requirements.filter(r => r.compliance_status === 'Partial').length;
 
   return (
     <div className="space-y-6">
