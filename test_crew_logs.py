@@ -40,7 +40,7 @@ async def test_crew_logs_vessel_column():
             
             if crew_rows > 0:
                 # Click on first crew member's view logs button
-                first_row = page.locator('.divide-y > div').first()
+                first_row = page.locator('.divide-y > div').first
                 crew_name = await first_row.locator('.font-semibold').text_content()
                 print(f"Testing with crew member: {crew_name}")
                 
