@@ -453,9 +453,9 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Settings Page Drag-and-Drop Functionality"
+    []
   stuck_tasks:
-    - "Settings Page Drag-and-Drop Functionality"
+    []
   test_all: false
   test_priority: "high_first"
 
