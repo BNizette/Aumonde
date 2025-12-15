@@ -430,6 +430,18 @@ frontend:
           agent: "testing"
           comment: "✅ RESPONSIVE LIST CARD REFACTORING SUCCESSFULLY VERIFIED: Comprehensive testing completed with excellent results across both modules. VESSELS MODULE VERIFICATION: ✅ ResponsiveListCard implementation working perfectly - found 5 vessel items with proper structure (.divide-y container). ✅ All expected columns display correctly (Name, Registration, Type, Owner, Specs, Status, Survey Expiry) with proper responsive hiding. ✅ Action buttons (View, Edit, Delete) are visible and functional - View button opens vessel details dialog successfully. ✅ Responsive behavior verified across mobile (390px), tablet (768px), and desktop (1920px) - all 5 items remain visible with appropriate column hiding. ✅ Empty state displays correctly when searching for non-existent vessels. CREW MODULE VERIFICATION: ✅ ResponsiveListCard implementation working perfectly - found 12 crew items with proper structure. ✅ All expected columns display correctly (Name, Position, Role, Mobile, Qualifications) with responsive behavior. ✅ Action buttons (View Details, Edit, Delete) functional - View details opens dialog with 3 tabs successfully. ✅ Edit button opens crew form dialog properly. ✅ Empty state displays correctly for crew searches. REFACTORING SUCCESS: ✅ No visual regressions detected - both modules maintain identical user experience. ✅ No functional regressions detected - all features working as before. ✅ ResponsiveListCard component successfully extracted and reused between modules. ✅ Code maintainability improved through component reuse while preserving all functionality. The refactoring is internal only and successfully maintains the exact same user experience as specified in requirements."
 
+  - task: "Settings Page Drag-and-Drop Functionality"
+    implemented: true
+    working: false
+    file: "/app/frontend/src/components/Settings.jsx"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: false
+          agent: "testing"
+          comment: "🚨 CRITICAL DRAG-AND-DROP ISSUE CONFIRMED: Comprehensive testing reveals the drag-and-drop functionality for reordering options in Settings page is completely non-functional. DETAILED ANALYSIS: ❌ CORE ISSUE: Despite proper HTML5 drag event implementation (handleDragStart lines 169-172, handleDragOver lines 174-177, handleDrop lines 179-190), users cannot reorder options by dragging GripVertical icons. The drag events are not properly triggering the reorder logic in the handleDrop function. ✅ UI IMPLEMENTATION CORRECT: All required elements are present - 6 GripVertical icons (.lucide-grip-vertical), 6 draggable rows with draggable='true' attribute, proper event handlers (onDragStart, onDragOver, onDrop) attached to each row. Edit mode works correctly, options display properly with input fields and delete buttons. ❌ FUNCTIONAL FAILURE: When users attempt to drag options, the newOptions array is not being reordered as expected. The handleDrop function should splice and reorder items but this is not happening. ⚠️ USER IMPACT: Users cannot reorder system settings (Crew Positions, Vessel Types, etc.) as intended, making the feature completely unusable despite the UI suggesting drag-and-drop should work. SCOPE: Issue affects all settings categories across all modules (Crew Management, Vessel Management, etc.). TESTING COMPLETED: Both Crew Positions and Vessel Types exhibit identical drag-and-drop failure. Login successful (admin@test.com), navigation to Admin Panel > Settings working, module/category selection functional, edit mode accessible."
+
 metadata:
   created_by: "testing_agent"
   version: "1.0"
