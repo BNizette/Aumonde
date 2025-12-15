@@ -812,15 +812,40 @@ const Incidents = () => {
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label>Incident Type *</Label>
-                <Select value={formData.incident_type} onValueChange={(value) => setFormData({...formData, incident_type: value})}>
+                <Label>Incident Type * (Select multiple)</Label>
+                <Select 
+                  value={formData.incident_type.length > 0 ? formData.incident_type[0] : ''} 
+                  onValueChange={(value) => {
+                    if (!formData.incident_type.includes(value)) {
+                      setFormData({...formData, incident_type: [...formData.incident_type, value]});
+                    }
+                  }}
+                >
                   <SelectTrigger>
-                    <SelectValue />
+                    <SelectValue placeholder="Select incident types" />
                   </SelectTrigger>
                   <SelectContent>
                     {incidentTypes.map(type => <SelectItem key={type} value={type}>{type}</SelectItem>)}
                   </SelectContent>
                 </Select>
+                {formData.incident_type.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {formData.incident_type.map((type, idx) => (
+                      <Badge key={idx} variant="secondary">
+                        {type}
+                        <button 
+                          className="ml-2 text-xs" 
+                          onClick={() => setFormData({
+                            ...formData, 
+                            incident_type: formData.incident_type.filter((_, i) => i !== idx)
+                          })}
+                        >
+                          ×
+                        </button>
+                      </Badge>
+                    ))}
+                  </div>
+                )}
               </div>
               <div>
                 <Label>Severity *</Label>
