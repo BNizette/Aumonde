@@ -301,7 +301,7 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create' }) => {
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh]">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{mode === 'create' ? 'Add New Vessel' : 'Edit Vessel'}</DialogTitle>
           <DialogDescription>
