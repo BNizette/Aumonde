@@ -459,7 +459,21 @@ test_plan:
   test_all: false
   test_priority: "high_first"
 
+  - task: "AMSA Regulatory Tooltips Implementation"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/components/RiskAssessment.jsx, /app/frontend/src/components/CrewManagement.jsx, /app/frontend/src/components/VesselManagement.jsx, /app/frontend/src/components/TripManagement.jsx, /app/frontend/src/components/Maintenance.jsx, /app/frontend/src/components/Incidents.jsx, /app/frontend/src/components/Emergency.jsx, /app/frontend/src/components/Compliance.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "✅ AMSA REGULATORY TOOLTIPS SUCCESSFULLY VERIFIED: Comprehensive testing completed across all 8 modules with 100% success rate. ALL TOOLTIPS WORKING PERFECTLY: 1) Risk Assessment - AMSA Marine Order 504 (2024) with SMS requirements ✅, 2) Crew Management - MO504 Schedule 1 Clause 6(4) with crewing evaluation requirements ✅, 3) Vessel Management - Marine Order 504 (2024) with certificates of operation requirements ✅, 4) Trip Management - Marine Order 504 (2024) with voyage planning requirements ✅, 5) Maintenance Management - Marine Order 504 (2024) with maintenance procedures requirements ✅, 6) Incident Management - Marine Order 504 (2024) with incident reporting requirements ✅, 7) Emergency Response - Marine Order 504 (2024) with emergency procedures requirements ✅, 8) Compliance Management - Marine Order 504 (2024) with SMS compliance requirements ✅. TOOLTIP CONTENT VERIFICATION: Each tooltip contains proper regulatory reference (Marine Order 504 or MO504), relevant description of regulatory requirements, and functional AMSA link to official regulations. All Info icons (blue, 5x5) are properly positioned next to module headings and trigger tooltips on hover. The regulatory tooltips provide essential AMSA Marine Order 504 compliance information with direct links to official regulations as specified in the requirements."
+
 agent_communication:
+    - agent: "testing"
+      message: "✅ AMSA REGULATORY TOOLTIPS TESTING COMPLETE: Successfully verified all 8 regulatory tooltips across the AMSA Safety Management application with 100% success rate. COMPREHENSIVE RESULTS: All modules (Risk Assessment, Crew Management, Vessel Management, Trip Management, Maintenance Management, Incident Management, Emergency Response, Compliance Management) have working tooltips with proper Marine Order 504 regulatory references, relevant compliance descriptions, and functional AMSA links. Each tooltip appears correctly on hover over the Info icon positioned next to module headings. The implementation provides essential regulatory compliance information as specified in the review request."
     - agent: "testing"
       message: "✅ TRIP LOGS VESSEL vs TRIP FILTERING FEATURE VERIFICATION COMPLETE: Successfully tested and verified the Trip Logs feature implementation where Running Logs and Engine Logs are now filtered by vessel instead of trip. COMPREHENSIVE TESTING RESULTS: 🔧 API VERIFICATION: 1) Allocated Crew (trip-specific): 5 entries using GET /api/allocated-crew?trip_id={id}. 2) Crew Shifts (trip-specific): 1 entry using GET /api/trip-logs?trip_id={id}. 3) Running Logs (vessel-specific): 3 entries using GET /api/running-logs?vessel_id={id} vs 0 entries using trip_id - correctly shows MORE data when filtered by vessel across all trips. 4) Engine Logs (vessel-specific): 2 entries using GET /api/engine-running-logs?vessel_id={id} vs 0 entries using trip_id - correctly shows MORE data when filtered by vessel across all trips. 🖥️ UI VERIFICATION: Successfully navigated to Trip Management, opened trip details dialog for 'Cairns to Port Douglas Transfer', confirmed all 4 tabs present with correct counts: 'Allocated Crew (5)', 'Crew Shifts (1)', 'Running (3)', 'Engine (2)'. All tabs load data correctly and display appropriate content. ✅ EXPECTED BEHAVIOR CONFIRMED: Allocated Crew and Crew Shifts show trip-specific data (filtered by trip_id), while Running Logs and Engine Logs show vessel-specific data (filtered by vessel_id across all trips for that vessel). The implementation correctly differentiates between trip-specific and vessel-specific log filtering as requested in the feature specification."
     - agent: "testing"
