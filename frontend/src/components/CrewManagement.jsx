@@ -417,6 +417,7 @@ const CrewManagement = () => {
     }
   };
 
+  const checkDuplicates = async (formData) => {
     try {
       const token = localStorage.getItem('token');
       const checkData = {
