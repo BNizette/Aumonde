@@ -37,6 +37,11 @@ const VesselManagement = () => {
   const [showDuplicateDialog, setShowDuplicateDialog] = useState(false);
   const [pendingFormData, setPendingFormData] = useState(null);
   const [manualLogOpen, setManualLogOpen] = useState(false);
+  const [logsDialogOpen, setLogsDialogOpen] = useState(false);
+  const [selectedVesselForLogs, setSelectedVesselForLogs] = useState(null);
+  const [vesselRunningLogs, setVesselRunningLogs] = useState([]);
+  const [vesselStaffLogs, setVesselStaffLogs] = useState([]);
+  const [loadingLogs, setLoadingLogs] = useState(false);
 
   // Use custom hook for advanced filtering
   const {
