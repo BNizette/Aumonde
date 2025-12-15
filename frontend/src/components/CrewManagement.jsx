@@ -1037,12 +1037,123 @@ const CrewManagement = () => {
                 )}
               </div>
             )}
-          </ScrollArea>
+          </TabsContent>
+
+          {/* Trip Allocations Tab */}
+          <TabsContent value="trips" className="space-y-4">
+            <div className="text-sm text-gray-600 mb-2">
+              Trips allocated to {viewingCrew?.staff_name}
+            </div>
+            {crewTrips.length > 0 ? (
+              <div className="border rounded-lg overflow-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Trip Name</TableHead>
+                      <TableHead>Vessel</TableHead>
+                      <TableHead>Start Date</TableHead>
+                      <TableHead>End Date</TableHead>
+                      <TableHead>Status</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {crewTrips.map((allocation) => (
+                      <TableRow key={allocation.id}>
+                        <TableCell className="font-medium">{allocation.trip_name || 'N/A'}</TableCell>
+                        <TableCell>{allocation.vessel_name || '-'}</TableCell>
+                        <TableCell>
+                          {allocation.start_date ? new Date(allocation.start_date).toLocaleDateString() : 'N/A'}
+                        </TableCell>
+                        <TableCell>
+                          {allocation.end_date ? new Date(allocation.end_date).toLocaleDateString() : 'N/A'}
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant="outline">{allocation.status || 'Unknown'}</Badge>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            ) : (
+              <div className="text-center py-8 text-gray-500">
+                No trip allocations for this crew member
+              </div>
+            )}
+          </TabsContent>
+
+          {/* Crew Shifts Tab */}
+          <TabsContent value="shifts" className="space-y-4">
+            <div className="text-sm text-gray-600 mb-2">
+              Crew shift logs for {viewingCrew?.staff_name}
+            </div>
+            {crewShifts.length > 0 ? (
+              <div className="border rounded-lg overflow-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Shift Start</TableHead>
+                      <TableHead>Shift End</TableHead>
+                      <TableHead>Vessel</TableHead>
+                      <TableHead>Task Performed</TableHead>
+                      <TableHead>Total Hours</TableHead>
+                      <TableHead>Trip ID</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {crewShifts.map((shift) => (
+                      <TableRow key={shift.id}>
+                        <TableCell className="font-medium">
+                          {shift.shift_start_datetime ? new Date(shift.shift_start_datetime).toLocaleString() : 'N/A'}
+                        </TableCell>
+                        <TableCell>
+                          {shift.shift_stop_datetime ? new Date(shift.shift_stop_datetime).toLocaleString() : 'N/A'}
+                        </TableCell>
+                        <TableCell>
+                          {shift.vessel_name ? (
+                            <Badge variant="outline" className="bg-purple-50 text-purple-700">
+                              🚢 {shift.vessel_name}
+                            </Badge>
+                          ) : (
+                            <span className="text-xs text-gray-400">-</span>
+                          )}
+                        </TableCell>
+                        <TableCell className="max-w-xs truncate">
+                          {shift.task_performed || '-'}
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant="outline" className="bg-blue-50 text-blue-700">
+                            {shift.total_hours ? `${shift.total_hours}h` : 'N/A'}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-xs text-gray-500">
+                          {shift.trip_id ? `${shift.trip_id.substring(0, 8)}...` : 'Manual'}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            ) : (
+              <div className="text-center py-8 text-gray-500">
+                No shift logs for this crew member
+              </div>
+            )}
+          </TabsContent>
+
+            </Tabs>
+          )}
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setViewDialogOpen(false)}>
+              Close
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
 
-      {/* Crew Logs Dialog */}
-      <Dialog open={logsDialogOpen} onOpenChange={setLogsDialogOpen}>
+      {/* Old Crew Logs Dialog - TO BE REMOVED */}
+      <Dialog open={false} onOpenChange={() => {}}>
         <DialogContent className="max-w-4xl max-h-[90vh]">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
