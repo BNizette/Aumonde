@@ -777,10 +777,24 @@ const Incidents = () => {
                     </div>
                     <div className="text-sm text-gray-600 space-y-1">
                       <p><strong>Incident #:</strong> {incident.incident_number}</p>
-                      <p><strong>Type:</strong> {incident.incident_type}</p>
-                      <p><strong>Date:</strong> {new Date(incident.incident_date).toLocaleString()}</p>
+                      <p><strong>Type:</strong> {Array.isArray(incident.incident_type) ? incident.incident_type.join(', ') : incident.incident_type}</p>
+                      <p>
+                        <strong>Date:</strong> {new Date(incident.incident_date).toLocaleString()}
+                        <span className="text-xs text-gray-500 ml-2">
+                          (UTC: {new Date(incident.incident_date).toISOString().replace('T', ' ').slice(0, 19)})
+                        </span>
+                      </p>
                       <p><strong>Location:</strong> {incident.location}</p>
+                      {(incident.trip_from || incident.trip_to) && (
+                        <p><strong>Trip:</strong> {incident.trip_from || 'N/A'} → {incident.trip_to || 'N/A'}</p>
+                      )}
+                      {incident.gps_location && <p><strong>GPS:</strong> {incident.gps_location}</p>}
+                      {incident.activity && incident.activity.length > 0 && (
+                        <p><strong>Activity:</strong> {incident.activity.join(', ')}</p>
+                      )}
                       {incident.vessel_name && <p><strong>Vessel:</strong> {incident.vessel_name}</p>}
+                      {incident.pilot_on_board && <p><strong>🧑‍✈️ Pilot on Board</strong></p>}
+                      {incident.cargo_on_board && <p><strong>📦 Cargo on Board</strong></p>}
                       {incident.injuries && <p className="text-red-600"><strong>⚠️ Injuries Reported</strong></p>}
                     </div>
                   </div>
