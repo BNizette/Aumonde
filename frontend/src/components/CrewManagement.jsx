@@ -1062,8 +1062,16 @@ const CrewManagement = () => {
 
           {/* Trip Allocations Tab */}
           <TabsContent value="trips" className="space-y-4">
-            <div className="text-sm text-gray-600 mb-2">
-              Trips allocated to {viewingCrew?.staff_name}
+            <div className="flex justify-between items-center mb-2">
+              <div className="text-sm text-gray-600">
+                Trips allocated to {viewingCrew?.staff_name}
+              </div>
+              {crewTrips.length > 0 && (
+                <Button variant="outline" size="sm" onClick={exportCrewTripsToCSV}>
+                  <Download className="h-4 w-4 mr-2" />
+                  Export CSV
+                </Button>
+              )}
             </div>
             {crewTrips.length > 0 ? (
               <div className="border rounded-lg overflow-auto">
@@ -1105,8 +1113,16 @@ const CrewManagement = () => {
 
           {/* Crew Shifts Tab */}
           <TabsContent value="shifts" className="space-y-4">
-            <div className="text-sm text-gray-600 mb-2">
-              Crew shift logs for {viewingCrew?.staff_name}
+            <div className="flex justify-between items-center mb-2">
+              <div className="text-sm text-gray-600">
+                Crew shift logs for {viewingCrew?.staff_name}
+              </div>
+              {crewShifts.length > 0 && (
+                <Button variant="outline" size="sm" onClick={exportCrewShiftsToCSV}>
+                  <Download className="h-4 w-4 mr-2" />
+                  Export CSV
+                </Button>
+              )}
             </div>
             {crewShifts.length > 0 ? (
               <div className="border rounded-lg overflow-auto">
