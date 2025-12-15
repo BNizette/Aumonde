@@ -450,8 +450,9 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Responsive List Card Component Refactoring"
-  stuck_tasks: []
+    - "Settings Page Drag-and-Drop Functionality"
+  stuck_tasks:
+    - "Settings Page Drag-and-Drop Functionality"
   test_all: false
   test_priority: "high_first"
 
