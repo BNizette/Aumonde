@@ -1148,9 +1148,22 @@ const Incidents = () => {
               
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div><strong>Incident #:</strong> {viewingIncident.incident_number}</div>
-                <div><strong>Type:</strong> {viewingIncident.incident_type}</div>
-                <div><strong>Date:</strong> {new Date(viewingIncident.incident_date).toLocaleString()}</div>
+                <div><strong>Type:</strong> {Array.isArray(viewingIncident.incident_type) ? viewingIncident.incident_type.join(', ') : viewingIncident.incident_type}</div>
+                <div className="col-span-2">
+                  <strong>Date:</strong> {new Date(viewingIncident.incident_date).toLocaleString()}
+                  <span className="text-xs text-gray-500 ml-2">
+                    (UTC: {new Date(viewingIncident.incident_date).toISOString().replace('T', ' ').slice(0, 19)})
+                  </span>
+                </div>
                 <div><strong>Location:</strong> {viewingIncident.location}</div>
+                {viewingIncident.gps_location && <div><strong>GPS:</strong> {viewingIncident.gps_location}</div>}
+                {viewingIncident.trip_from && <div><strong>Trip From:</strong> {viewingIncident.trip_from}</div>}
+                {viewingIncident.trip_to && <div><strong>Trip To:</strong> {viewingIncident.trip_to}</div>}
+                {viewingIncident.activity && viewingIncident.activity.length > 0 && (
+                  <div className="col-span-2"><strong>Activity:</strong> {viewingIncident.activity.join(', ')}</div>
+                )}
+                {viewingIncident.pilot_on_board && <div><strong>🧑‍✈️ Pilot on Board:</strong> Yes</div>}
+                {viewingIncident.cargo_on_board && <div><strong>📦 Cargo on Board:</strong> Yes</div>}
                 {viewingIncident.vessel_name && <div><strong>Vessel:</strong> {viewingIncident.vessel_name}</div>}
                 <div><strong>Reported By:</strong> {viewingIncident.reported_by_name}</div>
               </div>
