@@ -993,35 +993,54 @@ const Incidents = () => {
 
             <div>
               <Label>Activity (Select multiple)</Label>
-              <Select 
-                value={formData.activity.length > 0 ? formData.activity[0] : ''} 
-                onValueChange={(value) => {
-                  if (!formData.activity.includes(value)) {
-                    setFormData({...formData, activity: [...formData.activity, value]});
-                  }
-                }}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select activity types" />
-                </SelectTrigger>
-                <SelectContent>
-                  {activityOptions.map(activity => <SelectItem key={activity} value={activity}>{activity}</SelectItem>)}
-                </SelectContent>
-              </Select>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" className="w-full justify-between">
+                    <span className="truncate">
+                      {formData.activity.length === 0 ? 'Select activities' :
+                       formData.activity.length === 1 ? formData.activity[0] :
+                       `${formData.activity.length} selected`}
+                    </span>
+                    <ChevronDown className="h-4 w-4 ml-2 shrink-0" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-64 p-0" align="start">
+                  <div className="p-2">
+                    <div className="flex items-center justify-between px-2 py-1.5 mb-1">
+                      <span className="text-sm font-medium">Select Activities</span>
+                      {formData.activity.length > 0 && (
+                        <Button variant="ghost" size="sm" onClick={() => setFormData({...formData, activity: []})} className="h-auto p-1 text-xs">
+                          Clear
+                        </Button>
+                      )}
+                    </div>
+                    {activityOptions.map(activity => (
+                      <div key={activity} className="flex items-center space-x-2 px-2 py-1.5 hover:bg-gray-100 rounded cursor-pointer"
+                        onClick={() => {
+                          const isSelected = formData.activity.includes(activity);
+                          setFormData({
+                            ...formData,
+                            activity: isSelected 
+                              ? formData.activity.filter(a => a !== activity)
+                              : [...formData.activity, activity]
+                          });
+                        }}>
+                        <Checkbox checked={formData.activity.includes(activity)} />
+                        <label className="text-sm flex-1 cursor-pointer">{activity}</label>
+                      </div>
+                    ))}
+                  </div>
+                </PopoverContent>
+              </Popover>
               {formData.activity.length > 0 && (
-                <div className="flex flex-wrap gap-2 mt-2">
-                  {formData.activity.map((act, idx) => (
-                    <Badge key={idx} variant="secondary">
+                <div className="flex flex-wrap gap-1 mt-2">
+                  {formData.activity.map(act => (
+                    <Badge key={act} variant="secondary" className="text-xs">
                       {act}
-                      <button 
-                        className="ml-2 text-xs" 
-                        onClick={() => setFormData({
-                          ...formData, 
-                          activity: formData.activity.filter((_, i) => i !== idx)
-                        })}
-                      >
-                        ×
-                      </button>
+                      <X className="h-3 w-3 ml-1 cursor-pointer" onClick={() => setFormData({
+                        ...formData, 
+                        activity: formData.activity.filter(a => a !== act)
+                      })} />
                     </Badge>
                   ))}
                 </div>
