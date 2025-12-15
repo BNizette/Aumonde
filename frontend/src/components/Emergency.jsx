@@ -635,6 +635,17 @@ const Emergency = () => {
     setDrillDialogOpen(true);
   };
 
+  // View handlers
+  const handleViewDrill = (drill) => {
+    setViewingDrill(drill);
+    setDrillViewDialogOpen(true);
+  };
+
+  const handleViewProcedure = (procedure) => {
+    setViewingProcedure(procedure);
+    setProcedureViewDialogOpen(true);
+  };
+
   // Delete handlers
   const handleDeleteContact = async (contactId, contactName) => {
     if (!window.confirm(`Are you sure you want to delete contact "${contactName}"?`)) return;
