@@ -698,6 +698,14 @@ const VesselManagement = () => {
 
                   {/* Action Buttons */}
                   <div className="flex items-center gap-2 flex-shrink-0">
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => handleViewLogs(vessel)}
+                      title="View logs"
+                    >
+                      <Eye className="h-4 w-4" />
+                    </Button>
                     {canEdit && (
                       <Button
                         size="sm"
