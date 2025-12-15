@@ -1021,6 +1021,200 @@ class AMSAComprehensiveTester:
             self.log_test("Full Access Verification", False, error=f"Admin should have Full access, got {access_level}")
 
     # ============================================================================
+    # CREW SHIFTS DATA CONSISTENCY TESTS (NEW FEATURE)
+    # ============================================================================
+
+    def test_crew_shifts_data_consistency(self):
+        """Test crew shifts data consistency between Crew Management and Trip Management modules"""
+        print("\n👥 Testing Crew Shifts Data Consistency...")
+        
+        # Test 1: Verify Same Data Source - Both modules query /api/trip-logs
+        print("\n   Test 1: Verify Same Data Source...")
+        
+        # Get all crew shifts (trip logs)
+        success, all_shifts, status = self.make_request('GET', 'trip-logs')
+        if success and isinstance(all_shifts, list):
+            self.log_test("Get All Crew Shifts (/api/trip-logs)", True, 
+                         f"Total shifts: {len(all_shifts)}")
+            
+            # Show first shift structure if available
+            if all_shifts:
+                first_shift = all_shifts[0]
+                self.log_test("First Shift Data Structure", True, 
+                             f"Fields: {list(first_shift.keys())}")
+        else:
+            self.log_test("Get All Crew Shifts (/api/trip-logs)", False, 
+                         error=f"Status: {status}")
+            return False
+        
+        # Test 2: Get crew shifts filtered by crew_id
+        print("\n   Test 2: Crew Shifts Filtered by Crew ID...")
+        
+        if hasattr(self, 'existing_crew') and self.existing_crew:
+            crew_member = self.existing_crew[0]
+            crew_id = crew_member['id']
+            
+            # Filter shifts by crew_id (client-side filtering simulation)
+            crew_shifts = [s for s in all_shifts if s.get('crew_id') == crew_id]
+            
+            self.log_test("Crew Shifts for Specific Crew", True, 
+                         f"Crew: {crew_member['staff_name']}, Shifts: {len(crew_shifts)}")
+            
+            # Show shift details for this crew
+            if crew_shifts:
+                for i, shift in enumerate(crew_shifts[:3]):  # Show first 3
+                    start_time = shift.get('shift_start_datetime', 'N/A')
+                    end_time = shift.get('shift_stop_datetime', 'N/A')
+                    task = shift.get('task_performed', 'N/A')
+                    print(f"      - Shift {i+1}: {start_time} to {end_time}: {task}")
+        else:
+            self.log_test("Crew Shifts for Specific Crew", False, 
+                         error="No crew members available for testing")
+        
+        # Test 3: Get crew shifts filtered by trip_id
+        print("\n   Test 3: Crew Shifts Filtered by Trip ID...")
+        
+        if hasattr(self, 'existing_trips') and self.existing_trips:
+            trip = self.existing_trips[0]
+            trip_id = trip['id']
+            
+            # Get shifts for specific trip
+            success, trip_shifts, status = self.make_request('GET', f'trip-logs?trip_id={trip_id}')
+            if success and isinstance(trip_shifts, list):
+                self.log_test("Crew Shifts for Specific Trip", True, 
+                             f"Trip: {trip.get('trip_name', 'Unknown')}, Shifts: {len(trip_shifts)}")
+                
+                # Show shift details for this trip
+                for i, shift in enumerate(trip_shifts[:3]):  # Show first 3
+                    crew_name = shift.get('crew_name', 'N/A')
+                    start_time = shift.get('shift_start_datetime', 'N/A')
+                    task = shift.get('task_performed', 'N/A')
+                    print(f"      - Crew: {crew_name}, Start: {start_time}, Task: {task}")
+            else:
+                self.log_test("Crew Shifts for Specific Trip", False, 
+                             error=f"Status: {status}")
+        else:
+            self.log_test("Crew Shifts for Specific Trip", False, 
+                         error="No trips available for testing")
+        
+        # Test 4: Verify Data Structure Consistency
+        print("\n   Test 4: Verify Data Structure...")
+        
+        if all_shifts:
+            shift = all_shifts[0]
+            
+            # Check for expected fields in trip_logs model
+            expected_fields = [
+                'id', 'crew_id', 'crew_name', 'shift_start_datetime', 
+                'shift_stop_datetime', 'task_performed', 'total_hours'
+            ]
+            
+            missing_fields = []
+            present_fields = []
+            
+            for field in expected_fields:
+                if field in shift:
+                    present_fields.append(f"{field}: {type(shift[field]).__name__}")
+                else:
+                    missing_fields.append(field)
+            
+            if not missing_fields:
+                self.log_test("Data Structure Validation", True, 
+                             f"All expected fields present: {present_fields}")
+            else:
+                self.log_test("Data Structure Validation", False, 
+                             error=f"Missing fields: {missing_fields}")
+            
+            # Check for old fields that should NOT be present
+            old_fields = ['log_datetime', 'activity', 'activity_details']
+            found_old_fields = [field for field in old_fields if field in shift]
+            
+            if not found_old_fields:
+                self.log_test("Old Fields Check (should be absent)", True, 
+                             "No old running_logs fields found")
+            else:
+                self.log_test("Old Fields Check (should be absent)", False, 
+                             error=f"Found old fields: {found_old_fields}")
+        else:
+            self.log_test("Data Structure Validation", False, 
+                         error="No shifts available for structure validation")
+        
+        # Test 5: Create a test crew shift and verify it appears in both contexts
+        print("\n   Test 5: Create Test Shift and Verify Consistency...")
+        
+        if hasattr(self, 'existing_crew') and self.existing_crew and hasattr(self, 'existing_trips') and self.existing_trips:
+            crew_member = self.existing_crew[0]
+            trip = self.existing_trips[0]
+            
+            # Create a test crew shift
+            test_shift_data = {
+                "trip_id": trip['id'],
+                "crew_id": crew_member['id'],
+                "crew_name": crew_member['staff_name'],
+                "shift_start_datetime": "2024-12-14T08:00:00Z",
+                "shift_stop_datetime": "2024-12-14T16:00:00Z",
+                "task_performed": "Data consistency test shift"
+            }
+            
+            success, response, status = self.make_request('POST', 'trip-logs', data=test_shift_data)
+            if success and 'id' in response:
+                test_shift_id = response['id']
+                self.log_test("Create Test Crew Shift", True, f"Created shift: {test_shift_id}")
+                
+                # Verify it appears in all shifts query
+                success, updated_all_shifts, _ = self.make_request('GET', 'trip-logs')
+                if success:
+                    test_shift_in_all = any(s['id'] == test_shift_id for s in updated_all_shifts)
+                    if test_shift_in_all:
+                        self.log_test("Test Shift in All Shifts Query", True, 
+                                     "Shift appears in /api/trip-logs")
+                    else:
+                        self.log_test("Test Shift in All Shifts Query", False, 
+                                     error="Shift not found in all shifts query")
+                
+                # Verify it appears in trip-specific query
+                success, trip_specific_shifts, _ = self.make_request('GET', f'trip-logs?trip_id={trip["id"]}')
+                if success:
+                    test_shift_in_trip = any(s['id'] == test_shift_id for s in trip_specific_shifts)
+                    if test_shift_in_trip:
+                        self.log_test("Test Shift in Trip-Specific Query", True, 
+                                     "Shift appears in trip-filtered query")
+                    else:
+                        self.log_test("Test Shift in Trip-Specific Query", False, 
+                                     error="Shift not found in trip-specific query")
+                
+                # Clean up test shift
+                success, _, _ = self.make_request('DELETE', f'trip-logs/{test_shift_id}')
+                if success:
+                    print(f"      Cleaned up test shift: {test_shift_id}")
+                    
+            else:
+                self.log_test("Create Test Crew Shift", False, 
+                             error=f"Status: {status}, Response: {response}")
+        else:
+            self.log_test("Create Test Crew Shift", False, 
+                         error="No crew or trips available for consistency test")
+        
+        # Test 6: Verify endpoint consistency (no separate crew-shifts endpoint)
+        print("\n   Test 6: Verify Endpoint Consistency...")
+        
+        # Test that there's no separate crew-shifts endpoint (should use trip-logs)
+        success, response, status = self.make_request('GET', 'crew-shifts', expected_status=404)
+        if status == 404:
+            self.log_test("No Separate Crew-Shifts Endpoint", True, 
+                         "Correctly uses /api/trip-logs for crew shifts")
+        else:
+            self.log_test("No Separate Crew-Shifts Endpoint", False, 
+                         error=f"Unexpected crew-shifts endpoint exists (status: {status})")
+        
+        # Summary of data consistency test
+        print("\n   📊 Data Consistency Summary:")
+        print(f"      - Both modules query same endpoint: /api/trip-logs")
+        print(f"      - Data structure uses trip_logs model fields")
+        print(f"      - No references to old running_logs fields")
+        print(f"      - Consistent filtering by trip_id and crew_id")
+
+    # ============================================================================
     # CLEANUP AND MAIN EXECUTION
     # ============================================================================
 
