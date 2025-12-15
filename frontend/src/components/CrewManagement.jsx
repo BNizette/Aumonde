@@ -455,27 +455,6 @@ const CrewManagement = () => {
     document.body.removeChild(link);
   };
 
-  const exportCrewShiftsToCSV = () => {
-    if (crewShifts.length === 0) return;
-    const headers = ['Shift Start', 'Shift End', 'Vessel', 'Task Performed', 'Total Hours', 'Trip ID'];
-    const csvRows = [headers.join(','), ...crewShifts.map(s => [
-      `"${s.shift_start_datetime ? new Date(s.shift_start_datetime).toLocaleString() : ''}"`,
-      `"${s.shift_stop_datetime ? new Date(s.shift_stop_datetime).toLocaleString() : ''}"`,
-      `"${(s.vessel_name || '').replace(/"/g, '""')}"`,
-      `"${(s.task_performed || '').replace(/"/g, '""')}"`,
-      `"${s.total_hours || ''}"`,
-      `"${s.trip_id || 'Manual'}"`
-    ].join(','))];
-    const blob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    link.setAttribute('href', URL.createObjectURL(blob));
-    link.setAttribute('download', `crew_shifts_${selectedCrewForLogs?.staff_name}_${new Date().toISOString().slice(0, 10)}.csv`);
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
   const exportCrewDrillsToCSV = () => {
     if (crewDrillRecords.length === 0) return;
     const headers = ['Drill Type', 'Record Date', 'Status', 'Authorized By', 'Notes'];
