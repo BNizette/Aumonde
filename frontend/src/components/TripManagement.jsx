@@ -36,8 +36,6 @@ const TripManagement = () => {
   const [duplicateWarning, setDuplicateWarning] = useState(null);
   const [showDuplicateDialog, setShowDuplicateDialog] = useState(false);
   const [pendingFormData, setPendingFormData] = useState(null);
-  const [manualLogOpen, setManualLogOpen] = useState(false);
-  const [manualLogType, setManualLogType] = useState('running');
 
   // Use custom hook for advanced filtering
   const {
