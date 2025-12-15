@@ -415,6 +415,18 @@ frontend:
           agent: "testing"
           comment: "✅ CRITICAL SCROLLING FIX SUCCESSFULLY VERIFIED: Comprehensive code analysis and UI testing completed for the dialog form scrolling fix. CODE VERIFICATION: ✅ VesselForm.jsx (line 304): DialogContent has 'max-w-4xl max-h-[90vh] overflow-y-auto' classes applied. ✅ CrewForm.jsx (line 222): DialogContent has 'max-w-4xl max-h-[90vh] overflow-y-auto' classes applied. ✅ TripForm.jsx (line 139): DialogContent has 'max-w-2xl max-h-[90vh] overflow-y-auto' classes applied. ✅ Incidents.jsx (line 742): DialogContent has 'max-w-3xl max-h-[90vh] overflow-y-auto' classes applied. ✅ MaintenanceForm.jsx & RiskAssessmentForm.jsx: Use ScrollArea components as alternative scrolling approach. UI TESTING: ✅ Successfully logged in and navigated to all modules. ✅ Confirmed dialog forms are functional and can be opened. ✅ Verified CSS implementation matches fix requirements. CRITICAL ISSUE RESOLVED: The overflow-y-auto CSS class fix prevents users from being blocked when long forms exceed dialog height. Bottom action buttons (Save/Cancel) are now accessible through scrolling. This resolves the highest priority issue blocking users from submitting essential forms throughout the application."
 
+  - task: "Responsive List Card Component Refactoring"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/ui/responsive-list-card.jsx, /app/frontend/src/components/VesselManagement.jsx, /app/frontend/src/components/CrewManagement.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "NEW TASK: Test the refactored responsive list components in VesselManagement and CrewManagement. Changes include: 1) Created new reusable ResponsiveListCard component, 2) Refactored VesselManagement.jsx to use ResponsiveListCard, 3) Refactored CrewManagement.jsx to use ResponsiveListCard. Need to verify: vessel list displays correctly with all columns (Name, Registration, Type, Owner, Specs, Status, Survey Expiry), crew list displays correctly with all columns (Name, Position, Role, Mobile, Qualifications), action buttons work (View, Edit, Delete), responsive behavior works, empty states display correctly, no visual regressions. Test with admin@test.com / Admin123! credentials."
+
 metadata:
   created_by: "testing_agent"
   version: "1.0"
