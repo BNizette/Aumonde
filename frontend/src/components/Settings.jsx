@@ -168,19 +168,23 @@ const Settings = () => {
 
   const handleDragStart = (e, index) => {
     e.dataTransfer.effectAllowed = 'move';
-    e.dataTransfer.setData('text/html', index);
+    e.dataTransfer.setData('text/plain', index.toString());
   };
 
-  const handleDragOver = (e, index) => {
+  const handleDragOver = (e) => {
     e.preventDefault();
     e.dataTransfer.dropEffect = 'move';
   };
 
   const handleDrop = (e, dropIndex) => {
     e.preventDefault();
-    const dragIndex = parseInt(e.dataTransfer.getData('text/html'));
+    e.stopPropagation();
     
-    if (dragIndex === dropIndex) return;
+    const dragIndexStr = e.dataTransfer.getData('text/plain');
+    if (!dragIndexStr) return;
+    
+    const dragIndex = parseInt(dragIndexStr, 10);
+    if (isNaN(dragIndex) || dragIndex === dropIndex) return;
     
     const updated = [...newOptions];
     const [draggedItem] = updated.splice(dragIndex, 1);
