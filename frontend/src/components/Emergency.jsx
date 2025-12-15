@@ -9,11 +9,12 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { Phone, Plus, Edit, Trash2, AlertTriangle, FileText, Activity, Search, Filter, X, Download, ChevronDown, Info } from 'lucide-react';
+import { Phone, Plus, Edit, Trash2, AlertTriangle, FileText, Activity, Search, Filter, X, Download, ChevronDown, Info, Eye } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import useAdvancedFilters from '../hooks/useAdvancedFilters';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
