@@ -244,6 +244,18 @@ backend:
           comment: "✅ CREW SHIFTS DATA CONSISTENCY SUCCESSFULLY VERIFIED: Comprehensive testing completed confirming both Crew Management and Trip Management modules now query the same /api/trip-logs endpoint for consistent data. TESTING RESULTS: 🔧 SAME DATA SOURCE VERIFIED: Both modules query /api/trip-logs endpoint (65/65 tests passed). Retrieved all crew shifts successfully with proper data structure containing expected fields: id, crew_id, crew_name, shift_start_datetime, shift_stop_datetime, task_performed, total_hours. 🔧 FILTERING CONSISTENCY: Successfully tested filtering by crew_id (client-side) and trip_id (server-side parameter). Both filtering methods work correctly and return consistent data structure. 🔧 DATA STRUCTURE VALIDATION: Confirmed all expected trip_logs model fields are present. Verified NO old running_logs fields (log_datetime, activity, activity_details) are present in crew shifts data. 🔧 ENDPOINT CONSISTENCY: Verified no separate /crew-shifts endpoint exists - both modules correctly use /api/trip-logs. 🔧 CRUD OPERATIONS: Successfully created test crew shift, verified it appears in both all-shifts query and trip-specific query, then cleaned up test data. 🔧 COMPREHENSIVE VERIFICATION: Created and verified test shift appears in: 1) GET /api/trip-logs (all shifts), 2) GET /api/trip-logs?trip_id={id} (trip-specific). Data consistency maintained across both Crew Management and Trip Management modules as specified in review request."
 
 frontend:
+  - task: "Crew Logs Vessel Column Implementation"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/components/CrewManagement.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "✅ CREW LOGS VESSEL COLUMN SUCCESSFULLY VERIFIED: Comprehensive testing completed with excellent results. TABLE STRUCTURE VERIFICATION: ✅ All 6 expected columns found in correct order: 'Shift Start', 'Shift End', 'Vessel' (3rd position), 'Task Performed', 'Total Hours', 'Trip ID'. ✅ Vessel column correctly positioned between Shift End and Task Performed as specified. VESSEL DATA DISPLAY: ✅ Vessels display with purple badge styling (bg-purple-50 class) and ship emoji (🚢) prefix as required. ✅ Manual shifts without vessels correctly show '-' indicator. ✅ Trip-based shifts show proper vessel names (e.g., 'MV Pacific Explorer'). DATA CONSISTENCY: ✅ Tested with David Chen (manual shifts) - correctly shows '-' for all 8 shift records without vessels. ✅ Tested with John Masters (trip-based shifts) - correctly shows 'MV Pacific Explorer' with proper styling for 2 shift records. ✅ Vessel name enrichment working correctly - fetches vessel data from trips and displays vessel names. UI/UX VERIFICATION: ✅ Crew logs dialog opens successfully when clicking 'View Logs' button. ✅ Crew Shifts tab loads and displays table correctly. ✅ Table formatting is clean and readable with proper column alignment. ✅ No console errors during data loading or display. The Vessel column enhancement has been successfully implemented and is working perfectly as specified in the review request."
+
   - task: "Settings Integration Across Multiple Modules"
     implemented: true
     working: true
