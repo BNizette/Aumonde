@@ -73,7 +73,42 @@ const Incidents = () => {
     target_completion_date: ''
   });
 
-  const [incidentTypes, setIncidentTypes] = useState(['Injury', 'Medical', 'Near Miss', 'Equipment Failure', 'Environmental', 'Security', 'Other']);
+  const [incidentTypes, setIncidentTypes] = useState([
+    'Contact with something other than a vessel',
+    'Collision with another vessel',
+    'Damage',
+    'Dangerous occurrence',
+    'Death',
+    'Disabled',
+    'Equipment/machinery failure',
+    'Fire/smoke',
+    'Flooding',
+    'Foundering/sinking/presumed lost Injury',
+    'Grounding',
+    'Illness',
+    'Leakage/spillage of dangerous goods',
+    'Listing/capsize',
+    'Loss of cargo/dangerous goods',
+    'MARPOL issues',
+    'Medical evacuation',
+    'Near miss',
+    'Person overboard with lifejacket',
+    'Person overboard without lifejacket',
+    'Other'
+  ]);
+  
+  const activityOptions = [
+    'Anchored',
+    'Being towed',
+    'Berthed',
+    'Berthing/Unberthing',
+    'Fishing/Unloading',
+    'Loading/Unloading',
+    'Towing',
+    'Underway',
+    'Other'
+  ];
+  
   const severityLevels = ['Minor', 'Moderate', 'Serious', 'Critical'];
   const statuses = ['Reported', 'Under Investigation', 'Completed', 'Closed'];
 
