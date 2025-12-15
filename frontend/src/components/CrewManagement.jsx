@@ -950,6 +950,7 @@ const CrewManagement = () => {
                 )}
               </div>
             )}
+          </ScrollArea>
           </TabsContent>
 
           {/* Trip Allocations Tab */}
