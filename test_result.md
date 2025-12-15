@@ -453,7 +453,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Emergency Drill & Training Records Feature"
+    []
   stuck_tasks:
     []
   test_all: false
