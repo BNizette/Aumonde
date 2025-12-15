@@ -1098,6 +1098,7 @@ const CrewManagement = () => {
                           <TableRow>
                             <TableHead>Shift Start</TableHead>
                             <TableHead>Shift End</TableHead>
+                            <TableHead>Vessel</TableHead>
                             <TableHead>Task Performed</TableHead>
                             <TableHead>Total Hours</TableHead>
                             <TableHead>Trip ID</TableHead>
@@ -1111,6 +1112,15 @@ const CrewManagement = () => {
                               </TableCell>
                               <TableCell>
                                 {shift.shift_stop_datetime ? new Date(shift.shift_stop_datetime).toLocaleString() : 'N/A'}
+                              </TableCell>
+                              <TableCell>
+                                {shift.vessel_name ? (
+                                  <Badge variant="outline" className="bg-purple-50 text-purple-700">
+                                    🚢 {shift.vessel_name}
+                                  </Badge>
+                                ) : (
+                                  <span className="text-xs text-gray-400">-</span>
+                                )}
                               </TableCell>
                               <TableCell className="max-w-xs truncate">
                                 {shift.task_performed || '-'}
