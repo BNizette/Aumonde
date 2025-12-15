@@ -71,7 +71,8 @@ const Compliance = () => {
     toggleFilter: toggleReqFilter,
     clearFilter: clearReqFilterType,
     clearAllFilters: clearAllReqFilters,
-    setFilterValue: setReqFilterValue
+    setFilterValue: setReqFilterValue,
+    updateFilters: updateReqFilters
   } = useAdvancedFilters({
     categories: [],
     statuses: []
