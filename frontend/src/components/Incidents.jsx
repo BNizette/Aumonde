@@ -47,12 +47,18 @@ const Incidents = () => {
   });
 
   const [formData, setFormData] = useState({
-    incident_type: 'Near Miss',
+    incident_type: [],
     severity: 'Minor',
     title: '',
     description: '',
     incident_date: new Date().toISOString().slice(0, 16),
     location: '',
+    trip_from: '',
+    trip_to: '',
+    gps_location: '',
+    pilot_on_board: false,
+    cargo_on_board: false,
+    activity: [],
     vessel_id: '',
     vessel_name: '',
     injuries: false,
