@@ -881,12 +881,17 @@ const Incidents = () => {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label>Incident Date & Time *</Label>
+                <Label>Incident Date & Time * (Local)</Label>
                 <Input
                   type="datetime-local"
                   value={formData.incident_date}
                   onChange={(e) => setFormData({...formData, incident_date: e.target.value})}
                 />
+                {formData.incident_date && (
+                  <p className="text-xs text-gray-500 mt-1">
+                    UTC: {new Date(formData.incident_date).toISOString().replace('T', ' ').slice(0, 19)}
+                  </p>
+                )}
               </div>
               <div>
                 <Label>Location *</Label>
@@ -896,6 +901,89 @@ const Incidents = () => {
                   placeholder="Where did this occur?"
                 />
               </div>
+            </div>
+
+            <div className="grid grid-cols-3 gap-4">
+              <div>
+                <Label>Trip From</Label>
+                <Input
+                  value={formData.trip_from}
+                  onChange={(e) => setFormData({...formData, trip_from: e.target.value})}
+                  placeholder="Origin"
+                />
+              </div>
+              <div>
+                <Label>Trip To</Label>
+                <Input
+                  value={formData.trip_to}
+                  onChange={(e) => setFormData({...formData, trip_to: e.target.value})}
+                  placeholder="Destination"
+                />
+              </div>
+              <div>
+                <Label>GPS Location</Label>
+                <Input
+                  value={formData.gps_location}
+                  onChange={(e) => setFormData({...formData, gps_location: e.target.value})}
+                  placeholder="Lat, Long"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="pilot_on_board"
+                  checked={formData.pilot_on_board}
+                  onCheckedChange={(checked) => setFormData({...formData, pilot_on_board: checked})}
+                />
+                <Label htmlFor="pilot_on_board" className="cursor-pointer">Pilot on Board</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="cargo_on_board"
+                  checked={formData.cargo_on_board}
+                  onCheckedChange={(checked) => setFormData({...formData, cargo_on_board: checked})}
+                />
+                <Label htmlFor="cargo_on_board" className="cursor-pointer">Cargo on Board</Label>
+              </div>
+            </div>
+
+            <div>
+              <Label>Activity (Select multiple)</Label>
+              <Select 
+                value={formData.activity.length > 0 ? formData.activity[0] : ''} 
+                onValueChange={(value) => {
+                  if (!formData.activity.includes(value)) {
+                    setFormData({...formData, activity: [...formData.activity, value]});
+                  }
+                }}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select activity types" />
+                </SelectTrigger>
+                <SelectContent>
+                  {activityOptions.map(activity => <SelectItem key={activity} value={activity}>{activity}</SelectItem>)}
+                </SelectContent>
+              </Select>
+              {formData.activity.length > 0 && (
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {formData.activity.map((act, idx) => (
+                    <Badge key={idx} variant="secondary">
+                      {act}
+                      <button 
+                        className="ml-2 text-xs" 
+                        onClick={() => setFormData({
+                          ...formData, 
+                          activity: formData.activity.filter((_, i) => i !== idx)
+                        })}
+                      >
+                        ×
+                      </button>
+                    </Badge>
+                  ))}
+                </div>
+              )}
             </div>
 
             <div>
