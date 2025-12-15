@@ -896,6 +896,82 @@ const Compliance = () => {
 
         {/* REQUIREMENTS TAB */}
         <TabsContent value="requirements">
+          {/* Compliance Status Summary Cards */}
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-4">
+            <Card 
+              className="cursor-pointer hover:shadow-lg transition-shadow"
+              onClick={() => updateReqFilters({ statuses: [], categories: [], start_date: '', end_date: '' })}
+            >
+              <CardContent className="pt-3 pb-3">
+                <div className="text-center">
+                  <div className="text-lg font-bold text-blue-600">{requirements.length}</div>
+                  <div className="text-sm text-gray-600">Total</div>
+                  <p className="text-xs text-gray-400 mt-1">All requirements</p>
+                </div>
+              </CardContent>
+            </Card>
+            <Card 
+              className="cursor-pointer hover:shadow-lg transition-shadow"
+              onClick={() => {
+                clearReqFilterType('statuses');
+                toggleReqFilter('statuses', 'Compliant');
+              }}
+            >
+              <CardContent className="pt-3 pb-3">
+                <div className="text-center">
+                  <div className="text-lg font-bold text-green-600">{compliant}</div>
+                  <div className="text-sm text-gray-600">Compliant</div>
+                  <p className="text-xs text-gray-400 mt-1">Click to filter</p>
+                </div>
+              </CardContent>
+            </Card>
+            <Card 
+              className="cursor-pointer hover:shadow-lg transition-shadow"
+              onClick={() => {
+                clearReqFilterType('statuses');
+                toggleReqFilter('statuses', 'Non-Compliant');
+              }}
+            >
+              <CardContent className="pt-3 pb-3">
+                <div className="text-center">
+                  <div className="text-lg font-bold text-red-600">{nonCompliant}</div>
+                  <div className="text-sm text-gray-600">Non-Compliant</div>
+                  <p className="text-xs text-gray-400 mt-1">Click to filter</p>
+                </div>
+              </CardContent>
+            </Card>
+            <Card 
+              className="cursor-pointer hover:shadow-lg transition-shadow"
+              onClick={() => {
+                clearReqFilterType('statuses');
+                toggleReqFilter('statuses', 'Under Review');
+              }}
+            >
+              <CardContent className="pt-3 pb-3">
+                <div className="text-center">
+                  <div className="text-lg font-bold text-yellow-600">{underReview}</div>
+                  <div className="text-sm text-gray-600">Under Review</div>
+                  <p className="text-xs text-gray-400 mt-1">Click to filter</p>
+                </div>
+              </CardContent>
+            </Card>
+            <Card 
+              className="cursor-pointer hover:shadow-lg transition-shadow"
+              onClick={() => {
+                clearReqFilterType('statuses');
+                toggleReqFilter('statuses', 'Partial');
+              }}
+            >
+              <CardContent className="pt-3 pb-3">
+                <div className="text-center">
+                  <div className="text-lg font-bold text-orange-600">{partial}</div>
+                  <div className="text-sm text-gray-600">Partial</div>
+                  <p className="text-xs text-gray-400 mt-1">Click to filter</p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
           <Card>
             <CardHeader>
               <div className="flex justify-between items-center">
