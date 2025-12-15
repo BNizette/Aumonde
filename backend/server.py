@@ -2500,6 +2500,58 @@ async def update_emergency_drill(drill_id: str, drill_data: dict, current_user: 
 @api_router.delete("/emergency/drills/{drill_id}")
 async def delete_emergency_drill(drill_id: str, current_user: dict = Depends(require_access_level(AccessLevel.FULL))):
     await db.emergency_drills.delete_one({"id": drill_id})
+    # Also delete associated drill records
+    await db.drill_records.delete_many({"drill_id": drill_id})
+    return {"status": "success"}
+
+# Drill Records Model and Endpoints
+class DrillRecord(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    drill_id: str
+    record_date: datetime
+    crew_members: List[str]  # List of crew member names
+    status: str  # "Pass" or "Fail"
+    authorized_by: str  # Crew member name who authorized
+    authorized_by_id: Optional[str] = None
+    notes: Optional[str] = None
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class DrillRecordCreate(BaseModel):
+    drill_id: str
+    record_date: str
+    crew_members: List[str]
+    status: str
+    authorized_by: str
+    authorized_by_id: Optional[str] = None
+    notes: Optional[str] = None
+
+@api_router.post("/emergency/drill-records")
+async def create_drill_record(record_data: DrillRecordCreate, current_user: dict = Depends(require_access_level(AccessLevel.EDIT))):
+    record_date = datetime.fromisoformat(record_data.record_date.replace('Z', '+00:00'))
+    record_dict = record_data.model_dump()
+    record_dict['record_date'] = record_date
+    
+    record = DrillRecord(**record_dict)
+    await db.drill_records.insert_one(record.model_dump())
+    return record
+
+@api_router.get("/emergency/drill-records/{drill_id}")
+async def get_drill_records(drill_id: str, current_user: dict = Depends(get_current_user)):
+    records = await db.drill_records.find({"drill_id": drill_id}, {"_id": 0}).sort("record_date", -1).to_list(1000)
+    return records
+
+@api_router.put("/emergency/drill-records/{record_id}")
+async def update_drill_record(record_id: str, record_data: dict, current_user: dict = Depends(require_access_level(AccessLevel.EDIT))):
+    if 'record_date' in record_data and record_data['record_date']:
+        record_data['record_date'] = datetime.fromisoformat(record_data['record_date'].replace('Z', '+00:00'))
+    
+    await db.drill_records.update_one({"id": record_id}, {"$set": record_data})
+    return {"status": "success"}
+
+@api_router.delete("/emergency/drill-records/{record_id}")
+async def delete_drill_record(record_id: str, current_user: dict = Depends(require_access_level(AccessLevel.FULL))):
+    await db.drill_records.delete_one({"id": record_id})
     return {"status": "success"}
 
 # ============================================================================
