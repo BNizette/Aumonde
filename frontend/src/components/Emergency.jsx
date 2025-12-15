@@ -240,6 +240,14 @@ const Emergency = () => {
         recordsMap[drill.id] = recordsRes.data;
       }
       setDrillRecords(recordsMap);
+
+      // Fetch training records for all procedures
+      const trainingMap = {};
+      for (const procedure of proceduresRes.data) {
+        const trainingRes = await axios.get(`${API}/emergency/training-records/${procedure.id}`, { headers });
+        trainingMap[procedure.id] = trainingRes.data;
+      }
+      setTrainingRecords(trainingMap);
     } catch (err) {
       setError('Error fetching emergency data');
     } finally {
