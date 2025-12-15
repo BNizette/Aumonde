@@ -412,6 +412,18 @@ const CrewManagement = () => {
       });
       
       setCrewShifts(enrichedLogs);
+
+      // Fetch drill records for this crew member
+      const drillRecordsResponse = await axios.get(`${API}/crew/${encodeURIComponent(crew.staff_name)}/drill-records`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setCrewDrillRecords(drillRecordsResponse.data);
+
+      // Fetch training records for this crew member
+      const trainingRecordsResponse = await axios.get(`${API}/crew/${encodeURIComponent(crew.staff_name)}/training-records`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setCrewTrainingRecords(trainingRecordsResponse.data);
       
     } catch (err) {
       console.error('Error fetching crew data:', err);
