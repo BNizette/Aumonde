@@ -284,6 +284,21 @@ const VesselManagement = () => {
       });
       
       setVesselStaffLogs(vesselShifts);
+
+      // Fetch risk assessments for this vessel
+      const risksResponse = await axios.get(`${API}/risks`, { headers });
+      const vesselRisks = risksResponse.data.filter(risk => risk.vessel_id === vessel.id);
+      setVesselRisks(vesselRisks);
+
+      // Fetch maintenance records for this vessel
+      const maintenanceResponse = await axios.get(`${API}/maintenance`, { headers });
+      const vesselMaintenance = maintenanceResponse.data.filter(m => m.vessel_id === vessel.id);
+      setVesselMaintenance(vesselMaintenance);
+
+      // Fetch incidents for this vessel
+      const incidentsResponse = await axios.get(`${API}/incidents`, { headers });
+      const vesselIncidents = incidentsResponse.data.filter(i => i.vessel_id === vessel.id);
+      setVesselIncidents(vesselIncidents);
       
     } catch (err) {
       console.error('Error fetching vessel logs:', err);
