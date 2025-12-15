@@ -733,6 +733,16 @@ const VesselManagement = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Manual Vessel Log Entry Dialog */}
+      <ManualLogEntry
+        open={manualLogOpen}
+        onClose={() => {
+          setManualLogOpen(false);
+          fetchVessels(); // Refresh data
+        }}
+        type="running"
+      />
     </div>
   );
 };
