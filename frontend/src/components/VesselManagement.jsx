@@ -1072,8 +1072,16 @@ const VesselManagement = () => {
 
               {/* Trip Logs Tab */}
               <TabsContent value="running" className="space-y-4">
-                <div className="text-sm text-gray-600 mb-2">
-                  Running logs and activity entries for {selectedVesselForLogs?.vessel_name}
+                <div className="flex justify-between items-center mb-2">
+                  <div className="text-sm text-gray-600">
+                    Running logs and activity entries for {selectedVesselForLogs?.vessel_name}
+                  </div>
+                  {vesselRunningLogs.length > 0 && (
+                    <Button variant="outline" size="sm" onClick={exportVesselTripsToCSV}>
+                      <Download className="h-4 w-4 mr-2" />
+                      Export CSV
+                    </Button>
+                  )}
                 </div>
                 {vesselRunningLogs.length > 0 ? (
                   <div className="border rounded-lg overflow-auto">
