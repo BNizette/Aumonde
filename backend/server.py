@@ -2467,6 +2467,8 @@ async def update_emergency_procedure(procedure_id: str, procedure_data: Emergenc
 @api_router.delete("/emergency/procedures/{procedure_id}")
 async def delete_emergency_procedure(procedure_id: str, current_user: dict = Depends(require_access_level(AccessLevel.FULL))):
     await db.emergency_procedures.delete_one({"id": procedure_id})
+    # Also delete associated training records
+    await db.training_records.delete_many({"procedure_id": procedure_id})
     return {"message": "Emergency procedure deleted"}
 
 # Emergency Drills Endpoints
