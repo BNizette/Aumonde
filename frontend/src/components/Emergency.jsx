@@ -754,6 +754,80 @@ const Emergency = () => {
     }
   };
 
+  // Training Record Functions
+  const handleAddTraining = (procedureId) => {
+    setSelectedProcedureId(procedureId);
+    setTrainingEditMode(false);
+    setTrainingForm({
+      training_date: new Date().toISOString().slice(0, 16),
+      crew_members: [],
+      status: 'Pass',
+      authorized_by: '',
+      authorized_by_id: '',
+      notes: ''
+    });
+    setTrainingDialogOpen(true);
+  };
+
+  const handleEditTraining = (training) => {
+    setSelectedProcedureId(training.procedure_id);
+    setTrainingEditMode(true);
+    setEditingTrainingId(training.id);
+    setTrainingForm({
+      training_date: new Date(training.training_date).toISOString().slice(0, 16),
+      crew_members: training.crew_members || [],
+      status: training.status,
+      authorized_by: training.authorized_by,
+      authorized_by_id: training.authorized_by_id || '',
+      notes: training.notes || ''
+    });
+    setTrainingDialogOpen(true);
+  };
+
+  const handleSaveTraining = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const trainingData = {
+        ...trainingForm,
+        procedure_id: selectedProcedureId
+      };
+
+      if (trainingEditMode) {
+        await axios.put(`${API}/emergency/training-records/${editingTrainingId}`, trainingData, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setMessage('Training record updated successfully');
+      } else {
+        await axios.post(`${API}/emergency/training-records`, trainingData, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setMessage('Training record added successfully');
+      }
+
+      setTrainingDialogOpen(false);
+      fetchData();
+      setTimeout(() => setMessage(''), 3000);
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Error saving training record');
+    }
+  };
+
+  const handleDeleteTraining = async (trainingId) => {
+    if (!window.confirm('Are you sure you want to delete this training record?')) return;
+
+    try {
+      const token = localStorage.getItem('token');
+      await axios.delete(`${API}/emergency/training-records/${trainingId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setMessage('Training record deleted successfully');
+      fetchData();
+      setTimeout(() => setMessage(''), 3000);
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Error deleting training record');
+    }
+  };
+
   const resetContactForm = () => {
     setContactForm({
       contact_type: 'Shore',
