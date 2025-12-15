@@ -1078,97 +1078,92 @@ const CrewManagement = () => {
             )}
           </TabsContent>
 
-          {/* Drills & Training Tab */}
+          {/* Drills Tab */}
           <TabsContent value="drills" className="space-y-4">
-            <div className="space-y-6">
-              {/* Drill Records Section */}
-              <div>
-                <h3 className="font-semibold text-lg mb-3 flex items-center gap-2">
-                  <Activity className="h-5 w-5 text-blue-600" />
-                  Emergency Drills ({crewDrillRecords.length})
-                </h3>
-                {crewDrillRecords.length > 0 ? (
-                  <div className="overflow-x-auto">
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Drill Type</TableHead>
-                          <TableHead>Record Date</TableHead>
-                          <TableHead>Status</TableHead>
-                          <TableHead>Authorized By</TableHead>
-                          <TableHead>Notes</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {crewDrillRecords.map((record) => (
-                          <TableRow key={record.id}>
-                            <TableCell className="font-medium">{record.drill_type || 'N/A'}</TableCell>
-                            <TableCell>{new Date(record.record_date).toLocaleString()}</TableCell>
-                            <TableCell>
-                              <Badge variant={record.status === 'Pass' ? 'default' : 'destructive'}>
-                                {record.status}
-                              </Badge>
-                            </TableCell>
-                            <TableCell>{record.authorized_by}</TableCell>
-                            <TableCell className="max-w-xs truncate">{record.notes || '-'}</TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </div>
-                ) : (
-                  <div className="text-center py-8 text-gray-500">
-                    No drill records for this crew member
-                  </div>
-                )}
+            <h3 className="font-semibold text-lg mb-3 flex items-center gap-2">
+              <Activity className="h-5 w-5 text-blue-600" />
+              Emergency Drills
+            </h3>
+            {crewDrillRecords.length > 0 ? (
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Drill Type</TableHead>
+                      <TableHead>Record Date</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Authorized By</TableHead>
+                      <TableHead>Notes</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {crewDrillRecords.map((record) => (
+                      <TableRow key={record.id}>
+                        <TableCell className="font-medium">{record.drill_type || 'N/A'}</TableCell>
+                        <TableCell>{new Date(record.record_date).toLocaleString()}</TableCell>
+                        <TableCell>
+                          <Badge variant={record.status === 'Pass' ? 'default' : 'destructive'}>
+                            {record.status}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>{record.authorized_by}</TableCell>
+                        <TableCell className="max-w-xs truncate">{record.notes || '-'}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
               </div>
+            ) : (
+              <div className="text-center py-8 text-gray-500">
+                No drill records for this crew member
+              </div>
+            )}
+          </TabsContent>
 
-              {/* Training Records Section */}
-              <div>
-                <h3 className="font-semibold text-lg mb-3 flex items-center gap-2">
-                  <FileText className="h-5 w-5 text-orange-600" />
-                  Procedure Training ({crewTrainingRecords.length})
-                </h3>
-                {crewTrainingRecords.length > 0 ? (
-                  <div className="overflow-x-auto">
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Procedure</TableHead>
-                          <TableHead>Emergency Type</TableHead>
-                          <TableHead>Training Date</TableHead>
-                          <TableHead>Status</TableHead>
-                          <TableHead>Authorized By</TableHead>
-                          <TableHead>Notes</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {crewTrainingRecords.map((record) => (
-                          <TableRow key={record.id}>
-                            <TableCell className="font-medium">{record.procedure_title || 'N/A'}</TableCell>
-                            <TableCell>
-                              <Badge variant="outline">{record.emergency_type || 'N/A'}</Badge>
-                            </TableCell>
-                            <TableCell>{new Date(record.training_date).toLocaleString()}</TableCell>
-                            <TableCell>
-                              <Badge variant={record.status === 'Pass' ? 'default' : 'destructive'}>
-                                {record.status}
-                              </Badge>
-                            </TableCell>
-                            <TableCell>{record.authorized_by}</TableCell>
-                            <TableCell className="max-w-xs truncate">{record.notes || '-'}</TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </div>
-                ) : (
-                  <div className="text-center py-8 text-gray-500">
-                    No training records for this crew member
-                  </div>
-                )}
+          {/* Training Tab */}
+          <TabsContent value="training" className="space-y-4">
+            <h3 className="font-semibold text-lg mb-3 flex items-center gap-2">
+              <FileText className="h-5 w-5 text-orange-600" />
+              Procedure Training
+            </h3>
+            {crewTrainingRecords.length > 0 ? (
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Procedure</TableHead>
+                      <TableHead>Emergency Type</TableHead>
+                      <TableHead>Training Date</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Authorized By</TableHead>
+                      <TableHead>Notes</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {crewTrainingRecords.map((record) => (
+                      <TableRow key={record.id}>
+                        <TableCell className="font-medium">{record.procedure_title || 'N/A'}</TableCell>
+                        <TableCell>
+                          <Badge variant="outline">{record.emergency_type || 'N/A'}</Badge>
+                        </TableCell>
+                        <TableCell>{new Date(record.training_date).toLocaleString()}</TableCell>
+                        <TableCell>
+                          <Badge variant={record.status === 'Pass' ? 'default' : 'destructive'}>
+                            {record.status}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>{record.authorized_by}</TableCell>
+                        <TableCell className="max-w-xs truncate">{record.notes || '-'}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
               </div>
-            </div>
+            ) : (
+              <div className="text-center py-8 text-gray-500">
+                No training records for this crew member
+              </div>
+            )}
           </TabsContent>
 
             </Tabs>
