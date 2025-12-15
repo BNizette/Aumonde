@@ -243,6 +243,50 @@ const VesselManagement = () => {
     setFormOpen(true);
   };
 
+  const handleViewLogs = async (vessel) => {
+    setSelectedVesselForLogs(vessel);
+    setLogsDialogOpen(true);
+    setLoadingLogs(true);
+    
+    try {
+      const token = localStorage.getItem('token');
+      const headers = { Authorization: `Bearer ${token}` };
+      
+      // Fetch running logs for this vessel
+      const runningLogsResponse = await axios.get(`${API}/running-logs?vessel_id=${vessel.id}`, { headers });
+      setVesselRunningLogs(runningLogsResponse.data);
+      
+      // Fetch crew shifts (trip logs) for this vessel
+      const tripLogsResponse = await axios.get(`${API}/trip-logs`, { headers });
+      
+      // Fetch trips to match vessel_id with shifts
+      const tripsResponse = await axios.get(`${API}/trips`, { headers });
+      const trips = tripsResponse.data;
+      
+      // Filter shifts that belong to trips with this vessel
+      const vesselShifts = tripLogsResponse.data.filter(log => {
+        // Check if log has vessel_id (manual entry)
+        if (log.vessel_id === vessel.id) return true;
+        
+        // Check if log's trip is for this vessel
+        if (log.trip_id) {
+          const trip = trips.find(t => t.id === log.trip_id);
+          return trip && trip.vessel_id === vessel.id;
+        }
+        
+        return false;
+      });
+      
+      setVesselStaffLogs(vesselShifts);
+      
+    } catch (err) {
+      console.error('Error fetching vessel logs:', err);
+      setError('Error loading vessel logs');
+    } finally {
+      setLoadingLogs(false);
+    }
+  };
+
   const checkDuplicates = async (formData) => {
     try {
       const token = localStorage.getItem('token');
