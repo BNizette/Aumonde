@@ -9,10 +9,11 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { Phone, Plus, Edit, Trash2, AlertTriangle, FileText, Activity, Search, Filter, X, Download, ChevronDown } from 'lucide-react';
+import { Phone, Plus, Edit, Trash2, AlertTriangle, FileText, Activity, Search, Filter, X, Download, ChevronDown, Info } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import useAdvancedFilters from '../hooks/useAdvancedFilters';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -679,7 +680,30 @@ const Emergency = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-3xl font-bold text-gray-900">Emergency Response</h2>
+        <div className="flex items-center gap-2">
+          <h2 className="text-3xl font-bold text-gray-900">Emergency Response</h2>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Info className="h-5 w-5 text-blue-500 cursor-help" />
+              </TooltipTrigger>
+              <TooltipContent className="max-w-sm">
+                <p className="font-semibold mb-1">Marine Order 504 (2024)</p>
+                <p className="text-sm mb-2">
+                  Requires emergency procedures, assembly station protocols, crew drills, emergency training, and emergency contact management within the SMS framework.
+                </p>
+                <a 
+                  href="https://www.amsa.gov.au/about/regulations-and-standards/marine-order-504-certificates-operation"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-500 hover:underline text-sm"
+                >
+                  View AMSA MO504 Regulations →
+                </a>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
         <p className="text-gray-500 mt-1">Manage emergency contacts, procedures, and drills</p>
       </div>
 
