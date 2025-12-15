@@ -382,8 +382,8 @@ const CrewManagement = () => {
       const tripsData = await Promise.all(tripPromises);
       setCrewTrips(tripsData);
       
-      // Fetch running logs (shifts) for this crew
-      const logsResponse = await axios.get(`${API}/running-logs`, {
+      // Fetch crew shifts (trip logs) for this crew
+      const logsResponse = await axios.get(`${API}/trip-logs`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const crewLogs = logsResponse.data.filter(log => log.crew_id === crew.id);
