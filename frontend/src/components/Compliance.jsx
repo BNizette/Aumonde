@@ -559,6 +559,70 @@ const Compliance = () => {
 
         {/* CERTIFICATES TAB */}
         <TabsContent value="certificates">
+          {/* Certificate Type Summary Cards */}
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-4">
+            <Card 
+              className="cursor-pointer hover:shadow-lg transition-shadow"
+              onClick={() => updateCertFilters({ types: [], statuses: [], vessels: [], start_date: '', end_date: '' })}
+            >
+              <CardContent className="pt-3 pb-3">
+                <div className="text-center">
+                  <div className="text-lg font-bold text-blue-600">{certificates.length}</div>
+                  <div className="text-sm text-gray-600">Total</div>
+                  <p className="text-xs text-gray-400 mt-1">All certificates</p>
+                </div>
+              </CardContent>
+            </Card>
+            <Card 
+              className="cursor-pointer hover:shadow-lg transition-shadow"
+              onClick={() => updateCertFilters({ types: ['Vessel Certificate'], statuses: [], vessels: [], start_date: '', end_date: '' })}
+            >
+              <CardContent className="pt-3 pb-3">
+                <div className="text-center">
+                  <div className="text-lg font-bold text-purple-600">{vesselCerts}</div>
+                  <div className="text-sm text-gray-600">Vessel</div>
+                  <p className="text-xs text-gray-400 mt-1">Click to filter</p>
+                </div>
+              </CardContent>
+            </Card>
+            <Card 
+              className="cursor-pointer hover:shadow-lg transition-shadow"
+              onClick={() => updateCertFilters({ types: ['Crew Certificate'], statuses: [], vessels: [], start_date: '', end_date: '' })}
+            >
+              <CardContent className="pt-3 pb-3">
+                <div className="text-center">
+                  <div className="text-lg font-bold text-orange-600">{crewCerts}</div>
+                  <div className="text-sm text-gray-600">Crew</div>
+                  <p className="text-xs text-gray-400 mt-1">Click to filter</p>
+                </div>
+              </CardContent>
+            </Card>
+            <Card 
+              className="cursor-pointer hover:shadow-lg transition-shadow"
+              onClick={() => updateCertFilters({ types: ['Safety Equipment'], statuses: [], vessels: [], start_date: '', end_date: '' })}
+            >
+              <CardContent className="pt-3 pb-3">
+                <div className="text-center">
+                  <div className="text-lg font-bold text-red-600">{safetyEquipCerts}</div>
+                  <div className="text-sm text-gray-600">Safety</div>
+                  <p className="text-xs text-gray-400 mt-1">Click to filter</p>
+                </div>
+              </CardContent>
+            </Card>
+            <Card 
+              className="cursor-pointer hover:shadow-lg transition-shadow"
+              onClick={() => updateCertFilters({ types: ['Insurance'], statuses: [], vessels: [], start_date: '', end_date: '' })}
+            >
+              <CardContent className="pt-3 pb-3">
+                <div className="text-center">
+                  <div className="text-lg font-bold text-green-600">{insuranceCerts}</div>
+                  <div className="text-sm text-gray-600">Insurance</div>
+                  <p className="text-xs text-gray-400 mt-1">Click to filter</p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
           <Card>
             <CardHeader>
               <div className="flex justify-between items-center">
