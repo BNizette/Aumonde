@@ -465,7 +465,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Excel Export Buttons in Vessels, Trips, and Emergency Modules"
+    - "Refactored Components (VesselDetailsDialog and CrewDetailsDialog)"
   stuck_tasks:
     []
   test_all: false
