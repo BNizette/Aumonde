@@ -402,68 +402,53 @@ const Emergency = () => {
   const hasActiveProcedureFilters = procedureSearch || procedureFilters.types.length > 0 || procedureFilters.start_date || procedureFilters.end_date;
   const hasActiveDrillFilters = drillSearch || drillFilters.types.length > 0 || drillFilters.vessels.length > 0 || drillFilters.start_date || drillFilters.end_date;
 
-  const exportContactsToCSV = () => {
+  const exportContactsToExcel = () => {
     if (filteredContacts.length === 0) { setError('No contacts to export'); setTimeout(() => setError(''), 3000); return; }
-    const headers = ['ID', 'Name', 'Title', 'Organization', 'Contact Type', 'Priority', 'Primary Phone', 'Secondary Phone', 'Email', 'Address', 'Available 24/7', 'Notes', 'Created At'];
-    const csvRows = [headers.join(','), ...filteredContacts.map(c => [
-      `"${c.id || ''}"`, `"${(c.name || '').replace(/"/g, '""')}"`, `"${(c.title || '').replace(/"/g, '""')}"`,
-      `"${(c.organization || '').replace(/"/g, '""')}"`, `"${c.contact_type || ''}"`, `"${c.priority || ''}"`,
-      `"${c.phone_primary || ''}"`, `"${c.phone_secondary || ''}"`, `"${c.email || ''}"`,
-      `"${(c.address || '').replace(/"/g, '""')}"`, `"${c.available_24_7 ? 'Yes' : 'No'}"`,
-      `"${(c.notes || '').replace(/"/g, '""')}"`, `"${c.created_at ? new Date(c.created_at).toLocaleString() : ''}"`
-    ].join(','))];
-    const blob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    link.setAttribute('href', URL.createObjectURL(blob));
-    link.setAttribute('download', `emergency_contacts_export_${new Date().toISOString().slice(0, 10)}.csv`);
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    setMessage(`Exported ${filteredContacts.length} emergency contacts to CSV`);
+    const wb = XLSX.utils.book_new();
+    const headers = ['Name', 'Type', 'Organization', 'Role', 'Primary Phone', 'Secondary Phone', 'Email', 'Address', '24/7 Available', 'Priority', 'Notes'];
+    const data = [headers, ...filteredContacts.map(c => [
+      c.name || '-', c.contact_type || '-', c.organization || '-', c.role || '-',
+      c.phone_primary || '-', c.phone_secondary || '-', c.email || '-', c.address || '-',
+      c.available_24_7 ? 'Yes' : 'No', c.priority || '-', c.notes || '-'
+    ])];
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    ws['!cols'] = [{ wch: 20 }, { wch: 12 }, { wch: 20 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 25 }, { wch: 30 }, { wch: 12 }, { wch: 8 }, { wch: 25 }];
+    XLSX.utils.book_append_sheet(wb, ws, 'Contacts');
+    XLSX.writeFile(wb, `emergency_contacts_${new Date().toISOString().slice(0, 10)}.xlsx`);
+    setMessage(`Exported ${filteredContacts.length} emergency contacts to Excel`);
     setTimeout(() => setMessage(''), 3000);
   };
 
-  const exportProceduresToCSV = () => {
+  const exportProceduresToExcel = () => {
     if (filteredProcedures.length === 0) { setError('No procedures to export'); setTimeout(() => setError(''), 3000); return; }
-    const headers = ['ID', 'Procedure Name', 'Procedure Type', 'Description', 'Steps', 'Equipment Required', 'Response Time', 'Created At'];
-    const csvRows = [headers.join(','), ...filteredProcedures.map(p => [
-      `"${p.id || ''}"`, `"${(p.procedure_name || '').replace(/"/g, '""')}"`, `"${p.procedure_type || ''}"`,
-      `"${(p.description || '').replace(/"/g, '""')}"`, `"${(p.steps || '').replace(/"/g, '""')}"`,
-      `"${(p.equipment_required || '').replace(/"/g, '""')}"`, `"${p.response_time || ''}"`,
-      `"${p.created_at ? new Date(p.created_at).toLocaleString() : ''}"`
-    ].join(','))];
-    const blob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    link.setAttribute('href', URL.createObjectURL(blob));
-    link.setAttribute('download', `emergency_procedures_export_${new Date().toISOString().slice(0, 10)}.csv`);
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    setMessage(`Exported ${filteredProcedures.length} emergency procedures to CSV`);
+    const wb = XLSX.utils.book_new();
+    const headers = ['Title', 'Emergency Type', 'Procedure Steps', 'Equipment Required', 'Muster Station', 'Key Contacts'];
+    const data = [headers, ...filteredProcedures.map(p => [
+      p.title || '-', p.emergency_type || '-', p.procedure_steps || '-',
+      p.equipment_required || '-', p.muster_station || '-', p.key_contacts || '-'
+    ])];
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    ws['!cols'] = [{ wch: 25 }, { wch: 18 }, { wch: 50 }, { wch: 25 }, { wch: 20 }, { wch: 25 }];
+    XLSX.utils.book_append_sheet(wb, ws, 'Procedures');
+    XLSX.writeFile(wb, `emergency_procedures_${new Date().toISOString().slice(0, 10)}.xlsx`);
+    setMessage(`Exported ${filteredProcedures.length} emergency procedures to Excel`);
     setTimeout(() => setMessage(''), 3000);
   };
 
-  const exportDrillsToCSV = () => {
+  const exportDrillsToExcel = () => {
     if (filteredDrills.length === 0) { setError('No drills to export'); setTimeout(() => setError(''), 3000); return; }
-    const headers = ['ID', 'Drill Type', 'Vessel Name', 'Drill Date', 'Duration', 'Participants', 'Conducted By', 'Observations', 'Areas for Improvement', 'Overall Rating', 'Created At'];
-    const csvRows = [headers.join(','), ...filteredDrills.map(d => [
-      `"${d.id || ''}"`, `"${d.drill_type || ''}"`, `"${(d.vessel_name || '').replace(/"/g, '""')}"`,
-      `"${d.drill_date ? new Date(d.drill_date).toLocaleDateString() : ''}"`, `"${d.duration_minutes || ''}"`,
-      `"${d.participants_count || ''}"`, `"${(d.conducted_by || '').replace(/"/g, '""')}"`,
-      `"${(d.observations || '').replace(/"/g, '""')}"`, `"${(d.areas_for_improvement || '').replace(/"/g, '""')}"`,
-      `"${d.overall_rating || ''}"`, `"${d.created_at ? new Date(d.created_at).toLocaleString() : ''}"`
-    ].join(','))];
-    const blob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    link.setAttribute('href', URL.createObjectURL(blob));
-    link.setAttribute('download', `emergency_drills_export_${new Date().toISOString().slice(0, 10)}.csv`);
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    setMessage(`Exported ${filteredDrills.length} emergency drills to CSV`);
+    const wb = XLSX.utils.book_new();
+    const headers = ['Drill Type', 'Date', 'Duration (min)', 'Vessel', 'Participants', 'Observations', 'Areas for Improvement'];
+    const data = [headers, ...filteredDrills.map(d => [
+      d.drill_type || '-', d.drill_date ? new Date(d.drill_date).toLocaleString() : '-',
+      d.duration_minutes || '-', d.vessel_name || '-', d.participants || '-',
+      d.observations || '-', d.areas_for_improvement || '-'
+    ])];
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    ws['!cols'] = [{ wch: 20 }, { wch: 20 }, { wch: 12 }, { wch: 20 }, { wch: 30 }, { wch: 35 }, { wch: 35 }];
+    XLSX.utils.book_append_sheet(wb, ws, 'Drills');
+    XLSX.writeFile(wb, `emergency_drills_${new Date().toISOString().slice(0, 10)}.xlsx`);
+    setMessage(`Exported ${filteredDrills.length} emergency drills to Excel`);
     setTimeout(() => setMessage(''), 3000);
   };
 
