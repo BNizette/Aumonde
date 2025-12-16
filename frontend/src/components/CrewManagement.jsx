@@ -1077,8 +1077,21 @@ const CrewManagement = () => {
       <Dialog open={viewDialogOpen} onOpenChange={setViewDialogOpen}>
         <DialogContent className="max-w-5xl max-h-[90vh] overflow-auto">
           <DialogHeader>
-            <DialogTitle>👤 {viewingCrew?.staff_name} - Details & Activity</DialogTitle>
-            <DialogDescription>View crew member information, trip allocations and shift logs</DialogDescription>
+            <div className="flex items-center justify-between pr-8">
+              <div>
+                <DialogTitle>👤 {viewingCrew?.staff_name} - Details & Activity</DialogTitle>
+                <DialogDescription>View crew member information, trip allocations and shift logs</DialogDescription>
+              </div>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={exportCrewToExcel}
+                className="flex items-center gap-2 bg-green-50 hover:bg-green-100 text-green-700 border-green-200"
+              >
+                <FileSpreadsheet className="h-4 w-4" />
+                Export to Excel
+              </Button>
+            </div>
           </DialogHeader>
           
           {loadingLogs ? (
