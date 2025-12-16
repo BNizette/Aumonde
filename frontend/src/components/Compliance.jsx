@@ -651,9 +651,9 @@ const Compliance = () => {
                   <CardDescription>Track certification status and expiry dates</CardDescription>
                 </div>
                 <div className="flex gap-2">
-                  <Button variant="outline" onClick={exportCertificatesToCSV}>
-                    <Download className="mr-2 h-4 w-4" />
-                    Export CSV
+                  <Button variant="outline" onClick={exportCertificatesToExcel} className="bg-green-50 hover:bg-green-100 text-green-700 border-green-200">
+                    <FileSpreadsheet className="mr-2 h-4 w-4" />
+                    Export to Excel
                   </Button>
                   <Button onClick={() => setCertDialogOpen(true)}>
                     <Plus className="mr-2 h-4 w-4" />
