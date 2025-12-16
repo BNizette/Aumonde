@@ -2340,7 +2340,18 @@ const Emergency = () => {
       <Dialog open={procedureViewDialogOpen} onOpenChange={setProcedureViewDialogOpen}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Procedure Details & Training Records</DialogTitle>
+            <div className="flex items-center justify-between pr-8">
+              <DialogTitle>Procedure Details & Training Records</DialogTitle>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={exportProcedureToExcel}
+                className="flex items-center gap-2 bg-green-50 hover:bg-green-100 text-green-700 border-green-200"
+              >
+                <FileSpreadsheet className="h-4 w-4" />
+                Export to Excel
+              </Button>
+            </div>
           </DialogHeader>
           {viewingProcedure && (
             <Tabs defaultValue="details">
