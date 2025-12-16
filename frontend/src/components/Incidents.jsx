@@ -443,11 +443,11 @@ const Incidents = () => {
           <Button
             variant="outline"
             size="sm"
-            onClick={exportToCSV}
-            className="flex items-center gap-2"
+            onClick={exportToExcel}
+            className="flex items-center gap-2 bg-green-50 hover:bg-green-100 text-green-700 border-green-200"
           >
-            <Download className="h-4 w-4" />
-            Export to CSV
+            <FileSpreadsheet className="h-4 w-4" />
+            Export to Excel
           </Button>
         </CardHeader>
         <CardContent>
