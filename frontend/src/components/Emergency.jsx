@@ -467,6 +467,105 @@ const Emergency = () => {
     setTimeout(() => setMessage(''), 3000);
   };
 
+  // Export Drill details and records to Excel
+  const exportDrillToExcel = () => {
+    if (!viewingDrill) return;
+
+    const wb = XLSX.utils.book_new();
+    const drill = viewingDrill;
+
+    // Sheet 1: Drill Details
+    const detailsData = [
+      ['Drill Details'],
+      [''],
+      ['Field', 'Value'],
+      ['Drill Type', drill.drill_type || 'N/A'],
+      ['Date', drill.drill_date ? new Date(drill.drill_date).toLocaleString() : 'N/A'],
+      ['Duration', drill.duration_minutes ? `${drill.duration_minutes} minutes` : 'N/A'],
+      ['Vessel', drill.vessel_name || 'N/A'],
+      ['Participants', drill.participants || 'N/A'],
+      ['Observations', drill.observations || 'N/A'],
+      ['Areas for Improvement', drill.areas_for_improvement || 'N/A'],
+    ];
+    const wsDetails = XLSX.utils.aoa_to_sheet(detailsData);
+    wsDetails['!cols'] = [{ wch: 22 }, { wch: 50 }];
+    XLSX.utils.book_append_sheet(wb, wsDetails, 'Drill Details');
+
+    // Sheet 2: Drill Records
+    const recordsHeaders = ['Record Date', 'Crew Members', 'Status', 'Authorized By', 'Notes'];
+    const recordsData = [recordsHeaders];
+    const records = drillRecords[drill.id] || [];
+    records.forEach(record => {
+      recordsData.push([
+        record.record_date ? new Date(record.record_date).toLocaleString() : 'N/A',
+        record.crew_members?.join(', ') || 'N/A',
+        record.status || 'N/A',
+        record.authorized_by || 'N/A',
+        record.notes || '-'
+      ]);
+    });
+    if (records.length === 0) recordsData.push(['No drill records', '', '', '', '']);
+    const wsRecords = XLSX.utils.aoa_to_sheet(recordsData);
+    wsRecords['!cols'] = [{ wch: 20 }, { wch: 30 }, { wch: 10 }, { wch: 20 }, { wch: 30 }];
+    XLSX.utils.book_append_sheet(wb, wsRecords, 'Drill Records');
+
+    // Generate and download file
+    const fileName = `${drill.drill_type?.replace(/\s+/g, '_')}_${new Date(drill.drill_date).toISOString().slice(0, 10)}.xlsx`;
+    XLSX.writeFile(wb, fileName);
+    
+    setMessage('Drill data exported to Excel successfully');
+    setTimeout(() => setMessage(''), 3000);
+  };
+
+  // Export Procedure details and training records to Excel
+  const exportProcedureToExcel = () => {
+    if (!viewingProcedure) return;
+
+    const wb = XLSX.utils.book_new();
+    const procedure = viewingProcedure;
+
+    // Sheet 1: Procedure Details
+    const detailsData = [
+      ['Procedure Details'],
+      [''],
+      ['Field', 'Value'],
+      ['Title', procedure.title || 'N/A'],
+      ['Emergency Type', procedure.emergency_type || 'N/A'],
+      ['Procedure Steps', procedure.procedure_steps || 'N/A'],
+      ['Equipment Required', procedure.equipment_required || 'N/A'],
+      ['Muster Station', procedure.muster_station || 'N/A'],
+      ['Key Contacts', procedure.key_contacts || 'N/A'],
+    ];
+    const wsDetails = XLSX.utils.aoa_to_sheet(detailsData);
+    wsDetails['!cols'] = [{ wch: 20 }, { wch: 60 }];
+    XLSX.utils.book_append_sheet(wb, wsDetails, 'Procedure Details');
+
+    // Sheet 2: Training Records
+    const trainingHeaders = ['Training Date', 'Crew Members', 'Status', 'Authorized By', 'Notes'];
+    const trainingData = [trainingHeaders];
+    const records = trainingRecords[procedure.id] || [];
+    records.forEach(record => {
+      trainingData.push([
+        record.training_date ? new Date(record.training_date).toLocaleString() : 'N/A',
+        record.crew_members?.join(', ') || 'N/A',
+        record.status || 'N/A',
+        record.authorized_by || 'N/A',
+        record.notes || '-'
+      ]);
+    });
+    if (records.length === 0) trainingData.push(['No training records', '', '', '', '']);
+    const wsTraining = XLSX.utils.aoa_to_sheet(trainingData);
+    wsTraining['!cols'] = [{ wch: 20 }, { wch: 30 }, { wch: 10 }, { wch: 20 }, { wch: 30 }];
+    XLSX.utils.book_append_sheet(wb, wsTraining, 'Training Records');
+
+    // Generate and download file
+    const fileName = `${procedure.title?.replace(/\s+/g, '_')}_procedure_${new Date().toISOString().slice(0, 10)}.xlsx`;
+    XLSX.writeFile(wb, fileName);
+    
+    setMessage('Procedure data exported to Excel successfully');
+    setTimeout(() => setMessage(''), 3000);
+  };
+
   const handleSaveContact = async () => {
     if (!contactForm.name || !contactForm.phone_primary) {
       setError('Please fill in required fields');
