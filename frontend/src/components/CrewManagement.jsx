@@ -257,56 +257,20 @@ const CrewManagement = () => {
     setTimeout(() => setMessage(''), 3000);
   };
 
-  const exportToCSV = () => {
-    if (filteredCrew.length === 0) {
-      setError('No crew to export');
-      setTimeout(() => setError(''), 3000);
-      return;
-    }
-
-    const headers = [
-      'ID', 'Staff Name', 'Date of Birth', 'Gender', 'Address', 'Mobile', 'Telephone', 'Email',
-      'Next of Kin', 'Next of Kin Contact', 'Default Position', 'Role', 'Qualifications',
-      'Certificates', 'Date Commenced', 'Date Ceased', 'Status', 'Created At'
-    ];
-
-    const csvRows = [
-      headers.join(','),
-      ...filteredCrew.map(c => [
-        `"${c.id || ''}"`,
-        `"${(c.staff_name || '').replace(/"/g, '""')}"`,
-        `"${c.date_of_birth ? new Date(c.date_of_birth).toLocaleDateString() : ''}"`,
-        `"${c.gender || ''}"`,
-        `"${(c.address || '').replace(/"/g, '""')}"`,
-        `"${c.mobile || ''}"`,
-        `"${c.telephone || ''}"`,
-        `"${c.email || ''}"`,
-        `"${(c.next_of_kin || '').replace(/"/g, '""')}"`,
-        `"${c.next_of_kin_contact || ''}"`,
-        `"${c.default_position || ''}"`,
-        `"${c.role || ''}"`,
-        `"${(c.qualifications || '').replace(/"/g, '""')}"`,
-        `"${(c.certificates || '').replace(/"/g, '""')}"`,
-        `"${c.date_commenced ? new Date(c.date_commenced).toLocaleDateString() : ''}"`,
-        `"${c.date_ceased ? new Date(c.date_ceased).toLocaleDateString() : ''}"`,
-        `"${c.status || ''}"`,
-        `"${c.created_at ? new Date(c.created_at).toLocaleString() : ''}"`
-      ].join(','))
-    ];
-
-    const csvContent = csvRows.join('\n');
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    const url = URL.createObjectURL(blob);
-    
-    link.setAttribute('href', url);
-    link.setAttribute('download', `crew_export_${new Date().toISOString().slice(0, 10)}.csv`);
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-
-    setMessage(`Exported ${filteredCrew.length} crew members to CSV`);
+  const exportToExcel = () => {
+    if (filteredCrew.length === 0) { setError('No crew to export'); setTimeout(() => setError(''), 3000); return; }
+    const wb = XLSX.utils.book_new();
+    const headers = ['Staff Name', 'Position', 'Role', 'Mobile', 'Email', 'Status', 'Date Commenced', 'Next of Kin', 'Next of Kin Contact'];
+    const data = [headers, ...filteredCrew.map(c => [
+      c.staff_name || '-', c.default_position || '-', c.role || '-', c.mobile || '-', c.email || '-',
+      c.status || '-', c.date_commenced ? new Date(c.date_commenced).toLocaleDateString() : '-',
+      c.next_of_kin || '-', c.next_of_kin_contact || '-'
+    ])];
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    ws['!cols'] = [{ wch: 20 }, { wch: 15 }, { wch: 12 }, { wch: 15 }, { wch: 25 }, { wch: 10 }, { wch: 15 }, { wch: 20 }, { wch: 15 }];
+    XLSX.utils.book_append_sheet(wb, ws, 'Crew');
+    XLSX.writeFile(wb, `crew_export_${new Date().toISOString().slice(0, 10)}.xlsx`);
+    setMessage(`Exported ${filteredCrew.length} crew members to Excel`);
     setTimeout(() => setMessage(''), 3000);
   };
 
