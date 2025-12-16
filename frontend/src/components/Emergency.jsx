@@ -990,13 +990,86 @@ const Emergency = () => {
     setEditingDrillId(null);
   };
 
+  // Export all Emergency Response data to Excel with 3 worksheets
+  const exportAllEmergencyToExcel = () => {
+    const wb = XLSX.utils.book_new();
+
+    // Sheet 1: Contacts
+    const contactsHeaders = ['Name', 'Type', 'Organization', 'Role', 'Primary Phone', 'Secondary Phone', 'Email', 'Address', '24/7 Available', 'Priority', 'Notes'];
+    const contactsData = [contactsHeaders];
+    contacts.forEach(c => {
+      contactsData.push([
+        c.name || '-',
+        c.contact_type || '-',
+        c.organization || '-',
+        c.role || '-',
+        c.phone_primary || '-',
+        c.phone_secondary || '-',
+        c.email || '-',
+        c.address || '-',
+        c.available_24_7 ? 'Yes' : 'No',
+        c.priority || '-',
+        c.notes || '-'
+      ]);
+    });
+    if (contacts.length === 0) contactsData.push(['No contacts recorded', '', '', '', '', '', '', '', '', '', '']);
+    const wsContacts = XLSX.utils.aoa_to_sheet(contactsData);
+    wsContacts['!cols'] = [{ wch: 20 }, { wch: 12 }, { wch: 20 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 25 }, { wch: 30 }, { wch: 12 }, { wch: 8 }, { wch: 25 }];
+    XLSX.utils.book_append_sheet(wb, wsContacts, 'Contacts');
+
+    // Sheet 2: Procedures
+    const proceduresHeaders = ['Title', 'Emergency Type', 'Procedure Steps', 'Equipment Required', 'Muster Station', 'Key Contacts'];
+    const proceduresData = [proceduresHeaders];
+    procedures.forEach(p => {
+      proceduresData.push([
+        p.title || '-',
+        p.emergency_type || '-',
+        p.procedure_steps || '-',
+        p.equipment_required || '-',
+        p.muster_station || '-',
+        p.key_contacts || '-'
+      ]);
+    });
+    if (procedures.length === 0) proceduresData.push(['No procedures recorded', '', '', '', '', '']);
+    const wsProcedures = XLSX.utils.aoa_to_sheet(proceduresData);
+    wsProcedures['!cols'] = [{ wch: 25 }, { wch: 18 }, { wch: 50 }, { wch: 25 }, { wch: 20 }, { wch: 25 }];
+    XLSX.utils.book_append_sheet(wb, wsProcedures, 'Procedures');
+
+    // Sheet 3: Drills
+    const drillsHeaders = ['Drill Type', 'Date', 'Duration (min)', 'Vessel', 'Participants', 'Observations', 'Areas for Improvement'];
+    const drillsData = [drillsHeaders];
+    drills.forEach(d => {
+      drillsData.push([
+        d.drill_type || '-',
+        d.drill_date ? new Date(d.drill_date).toLocaleString() : '-',
+        d.duration_minutes || '-',
+        d.vessel_name || '-',
+        d.participants || '-',
+        d.observations || '-',
+        d.areas_for_improvement || '-'
+      ]);
+    });
+    if (drills.length === 0) drillsData.push(['No drills recorded', '', '', '', '', '', '']);
+    const wsDrills = XLSX.utils.aoa_to_sheet(drillsData);
+    wsDrills['!cols'] = [{ wch: 20 }, { wch: 20 }, { wch: 12 }, { wch: 20 }, { wch: 30 }, { wch: 35 }, { wch: 35 }];
+    XLSX.utils.book_append_sheet(wb, wsDrills, 'Drills');
+
+    // Generate and download file
+    const fileName = `emergency_response_${new Date().toISOString().slice(0, 10)}.xlsx`;
+    XLSX.writeFile(wb, fileName);
+    
+    setMessage('Emergency Response data exported to Excel successfully');
+    setTimeout(() => setMessage(''), 3000);
+  };
+
   if (loading) return <div className="flex items-center justify-center h-64">Loading...</div>;
 
   return (
     <div className="space-y-6">
-      <div>
-        <div className="flex items-center gap-2">
-          <h2 className="text-3xl font-bold text-gray-900">Emergency Response</h2>
+      <div className="flex items-center justify-between">
+        <div>
+          <div className="flex items-center gap-2">
+            <h2 className="text-3xl font-bold text-gray-900">Emergency Response</h2>
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
