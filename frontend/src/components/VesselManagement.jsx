@@ -414,6 +414,142 @@ const VesselManagement = () => {
     document.body.removeChild(link);
   };
 
+  // Export all vessel data to Excel with multiple worksheets
+  const exportVesselToExcel = () => {
+    if (!selectedVesselForLogs) return;
+
+    const wb = XLSX.utils.book_new();
+    const vessel = selectedVesselForLogs;
+
+    // Sheet 1: Vessel Details
+    const detailsData = [
+      ['Vessel Details'],
+      [''],
+      ['Basic Information'],
+      ['Vessel Name', vessel.vessel_name || 'N/A'],
+      ['Registration Number', vessel.registration_number || 'N/A'],
+      ['Vessel Type', vessel.vessel_type || 'N/A'],
+      ['Owner Name', vessel.owner_name || 'N/A'],
+      ['Operational Status', vessel.operational_status || 'N/A'],
+      [''],
+      ['Specifications'],
+      ['Length Overall', vessel.length_overall ? `${vessel.length_overall}m` : 'N/A'],
+      ['Beam', vessel.beam ? `${vessel.beam}m` : 'N/A'],
+      ['Draft', vessel.draft ? `${vessel.draft}m` : 'N/A'],
+      ['Gross Tonnage', vessel.gross_tonnage || 'N/A'],
+      ['Year Built', vessel.year_built || 'N/A'],
+      [''],
+      ['Engine Details'],
+      ['Number of Engines', vessel.number_of_engines || 'N/A'],
+      ['Engine Type', vessel.engine_type || 'N/A'],
+      ['Engine Power', vessel.engine_power ? `${vessel.engine_power} kW` : 'N/A'],
+      [''],
+      ['Contact Information'],
+      ['Boat Phone', vessel.boat_phone || 'N/A'],
+      ['Flag', vessel.flag || 'N/A'],
+      ['Port of Registry', vessel.port_of_registry || 'N/A'],
+    ];
+    const wsDetails = XLSX.utils.aoa_to_sheet(detailsData);
+    wsDetails['!cols'] = [{ wch: 20 }, { wch: 30 }];
+    XLSX.utils.book_append_sheet(wb, wsDetails, 'Vessel Details');
+
+    // Sheet 2: Trip Logs
+    const tripsHeaders = ['Date & Time', 'Category', 'Activity', 'Details', 'Crew'];
+    const tripsData = [tripsHeaders];
+    vesselRunningLogs.forEach(log => {
+      tripsData.push([
+        log.log_datetime ? new Date(log.log_datetime).toLocaleString() : 'N/A',
+        log.category || 'General',
+        log.activity || '-',
+        log.activity_details || '-',
+        log.crew_name || '-'
+      ]);
+    });
+    if (vesselRunningLogs.length === 0) tripsData.push(['No trip logs recorded', '', '', '', '']);
+    const wsTrips = XLSX.utils.aoa_to_sheet(tripsData);
+    wsTrips['!cols'] = [{ wch: 20 }, { wch: 12 }, { wch: 20 }, { wch: 30 }, { wch: 15 }];
+    XLSX.utils.book_append_sheet(wb, wsTrips, 'Trip Logs');
+
+    // Sheet 3: Allocated Staff
+    const staffHeaders = ['Shift Start', 'Shift End', 'Crew Member', 'Task Performed', 'Total Hours', 'Trip ID'];
+    const staffData = [staffHeaders];
+    vesselStaffLogs.forEach(shift => {
+      staffData.push([
+        shift.shift_start_datetime ? new Date(shift.shift_start_datetime).toLocaleString() : 'N/A',
+        shift.shift_stop_datetime ? new Date(shift.shift_stop_datetime).toLocaleString() : 'N/A',
+        shift.crew_name || 'Unknown',
+        shift.task_performed || '-',
+        shift.total_hours ? `${shift.total_hours}h` : 'N/A',
+        shift.trip_id ? shift.trip_id.substring(0, 8) + '...' : 'Manual'
+      ]);
+    });
+    if (vesselStaffLogs.length === 0) staffData.push(['No staff logs recorded', '', '', '', '', '']);
+    const wsStaff = XLSX.utils.aoa_to_sheet(staffData);
+    wsStaff['!cols'] = [{ wch: 20 }, { wch: 20 }, { wch: 20 }, { wch: 30 }, { wch: 12 }, { wch: 12 }];
+    XLSX.utils.book_append_sheet(wb, wsStaff, 'Allocated Staff');
+
+    // Sheet 4: Risk Assessments
+    const risksHeaders = ['Activity/Task', 'Risk Level', 'Hazard', 'Control Measures', 'Assessment Date'];
+    const risksData = [risksHeaders];
+    vesselRisks.forEach(r => {
+      risksData.push([
+        r.activity_task || '-',
+        r.risk_level || '-',
+        r.hazard_description || '-',
+        r.control_measures || '-',
+        r.assessment_date ? new Date(r.assessment_date).toLocaleDateString() : '-'
+      ]);
+    });
+    if (vesselRisks.length === 0) risksData.push(['No risk assessments recorded', '', '', '', '']);
+    const wsRisks = XLSX.utils.aoa_to_sheet(risksData);
+    wsRisks['!cols'] = [{ wch: 25 }, { wch: 12 }, { wch: 30 }, { wch: 30 }, { wch: 15 }];
+    XLSX.utils.book_append_sheet(wb, wsRisks, 'Risk Assessments');
+
+    // Sheet 5: Maintenance
+    const maintenanceHeaders = ['Type', 'Item/System', 'Status', 'Next Service', 'Last Service', 'Priority'];
+    const maintenanceData = [maintenanceHeaders];
+    vesselMaintenance.forEach(m => {
+      maintenanceData.push([
+        m.maintenance_type || '-',
+        m.item_system || '-',
+        m.status || '-',
+        m.next_service_date ? new Date(m.next_service_date).toLocaleDateString() : '-',
+        m.last_service_date ? new Date(m.last_service_date).toLocaleDateString() : '-',
+        m.priority || '-'
+      ]);
+    });
+    if (vesselMaintenance.length === 0) maintenanceData.push(['No maintenance records', '', '', '', '', '']);
+    const wsMaintenance = XLSX.utils.aoa_to_sheet(maintenanceData);
+    wsMaintenance['!cols'] = [{ wch: 15 }, { wch: 20 }, { wch: 12 }, { wch: 15 }, { wch: 15 }, { wch: 10 }];
+    XLSX.utils.book_append_sheet(wb, wsMaintenance, 'Maintenance');
+
+    // Sheet 6: Incidents
+    const incidentsHeaders = ['Incident #', 'Title', 'Type', 'Severity', 'Date', 'Status', 'Location'];
+    const incidentsData = [incidentsHeaders];
+    vesselIncidents.forEach(i => {
+      incidentsData.push([
+        i.incident_number || '-',
+        i.title || '-',
+        Array.isArray(i.incident_type) ? i.incident_type.join('; ') : (i.incident_type || '-'),
+        i.severity || '-',
+        i.incident_date ? new Date(i.incident_date).toLocaleDateString() : '-',
+        i.investigation_status || '-',
+        i.location || '-'
+      ]);
+    });
+    if (vesselIncidents.length === 0) incidentsData.push(['No incidents recorded', '', '', '', '', '', '']);
+    const wsIncidents = XLSX.utils.aoa_to_sheet(incidentsData);
+    wsIncidents['!cols'] = [{ wch: 15 }, { wch: 25 }, { wch: 20 }, { wch: 10 }, { wch: 12 }, { wch: 15 }, { wch: 20 }];
+    XLSX.utils.book_append_sheet(wb, wsIncidents, 'Incidents');
+
+    // Generate and download file
+    const fileName = `${vessel.vessel_name?.replace(/\s+/g, '_')}_details_${new Date().toISOString().slice(0, 10)}.xlsx`;
+    XLSX.writeFile(wb, fileName);
+    
+    setMessage('Vessel data exported to Excel successfully');
+    setTimeout(() => setMessage(''), 3000);
+  };
+
   const checkDuplicates = async (formData) => {
     try {
       const token = localStorage.getItem('token');
