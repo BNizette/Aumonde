@@ -286,86 +286,9 @@ const CrewManagement = () => {
     setFormOpen(true);
   };
 
-  const handleView = async (crew) => {
+  const handleView = (crew) => {
     setViewingCrew(crew);
-    setSelectedCrewForLogs(crew);
     setViewDialogOpen(true);
-    setLoadingLogs(true);
-    
-    try {
-      const token = localStorage.getItem('token');
-      
-      // Fetch allocated trips for this crew
-      const allocatedResponse = await axios.get(`${API}/allocated-crew`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      const allAllocations = allocatedResponse.data;
-      const crewAllocations = allAllocations.filter(alloc => alloc.crew_id === crew.id);
-      setCrewTrips(crewAllocations);
-
-      // Fetch crew shifts (trip logs) for this crew
-      const logsResponse = await axios.get(`${API}/trip-logs`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      const crewLogs = logsResponse.data.filter(log => log.crew_id === crew.id);
-      
-      // Fetch vessels to get vessel names
-      const vesselsResponse = await axios.get(`${API}/vessels`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      const vessels = vesselsResponse.data;
-      
-      // Fetch trips to get vessel info from trips
-      const tripsResponse = await axios.get(`${API}/trips`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      const trips = tripsResponse.data;
-      
-      // Enrich crew logs with vessel names
-      const enrichedLogs = crewLogs.map(log => {
-        let vesselName = null;
-        
-        // First try to get vessel from trip
-        if (log.trip_id) {
-          const trip = trips.find(t => t.id === log.trip_id);
-          if (trip && trip.vessel_id) {
-            const vessel = vessels.find(v => v.id === trip.vessel_id);
-            vesselName = vessel?.vessel_name || null;
-          }
-        }
-        
-        // If manual entry with vessel_id, get vessel directly
-        if (!vesselName && log.vessel_id) {
-          const vessel = vessels.find(v => v.id === log.vessel_id);
-          vesselName = vessel?.vessel_name || null;
-        }
-        
-        return {
-          ...log,
-          vessel_name: vesselName
-        };
-      });
-      
-      setCrewShifts(enrichedLogs);
-
-      // Fetch drill records for this crew member
-      const drillRecordsResponse = await axios.get(`${API}/crew/${encodeURIComponent(crew.staff_name)}/drill-records`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setCrewDrillRecords(drillRecordsResponse.data);
-
-      // Fetch training records for this crew member
-      const trainingRecordsResponse = await axios.get(`${API}/crew/${encodeURIComponent(crew.staff_name)}/training-records`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setCrewTrainingRecords(trainingRecordsResponse.data);
-      
-    } catch (err) {
-      console.error('Error fetching crew data:', err);
-      setError('Error loading crew data');
-    } finally {
-      setLoadingLogs(false);
-    }
   };
 
   // Tab Export Functions (Excel)
