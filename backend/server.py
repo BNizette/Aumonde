@@ -1027,6 +1027,69 @@ async def delete_crew(crew_id: str, current_user: dict = Depends(require_access_
     
     return {"message": "Crew member deleted successfully"}
 
+@api_router.get("/crew/{crew_id}/trips")
+async def get_crew_trips(crew_id: str, current_user: dict = Depends(require_access_level(AccessLevel.VIEW))):
+    """Get all trip allocations for a specific crew member"""
+    # First verify the crew member exists
+    crew = await db.crew.find_one({"id": crew_id}, {"_id": 0})
+    if not crew:
+        raise HTTPException(status_code=404, detail="Crew member not found")
+    
+    # Get all allocations for this crew member
+    allocations = await db.allocated_crew.find({"crew_id": crew_id}, {"_id": 0}).to_list(1000)
+    
+    # Enrich with trip and vessel information
+    enriched_allocations = []
+    for allocation in allocations:
+        trip = await db.trips.find_one({"id": allocation.get("trip_id")}, {"_id": 0})
+        if trip:
+            vessel = await db.vessels.find_one({"id": trip.get("vessel_id")}, {"_id": 0})
+            enriched_allocations.append({
+                **allocation,
+                "trip_name": trip.get("trip_name"),
+                "vessel_name": vessel.get("vessel_name") if vessel else None,
+                "start_date": trip.get("planned_depart_datetime") or trip.get("depart_datetime"),
+                "end_date": trip.get("planned_arrival_datetime") or trip.get("arrival_datetime"),
+            })
+    
+    return enriched_allocations
+
+@api_router.get("/crew/{crew_id}/shifts")
+async def get_crew_shifts(crew_id: str, current_user: dict = Depends(require_access_level(AccessLevel.VIEW))):
+    """Get all shift logs for a specific crew member"""
+    # First verify the crew member exists
+    crew = await db.crew.find_one({"id": crew_id}, {"_id": 0})
+    if not crew:
+        raise HTTPException(status_code=404, detail="Crew member not found")
+    
+    # Get all trip logs (shifts) for this crew member
+    shifts = await db.trip_logs.find({"crew_id": crew_id}, {"_id": 0}).to_list(1000)
+    
+    # Enrich with vessel information
+    enriched_shifts = []
+    for shift in shifts:
+        vessel_name = None
+        
+        # Try to get vessel from trip
+        if shift.get("trip_id"):
+            trip = await db.trips.find_one({"id": shift.get("trip_id")}, {"_id": 0})
+            if trip and trip.get("vessel_id"):
+                vessel = await db.vessels.find_one({"id": trip.get("vessel_id")}, {"_id": 0})
+                vessel_name = vessel.get("vessel_name") if vessel else None
+        
+        # Or directly from vessel_id if manual entry
+        if not vessel_name and shift.get("vessel_id"):
+            vessel = await db.vessels.find_one({"id": shift.get("vessel_id")}, {"_id": 0})
+            vessel_name = vessel.get("vessel_name") if vessel else None
+        
+        enriched_shifts.append({
+            **shift,
+            "vessel_name": vessel_name,
+            "crew_name": crew.get("staff_name")
+        })
+    
+    return enriched_shifts
+
 # ============================================================================
 # DOCUMENT MODELS
 # ============================================================================
