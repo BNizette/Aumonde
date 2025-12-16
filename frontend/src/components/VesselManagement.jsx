@@ -1075,12 +1075,25 @@ const VesselManagement = () => {
       <Dialog open={logsDialogOpen} onOpenChange={setLogsDialogOpen}>
         <DialogContent className="max-w-5xl max-h-[90vh] overflow-auto">
           <DialogHeader>
-            <DialogTitle>
-              🚢 {selectedVesselForLogs?.vessel_name || 'Vessel'} - Details & Activity
-            </DialogTitle>
-            <DialogDescription>
-              View vessel information, trip logs and allocated staff activity
-            </DialogDescription>
+            <div className="flex items-center justify-between pr-8">
+              <div>
+                <DialogTitle>
+                  🚢 {selectedVesselForLogs?.vessel_name || 'Vessel'} - Details & Activity
+                </DialogTitle>
+                <DialogDescription>
+                  View vessel information, trip logs and allocated staff activity
+                </DialogDescription>
+              </div>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={exportVesselToExcel}
+                className="flex items-center gap-2 bg-green-50 hover:bg-green-100 text-green-700 border-green-200"
+              >
+                <FileSpreadsheet className="h-4 w-4" />
+                Export to Excel
+              </Button>
+            </div>
           </DialogHeader>
 
           {loadingLogs ? (
