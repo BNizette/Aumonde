@@ -42,7 +42,6 @@ const CrewManagement = () => {
   const [prefilledData, setPrefilledData] = useState(null);
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
   const [viewingCrew, setViewingCrew] = useState(null);
-  const [viewDialogOpen, setViewDialogOpen] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [duplicateWarning, setDuplicateWarning] = useState(null);
