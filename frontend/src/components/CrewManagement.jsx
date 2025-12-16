@@ -214,46 +214,21 @@ const CrewManagement = () => {
   };
 
   // Export Crew Shifts to CSV
-  const exportCrewShiftsToCSV = () => {
-    if (crewShifts.length === 0) {
-      setError('No crew shifts data to export');
-      setTimeout(() => setError(''), 3000);
-      return;
-    }
-
-    const headers = [
-      'Shift Start',
-      'Shift End',
-      'Vessel',
-      'Task Performed',
-      'Total Hours',
-      'Trip ID',
-      'Crew Name',
-      'Log ID'
-    ];
-
-    const csvRows = [headers.join(','), ...crewShifts.map(shift => [
-      `"${shift.shift_start_datetime ? new Date(shift.shift_start_datetime).toLocaleString() : 'N/A'}"`,
-      `"${shift.shift_stop_datetime ? new Date(shift.shift_stop_datetime).toLocaleString() : 'N/A'}"`,
-      `"${shift.vessel_name || '-'}"`,
-      `"${shift.task_performed || '-'}"`,
-      `"${shift.total_hours || 'N/A'}"`,
-      `"${shift.trip_id || 'N/A'}"`,
-      `"${selectedCrew?.staff_name || 'N/A'}"`,
-      `"${shift.id || 'N/A'}"`
-    ].join(','))];
-
-    const csvString = csvRows.join('\n');
-    const blob = new Blob([csvString], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `crew_shifts_${selectedCrew?.staff_name?.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.csv`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    window.URL.revokeObjectURL(url);
-    setMessage('Crew shifts exported to CSV successfully');
+  const exportCrewShiftsToExcel = () => {
+    if (crewShifts.length === 0) { setError('No crew shifts data to export'); setTimeout(() => setError(''), 3000); return; }
+    const wb = XLSX.utils.book_new();
+    const headers = ['Shift Start', 'Shift End', 'Vessel', 'Task Performed', 'Total Hours', 'Trip ID'];
+    const data = [headers, ...crewShifts.map(shift => [
+      shift.shift_start_datetime ? new Date(shift.shift_start_datetime).toLocaleString() : '-',
+      shift.shift_stop_datetime ? new Date(shift.shift_stop_datetime).toLocaleString() : '-',
+      shift.vessel_name || '-', shift.task_performed || '-',
+      shift.total_hours ? `${shift.total_hours}h` : '-', shift.trip_id ? shift.trip_id.substring(0, 8) + '...' : 'Manual'
+    ])];
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    ws['!cols'] = [{ wch: 20 }, { wch: 20 }, { wch: 20 }, { wch: 30 }, { wch: 12 }, { wch: 15 }];
+    XLSX.utils.book_append_sheet(wb, ws, 'Crew Shifts');
+    XLSX.writeFile(wb, `crew_shifts_${selectedCrew?.staff_name?.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.xlsx`);
+    setMessage('Crew shifts exported to Excel successfully');
     setTimeout(() => setMessage(''), 3000);
   };
 
