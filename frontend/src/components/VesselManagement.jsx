@@ -1199,9 +1199,9 @@ const VesselManagement = () => {
                     Crew shift logs for staff allocated to {selectedVesselForLogs?.vessel_name}
                   </div>
                   {vesselStaffLogs.length > 0 && (
-                    <Button variant="outline" size="sm" onClick={exportVesselStaffToCSV}>
-                      <Download className="h-4 w-4 mr-2" />
-                      Export CSV
+                    <Button variant="outline" size="sm" onClick={exportVesselStaffToExcel} className="bg-green-50 hover:bg-green-100 text-green-700 border-green-200">
+                      <FileSpreadsheet className="h-4 w-4 mr-2" />
+                      Export to Excel
                     </Button>
                   )}
                 </div>
