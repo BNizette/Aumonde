@@ -668,11 +668,11 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
                         <Button 
                           variant="outline" 
                           size="sm" 
-                          onClick={exportCrewShiftsToCSV}
-                          className="flex items-center gap-2"
+                          onClick={exportCrewShiftsToExcel}
+                          className="flex items-center gap-2 bg-green-50 hover:bg-green-100 text-green-700 border-green-200"
                         >
-                          <Download className="h-4 w-4" />
-                          Export CSV
+                          <FileSpreadsheet className="h-4 w-4" />
+                          Export to Excel
                         </Button>
                       )}
                       {canEdit && (
