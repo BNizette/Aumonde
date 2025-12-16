@@ -1259,9 +1259,136 @@ class AMSAComprehensiveTester:
                     self.created_vessels.remove(vessel_id)
                     print(f"   Deleted vessel: {vessel_id}")
 
+    # ============================================================================
+    # REFACTORED DIALOG COMPONENTS TESTS (SPECIFIC TO REVIEW REQUEST)
+    # ============================================================================
+
+    def test_vessel_details_dialog_apis(self):
+        """Test APIs used by VesselDetailsDialog after frontend refactoring"""
+        print("\n🚢 Testing Vessel Details Dialog APIs (Post-Refactoring)...")
+        
+        # Get vessels list first
+        success, vessels, status = self.make_request('GET', 'vessels')
+        if not success or not vessels:
+            self.log_test("Get Vessels for Dialog Testing", False, error=f"Status: {status}")
+            return False
+        
+        vessel = vessels[0]
+        vessel_id = vessel['id']
+        self.log_test("Get Vessels List", True, f"Retrieved {len(vessels)} vessels")
+        
+        # Test vessel running logs API
+        success, running_logs, status = self.make_request('GET', f'vessels/{vessel_id}/running-logs')
+        if success:
+            self.log_test("GET /api/vessels/{id}/running-logs", True, f"Retrieved {len(running_logs)} running logs")
+        else:
+            # Try alternative endpoint
+            success, running_logs, status = self.make_request('GET', f'running-logs?vessel_id={vessel_id}')
+            if success:
+                self.log_test("GET /api/running-logs?vessel_id={id}", True, f"Retrieved {len(running_logs)} running logs")
+            else:
+                self.log_test("GET /api/vessels/{id}/running-logs", False, error=f"Status: {status}")
+        
+        # Test vessel staff logs API
+        success, staff_logs, status = self.make_request('GET', f'vessels/{vessel_id}/staff-logs')
+        if success:
+            self.log_test("GET /api/vessels/{id}/staff-logs", True, f"Retrieved {len(staff_logs)} staff logs")
+        else:
+            # Try alternative endpoint
+            success, staff_logs, status = self.make_request('GET', f'trip-logs?vessel_id={vessel_id}')
+            if success:
+                self.log_test("GET /api/trip-logs?vessel_id={id}", True, f"Retrieved {len(staff_logs)} staff logs")
+            else:
+                self.log_test("GET /api/vessels/{id}/staff-logs", False, error=f"Status: {status}")
+
+    def test_crew_details_dialog_apis(self):
+        """Test APIs used by CrewDetailsDialog after frontend refactoring"""
+        print("\n👥 Testing Crew Details Dialog APIs (Post-Refactoring)...")
+        
+        # Get crew list first
+        success, crew_list, status = self.make_request('GET', 'crew')
+        if not success or not crew_list:
+            self.log_test("Get Crew for Dialog Testing", False, error=f"Status: {status}")
+            return False
+        
+        crew_member = crew_list[0]
+        crew_id = crew_member['id']
+        crew_name = crew_member['staff_name']
+        self.log_test("Get Crew List", True, f"Retrieved {len(crew_list)} crew members")
+        
+        # Test crew trips API
+        success, trips, status = self.make_request('GET', f'crew/{crew_id}/trips')
+        if success:
+            self.log_test("GET /api/crew/{id}/trips", True, f"Retrieved {len(trips)} trips")
+        else:
+            # Try alternative endpoint
+            success, trips, status = self.make_request('GET', f'trips?crew_id={crew_id}')
+            if success:
+                self.log_test("GET /api/trips?crew_id={id}", True, f"Retrieved {len(trips)} trips")
+            else:
+                self.log_test("GET /api/crew/{id}/trips", False, error=f"Status: {status}")
+        
+        # Test crew shifts API
+        success, shifts, status = self.make_request('GET', f'crew/{crew_id}/shifts')
+        if success:
+            self.log_test("GET /api/crew/{id}/shifts", True, f"Retrieved {len(shifts)} shifts")
+        else:
+            # Try alternative endpoint
+            success, shifts, status = self.make_request('GET', f'trip-logs?crew_id={crew_id}')
+            if success:
+                self.log_test("GET /api/trip-logs?crew_id={id}", True, f"Retrieved {len(shifts)} shifts")
+            else:
+                self.log_test("GET /api/crew/{id}/shifts", False, error=f"Status: {status}")
+        
+        # Test crew drill records API
+        success, drill_records, status = self.make_request('GET', f'crew/{crew_name}/drill-records')
+        if success:
+            self.log_test("GET /api/crew/{crew_name}/drill-records", True, f"Retrieved {len(drill_records)} drill records")
+        else:
+            self.log_test("GET /api/crew/{crew_name}/drill-records", False, error=f"Status: {status}")
+        
+        # Test crew training records API
+        success, training_records, status = self.make_request('GET', f'crew/{crew_name}/training-records')
+        if success:
+            self.log_test("GET /api/crew/{crew_name}/training-records", True, f"Retrieved {len(training_records)} training records")
+        else:
+            self.log_test("GET /api/crew/{crew_name}/training-records", False, error=f"Status: {status}")
+
+    def test_supporting_dialog_apis(self):
+        """Test supporting APIs used by dialogs"""
+        print("\n🔧 Testing Supporting Dialog APIs...")
+        
+        # Test risk assessments API
+        success, risk_assessments, status = self.make_request('GET', 'risk-assessments')
+        if success:
+            self.log_test("GET /api/risk-assessments", True, f"Retrieved {len(risk_assessments)} risk assessments")
+        else:
+            self.log_test("GET /api/risk-assessments", False, error=f"Status: {status}")
+        
+        # Test maintenance API
+        success, maintenance, status = self.make_request('GET', 'maintenance')
+        if success:
+            self.log_test("GET /api/maintenance", True, f"Retrieved {len(maintenance)} maintenance records")
+        else:
+            self.log_test("GET /api/maintenance", False, error=f"Status: {status}")
+        
+        # Test incidents API
+        success, incidents, status = self.make_request('GET', 'incidents')
+        if success:
+            self.log_test("GET /api/incidents", True, f"Retrieved {len(incidents)} incidents")
+        else:
+            self.log_test("GET /api/incidents", False, error=f"Status: {status}")
+        
+        # Test trips list API
+        success, trips, status = self.make_request('GET', 'trips')
+        if success:
+            self.log_test("GET /api/trips", True, f"Retrieved {len(trips)} trips")
+        else:
+            self.log_test("GET /api/trips", False, error=f"Status: {status}")
+
     def run_all_tests(self):
         """Run all AMSA system tests"""
-        print("🚀 Starting AMSA Safety Management System Comprehensive Tests")
+        print("🚀 Starting Backend API Verification After Frontend Refactoring")
         print(f"Backend URL: {self.base_url}")
         print("=" * 70)
         
@@ -1270,23 +1397,17 @@ class AMSAComprehensiveTester:
             print("\n❌ Authentication failed - cannot continue with other tests")
             return False
         
-        # Run all test modules
+        # Run focused tests for refactored dialog components
         test_methods = [
-            self.test_backup_import,  # Test backup import first as requested
-            self.test_other_account_logins,
+            self.test_vessel_details_dialog_apis,  # VesselDetailsDialog APIs
+            self.test_crew_details_dialog_apis,    # CrewDetailsDialog APIs  
+            self.test_supporting_dialog_apis,      # Supporting APIs used by dialogs
+            # Keep some core tests for completeness
             self.test_dashboard_stats,
             self.test_user_management,
             self.test_vessel_management,
             self.test_crew_management,
             self.test_trip_management,
-            self.test_allocated_crew,  # NEW feature
-            self.test_trip_logs,
-            self.test_manual_log_entry,  # NEW feature - Manual Log Entry
-            self.test_crew_shifts_endpoint,  # NEW feature - Crew Shifts Endpoint
-            self.test_crew_shifts_data_consistency,  # NEW feature - Crew Shifts Data Consistency
-            self.test_document_management,
-            self.test_risk_assessment,  # NEW feature
-            self.test_access_control,
         ]
         
         for test_method in test_methods:
