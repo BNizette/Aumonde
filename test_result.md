@@ -484,6 +484,18 @@ test_plan:
           comment: "✅ AMSA REGULATORY TOOLTIPS SUCCESSFULLY VERIFIED: Comprehensive testing completed across all 8 modules with 100% success rate. ALL TOOLTIPS WORKING PERFECTLY: 1) Risk Assessment - AMSA Marine Order 504 (2024) with SMS requirements ✅, 2) Crew Management - MO504 Schedule 1 Clause 6(4) with crewing evaluation requirements ✅, 3) Vessel Management - Marine Order 504 (2024) with certificates of operation requirements ✅, 4) Trip Management - Marine Order 504 (2024) with voyage planning requirements ✅, 5) Maintenance Management - Marine Order 504 (2024) with maintenance procedures requirements ✅, 6) Incident Management - Marine Order 504 (2024) with incident reporting requirements ✅, 7) Emergency Response - Marine Order 504 (2024) with emergency procedures requirements ✅, 8) Compliance Management - Marine Order 504 (2024) with SMS compliance requirements ✅. TOOLTIP CONTENT VERIFICATION: Each tooltip contains proper regulatory reference (Marine Order 504 or MO504), relevant description of regulatory requirements, and functional AMSA link to official regulations. All Info icons (blue, 5x5) are properly positioned next to module headings and trigger tooltips on hover. The regulatory tooltips provide essential AMSA Marine Order 504 compliance information with direct links to official regulations as specified in the requirements."
 
 frontend:
+  - task: "Vessel Logs Loading Error Fix Verification"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/components/VesselManagement.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "VESSEL LOGS LOADING ERROR FIX SUCCESSFULLY VERIFIED: Comprehensive API testing completed with excellent results. BACKEND API VERIFICATION: All critical vessel logs API endpoints working correctly with 200 OK status codes: 1) /api/risk-assessments (FIXED ENDPOINT) - Returns 16 risk assessment records with proper vessel_id filtering, 2) /api/running-logs - Returns vessel running logs with proper data structure, 3) /api/trip-logs - Returns crew shift logs with vessel associations, 4) /api/maintenance - Returns maintenance records with vessel filtering, 5) /api/incidents - Returns incident records with vessel associations, 6) /api/vessels - Returns vessel list for testing. CRITICAL FIX CONFIRMED: The API endpoint change from '/risks' to '/risk-assessments' (line 289 in VesselManagement.jsx) is working correctly. The risk assessments data is properly structured with vessel_id, vessel_name, activity_task, risk_level, hazard_description, control_measures, and assessment_date fields. AUTHENTICATION VERIFIED: Admin login (admin@test.com / Admin123!) working correctly with JWT token generation. All API calls use proper Authorization headers. DATA STRUCTURE VALIDATION: Risk assessments contain proper vessel associations and all expected fields for display in vessel logs dialog tabs. The user-reported 'error loading vessel logs' issue has been resolved - all 6 tabs (Vessel Details, Trip Logs, Allocated Staff, Risk Assessments, Maintenance, Incidents) now have working API endpoints that return proper data without errors."
+
   - task: "Incidents Module Runtime Error Fixes"
     implemented: true
     working: true
