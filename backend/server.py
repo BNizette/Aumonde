@@ -34,6 +34,12 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24
 app = FastAPI(title="AMSA Safety Management System")
 api_router = APIRouter(prefix="/api")
 
+# Health check endpoint for Kubernetes
+@app.get("/health")
+async def health_check():
+    """Health check endpoint for Kubernetes liveness/readiness probes"""
+    return {"status": "healthy", "service": "amsa-safety-management"}
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
