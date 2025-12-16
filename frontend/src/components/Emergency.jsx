@@ -1121,9 +1121,9 @@ const Emergency = () => {
                   <CardDescription>Critical contacts for emergency situations</CardDescription>
                 </div>
                 <div className="flex gap-2">
-                  <Button variant="outline" onClick={exportContactsToCSV}>
-                    <Download className="mr-2 h-4 w-4" />
-                    Export CSV
+                  <Button variant="outline" onClick={exportContactsToExcel} className="bg-green-50 hover:bg-green-100 text-green-700 border-green-200">
+                    <FileSpreadsheet className="mr-2 h-4 w-4" />
+                    Export to Excel
                   </Button>
                   <Button onClick={() => setContactDialogOpen(true)}>
                     <Plus className="mr-2 h-4 w-4" />
@@ -1389,9 +1389,9 @@ const Emergency = () => {
                   <CardDescription>Standard operating procedures for emergencies</CardDescription>
                 </div>
                 <div className="flex gap-2">
-                  <Button variant="outline" onClick={exportProceduresToCSV}>
-                    <Download className="mr-2 h-4 w-4" />
-                    Export CSV
+                  <Button variant="outline" onClick={exportProceduresToExcel} className="bg-green-50 hover:bg-green-100 text-green-700 border-green-200">
+                    <FileSpreadsheet className="mr-2 h-4 w-4" />
+                    Export to Excel
                   </Button>
                   <Button onClick={() => setProcedureDialogOpen(true)}>
                     <Plus className="mr-2 h-4 w-4" />
@@ -1616,9 +1616,9 @@ const Emergency = () => {
                   <CardDescription>Record and track emergency drill exercises</CardDescription>
                 </div>
                 <div className="flex gap-2">
-                  <Button variant="outline" onClick={exportDrillsToCSV}>
-                    <Download className="mr-2 h-4 w-4" />
-                    Export CSV
+                  <Button variant="outline" onClick={exportDrillsToExcel} className="bg-green-50 hover:bg-green-100 text-green-700 border-green-200">
+                    <FileSpreadsheet className="mr-2 h-4 w-4" />
+                    Export to Excel
                   </Button>
                   <Button onClick={() => setDrillDialogOpen(true)}>
                     <Plus className="mr-2 h-4 w-4" />
