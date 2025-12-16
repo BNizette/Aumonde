@@ -109,26 +109,22 @@ const Maintenance = () => {
     clearAllFiltersHook(); 
   };
 
-  const exportToCSV = () => {
+  const exportToExcel = () => {
     if (filteredRecords.length === 0) { setError('No maintenance records to export'); setTimeout(() => setError(''), 3000); return; }
-    const headers = ['ID', 'Title', 'Equipment/System', 'Vessel', 'Type', 'Status', 'Priority', 'Scheduled Date', 'Completed Date', 'Responsible Person', 'Description', 'Created At'];
-    const csvRows = [headers.join(','), ...filteredRecords.map(r => [
-      `"${r.id || ''}"`, `"${(r.title || '').replace(/"/g, '""')}"`, `"${(r.equipment_system || '').replace(/"/g, '""')}"`,
-      `"${(r.vessel_name || '').replace(/"/g, '""')}"`, `"${r.maintenance_type || ''}"`, `"${r.status || ''}"`,
-      `"${r.priority || ''}"`, `"${r.scheduled_date ? new Date(r.scheduled_date).toLocaleDateString() : ''}"`,
-      `"${r.completed_date ? new Date(r.completed_date).toLocaleDateString() : ''}"`,
-      `"${(r.responsible_person || '').replace(/"/g, '""')}"`, `"${(r.description || '').replace(/"/g, '""')}"`,
-      `"${r.created_at ? new Date(r.created_at).toLocaleString() : ''}"`
-    ].join(','))];
-    const blob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    link.setAttribute('href', URL.createObjectURL(blob));
-    link.setAttribute('download', `maintenance_export_${new Date().toISOString().slice(0, 10)}.csv`);
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    setMessage(`Exported ${filteredRecords.length} maintenance records to CSV`);
+    const wb = XLSX.utils.book_new();
+    const headers = ['Title', 'Equipment/System', 'Vessel', 'Type', 'Status', 'Priority', 'Scheduled Date', 'Completed Date', 'Responsible Person'];
+    const data = [headers, ...filteredRecords.map(r => [
+      r.title || '-', r.equipment_system || '-', r.vessel_name || '-', r.maintenance_type || '-',
+      r.status || '-', r.priority || '-',
+      r.scheduled_date ? new Date(r.scheduled_date).toLocaleDateString() : '-',
+      r.completed_date ? new Date(r.completed_date).toLocaleDateString() : '-',
+      r.responsible_person || '-'
+    ])];
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    ws['!cols'] = [{ wch: 25 }, { wch: 20 }, { wch: 15 }, { wch: 15 }, { wch: 12 }, { wch: 10 }, { wch: 15 }, { wch: 15 }, { wch: 20 }];
+    XLSX.utils.book_append_sheet(wb, ws, 'Maintenance');
+    XLSX.writeFile(wb, `maintenance_export_${new Date().toISOString().slice(0, 10)}.xlsx`);
+    setMessage(`Exported ${filteredRecords.length} maintenance records to Excel`);
     setTimeout(() => setMessage(''), 3000);
   };
 
