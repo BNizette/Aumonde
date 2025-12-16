@@ -1000,9 +1000,9 @@ const Compliance = () => {
                   <CardDescription>Regulatory and operational compliance tracking</CardDescription>
                 </div>
                 <div className="flex gap-2">
-                  <Button variant="outline" onClick={exportRequirementsToCSV}>
-                    <Download className="mr-2 h-4 w-4" />
-                    Export CSV
+                  <Button variant="outline" onClick={exportRequirementsToExcel} className="bg-green-50 hover:bg-green-100 text-green-700 border-green-200">
+                    <FileSpreadsheet className="mr-2 h-4 w-4" />
+                    Export to Excel
                   </Button>
                   <Button onClick={() => setReqDialogOpen(true)}>
                     <Plus className="mr-2 h-4 w-4" />
