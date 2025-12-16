@@ -286,6 +286,119 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
     setTimeout(() => setMessage(''), 3000);
   };
 
+  // Export all trip data to Excel with multiple worksheets
+  const exportTripToExcel = () => {
+    if (!trip) return;
+
+    const wb = XLSX.utils.book_new();
+
+    // Sheet 1: Trip Details
+    const detailsData = [
+      ['Trip Details'],
+      [''],
+      ['Field', 'Value'],
+      ['Trip Name', trip.trip_name || 'N/A'],
+      ['Vessel', trip.vessel_name || 'N/A'],
+      ['Trip Type', trip.trip_type || 'N/A'],
+      ['Operating Area', trip.operating_area || 'N/A'],
+      ['Depart Location', trip.depart_location || 'N/A'],
+      ['Arrival Location', trip.arrival_location || 'N/A'],
+      ['Planned Depart', trip.planned_depart_datetime ? new Date(trip.planned_depart_datetime).toLocaleString() : (trip.depart_datetime ? new Date(trip.depart_datetime).toLocaleString() : 'N/A')],
+      ['Planned Arrival', trip.planned_arrival_datetime ? new Date(trip.planned_arrival_datetime).toLocaleString() : (trip.arrival_datetime ? new Date(trip.arrival_datetime).toLocaleString() : 'N/A')],
+      ['Actual Depart', trip.actual_depart_datetime ? new Date(trip.actual_depart_datetime).toLocaleString() : 'N/A'],
+      ['Actual Arrival', trip.actual_arrival_datetime ? new Date(trip.actual_arrival_datetime).toLocaleString() : 'N/A'],
+      ['Passengers', trip.number_of_passengers || '0'],
+      ['Crew', trip.number_of_crew || '0'],
+      ['Notes', trip.notes || 'N/A'],
+    ];
+    const wsDetails = XLSX.utils.aoa_to_sheet(detailsData);
+    wsDetails['!cols'] = [{ wch: 18 }, { wch: 40 }];
+    XLSX.utils.book_append_sheet(wb, wsDetails, 'Trip Details');
+
+    // Sheet 2: Allocated Crew
+    const crewHeaders = ['Crew Name', 'Email', 'Phone', 'Position', 'Status'];
+    const crewData = [crewHeaders];
+    allocatedCrew.forEach(member => {
+      crewData.push([
+        member.crew?.staff_name || member.crew_name || 'N/A',
+        member.crew?.email || 'N/A',
+        member.crew?.phone || 'N/A',
+        member.position || 'N/A',
+        member.status || 'Active'
+      ]);
+    });
+    if (allocatedCrew.length === 0) crewData.push(['No crew allocated', '', '', '', '']);
+    const wsCrew = XLSX.utils.aoa_to_sheet(crewData);
+    wsCrew['!cols'] = [{ wch: 20 }, { wch: 25 }, { wch: 15 }, { wch: 15 }, { wch: 10 }];
+    XLSX.utils.book_append_sheet(wb, wsCrew, 'Allocated Crew');
+
+    // Sheet 3: Crew Shifts
+    const shiftsHeaders = ['Shift Start', 'Shift End', 'Crew Name', 'Task Performed', 'Total Hours'];
+    const shiftsData = [shiftsHeaders];
+    shiftLogs.forEach(log => {
+      shiftsData.push([
+        log.shift_start_datetime ? new Date(log.shift_start_datetime).toLocaleString() : 'N/A',
+        log.shift_stop_datetime ? new Date(log.shift_stop_datetime).toLocaleString() : 'N/A',
+        log.crew_name || 'N/A',
+        log.task_performed || '-',
+        log.total_hours ? `${log.total_hours}h` : 'N/A'
+      ]);
+    });
+    if (shiftLogs.length === 0) shiftsData.push(['No crew shifts recorded', '', '', '', '']);
+    const wsShifts = XLSX.utils.aoa_to_sheet(shiftsData);
+    wsShifts['!cols'] = [{ wch: 20 }, { wch: 20 }, { wch: 20 }, { wch: 30 }, { wch: 12 }];
+    XLSX.utils.book_append_sheet(wb, wsShifts, 'Crew Shifts');
+
+    // Sheet 4: Running Logs
+    const runningHeaders = ['Date & Time', 'Location', 'Weather', 'Sea State', 'Speed (knots)', 'Course', 'Fuel Level', 'Remarks', 'Officer'];
+    const runningData = [runningHeaders];
+    runningLogs.forEach(log => {
+      runningData.push([
+        log.log_datetime ? new Date(log.log_datetime).toLocaleString() : 'N/A',
+        log.location || '-',
+        log.weather_conditions || '-',
+        log.sea_state || '-',
+        log.speed_knots || '-',
+        log.course || '-',
+        log.fuel_level || '-',
+        log.remarks || '-',
+        log.officer_on_watch || 'N/A'
+      ]);
+    });
+    if (runningLogs.length === 0) runningData.push(['No running logs recorded', '', '', '', '', '', '', '', '']);
+    const wsRunning = XLSX.utils.aoa_to_sheet(runningData);
+    wsRunning['!cols'] = [{ wch: 20 }, { wch: 15 }, { wch: 12 }, { wch: 10 }, { wch: 12 }, { wch: 8 }, { wch: 10 }, { wch: 25 }, { wch: 15 }];
+    XLSX.utils.book_append_sheet(wb, wsRunning, 'Running Logs');
+
+    // Sheet 5: Engine Logs
+    const engineHeaders = ['Date & Time', 'Engine Hours', 'RPM', 'Oil Pressure', 'Coolant Temp', 'Fuel Consumption', 'Status', 'Notes', 'Engineer'];
+    const engineData = [engineHeaders];
+    engineLogs.forEach(log => {
+      engineData.push([
+        log.log_datetime ? new Date(log.log_datetime).toLocaleString() : 'N/A',
+        log.engine_hours || '-',
+        log.rpm || '-',
+        log.oil_pressure || '-',
+        log.coolant_temp || '-',
+        log.fuel_consumption || '-',
+        log.engine_status || '-',
+        log.maintenance_notes || '-',
+        log.engineer_name || 'N/A'
+      ]);
+    });
+    if (engineLogs.length === 0) engineData.push(['No engine logs recorded', '', '', '', '', '', '', '', '']);
+    const wsEngine = XLSX.utils.aoa_to_sheet(engineData);
+    wsEngine['!cols'] = [{ wch: 20 }, { wch: 12 }, { wch: 8 }, { wch: 12 }, { wch: 12 }, { wch: 15 }, { wch: 10 }, { wch: 20 }, { wch: 15 }];
+    XLSX.utils.book_append_sheet(wb, wsEngine, 'Engine Logs');
+
+    // Generate and download file
+    const fileName = `${trip.trip_name?.replace(/\s+/g, '_')}_details_${new Date().toISOString().slice(0, 10)}.xlsx`;
+    XLSX.writeFile(wb, fileName);
+    
+    setMessage('Trip data exported to Excel successfully');
+    setTimeout(() => setMessage(''), 3000);
+  };
+
   const handleDeleteShiftLog = async (log) => {
     if (!window.confirm(`Delete shift log for ${log.crew_name}?`)) return;
     
