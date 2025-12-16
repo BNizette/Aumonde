@@ -193,82 +193,22 @@ const Incidents = () => {
     }
   };
 
-  const exportToCSV = () => {
-    if (incidents.length === 0) {
-      setError('No incidents to export');
-      setTimeout(() => setError(''), 3000);
-      return;
-    }
-
-    // Define all possible fields from incident records
-    const headers = [
-      'ID',
-      'Title',
-      'Incident Type',
-      'Severity',
-      'Status',
-      'Description',
-      'Incident Date',
-      'Location',
-      'Vessel ID',
-      'Vessel Name',
-      'Injuries',
-      'Injury Details',
-      'Witnesses',
-      'Immediate Action/Treatment Performed',
-      'Investigation Status',
-      'Root Cause',
-      'Corrective Actions',
-      'Preventive Actions',
-      'Responsible Person',
-      'Target Completion Date',
-      'Created At',
-      'Created By'
-    ];
-
-    // Convert incidents to CSV rows with ALL fields
-    const csvRows = [
-      headers.join(','),
-      ...incidents.map(incident => [
-        `"${incident.id || ''}"`,
-        `"${(incident.title || '').replace(/"/g, '""')}"`,
-        `"${Array.isArray(incident.incident_type) ? incident.incident_type.join(', ') : (incident.incident_type || '')}"`,
-        `"${incident.severity || ''}"`,
-        `"${incident.investigation_status || ''}"`,
-        `"${(incident.description || '').replace(/"/g, '""')}"`,
-        `"${incident.incident_date ? new Date(incident.incident_date).toLocaleString() : ''}"`,
-        `"${(incident.location || '').replace(/"/g, '""')}"`,
-        `"${incident.vessel_id || ''}"`,
-        `"${(incident.vessel_name || '').replace(/"/g, '""')}"`,
-        `"${incident.injuries ? 'Yes' : 'No'}"`,
-        `"${(incident.injury_details || '').replace(/"/g, '""')}"`,
-        `"${(incident.witnesses || '').replace(/"/g, '""')}"`,
-        `"${(incident.immediate_actions || '').replace(/"/g, '""')}"`,
-        `"${incident.investigation_status || ''}"`,
-        `"${(incident.root_cause || '').replace(/"/g, '""')}"`,
-        `"${(incident.corrective_actions || '').replace(/"/g, '""')}"`,
-        `"${(incident.preventive_actions || '').replace(/"/g, '""')}"`,
-        `"${(incident.responsible_person || '').replace(/"/g, '""')}"`,
-        `"${incident.target_completion_date ? new Date(incident.target_completion_date).toLocaleDateString() : ''}"`,
-        `"${incident.created_at ? new Date(incident.created_at).toLocaleString() : ''}"`,
-        `"${incident.created_by || ''}"`,
-      ].join(','))
-    ];
-
-    // Create blob and download
-    const csvContent = csvRows.join('\n');
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    const url = URL.createObjectURL(blob);
-    
-    link.setAttribute('href', url);
-    link.setAttribute('download', `incidents_export_${new Date().toISOString().slice(0, 10)}.csv`);
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-
-    setMessage(`Exported ${incidents.length} incidents to CSV`);
+  const exportToExcel = () => {
+    if (incidents.length === 0) { setError('No incidents to export'); setTimeout(() => setError(''), 3000); return; }
+    const wb = XLSX.utils.book_new();
+    const headers = ['Incident #', 'Title', 'Type', 'Severity', 'Status', 'Date', 'Location', 'Vessel', 'Description', 'Injuries'];
+    const data = [headers, ...incidents.map(i => [
+      i.incident_number || '-', i.title || '-',
+      Array.isArray(i.incident_type) ? i.incident_type.join(', ') : (i.incident_type || '-'),
+      i.severity || '-', i.investigation_status || '-',
+      i.incident_date ? new Date(i.incident_date).toLocaleString() : '-',
+      i.location || '-', i.vessel_name || '-', i.description || '-', i.injuries ? 'Yes' : 'No'
+    ])];
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    ws['!cols'] = [{ wch: 12 }, { wch: 25 }, { wch: 20 }, { wch: 10 }, { wch: 15 }, { wch: 18 }, { wch: 20 }, { wch: 15 }, { wch: 40 }, { wch: 8 }];
+    XLSX.utils.book_append_sheet(wb, ws, 'Incidents');
+    XLSX.writeFile(wb, `incidents_export_${new Date().toISOString().slice(0, 10)}.xlsx`);
+    setMessage(`Exported ${incidents.length} incidents to Excel`);
     setTimeout(() => setMessage(''), 3000);
   };
 
