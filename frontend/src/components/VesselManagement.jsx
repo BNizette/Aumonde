@@ -135,76 +135,26 @@ const VesselManagement = () => {
     setSortBy('name');
   };
 
-  const exportToCSV = () => {
+  const exportToExcel = () => {
     if (filteredVessels.length === 0) {
       setError('No vessels to export');
       setTimeout(() => setError(''), 3000);
       return;
     }
-
-    const headers = [
-      'ID', 'Vessel Name', 'Registration Number', 'Vessel Type', 'Year Built',
-      'Length (m)', 'Beam (m)', 'Draft (m)', 'Gross Tonnage', 'Net Tonnage',
-      'Passenger Capacity', 'Crew Capacity', 'Flag State', 'Port of Registry',
-      'IMO Number', 'MMSI Number', 'Call Sign', 'Owner Name', 'Owner Contact',
-      'Operator Name', 'Operator Contact', 'Classification Society',
-      'Class Notation', 'Hull Material', 'Propulsion Type', 'Engine Manufacturer',
-      'Engine Model', 'Engine Power (kW)', 'Operational Status', 'Last Survey Date',
-      'Next Survey Due', 'Insurance Expiry', 'Created At'
-    ];
-
-    const csvRows = [
-      headers.join(','),
-      ...filteredVessels.map(v => [
-        `"${v.id || ''}"`,
-        `"${(v.vessel_name || '').replace(/"/g, '""')}"`,
-        `"${v.registration_number || ''}"`,
-        `"${v.vessel_type || ''}"`,
-        `"${v.year_built || ''}"`,
-        `"${v.length || ''}"`,
-        `"${v.beam || ''}"`,
-        `"${v.draft || ''}"`,
-        `"${v.gross_tonnage || ''}"`,
-        `"${v.net_tonnage || ''}"`,
-        `"${v.passenger_capacity || ''}"`,
-        `"${v.crew_capacity || ''}"`,
-        `"${v.flag_state || ''}"`,
-        `"${v.port_of_registry || ''}"`,
-        `"${v.imo_number || ''}"`,
-        `"${v.mmsi_number || ''}"`,
-        `"${v.call_sign || ''}"`,
-        `"${(v.owner_name || '').replace(/"/g, '""')}"`,
-        `"${v.owner_contact || ''}"`,
-        `"${(v.operator_name || '').replace(/"/g, '""')}"`,
-        `"${v.operator_contact || ''}"`,
-        `"${v.classification_society || ''}"`,
-        `"${v.class_notation || ''}"`,
-        `"${v.hull_material || ''}"`,
-        `"${v.propulsion_type || ''}"`,
-        `"${v.engine_manufacturer || ''}"`,
-        `"${v.engine_model || ''}"`,
-        `"${v.engine_power || ''}"`,
-        `"${v.operational_status || ''}"`,
-        `"${v.last_survey_date ? new Date(v.last_survey_date).toLocaleDateString() : ''}"`,
-        `"${v.next_survey_due ? new Date(v.next_survey_due).toLocaleDateString() : ''}"`,
-        `"${v.insurance_expiry ? new Date(v.insurance_expiry).toLocaleDateString() : ''}"`,
-        `"${v.created_at ? new Date(v.created_at).toLocaleString() : ''}"`
-      ].join(','))
-    ];
-
-    const csvContent = csvRows.join('\n');
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    const url = URL.createObjectURL(blob);
-    
-    link.setAttribute('href', url);
-    link.setAttribute('download', `vessels_export_${new Date().toISOString().slice(0, 10)}.csv`);
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-
-    setMessage(`Exported ${filteredVessels.length} vessels to CSV`);
+    const wb = XLSX.utils.book_new();
+    const headers = ['Vessel Name', 'Registration Number', 'Vessel Type', 'Year Built', 'Length (m)', 'Beam (m)', 'Draft (m)', 'Gross Tonnage', 'Operational Status', 'Owner Name', 'Port of Registry', 'Last Survey Date', 'Next Survey Due'];
+    const data = [headers, ...filteredVessels.map(v => [
+      v.vessel_name || '-', v.registration_number || '-', v.vessel_type || '-', v.year_built || '-',
+      v.length || '-', v.beam || '-', v.draft || '-', v.gross_tonnage || '-', v.operational_status || '-',
+      v.owner_name || '-', v.port_of_registry || '-',
+      v.last_survey_date ? new Date(v.last_survey_date).toLocaleDateString() : '-',
+      v.next_survey_due ? new Date(v.next_survey_due).toLocaleDateString() : '-'
+    ])];
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    ws['!cols'] = [{ wch: 20 }, { wch: 15 }, { wch: 15 }, { wch: 10 }, { wch: 10 }, { wch: 10 }, { wch: 10 }, { wch: 12 }, { wch: 15 }, { wch: 20 }, { wch: 15 }, { wch: 15 }, { wch: 15 }];
+    XLSX.utils.book_append_sheet(wb, ws, 'Vessels');
+    XLSX.writeFile(wb, `vessels_export_${new Date().toISOString().slice(0, 10)}.xlsx`);
+    setMessage(`Exported ${filteredVessels.length} vessels to Excel`);
     setTimeout(() => setMessage(''), 3000);
   };
 
