@@ -259,109 +259,77 @@ const VesselManagement = () => {
     }
   };
 
-  // CSV Export Functions
-  const exportVesselTripsToCSV = () => {
+  // Tab Export Functions (Excel)
+  const exportVesselTripsToExcel = () => {
     if (vesselRunningLogs.length === 0) return;
-    const headers = ['Trip Name', 'Depart Date', 'Return Date', 'Captain', 'Created At'];
-    const csvRows = [headers.join(','), ...vesselRunningLogs.map(t => [
-      `"${(t.trip_name || '').replace(/"/g, '""')}"`,
-      `"${t.depart_datetime ? new Date(t.depart_datetime).toLocaleString() : ''}"`,
-      `"${t.return_datetime ? new Date(t.return_datetime).toLocaleString() : ''}"`,
-      `"${(t.captain || '').replace(/"/g, '""')}"`,
-      `"${t.created_at ? new Date(t.created_at).toLocaleString() : ''}"`
-    ].join(','))];
-    const blob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    link.setAttribute('href', URL.createObjectURL(blob));
-    link.setAttribute('download', `vessel_trips_${selectedVesselForLogs?.vessel_name}_${new Date().toISOString().slice(0, 10)}.csv`);
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    const wb = XLSX.utils.book_new();
+    const headers = ['Date & Time', 'Category', 'Activity', 'Details', 'Crew'];
+    const data = [headers, ...vesselRunningLogs.map(log => [
+      log.log_datetime ? new Date(log.log_datetime).toLocaleString() : '-',
+      log.category || 'General', log.activity || '-', log.activity_details || '-', log.crew_name || '-'
+    ])];
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    ws['!cols'] = [{ wch: 20 }, { wch: 12 }, { wch: 20 }, { wch: 30 }, { wch: 15 }];
+    XLSX.utils.book_append_sheet(wb, ws, 'Trip Logs');
+    XLSX.writeFile(wb, `vessel_trips_${selectedVesselForLogs?.vessel_name}_${new Date().toISOString().slice(0, 10)}.xlsx`);
   };
 
-  const exportVesselStaffToCSV = () => {
+  const exportVesselStaffToExcel = () => {
     if (vesselStaffLogs.length === 0) return;
-    const headers = ['Staff Name', 'Shift Start', 'Shift End', 'Task Performed', 'Total Hours', 'Trip ID'];
-    const csvRows = [headers.join(','), ...vesselStaffLogs.map(s => [
-      `"${(s.staff_name || '').replace(/"/g, '""')}"`,
-      `"${s.shift_start_datetime ? new Date(s.shift_start_datetime).toLocaleString() : ''}"`,
-      `"${s.shift_stop_datetime ? new Date(s.shift_stop_datetime).toLocaleString() : ''}"`,
-      `"${(s.task_performed || '').replace(/"/g, '""')}"`,
-      `"${s.total_hours || ''}"`,
-      `"${s.trip_id || 'Manual'}"`
-    ].join(','))];
-    const blob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    link.setAttribute('href', URL.createObjectURL(blob));
-    link.setAttribute('download', `vessel_staff_${selectedVesselForLogs?.vessel_name}_${new Date().toISOString().slice(0, 10)}.csv`);
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    const wb = XLSX.utils.book_new();
+    const headers = ['Shift Start', 'Shift End', 'Crew Member', 'Task Performed', 'Total Hours', 'Trip ID'];
+    const data = [headers, ...vesselStaffLogs.map(s => [
+      s.shift_start_datetime ? new Date(s.shift_start_datetime).toLocaleString() : '-',
+      s.shift_stop_datetime ? new Date(s.shift_stop_datetime).toLocaleString() : '-',
+      s.crew_name || 'Unknown', s.task_performed || '-', s.total_hours ? `${s.total_hours}h` : '-', s.trip_id ? s.trip_id.substring(0, 8) + '...' : 'Manual'
+    ])];
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    ws['!cols'] = [{ wch: 20 }, { wch: 20 }, { wch: 20 }, { wch: 30 }, { wch: 12 }, { wch: 12 }];
+    XLSX.utils.book_append_sheet(wb, ws, 'Allocated Staff');
+    XLSX.writeFile(wb, `vessel_staff_${selectedVesselForLogs?.vessel_name}_${new Date().toISOString().slice(0, 10)}.xlsx`);
   };
 
-  const exportVesselRisksToCSV = () => {
+  const exportVesselRisksToExcel = () => {
     if (vesselRisks.length === 0) return;
+    const wb = XLSX.utils.book_new();
     const headers = ['Activity/Task', 'Risk Level', 'Hazard', 'Control Measures', 'Assessment Date'];
-    const csvRows = [headers.join(','), ...vesselRisks.map(r => [
-      `"${(r.activity_task || '').replace(/"/g, '""')}"`,
-      `"${r.risk_level || ''}"`,
-      `"${(r.hazard_description || '').replace(/"/g, '""')}"`,
-      `"${(r.control_measures || '').replace(/"/g, '""')}"`,
-      `"${r.assessment_date ? new Date(r.assessment_date).toLocaleDateString() : ''}"`
-    ].join(','))];
-    const blob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    link.setAttribute('href', URL.createObjectURL(blob));
-    link.setAttribute('download', `vessel_risks_${selectedVesselForLogs?.vessel_name}_${new Date().toISOString().slice(0, 10)}.csv`);
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    const data = [headers, ...vesselRisks.map(r => [
+      r.activity_task || '-', r.risk_level || '-', r.hazard_description || '-', r.control_measures || '-',
+      r.assessment_date ? new Date(r.assessment_date).toLocaleDateString() : '-'
+    ])];
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    ws['!cols'] = [{ wch: 25 }, { wch: 12 }, { wch: 30 }, { wch: 30 }, { wch: 15 }];
+    XLSX.utils.book_append_sheet(wb, ws, 'Risk Assessments');
+    XLSX.writeFile(wb, `vessel_risks_${selectedVesselForLogs?.vessel_name}_${new Date().toISOString().slice(0, 10)}.xlsx`);
   };
 
-  const exportVesselMaintenanceToCSV = () => {
+  const exportVesselMaintenanceToExcel = () => {
     if (vesselMaintenance.length === 0) return;
+    const wb = XLSX.utils.book_new();
     const headers = ['Type', 'Item/System', 'Status', 'Next Service Date', 'Last Service Date', 'Priority'];
-    const csvRows = [headers.join(','), ...vesselMaintenance.map(m => [
-      `"${(m.maintenance_type || '').replace(/"/g, '""')}"`,
-      `"${(m.item_system || '').replace(/"/g, '""')}"`,
-      `"${m.status || ''}"`,
-      `"${m.next_service_date ? new Date(m.next_service_date).toLocaleDateString() : ''}"`,
-      `"${m.last_service_date ? new Date(m.last_service_date).toLocaleDateString() : ''}"`,
-      `"${m.priority || ''}"`
-    ].join(','))];
-    const blob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    link.setAttribute('href', URL.createObjectURL(blob));
-    link.setAttribute('download', `vessel_maintenance_${selectedVesselForLogs?.vessel_name}_${new Date().toISOString().slice(0, 10)}.csv`);
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    const data = [headers, ...vesselMaintenance.map(m => [
+      m.maintenance_type || '-', m.item_system || '-', m.status || '-',
+      m.next_service_date ? new Date(m.next_service_date).toLocaleDateString() : '-',
+      m.last_service_date ? new Date(m.last_service_date).toLocaleDateString() : '-', m.priority || '-'
+    ])];
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    ws['!cols'] = [{ wch: 15 }, { wch: 20 }, { wch: 12 }, { wch: 15 }, { wch: 15 }, { wch: 10 }];
+    XLSX.utils.book_append_sheet(wb, ws, 'Maintenance');
+    XLSX.writeFile(wb, `vessel_maintenance_${selectedVesselForLogs?.vessel_name}_${new Date().toISOString().slice(0, 10)}.xlsx`);
   };
 
-  const exportVesselIncidentsToCSV = () => {
+  const exportVesselIncidentsToExcel = () => {
     if (vesselIncidents.length === 0) return;
+    const wb = XLSX.utils.book_new();
     const headers = ['Incident #', 'Title', 'Type', 'Severity', 'Date', 'Status', 'Location'];
-    const csvRows = [headers.join(','), ...vesselIncidents.map(i => [
-      `"${i.incident_number || ''}"`,
-      `"${(i.title || '').replace(/"/g, '""')}"`,
-      `"${Array.isArray(i.incident_type) ? i.incident_type.join('; ') : (i.incident_type || '')}"`,
-      `"${i.severity || ''}"`,
-      `"${i.incident_date ? new Date(i.incident_date).toLocaleDateString() : ''}"`,
-      `"${i.investigation_status || ''}"`,
-      `"${(i.location || '').replace(/"/g, '""')}"`
-    ].join(','))];
-    const blob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    link.setAttribute('href', URL.createObjectURL(blob));
-    link.setAttribute('download', `vessel_incidents_${selectedVesselForLogs?.vessel_name}_${new Date().toISOString().slice(0, 10)}.csv`);
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    const data = [headers, ...vesselIncidents.map(i => [
+      i.incident_number || '-', i.title || '-', Array.isArray(i.incident_type) ? i.incident_type.join('; ') : (i.incident_type || '-'),
+      i.severity || '-', i.incident_date ? new Date(i.incident_date).toLocaleDateString() : '-', i.investigation_status || '-', i.location || '-'
+    ])];
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    ws['!cols'] = [{ wch: 15 }, { wch: 25 }, { wch: 20 }, { wch: 10 }, { wch: 12 }, { wch: 15 }, { wch: 20 }];
+    XLSX.utils.book_append_sheet(wb, ws, 'Incidents');
+    XLSX.writeFile(wb, `vessel_incidents_${selectedVesselForLogs?.vessel_name}_${new Date().toISOString().slice(0, 10)}.xlsx`);
   };
 
   // Export all vessel data to Excel with multiple worksheets
