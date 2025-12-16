@@ -497,6 +497,144 @@ const CrewManagement = () => {
     document.body.removeChild(link);
   };
 
+  // Export all crew data to Excel with multiple worksheets
+  const exportCrewToExcel = () => {
+    if (!viewingCrew) return;
+
+    // Create workbook
+    const wb = XLSX.utils.book_new();
+
+    // Sheet 1: Crew Details
+    const detailsData = [
+      ['Crew Member Details'],
+      [''],
+      ['Field', 'Value'],
+      ['Name', viewingCrew.staff_name || 'N/A'],
+      ['Position', viewingCrew.default_position || 'N/A'],
+      ['Role', viewingCrew.role || 'N/A'],
+      ['Mobile', viewingCrew.mobile || 'N/A'],
+      ['Telephone', viewingCrew.telephone || 'N/A'],
+      ['Email', viewingCrew.email || 'N/A'],
+      ['Address', viewingCrew.address || 'N/A'],
+      ['Date of Birth', viewingCrew.date_of_birth ? new Date(viewingCrew.date_of_birth).toLocaleDateString() : 'N/A'],
+      ['Gender', viewingCrew.gender || 'N/A'],
+      ['Next of Kin', viewingCrew.next_of_kin || 'N/A'],
+      ['Next of Kin Contact', viewingCrew.next_of_kin_contact || 'N/A'],
+      ['Date Commenced', viewingCrew.date_commenced ? new Date(viewingCrew.date_commenced).toLocaleDateString() : 'N/A'],
+      ['Date Ceased', viewingCrew.date_ceased ? new Date(viewingCrew.date_ceased).toLocaleDateString() : 'N/A'],
+      ['Status', viewingCrew.status || 'N/A'],
+      ['License Number', viewingCrew.license_number || 'N/A'],
+      ['License Expiry', viewingCrew.license_expiry ? new Date(viewingCrew.license_expiry).toLocaleDateString() : 'N/A'],
+      ['Medical Cert Expiry', viewingCrew.medical_cert_expiry ? new Date(viewingCrew.medical_cert_expiry).toLocaleDateString() : 'N/A'],
+      [''],
+      ['Qualifications'],
+    ];
+    
+    // Add qualifications
+    if (viewingCrew.qualifications && viewingCrew.qualifications.length > 0) {
+      detailsData.push(['Name', 'Date', 'Years']);
+      viewingCrew.qualifications.forEach(qual => {
+        detailsData.push([
+          qual.name || 'N/A',
+          qual.date ? new Date(qual.date).toLocaleDateString() : 'N/A',
+          qual.date ? calculateYears(qual.date) : 'N/A'
+        ]);
+      });
+    } else {
+      detailsData.push(['No qualifications recorded']);
+    }
+
+    const wsDetails = XLSX.utils.aoa_to_sheet(detailsData);
+    wsDetails['!cols'] = [{ wch: 20 }, { wch: 40 }];
+    XLSX.utils.book_append_sheet(wb, wsDetails, 'Crew Details');
+
+    // Sheet 2: Trip Allocations
+    const tripsHeaders = ['Trip Name', 'Vessel', 'Start Date', 'End Date', 'Position', 'Status'];
+    const tripsData = [tripsHeaders];
+    crewTrips.forEach(allocation => {
+      tripsData.push([
+        allocation.trip_name || 'N/A',
+        allocation.vessel_name || 'N/A',
+        allocation.start_date ? new Date(allocation.start_date).toLocaleDateString() : 'N/A',
+        allocation.end_date ? new Date(allocation.end_date).toLocaleDateString() : 'N/A',
+        allocation.position || 'N/A',
+        allocation.status || 'N/A'
+      ]);
+    });
+    if (crewTrips.length === 0) {
+      tripsData.push(['No trip allocations recorded', '', '', '', '', '']);
+    }
+    const wsTrips = XLSX.utils.aoa_to_sheet(tripsData);
+    wsTrips['!cols'] = [{ wch: 25 }, { wch: 20 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 12 }];
+    XLSX.utils.book_append_sheet(wb, wsTrips, 'Trip Allocations');
+
+    // Sheet 3: Crew Shifts
+    const shiftsHeaders = ['Shift Start', 'Shift End', 'Vessel', 'Task Performed', 'Total Hours', 'Trip ID'];
+    const shiftsData = [shiftsHeaders];
+    crewShifts.forEach(shift => {
+      shiftsData.push([
+        shift.shift_start_datetime ? new Date(shift.shift_start_datetime).toLocaleString() : 'N/A',
+        shift.shift_stop_datetime ? new Date(shift.shift_stop_datetime).toLocaleString() : 'N/A',
+        shift.vessel_name || '-',
+        shift.task_performed || '-',
+        shift.total_hours ? `${shift.total_hours}h` : 'N/A',
+        shift.trip_id ? shift.trip_id.substring(0, 8) + '...' : 'Manual'
+      ]);
+    });
+    if (crewShifts.length === 0) {
+      shiftsData.push(['No crew shifts recorded', '', '', '', '', '']);
+    }
+    const wsShifts = XLSX.utils.aoa_to_sheet(shiftsData);
+    wsShifts['!cols'] = [{ wch: 20 }, { wch: 20 }, { wch: 20 }, { wch: 30 }, { wch: 12 }, { wch: 15 }];
+    XLSX.utils.book_append_sheet(wb, wsShifts, 'Crew Shifts');
+
+    // Sheet 4: Drills
+    const drillsHeaders = ['Drill Type', 'Record Date', 'Status', 'Authorized By', 'Notes'];
+    const drillsData = [drillsHeaders];
+    crewDrillRecords.forEach(record => {
+      drillsData.push([
+        record.drill_type || 'N/A',
+        record.record_date ? new Date(record.record_date).toLocaleString() : 'N/A',
+        record.status || 'N/A',
+        record.authorized_by || 'N/A',
+        record.notes || '-'
+      ]);
+    });
+    if (crewDrillRecords.length === 0) {
+      drillsData.push(['No drill records recorded', '', '', '', '']);
+    }
+    const wsDrills = XLSX.utils.aoa_to_sheet(drillsData);
+    wsDrills['!cols'] = [{ wch: 20 }, { wch: 20 }, { wch: 10 }, { wch: 20 }, { wch: 30 }];
+    XLSX.utils.book_append_sheet(wb, wsDrills, 'Drills');
+
+    // Sheet 5: Training
+    const trainingHeaders = ['Procedure', 'Emergency Type', 'Training Date', 'Status', 'Authorized By', 'Notes'];
+    const trainingData = [trainingHeaders];
+    crewTrainingRecords.forEach(record => {
+      trainingData.push([
+        record.procedure_title || 'N/A',
+        record.emergency_type || 'N/A',
+        record.training_date ? new Date(record.training_date).toLocaleString() : 'N/A',
+        record.status || 'N/A',
+        record.authorized_by || 'N/A',
+        record.notes || '-'
+      ]);
+    });
+    if (crewTrainingRecords.length === 0) {
+      trainingData.push(['No training records recorded', '', '', '', '', '']);
+    }
+    const wsTraining = XLSX.utils.aoa_to_sheet(trainingData);
+    wsTraining['!cols'] = [{ wch: 25 }, { wch: 15 }, { wch: 20 }, { wch: 10 }, { wch: 20 }, { wch: 30 }];
+    XLSX.utils.book_append_sheet(wb, wsTraining, 'Training');
+
+    // Generate and download file
+    const fileName = `${viewingCrew.staff_name?.replace(/\s+/g, '_')}_details_${new Date().toISOString().slice(0, 10)}.xlsx`;
+    XLSX.writeFile(wb, fileName);
+    
+    setMessage('Crew data exported to Excel successfully');
+    setTimeout(() => setMessage(''), 3000);
+  };
+
   const checkDuplicates = async (formData) => {
     try {
       const token = localStorage.getItem('token');
