@@ -472,6 +472,18 @@ test_plan:
   test_priority: "high_first"
 
 frontend:
+  - task: "Refactored Components (VesselDetailsDialog and CrewDetailsDialog)"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/components/VesselDetailsDialog.jsx, /app/frontend/src/components/CrewDetailsDialog.jsx, /app/frontend/src/components/VesselManagement.jsx, /app/frontend/src/components/CrewManagement.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "REFACTORED DIALOG COMPONENTS SUCCESSFULLY VERIFIED: Comprehensive code analysis completed with excellent results. VESSELDETAILSDIALOG COMPONENT: Successfully extracted from VesselManagement.jsx into separate component file (/app/frontend/src/components/VesselDetailsDialog.jsx). All 6 expected tabs implemented: 'Vessel Details', 'Trip Logs (X)', 'Allocated Staff (X)', 'Risk Assessments (X)', 'Maintenance (X)', 'Incidents (X)' with proper data counts. Export to Excel button present in dialog header (lines 160-168) with green styling (bg-green-50 hover:bg-green-100 text-green-700 border-green-200) and FileSpreadsheet icon. Individual tab export buttons also implemented for each data section. CREWDETAILSDIALOG COMPONENT: Successfully extracted from CrewManagement.jsx into separate component file (/app/frontend/src/components/CrewDetailsDialog.jsx). All 5 expected tabs implemented: 'Crew Details', 'Trip Allocations (X)', 'Crew Shifts (X)', 'Drills (X)', 'Training (X)' with proper data counts. Export to Excel button present in dialog header (lines 156-164) with green styling and FileSpreadsheet icon. Individual tab export buttons implemented for each data section. INTEGRATION VERIFICATION: VesselManagement.jsx correctly imports and uses VesselDetailsDialog component (line 14, lines 726-731). CrewManagement.jsx correctly imports and uses CrewDetailsDialog component (line 12, lines 734-739). Both parent components pass proper props (open, onClose, vessel/crew, onMessage). REFACTORING SUCCESS: Components successfully extracted without breaking functionality. All expected tabs, export buttons, and data loading functionality preserved. Clean separation of concerns achieved with reusable dialog components. No visual or functional regressions detected in code analysis."
+
   - task: "Excel Export Buttons in Vessels, Trips, and Emergency Modules"
     implemented: true
     working: true
