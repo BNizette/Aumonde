@@ -1091,8 +1091,17 @@ const Emergency = () => {
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
+          </div>
+          <p className="text-gray-500 mt-1">Manage emergency contacts, procedures, and drills</p>
         </div>
-        <p className="text-gray-500 mt-1">Manage emergency contacts, procedures, and drills</p>
+        <Button 
+          variant="outline" 
+          onClick={exportAllEmergencyToExcel}
+          className="flex items-center gap-2 bg-green-50 hover:bg-green-100 text-green-700 border-green-200"
+        >
+          <FileSpreadsheet className="h-4 w-4" />
+          Export to Excel
+        </Button>
       </div>
 
       {message && (
