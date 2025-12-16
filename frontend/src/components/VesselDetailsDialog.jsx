@@ -27,15 +27,16 @@ const VesselDetailsDialog = ({ open, onClose, vessel, onMessage }) => {
   }, [open, vessel]);
 
   const fetchVesselData = async () => {
-    if (!vessel) return;
+    if (!vessel || !vessel.id) return;
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
       const headers = { Authorization: `Bearer ${token}` };
+      const vesselId = vessel.id;
 
       const [logsRes, staffRes, risksRes, maintenanceRes, incidentsRes] = await Promise.all([
-        axios.get(`${API}/vessels/${vessel.id}/running-logs`, { headers }).catch(() => ({ data: [] })),
-        axios.get(`${API}/vessels/${vessel.id}/staff-logs`, { headers }).catch(() => ({ data: [] })),
+        axios.get(`${API}/vessels/${vesselId}/running-logs`, { headers }).catch(() => ({ data: [] })),
+        axios.get(`${API}/vessels/${vesselId}/staff-logs`, { headers }).catch(() => ({ data: [] })),
         axios.get(`${API}/risk-assessments`, { headers }).catch(() => ({ data: [] })),
         axios.get(`${API}/maintenance`, { headers }).catch(() => ({ data: [] })),
         axios.get(`${API}/incidents`, { headers }).catch(() => ({ data: [] }))
@@ -43,9 +44,9 @@ const VesselDetailsDialog = ({ open, onClose, vessel, onMessage }) => {
 
       setRunningLogs(logsRes.data || []);
       setStaffLogs(staffRes.data || []);
-      setRisks((risksRes.data || []).filter(r => r.vessel_id === vessel.id));
-      setMaintenance((maintenanceRes.data || []).filter(m => m.vessel_id === vessel.id));
-      setIncidents((incidentsRes.data || []).filter(i => i.vessel_id === vessel.id));
+      setRisks((risksRes.data || []).filter(r => r.vessel_id === vesselId));
+      setMaintenance((maintenanceRes.data || []).filter(m => m.vessel_id === vesselId));
+      setIncidents((incidentsRes.data || []).filter(i => i.vessel_id === vesselId));
     } catch (err) {
       console.error('Error fetching vessel data:', err);
     } finally {
