@@ -34,17 +34,20 @@ const CrewDetailsDialog = ({ open, onClose, crew, onMessage }) => {
   };
 
   const fetchCrewData = async () => {
-    if (!crew) return;
+    if (!crew || !crew.id || !crew.staff_name) return;
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
       const headers = { Authorization: `Bearer ${token}` };
+      
+      const crewId = crew.id;
+      const crewName = crew.staff_name;
 
       const [tripsRes, shiftsRes, drillsRes, trainingRes] = await Promise.all([
-        axios.get(`${API}/crew/${crew.id}/trips`, { headers }).catch(() => ({ data: [] })),
-        axios.get(`${API}/crew/${crew.id}/shifts`, { headers }).catch(() => ({ data: [] })),
-        axios.get(`${API}/crew/${encodeURIComponent(crew.staff_name)}/drill-records`, { headers }).catch(() => ({ data: [] })),
-        axios.get(`${API}/crew/${encodeURIComponent(crew.staff_name)}/training-records`, { headers }).catch(() => ({ data: [] }))
+        axios.get(`${API}/crew/${crewId}/trips`, { headers }).catch(() => ({ data: [] })),
+        axios.get(`${API}/crew/${crewId}/shifts`, { headers }).catch(() => ({ data: [] })),
+        axios.get(`${API}/crew/${encodeURIComponent(crewName)}/drill-records`, { headers }).catch(() => ({ data: [] })),
+        axios.get(`${API}/crew/${encodeURIComponent(crewName)}/training-records`, { headers }).catch(() => ({ data: [] }))
       ]);
 
       setTrips(tripsRes.data || []);
