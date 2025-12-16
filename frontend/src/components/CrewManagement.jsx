@@ -398,67 +398,50 @@ const CrewManagement = () => {
     }
   };
 
-  // CSV Export Functions
-  const exportCrewTripsToCSV = () => {
+  // Tab Export Functions (Excel)
+  const exportCrewTripsToExcel = () => {
     if (crewTrips.length === 0) return;
-    const headers = ['Trip Name', 'Vessel', 'Depart Date', 'Return Date', 'Position', 'Created At'];
-    const csvRows = [headers.join(','), ...crewTrips.map(t => [
-      `"${(t.trip_name || '').replace(/"/g, '""')}"`,
-      `"${(t.vessel_name || '').replace(/"/g, '""')}"`,
-      `"${t.depart_datetime ? new Date(t.depart_datetime).toLocaleString() : ''}"`,
-      `"${t.return_datetime ? new Date(t.return_datetime).toLocaleString() : ''}"`,
-      `"${t.position || ''}"`,
-      `"${t.created_at ? new Date(t.created_at).toLocaleString() : ''}"`
-    ].join(','))];
-    const blob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    link.setAttribute('href', URL.createObjectURL(blob));
-    link.setAttribute('download', `crew_trips_${selectedCrewForLogs?.staff_name}_${new Date().toISOString().slice(0, 10)}.csv`);
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    const wb = XLSX.utils.book_new();
+    const headers = ['Trip Name', 'Vessel', 'Start Date', 'End Date', 'Position', 'Status'];
+    const data = [headers, ...crewTrips.map(t => [
+      t.trip_name || '-', t.vessel_name || '-',
+      t.start_date ? new Date(t.start_date).toLocaleDateString() : '-',
+      t.end_date ? new Date(t.end_date).toLocaleDateString() : '-',
+      t.position || '-', t.status || '-'
+    ])];
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    ws['!cols'] = [{ wch: 25 }, { wch: 20 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 12 }];
+    XLSX.utils.book_append_sheet(wb, ws, 'Trip Allocations');
+    XLSX.writeFile(wb, `crew_trips_${selectedCrewForLogs?.staff_name}_${new Date().toISOString().slice(0, 10)}.xlsx`);
   };
 
-  const exportCrewDrillsToCSV = () => {
+  const exportCrewDrillsToExcel = () => {
     if (crewDrillRecords.length === 0) return;
+    const wb = XLSX.utils.book_new();
     const headers = ['Drill Type', 'Record Date', 'Status', 'Authorized By', 'Notes'];
-    const csvRows = [headers.join(','), ...crewDrillRecords.map(d => [
-      `"${(d.drill_type || '').replace(/"/g, '""')}"`,
-      `"${d.record_date ? new Date(d.record_date).toLocaleString() : ''}"`,
-      `"${d.status || ''}"`,
-      `"${(d.authorized_by || '').replace(/"/g, '""')}"`,
-      `"${(d.notes || '').replace(/"/g, '""')}"`
-    ].join(','))];
-    const blob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    link.setAttribute('href', URL.createObjectURL(blob));
-    link.setAttribute('download', `crew_drills_${selectedCrewForLogs?.staff_name}_${new Date().toISOString().slice(0, 10)}.csv`);
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    const data = [headers, ...crewDrillRecords.map(d => [
+      d.drill_type || '-', d.record_date ? new Date(d.record_date).toLocaleString() : '-',
+      d.status || '-', d.authorized_by || '-', d.notes || '-'
+    ])];
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    ws['!cols'] = [{ wch: 20 }, { wch: 20 }, { wch: 10 }, { wch: 20 }, { wch: 30 }];
+    XLSX.utils.book_append_sheet(wb, ws, 'Drills');
+    XLSX.writeFile(wb, `crew_drills_${selectedCrewForLogs?.staff_name}_${new Date().toISOString().slice(0, 10)}.xlsx`);
   };
 
-  const exportCrewTrainingToCSV = () => {
+  const exportCrewTrainingToExcel = () => {
     if (crewTrainingRecords.length === 0) return;
+    const wb = XLSX.utils.book_new();
     const headers = ['Procedure', 'Emergency Type', 'Training Date', 'Status', 'Authorized By', 'Notes'];
-    const csvRows = [headers.join(','), ...crewTrainingRecords.map(t => [
-      `"${(t.procedure_title || '').replace(/"/g, '""')}"`,
-      `"${(t.emergency_type || '').replace(/"/g, '""')}"`,
-      `"${t.training_date ? new Date(t.training_date).toLocaleString() : ''}"`,
-      `"${t.status || ''}"`,
-      `"${(t.authorized_by || '').replace(/"/g, '""')}"`,
-      `"${(t.notes || '').replace(/"/g, '""')}"`
-    ].join(','))];
-    const blob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    link.setAttribute('href', URL.createObjectURL(blob));
-    link.setAttribute('download', `crew_training_${selectedCrewForLogs?.staff_name}_${new Date().toISOString().slice(0, 10)}.csv`);
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    const data = [headers, ...crewTrainingRecords.map(t => [
+      t.procedure_title || '-', t.emergency_type || '-',
+      t.training_date ? new Date(t.training_date).toLocaleString() : '-',
+      t.status || '-', t.authorized_by || '-', t.notes || '-'
+    ])];
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    ws['!cols'] = [{ wch: 25 }, { wch: 15 }, { wch: 20 }, { wch: 10 }, { wch: 20 }, { wch: 30 }];
+    XLSX.utils.book_append_sheet(wb, ws, 'Training');
+    XLSX.writeFile(wb, `crew_training_${selectedCrewForLogs?.staff_name}_${new Date().toISOString().slice(0, 10)}.xlsx`);
   };
 
   // Export all crew data to Excel with multiple worksheets
