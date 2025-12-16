@@ -580,8 +580,21 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
       <Dialog open={open} onOpenChange={onClose}>
         <DialogContent className="max-w-5xl max-h-[90vh]">
           <DialogHeader>
-            <DialogTitle>{trip.trip_name}</DialogTitle>
-            <DialogDescription>Trip details and logs</DialogDescription>
+            <div className="flex items-center justify-between pr-8">
+              <div>
+                <DialogTitle>{trip.trip_name}</DialogTitle>
+                <DialogDescription>Trip details and logs</DialogDescription>
+              </div>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={exportTripToExcel}
+                className="flex items-center gap-2 bg-green-50 hover:bg-green-100 text-green-700 border-green-200"
+              >
+                <FileSpreadsheet className="h-4 w-4" />
+                Export to Excel
+              </Button>
+            </div>
           </DialogHeader>
 
           {message && (
