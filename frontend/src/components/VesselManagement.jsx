@@ -1311,9 +1311,9 @@ const VesselManagement = () => {
                     Maintenance records for {selectedVesselForLogs?.vessel_name}
                   </div>
                   {vesselMaintenance.length > 0 && (
-                    <Button variant="outline" size="sm" onClick={exportVesselMaintenanceToCSV}>
-                      <Download className="h-4 w-4 mr-2" />
-                      Export CSV
+                    <Button variant="outline" size="sm" onClick={exportVesselMaintenanceToExcel} className="bg-green-50 hover:bg-green-100 text-green-700 border-green-200">
+                      <FileSpreadsheet className="h-4 w-4 mr-2" />
+                      Export to Excel
                     </Button>
                   )}
                 </div>
