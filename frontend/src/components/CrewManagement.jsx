@@ -42,17 +42,12 @@ const CrewManagement = () => {
   const [prefilledData, setPrefilledData] = useState(null);
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
   const [viewingCrew, setViewingCrew] = useState(null);
+  const [viewDialogOpen, setViewDialogOpen] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [duplicateWarning, setDuplicateWarning] = useState(null);
   const [showDuplicateDialog, setShowDuplicateDialog] = useState(false);
   const [pendingFormData, setPendingFormData] = useState(null);
-  const [selectedCrewForLogs, setSelectedCrewForLogs] = useState(null);
-  const [crewTrips, setCrewTrips] = useState([]);
-  const [crewShifts, setCrewShifts] = useState([]);
-  const [loadingLogs, setLoadingLogs] = useState(false);
-  const [crewDrillRecords, setCrewDrillRecords] = useState([]);
-  const [crewTrainingRecords, setCrewTrainingRecords] = useState([]);
   const [manualCrewLogOpen, setManualCrewLogOpen] = useState(false);
 
   // Use custom hook for advanced filtering
