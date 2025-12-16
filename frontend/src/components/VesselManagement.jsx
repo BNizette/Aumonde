@@ -286,7 +286,7 @@ const VesselManagement = () => {
       setVesselStaffLogs(vesselShifts);
 
       // Fetch risk assessments for this vessel
-      const risksResponse = await axios.get(`${API}/risks`, { headers });
+      const risksResponse = await axios.get(`${API}/risk-assessments`, { headers });
       const vesselRisks = risksResponse.data.filter(risk => risk.vessel_id === vessel.id);
       setVesselRisks(vesselRisks);
 
