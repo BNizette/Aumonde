@@ -373,8 +373,8 @@ const Maintenance = () => {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle>Filters</CardTitle>
-          <Button variant="outline" size="sm" onClick={exportToCSV} className="flex items-center gap-2">
-            <Download className="h-4 w-4" />Export to CSV
+          <Button variant="outline" size="sm" onClick={exportToExcel} className="flex items-center gap-2 bg-green-50 hover:bg-green-100 text-green-700 border-green-200">
+            <FileSpreadsheet className="h-4 w-4" />Export to Excel
           </Button>
         </CardHeader>
         <CardContent>
