@@ -127,26 +127,21 @@ const TripManagement = () => {
     clearAllFiltersHook(); 
   };
 
-  const exportToCSV = () => {
+  const exportToExcel = () => {
     if (filteredTrips.length === 0) { setError('No trips to export'); setTimeout(() => setError(''), 3000); return; }
-    const headers = ['ID', 'Trip Name', 'Vessel Name', 'Trip Type', 'Depart Date', 'Return Date', 'Operating Area', 'Passengers', 'Crew', 'Master', 'Engineer', 'Deckhand', 'Host', 'Notes', 'Created At'];
-    const csvRows = [headers.join(','), ...filteredTrips.map(t => [
-      `"${t.id || ''}"`, `"${(t.trip_name || '').replace(/"/g, '""')}"`, `"${(t.vessel_name || '').replace(/"/g, '""')}"`,
-      `"${t.trip_type || ''}"`, `"${(t.planned_depart_datetime || t.depart_datetime) ? new Date(t.planned_depart_datetime || t.depart_datetime).toLocaleString() : ''}"`,
-      `"${t.return_datetime ? new Date(t.return_datetime).toLocaleString() : ''}"`, `"${(t.operating_area || '').replace(/"/g, '""')}"`,
-      `"${t.number_of_passengers || ''}"`, `"${t.number_of_crew || ''}"`, `"${t.master || ''}"`, `"${t.engineer || ''}"`,
-      `"${t.deckhand || ''}"`, `"${t.host || ''}"`, `"${(t.notes || '').replace(/"/g, '""')}"`,
-      `"${t.created_at ? new Date(t.created_at).toLocaleString() : ''}"`
-    ].join(','))];
-    const blob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    link.setAttribute('href', URL.createObjectURL(blob));
-    link.setAttribute('download', `trips_export_${new Date().toISOString().slice(0, 10)}.csv`);
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    setMessage(`Exported ${filteredTrips.length} trips to CSV`);
+    const wb = XLSX.utils.book_new();
+    const headers = ['Trip Name', 'Vessel', 'Trip Type', 'Depart Date', 'Return Date', 'Operating Area', 'Passengers', 'Crew'];
+    const data = [headers, ...filteredTrips.map(t => [
+      t.trip_name || '-', t.vessel_name || '-', t.trip_type || '-',
+      (t.planned_depart_datetime || t.depart_datetime) ? new Date(t.planned_depart_datetime || t.depart_datetime).toLocaleString() : '-',
+      t.return_datetime ? new Date(t.return_datetime).toLocaleString() : '-',
+      t.operating_area || '-', t.number_of_passengers || '0', t.number_of_crew || '0'
+    ])];
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    ws['!cols'] = [{ wch: 25 }, { wch: 20 }, { wch: 15 }, { wch: 20 }, { wch: 20 }, { wch: 20 }, { wch: 12 }, { wch: 8 }];
+    XLSX.utils.book_append_sheet(wb, ws, 'Trips');
+    XLSX.writeFile(wb, `trips_export_${new Date().toISOString().slice(0, 10)}.xlsx`);
+    setMessage(`Exported ${filteredTrips.length} trips to Excel`);
     setTimeout(() => setMessage(''), 3000);
   };
 
