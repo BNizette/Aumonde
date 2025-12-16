@@ -108,26 +108,21 @@ const RiskAssessment = () => {
     clearAllFiltersHook(); 
   };
 
-  const exportToCSV = () => {
+  const exportToExcel = () => {
     if (filteredRisks.length === 0) { setError('No risks to export'); setTimeout(() => setError(''), 3000); return; }
-    const headers = ['ID', 'Activity/Task', 'Location', 'Vessel', 'Hazard', 'Risk Level', 'Status', 'Controls', 'Responsible Person', 'Assessment Date', 'Review Date', 'Created At'];
-    const csvRows = [headers.join(','), ...filteredRisks.map(r => [
-      `"${r.id || ''}"`, `"${(r.activity_task || '').replace(/"/g, '""')}"`, `"${(r.location || '').replace(/"/g, '""')}"`,
-      `"${(r.vessel_name || '').replace(/"/g, '""')}"`, `"${(r.hazard || '').replace(/"/g, '""')}"`, `"${r.risk_level || ''}"`,
-      `"${r.status || ''}"`, `"${(r.controls || '').replace(/"/g, '""')}"`, `"${(r.responsible_person || '').replace(/"/g, '""')}"`,
-      `"${r.assessment_date ? new Date(r.assessment_date).toLocaleDateString() : ''}"`,
-      `"${r.review_date ? new Date(r.review_date).toLocaleDateString() : ''}"`,
-      `"${r.created_at ? new Date(r.created_at).toLocaleString() : ''}"`
-    ].join(','))];
-    const blob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    link.setAttribute('href', URL.createObjectURL(blob));
-    link.setAttribute('download', `risk_assessment_export_${new Date().toISOString().slice(0, 10)}.csv`);
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    setMessage(`Exported ${filteredRisks.length} risk assessments to CSV`);
+    const wb = XLSX.utils.book_new();
+    const headers = ['Activity/Task', 'Vessel', 'Hazard', 'Risk Level', 'Status', 'Controls', 'Responsible Person', 'Assessment Date', 'Review Date'];
+    const data = [headers, ...filteredRisks.map(r => [
+      r.activity_task || '-', r.vessel_name || '-', r.hazard || '-', r.risk_level || '-', r.status || '-',
+      r.controls || '-', r.responsible_person || '-',
+      r.assessment_date ? new Date(r.assessment_date).toLocaleDateString() : '-',
+      r.review_date ? new Date(r.review_date).toLocaleDateString() : '-'
+    ])];
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    ws['!cols'] = [{ wch: 25 }, { wch: 15 }, { wch: 30 }, { wch: 12 }, { wch: 12 }, { wch: 30 }, { wch: 20 }, { wch: 15 }, { wch: 15 }];
+    XLSX.utils.book_append_sheet(wb, ws, 'Risk Assessments');
+    XLSX.writeFile(wb, `risk_assessment_export_${new Date().toISOString().slice(0, 10)}.xlsx`);
+    setMessage(`Exported ${filteredRisks.length} risk assessments to Excel`);
     setTimeout(() => setMessage(''), 3000);
   };
 
