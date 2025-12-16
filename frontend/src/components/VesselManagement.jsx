@@ -195,63 +195,9 @@ const VesselManagement = () => {
     setFormOpen(true);
   };
 
-  const handleViewLogs = async (vessel) => {
+  const handleViewLogs = (vessel) => {
     setSelectedVesselForLogs(vessel);
     setLogsDialogOpen(true);
-    setLoadingLogs(true);
-    
-    try {
-      const token = localStorage.getItem('token');
-      const headers = { Authorization: `Bearer ${token}` };
-      
-      // Fetch running logs for this vessel
-      const runningLogsResponse = await axios.get(`${API}/running-logs?vessel_id=${vessel.id}`, { headers });
-      setVesselRunningLogs(runningLogsResponse.data);
-      
-      // Fetch crew shifts (trip logs) for this vessel
-      const tripLogsResponse = await axios.get(`${API}/trip-logs`, { headers });
-      
-      // Fetch trips to match vessel_id with shifts
-      const tripsResponse = await axios.get(`${API}/trips`, { headers });
-      const trips = tripsResponse.data;
-      
-      // Filter shifts that belong to trips with this vessel
-      const vesselShifts = tripLogsResponse.data.filter(log => {
-        // Check if log has vessel_id (manual entry)
-        if (log.vessel_id === vessel.id) return true;
-        
-        // Check if log's trip is for this vessel
-        if (log.trip_id) {
-          const trip = trips.find(t => t.id === log.trip_id);
-          return trip && trip.vessel_id === vessel.id;
-        }
-        
-        return false;
-      });
-      
-      setVesselStaffLogs(vesselShifts);
-
-      // Fetch risk assessments for this vessel
-      const risksResponse = await axios.get(`${API}/risk-assessments`, { headers });
-      const vesselRisks = risksResponse.data.filter(risk => risk.vessel_id === vessel.id);
-      setVesselRisks(vesselRisks);
-
-      // Fetch maintenance records for this vessel
-      const maintenanceResponse = await axios.get(`${API}/maintenance`, { headers });
-      const vesselMaintenance = maintenanceResponse.data.filter(m => m.vessel_id === vessel.id);
-      setVesselMaintenance(vesselMaintenance);
-
-      // Fetch incidents for this vessel
-      const incidentsResponse = await axios.get(`${API}/incidents`, { headers });
-      const vesselIncidents = incidentsResponse.data.filter(i => i.vessel_id === vessel.id);
-      setVesselIncidents(vesselIncidents);
-      
-    } catch (err) {
-      console.error('Error fetching vessel logs:', err);
-      setError('Error loading vessel logs');
-    } finally {
-      setLoadingLogs(false);
-    }
   };
 
   // Tab Export Functions (Excel)
