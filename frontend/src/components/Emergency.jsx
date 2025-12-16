@@ -2226,7 +2226,18 @@ const Emergency = () => {
       <Dialog open={drillViewDialogOpen} onOpenChange={setDrillViewDialogOpen}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Drill Details & Records</DialogTitle>
+            <div className="flex items-center justify-between pr-8">
+              <DialogTitle>Drill Details & Records</DialogTitle>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={exportDrillToExcel}
+                className="flex items-center gap-2 bg-green-50 hover:bg-green-100 text-green-700 border-green-200"
+              >
+                <FileSpreadsheet className="h-4 w-4" />
+                Export to Excel
+              </Button>
+            </div>
           </DialogHeader>
           {viewingDrill && (
             <Tabs defaultValue="details">
