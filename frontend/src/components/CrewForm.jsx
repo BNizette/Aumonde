@@ -14,8 +14,11 @@ import { Plus, Trash2, Upload, X, Image } from 'lucide-react';
 
 const CrewForm = ({ open, onClose, onSave, crew, mode = 'create', prefilledData = null }) => {
   const API = process.env.REACT_APP_BACKEND_URL + '/api';
+  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
   const [positions, setPositions] = useState([]);
   const [roles, setRoles] = useState([]);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const [dragActive, setDragActive] = useState(false);
   
   const [formData, setFormData] = useState({
     // Tab 1: Crew Details
