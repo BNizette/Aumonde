@@ -883,6 +883,16 @@ const Compliance = () => {
                               )}
                               {cert.vessel_name && <p><strong>Vessel:</strong> {cert.vessel_name}</p>}
                               {cert.crew_name && <p><strong>Crew:</strong> {cert.crew_name}</p>}
+                              {cert.pdf_url && (
+                                <a 
+                                  href={cert.pdf_url} 
+                                  target="_blank" 
+                                  rel="noopener noreferrer"
+                                  className="inline-flex items-center gap-1 text-blue-600 hover:underline font-medium"
+                                >
+                                  <FileText className="h-4 w-4" /> View Certificate PDF
+                                </a>
+                              )}
                             </div>
                           </div>
                           <div className="flex gap-2 ml-4">
