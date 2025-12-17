@@ -887,6 +887,7 @@ class CrewCreate(BaseModel):
     owner_date: Optional[str] = None
     staff_signature: Optional[str] = None
     staff_date: Optional[str] = None
+    crew_photo_url: Optional[str] = None
 
 # ============================================================================
 # CREW ENDPOINTS
