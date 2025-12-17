@@ -98,6 +98,7 @@ const CrewForm = ({ open, onClose, onSave, crew, mode = 'create', prefilledData 
         briefings_observed: crew.briefings_observed || [],
         briefings_delivered: crew.briefings_delivered || [],
         practical_experience: crew.practical_experience || [],
+        crew_photo_url: crew.crew_photo_url || '',
       });
     } else if (mode === 'create' && prefilledData) {
       setFormData({
@@ -130,6 +131,7 @@ const CrewForm = ({ open, onClose, onSave, crew, mode = 'create', prefilledData 
         owner_date: '',
         staff_signature: '',
         staff_date: '',
+        crew_photo_url: '',
       });
     } else if (mode === 'create') {
       setFormData({
@@ -162,6 +164,7 @@ const CrewForm = ({ open, onClose, onSave, crew, mode = 'create', prefilledData 
         owner_date: '',
         staff_signature: '',
         staff_date: '',
+        crew_photo_url: '',
       });
     }
   }, [crew, mode, open, prefilledData]);
