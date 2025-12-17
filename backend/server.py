@@ -2775,6 +2775,7 @@ class ComplianceCertificate(BaseModel):
     crew_name: Optional[str] = None
     renewal_notification_sent: bool = False
     document_id: Optional[str] = None
+    pdf_url: Optional[str] = None  # Direct PDF file URL
     notes: Optional[str] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
@@ -2790,6 +2791,7 @@ class ComplianceCertificateCreate(BaseModel):
     crew_id: Optional[str] = None
     crew_name: Optional[str] = None
     document_id: Optional[str] = None
+    pdf_url: Optional[str] = None
     notes: Optional[str] = None
 
 class ComplianceRequirement(BaseModel):
