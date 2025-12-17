@@ -287,8 +287,23 @@ const MaintenanceForm = ({ open, onClose, onSave, record, mode = 'create' }) => 
                     id="completed_date"
                     type="date"
                     value={formData.completed_date}
-                    onChange={(e) => handleChange('completed_date', e.target.value)}
+                    onChange={(e) => {
+                      const newDate = e.target.value;
+                      // Auto-update status to "Completed" when a completion date is set
+                      if (newDate && formData.status !== 'Completed') {
+                        setFormData(prev => ({
+                          ...prev,
+                          completed_date: newDate,
+                          status: 'Completed'
+                        }));
+                      } else {
+                        handleChange('completed_date', newDate);
+                      }
+                    }}
                   />
+                  {formData.completed_date && formData.status === 'Completed' && (
+                    <p className="text-xs text-green-600">✓ Status automatically set to "Completed"</p>
+                  )}
                 </div>
 
                 <div className="space-y-2">
