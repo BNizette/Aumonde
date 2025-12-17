@@ -47,7 +47,8 @@ const RiskAssessment = () => {
     risk_levels: [],
     statuses: [],
     start_date: '',
-    end_date: ''
+    end_date: '',
+    overdue: false
   });
 
   useEffect(() => {
