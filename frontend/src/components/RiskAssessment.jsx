@@ -79,6 +79,16 @@ const RiskAssessment = () => {
     if (filters.statuses.length > 0) {
       filtered = filtered.filter(risk => filters.statuses.includes(risk.status));
     }
+    // Filter overdue risks
+    if (filters.overdue) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      filtered = filtered.filter(risk => {
+        const reviewDate = risk.review_date ? new Date(risk.review_date) : null;
+        const nextRiskDate = risk.next_risk_date ? new Date(risk.next_risk_date) : null;
+        return (reviewDate && reviewDate < today) || (nextRiskDate && nextRiskDate < today);
+      });
+    }
     if (filters.start_date || filters.end_date) {
       filtered = filtered.filter(risk => {
         if (!risk.assessment_date) return false;
