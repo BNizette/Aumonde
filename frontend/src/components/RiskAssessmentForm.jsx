@@ -473,6 +473,63 @@ const RiskAssessmentForm = ({ open, onClose, onSave, risk, mode = 'create' }) =>
                     </SelectContent>
                   </Select>
                 </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="next_risk_date">Next Risk Date</Label>
+                  <Input
+                    id="next_risk_date"
+                    type="date"
+                    value={formData.next_risk_date}
+                    onChange={(e) => handleChange('next_risk_date', e.target.value)}
+                  />
+                </div>
+              </div>
+
+              {/* Risk Frequency */}
+              <div className="space-y-2">
+                <Label>Risk Frequency</Label>
+                <div className="flex gap-2">
+                  <Input
+                    id="risk_frequency_quantity"
+                    type="number"
+                    min="1"
+                    value={formData.risk_frequency_quantity}
+                    onChange={(e) => handleChange('risk_frequency_quantity', e.target.value)}
+                    placeholder="Every"
+                    className="w-24"
+                  />
+                  <Select 
+                    value={formData.risk_frequency_duration} 
+                    onValueChange={(value) => handleChange('risk_frequency_duration', value)}
+                  >
+                    <SelectTrigger className="flex-1">
+                      <SelectValue placeholder="Select duration" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Daily">Daily</SelectItem>
+                      <SelectItem value="Monthly">Monthly</SelectItem>
+                      <SelectItem value="Quarterly">Quarterly</SelectItem>
+                      <SelectItem value="Annually">Annually</SelectItem>
+                      <SelectItem value="Bi-Annually">Bi-Annually</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                {formData.risk_frequency_quantity && formData.risk_frequency_duration && (
+                  <p className="text-xs text-gray-500">
+                    Review every {formData.risk_frequency_quantity} {formData.risk_frequency_duration.toLowerCase()}
+                  </p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="completion_notes">Completion Notes</Label>
+                <Textarea
+                  id="completion_notes"
+                  value={formData.completion_notes}
+                  onChange={(e) => handleChange('completion_notes', e.target.value)}
+                  placeholder="Notes about completion or resolution of the risk"
+                  rows={2}
+                />
               </div>
 
               <div className="space-y-2">
