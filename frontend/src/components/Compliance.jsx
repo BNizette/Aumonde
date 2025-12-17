@@ -576,10 +576,10 @@ const Compliance = () => {
 
         {/* CERTIFICATES TAB */}
         <TabsContent value="certificates">
-          {/* Certificate Type Summary Cards */}
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-4">
+          {/* Certificate Status Summary Cards - Total, Valid, Expiring Soon, Expired */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
             <Card 
-              className="cursor-pointer hover:shadow-lg transition-shadow"
+              className="cursor-pointer hover:shadow-lg transition-shadow border-l-4 border-l-blue-500"
               onClick={() => updateCertFilters({ types: [], statuses: [], vessels: [], start_date: '', end_date: '' })}
             >
               <CardContent className="pt-3 pb-3">
@@ -591,50 +591,38 @@ const Compliance = () => {
               </CardContent>
             </Card>
             <Card 
-              className="cursor-pointer hover:shadow-lg transition-shadow"
-              onClick={() => updateCertFilters({ types: ['Vessel Certificate'], statuses: [], vessels: [], start_date: '', end_date: '' })}
+              className="cursor-pointer hover:shadow-lg transition-shadow border-l-4 border-l-green-500"
+              onClick={() => updateCertFilters({ types: [], statuses: ['Valid'], vessels: [], start_date: '', end_date: '' })}
             >
               <CardContent className="pt-3 pb-3">
                 <div className="text-center">
-                  <div className="text-lg font-bold text-purple-600">{vesselCerts}</div>
-                  <div className="text-sm text-gray-600">Vessel</div>
-                  <p className="text-xs text-gray-400 mt-1">Click to filter</p>
+                  <div className="text-lg font-bold text-green-600">{validCerts}</div>
+                  <div className="text-sm text-gray-600">Valid</div>
+                  <p className="text-xs text-gray-400 mt-1">30+ days remaining</p>
                 </div>
               </CardContent>
             </Card>
             <Card 
-              className="cursor-pointer hover:shadow-lg transition-shadow"
-              onClick={() => updateCertFilters({ types: ['Crew Certificate'], statuses: [], vessels: [], start_date: '', end_date: '' })}
+              className="cursor-pointer hover:shadow-lg transition-shadow border-l-4 border-l-yellow-500"
+              onClick={() => updateCertFilters({ types: [], statuses: ['Expiring Soon'], vessels: [], start_date: '', end_date: '' })}
             >
               <CardContent className="pt-3 pb-3">
                 <div className="text-center">
-                  <div className="text-lg font-bold text-orange-600">{crewCerts}</div>
-                  <div className="text-sm text-gray-600">Crew</div>
-                  <p className="text-xs text-gray-400 mt-1">Click to filter</p>
+                  <div className="text-lg font-bold text-yellow-600">{expiringSoon}</div>
+                  <div className="text-sm text-gray-600">Expiring Soon</div>
+                  <p className="text-xs text-gray-400 mt-1">Within 30 days</p>
                 </div>
               </CardContent>
             </Card>
             <Card 
-              className="cursor-pointer hover:shadow-lg transition-shadow"
-              onClick={() => updateCertFilters({ types: ['Safety Equipment'], statuses: [], vessels: [], start_date: '', end_date: '' })}
+              className="cursor-pointer hover:shadow-lg transition-shadow border-l-4 border-l-red-500"
+              onClick={() => updateCertFilters({ types: [], statuses: ['Expired'], vessels: [], start_date: '', end_date: '' })}
             >
               <CardContent className="pt-3 pb-3">
                 <div className="text-center">
-                  <div className="text-lg font-bold text-red-600">{safetyEquipCerts}</div>
-                  <div className="text-sm text-gray-600">Safety</div>
-                  <p className="text-xs text-gray-400 mt-1">Click to filter</p>
-                </div>
-              </CardContent>
-            </Card>
-            <Card 
-              className="cursor-pointer hover:shadow-lg transition-shadow"
-              onClick={() => updateCertFilters({ types: ['Insurance'], statuses: [], vessels: [], start_date: '', end_date: '' })}
-            >
-              <CardContent className="pt-3 pb-3">
-                <div className="text-center">
-                  <div className="text-lg font-bold text-green-600">{insuranceCerts}</div>
-                  <div className="text-sm text-gray-600">Insurance</div>
-                  <p className="text-xs text-gray-400 mt-1">Click to filter</p>
+                  <div className="text-lg font-bold text-red-600">{expired}</div>
+                  <div className="text-sm text-gray-600">Expired</div>
+                  <p className="text-xs text-gray-400 mt-1">Requires renewal</p>
                 </div>
               </CardContent>
             </Card>
