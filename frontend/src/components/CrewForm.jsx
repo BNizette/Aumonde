@@ -173,6 +173,77 @@ const CrewForm = ({ open, onClose, onSave, crew, mode = 'create', prefilledData 
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
+  // Drag and drop handlers for photo upload
+  const handleDrag = useCallback((e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === 'dragenter' || e.type === 'dragover') {
+      setDragActive(true);
+    } else if (e.type === 'dragleave') {
+      setDragActive(false);
+    }
+  }, []);
+
+  const handleDrop = useCallback((e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+    
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      handlePhotoUpload(e.dataTransfer.files[0]);
+    }
+  }, []);
+
+  const handlePhotoSelect = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      handlePhotoUpload(e.target.files[0]);
+    }
+  };
+
+  const handlePhotoUpload = async (file) => {
+    // Validate file type
+    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
+    if (!validTypes.includes(file.type)) {
+      alert('Please upload a valid image file (JPEG, PNG, WebP, or GIF)');
+      return;
+    }
+
+    // Validate file size (max 10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      alert('File size must be less than 10MB');
+      return;
+    }
+
+    setUploadingPhoto(true);
+    try {
+      const token = localStorage.getItem('token');
+      const formDataUpload = new FormData();
+      formDataUpload.append('file', file);
+
+      const response = await axios.post(`${API}/documents/upload`, formDataUpload, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      if (response.data && response.data.file_url) {
+        // Construct full URL for the image
+        const fullUrl = BACKEND_URL + response.data.file_url;
+        handleChange('crew_photo_url', fullUrl);
+      }
+    } catch (err) {
+      console.error('Error uploading photo:', err);
+      alert('Failed to upload photo. Please try again.');
+    } finally {
+      setUploadingPhoto(false);
+    }
+  };
+
+  const removePhoto = () => {
+    handleChange('crew_photo_url', '');
+  };
+
   // Qualification functions
   const addQualification = () => {
     setFormData(prev => ({
