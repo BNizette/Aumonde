@@ -781,15 +781,39 @@ frontend:
 
   - task: "Compliance Summary Cards Redesign"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/frontend/src/components/Compliance.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "Verified - Redesigned certificate summary cards to Total/Valid/Expiring Soon/Expired with colored left borders."
+
+  - task: "PDF Embedding in Compliance Module"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/Compliance.jsx, /app/backend/server.py"
     stuck_count: 0
     priority: "high"
     needs_retesting: true
     status_history:
         - working: "NA"
           agent: "main"
-          comment: "Redesigned certificate summary cards from type-based (Vessel/Crew/Safety/Insurance) to status-based (Total/Valid/Expiring Soon/Expired). Added colored left borders for visual clarity."
+          comment: "Added PDF upload capability to certificate form. Certificates now have pdf_url field. Upload interface with drag-and-drop added to certificate dialog. PDF view link shown on certificate cards when PDF is attached."
+
+  - task: "Quote PDF Attachment to Maintenance"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/MaintenanceForm.jsx, /app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Added quote_pdf_url field to Maintenance records. PDF upload section added to 'Costs & Resources' section in MaintenanceForm. Supports upload, view, and remove of quote PDFs."
 
 agent_communication:
     - agent: "testing"
