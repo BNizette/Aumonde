@@ -1182,31 +1182,88 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create' }) => {
             {/* TAB 6: PHOTO */}
             <TabsContent value="photo" className="space-y-4">
               <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="vessel_photo_url">Vessel Photo URL</Label>
-                  <Input
-                    id="vessel_photo_url"
-                    value={formData.vessel_photo_url}
-                    onChange={(e) => handleChange('vessel_photo_url', e.target.value)}
-                    placeholder="Enter photo URL or upload path"
-                  />
-                </div>
-                {formData.vessel_photo_url && (
-                  <div className="space-y-2">
-                    <Label>Photo Preview</Label>
-                    <div className="border rounded-lg p-4">
-                      <img 
-                        src={formData.vessel_photo_url} 
-                        alt="Vessel" 
-                        className="max-w-full h-auto max-h-64 object-contain"
-                        onError={(e) => {
-                          e.target.style.display = 'none';
-                          e.target.nextSibling.style.display = 'block';
-                        }}
-                      />
-                      <div className="text-muted-foreground text-sm hidden">
-                        Unable to load image from the provided URL
+                <Label>Vessel Photo</Label>
+                
+                {/* Show current photo or drag-drop zone */}
+                {formData.vessel_photo_url ? (
+                  <div className="space-y-4">
+                    <div className="relative border-2 border-gray-200 rounded-lg p-4 bg-gray-50">
+                      <div className="flex justify-center">
+                        <img 
+                          src={formData.vessel_photo_url} 
+                          alt="Vessel" 
+                          className="max-w-full h-auto max-h-64 object-contain rounded-lg shadow-md"
+                          onError={(e) => {
+                            e.target.style.display = 'none';
+                            e.target.nextElementSibling.style.display = 'flex';
+                          }}
+                        />
+                        <div className="hidden flex-col items-center justify-center text-gray-500 py-8">
+                          <Image className="h-12 w-12 mb-2 opacity-50" />
+                          <p className="text-sm">Unable to load image</p>
+                        </div>
                       </div>
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="sm"
+                        className="absolute top-2 right-2"
+                        onClick={removePhoto}
+                      >
+                        <X className="h-4 w-4 mr-1" />
+                        Remove
+                      </Button>
+                    </div>
+                    <p className="text-sm text-gray-500 text-center">
+                      Click "Remove" to upload a different photo
+                    </p>
+                  </div>
+                ) : (
+                  <div
+                    className={`relative border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
+                      dragActive 
+                        ? 'border-blue-500 bg-blue-50' 
+                        : 'border-gray-300 hover:border-gray-400 bg-gray-50'
+                    } ${uploadingPhoto ? 'opacity-50 pointer-events-none' : 'cursor-pointer'}`}
+                    onDragEnter={handleDrag}
+                    onDragLeave={handleDrag}
+                    onDragOver={handleDrag}
+                    onDrop={handleDrop}
+                    onClick={() => !uploadingPhoto && document.getElementById('photo-upload-input').click()}
+                  >
+                    <input
+                      id="photo-upload-input"
+                      type="file"
+                      accept="image/jpeg,image/jpg,image/png,image/webp,image/gif"
+                      className="hidden"
+                      onChange={handlePhotoSelect}
+                      disabled={uploadingPhoto}
+                    />
+                    
+                    <div className="flex flex-col items-center gap-3">
+                      {uploadingPhoto ? (
+                        <>
+                          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+                          <p className="text-sm font-medium text-gray-600">Uploading photo...</p>
+                        </>
+                      ) : (
+                        <>
+                          <div className="p-4 bg-gray-100 rounded-full">
+                            <Upload className="h-8 w-8 text-gray-500" />
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-gray-700">
+                              Drag and drop your vessel photo here
+                            </p>
+                            <p className="text-xs text-gray-500 mt-1">
+                              or click to browse
+                            </p>
+                          </div>
+                          <p className="text-xs text-gray-400">
+                            Supports: JPEG, PNG, WebP, GIF (Max 10MB)
+                          </p>
+                        </>
+                      )}
                     </div>
                   </div>
                 )}
