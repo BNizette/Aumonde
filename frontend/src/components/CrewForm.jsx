@@ -57,6 +57,9 @@ const CrewForm = ({ open, onClose, onSave, crew, mode = 'create', prefilledData 
     owner_date: '',
     staff_signature: '',
     staff_date: '',
+    
+    // Tab 5: Photo
+    crew_photo_url: '',
   });
 
   useEffect(() => {
