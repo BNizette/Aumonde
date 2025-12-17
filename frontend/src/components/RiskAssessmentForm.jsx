@@ -211,7 +211,11 @@ const RiskAssessmentForm = ({ open, onClose, onSave, risk, mode = 'create' }) =>
 
     const submitData = {
       ...formData,
-      review_date: formData.review_date || null
+      review_date: formData.review_date || null,
+      next_risk_date: formData.next_risk_date || null,
+      risk_frequency_quantity: formData.risk_frequency_quantity ? parseInt(formData.risk_frequency_quantity) : null,
+      risk_frequency_duration: formData.risk_frequency_duration || null,
+      completion_notes: formData.completion_notes || null
     };
 
     onSave(submitData);
