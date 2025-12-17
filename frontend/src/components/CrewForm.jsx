@@ -309,11 +309,12 @@ const CrewForm = ({ open, onClose, onSave, crew, mode = 'create', prefilledData 
         </DialogHeader>
 
         <Tabs defaultValue="details" className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="details">Details</TabsTrigger>
             <TabsTrigger value="qualifications">Qualifications</TabsTrigger>
             <TabsTrigger value="training">Training</TabsTrigger>
             <TabsTrigger value="signoff">Sign-off</TabsTrigger>
+            <TabsTrigger value="photo">Photo</TabsTrigger>
           </TabsList>
 
           <ScrollArea className="h-[400px] w-full pr-4">
