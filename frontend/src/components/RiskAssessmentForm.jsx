@@ -36,7 +36,11 @@ const RiskAssessmentForm = ({ open, onClose, onSave, risk, mode = 'create' }) =>
     responsible_person: '',
     review_date: '',
     status: 'Active',
-    notes: ''
+    notes: '',
+    next_risk_date: '',
+    risk_frequency_quantity: '',
+    risk_frequency_duration: '',
+    completion_notes: ''
   });
 
   useEffect(() => {
