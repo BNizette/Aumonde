@@ -537,10 +537,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Risk Assessment New Fields Implementation"
-    - "Maintenance Quote PDF Field Implementation" 
-    - "Compliance Certificate PDF Field Implementation"
-    - "File Upload API Implementation"
+    - "Crew Photo Drag-and-Drop Upload Tab"
   stuck_tasks:
     []
   test_all: false
