@@ -67,7 +67,8 @@ const MaintenanceForm = ({ open, onClose, onSave, record, mode = 'create' }) => 
         completion_notes: record.completion_notes || '',
         next_service_date: record.next_service_date ? record.next_service_date.split('T')[0] : '',
         service_frequency: record.service_frequency || '',
-        notes: record.notes || ''
+        notes: record.notes || '',
+        quote_pdf_url: record.quote_pdf_url || ''
       });
     } else if (mode === 'create') {
       setFormData({
@@ -88,7 +89,8 @@ const MaintenanceForm = ({ open, onClose, onSave, record, mode = 'create' }) => 
         completion_notes: '',
         next_service_date: '',
         service_frequency: '',
-        notes: ''
+        notes: '',
+        quote_pdf_url: ''
       });
     }
     setError('');
