@@ -1757,7 +1757,7 @@ class AMSAComprehensiveTester:
 
     def run_all_tests(self):
         """Run all AMSA system tests"""
-        print("🚀 Starting Backend API Verification After Frontend Refactoring")
+        print("🚀 Starting AMSA Safety Management Backend Testing - New Fields Review")
         print(f"Backend URL: {self.base_url}")
         print("=" * 70)
         
@@ -1766,20 +1766,30 @@ class AMSAComprehensiveTester:
             print("\n❌ Authentication failed - cannot continue with other tests")
             return False
         
-        # Run focused tests for refactored dialog components
-        test_methods = [
-            self.test_vessel_details_dialog_apis,  # VesselDetailsDialog APIs
-            self.test_crew_details_dialog_apis,    # CrewDetailsDialog APIs  
-            self.test_supporting_dialog_apis,      # Supporting APIs used by dialogs
-            # Keep some core tests for completeness
-            self.test_dashboard_stats,
-            self.test_user_management,
-            self.test_vessel_management,
-            self.test_crew_management,
-            self.test_trip_management,
+        # Run NEW FIELDS TESTS (Review Request Focus)
+        new_fields_tests = [
+            self.test_risk_assessment_new_fields,      # Test 1: Risk Assessment New Fields
+            self.test_maintenance_quote_pdf_field,     # Test 2: Maintenance Quote PDF Field
+            self.test_compliance_certificate_pdf_field, # Test 3: Compliance Certificate PDF Field
+            self.test_file_upload_api,                 # Test 4: File Upload API
         ]
         
-        for test_method in test_methods:
+        print("\n🎯 PRIORITY TESTS - NEW FIELDS IMPLEMENTATION")
+        for test_method in new_fields_tests:
+            try:
+                test_method()
+            except Exception as e:
+                self.log_test(test_method.__name__, False, error=f"Exception: {str(e)}")
+        
+        # Run supporting tests to ensure system integrity
+        supporting_tests = [
+            self.test_dashboard_stats,
+            self.test_user_management,
+            self.test_risk_assessment,  # Existing risk assessment tests
+        ]
+        
+        print("\n🔧 SUPPORTING TESTS - System Integrity")
+        for test_method in supporting_tests:
             try:
                 test_method()
             except Exception as e:
