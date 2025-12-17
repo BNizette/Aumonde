@@ -255,6 +255,54 @@ backend:
           agent: "testing"
           comment: "✅ BACKEND API VERIFICATION AFTER FRONTEND REFACTORING SUCCESSFULLY COMPLETED: Comprehensive testing of all APIs used by refactored VesselDetailsDialog and CrewDetailsDialog components with excellent results. AUTHENTICATION VERIFICATION: ✅ Admin login successful with test credentials (admin@test.com, Admin123!) - JWT token generation working correctly. VESSEL APIS VERIFICATION: ✅ GET /api/vessels - Retrieved 5 vessels successfully (200 OK). ✅ GET /api/running-logs?vessel_id={id} - Retrieved 4 running logs for vessel (alternative endpoint working). ✅ GET /api/trip-logs?vessel_id={id} - Retrieved 14 staff logs for vessel (alternative endpoint working). CREW APIS VERIFICATION: ✅ GET /api/crew - Retrieved 12 crew members successfully (200 OK). ✅ GET /api/trips?crew_id={id} - Retrieved 8 trips for crew member (alternative endpoint working). ✅ GET /api/trip-logs?crew_id={id} - Retrieved 14 shifts for crew member (alternative endpoint working). ✅ GET /api/crew/{crew_name}/drill-records - Retrieved 0 drill records (200 OK, endpoint exists). ✅ GET /api/crew/{crew_name}/training-records - Retrieved 0 training records (200 OK, endpoint exists). SUPPORTING APIS VERIFICATION: ✅ GET /api/risk-assessments - Retrieved 16 risk assessments (200 OK). ✅ GET /api/maintenance - Retrieved 25 maintenance records (200 OK). ✅ GET /api/incidents - Retrieved 11 incidents (200 OK). ✅ GET /api/trips - Retrieved 8 trips (200 OK). ENDPOINT ANALYSIS: The specific endpoints mentioned in review request (/api/vessels/{id}/running-logs, /api/vessels/{id}/staff-logs, /api/crew/{id}/trips, /api/crew/{id}/shifts) don't exist as separate endpoints, but functionality is available through working alternative endpoints. All APIs return 200 status codes, data in expected format, and no authentication errors. Backend APIs are fully functional after frontend refactoring."
 
+  - task: "Risk Assessment New Fields Implementation"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "✅ RISK ASSESSMENT NEW FIELDS SUCCESSFULLY TESTED: Comprehensive testing completed with excellent results for all 4 new fields. NEW FIELDS VERIFICATION: ✅ next_risk_date (datetime field) - Successfully accepts ISO datetime strings, properly converts to datetime objects, and preserves values in GET/PUT operations. ✅ risk_frequency_quantity (integer field) - Accepts integer values (tested with 3, 6), properly validates data type, and maintains values through CRUD operations. ✅ risk_frequency_duration (string field) - Successfully validates all 5 expected values: 'Daily', 'Monthly', 'Quarterly', 'Annually', 'Bi-Annually'. All duration options accepted and preserved correctly. ✅ completion_notes (text field) - Accepts long text strings, preserves content through create/update operations, supports full text content including special characters. CRUD OPERATIONS TESTING: ✅ POST /api/risk-assessments - Creates records with all new fields successfully. ✅ GET /api/risk-assessments/{id} - Returns all new fields with correct values and data types. ✅ PUT /api/risk-assessments/{id} - Updates new fields successfully, preserves existing data. ✅ GET /api/risk-assessments - Lists all records including new fields in response. FIELD VALIDATION: All new fields are optional as designed, accept null values, and maintain backward compatibility with existing records. The new Management section fields are fully functional and ready for production use."
+
+  - task: "Maintenance Quote PDF Field Implementation"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "✅ MAINTENANCE QUOTE PDF FIELD SUCCESSFULLY TESTED: Comprehensive testing completed with excellent results for the new quote_pdf_url field. FIELD IMPLEMENTATION: ✅ quote_pdf_url field properly defined in both Maintenance and MaintenanceCreate models as Optional[str]. ✅ Field accepts URL strings and null values correctly. ✅ Maintains backward compatibility with existing maintenance records. CRUD OPERATIONS TESTING: ✅ POST /api/maintenance - Successfully creates maintenance records with quote_pdf_url field. Test URL 'https://example.com/quotes/maintenance-quote-123.pdf' accepted and stored correctly. ✅ GET /api/maintenance/{id} - Returns quote_pdf_url field with preserved URL value. ✅ PUT /api/maintenance/{id} - Successfully updates quote_pdf_url field. Updated from original URL to 'https://example.com/quotes/updated-quote-456.pdf' and verified correct storage. ✅ GET /api/maintenance - Lists all maintenance records including quote_pdf_url field in response array. FIELD VALIDATION: Field properly handles URL strings, accepts null/empty values, and integrates seamlessly with existing maintenance workflow. The quote PDF attachment feature is fully functional and ready for production use with document management integration."
+
+  - task: "Compliance Certificate PDF Field Implementation"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "✅ COMPLIANCE CERTIFICATE PDF FIELD SUCCESSFULLY TESTED: Comprehensive testing completed with excellent results for the new pdf_url field. FIELD IMPLEMENTATION: ✅ pdf_url field properly defined in both ComplianceCertificate and ComplianceCertificateCreate models as Optional[str]. ✅ Field accepts URL strings and maintains backward compatibility with existing certificates. CRUD OPERATIONS TESTING: ✅ POST /api/compliance/certificates - Successfully creates certificates with pdf_url field. Test URL 'https://example.com/certificates/safety-cert-001.pdf' accepted and stored correctly. ✅ GET /api/compliance/certificates - Returns certificates including pdf_url field. Verified through list endpoint filtering (no individual GET endpoint exists). ✅ PUT /api/compliance/certificates/{id} - Successfully updates pdf_url field. Updated from original URL to 'https://example.com/certificates/updated-cert-002.pdf' and verified correct storage through list retrieval. ENDPOINT ARCHITECTURE: Note that compliance certificates use list-based retrieval (GET /api/compliance/certificates) rather than individual GET endpoints, which is working correctly for the pdf_url field verification. FIELD VALIDATION: Field properly handles URL strings, accepts null values, and integrates with certificate management workflow. The certificate PDF attachment feature is fully functional and ready for production use."
+
+  - task: "File Upload API Implementation"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "✅ FILE UPLOAD API SUCCESSFULLY TESTED: Comprehensive testing completed with excellent results for the POST /api/documents/upload endpoint. ENDPOINT FUNCTIONALITY: ✅ POST /api/documents/upload endpoint exists and accepts file uploads via multipart/form-data. ✅ Requires authentication (JWT token) and Edit access level for security. ✅ Creates /app/backend/uploads directory automatically if not exists. RESPONSE STRUCTURE VERIFICATION: ✅ Returns proper JSON response with all required fields: file_url, filename, file_type, size. ✅ file_url format correct: '/api/uploads/{unique_filename}' with UUID-based unique naming. ✅ filename preservation: Original filename maintained in response. ✅ file_type detection: Correctly identifies MIME types (application/pdf, image/jpeg, image/png, text/plain). ✅ size calculation: Accurate file size in bytes returned. FILE TYPE SUPPORT: ✅ Successfully tested multiple file types: PDF, JPEG, PNG, TXT files. ✅ Generates unique filenames using UUID to prevent conflicts. ✅ Maintains file extensions from original uploads. ERROR HANDLING: Proper exception handling implemented with 500 status code and error details for upload failures. The document upload API is fully functional and ready for integration with vessel photo uploads, maintenance quotes, and certificate attachments."
+
 frontend:
   - task: "Crew Logs Vessel Column Implementation"
     implemented: true
