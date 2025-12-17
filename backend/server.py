@@ -1940,6 +1940,10 @@ class RiskAssessment(BaseModel):
     created_by_name: Optional[str] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: Optional[datetime] = None
+    next_risk_date: Optional[datetime] = None
+    risk_frequency_quantity: Optional[int] = None
+    risk_frequency_duration: Optional[str] = None  # Daily, Monthly, Quarterly, Annually, Bi-Annually
+    completion_notes: Optional[str] = None
 
 class RiskAssessmentCreate(BaseModel):
     activity_task: str
@@ -1961,6 +1965,10 @@ class RiskAssessmentCreate(BaseModel):
     review_date: Optional[str] = None
     status: str = "Active"
     notes: Optional[str] = None
+    next_risk_date: Optional[str] = None
+    risk_frequency_quantity: Optional[int] = None
+    risk_frequency_duration: Optional[str] = None
+    completion_notes: Optional[str] = None
 
 @api_router.post("/risk-assessments")
 async def create_risk_assessment(risk_data: RiskAssessmentCreate, current_user: dict = Depends(require_access_level(AccessLevel.EDIT))):
