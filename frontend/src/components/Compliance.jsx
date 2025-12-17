@@ -458,7 +458,8 @@ const Compliance = () => {
       vessel_name: '',
       crew_id: '',
       crew_name: '',
-      notes: ''
+      notes: '',
+      pdf_url: ''
     });
     setCertEditMode(false);
     setEditingCertId(null);
