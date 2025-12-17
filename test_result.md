@@ -537,11 +537,10 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Vessel Photo Drag-and-Drop Upload"
-    - "Maintenance Auto-Status Update"
-    - "Risk Assessment New Fields"
-    - "Risk Assessment Summary Cards Redesign"
-    - "Compliance Summary Cards Redesign"
+    - "Risk Assessment New Fields Implementation"
+    - "Maintenance Quote PDF Field Implementation" 
+    - "Compliance Certificate PDF Field Implementation"
+    - "File Upload API Implementation"
   stuck_tasks:
     []
   test_all: false
