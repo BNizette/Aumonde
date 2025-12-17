@@ -477,7 +477,11 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Refactored Components (VesselDetailsDialog and CrewDetailsDialog)"
+    - "Vessel Photo Drag-and-Drop Upload"
+    - "Maintenance Auto-Status Update"
+    - "Risk Assessment New Fields"
+    - "Risk Assessment Summary Cards Redesign"
+    - "Compliance Summary Cards Redesign"
   stuck_tasks:
     []
   test_all: false
