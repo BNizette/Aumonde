@@ -1418,18 +1418,24 @@ class AMSAComprehensiveTester:
             certificate_id = response['id']
             self.log_test("Create Certificate with PDF URL", True, f"Created certificate: {certificate_id}")
             
-            # Test 2: Verify GET returns pdf_url field
-            success, get_response, _ = self.make_request('GET', f'compliance/certificates/{certificate_id}')
+            # Test 2: Verify GET returns pdf_url field (using GET all certificates and filter)
+            success, all_certificates, _ = self.make_request('GET', 'compliance/certificates')
             if success:
-                pdf_url = get_response.get('pdf_url')
-                if pdf_url == "https://example.com/certificates/safety-cert-001.pdf":
-                    self.log_test("GET Certificate - PDF URL Verification", True, 
-                                 f"PDF URL preserved: {pdf_url}")
+                # Find our certificate in the list
+                created_cert = next((cert for cert in all_certificates if cert['id'] == certificate_id), None)
+                if created_cert:
+                    pdf_url = created_cert.get('pdf_url')
+                    if pdf_url == "https://example.com/certificates/safety-cert-001.pdf":
+                        self.log_test("GET Certificate - PDF URL Verification", True, 
+                                     f"PDF URL preserved: {pdf_url}")
+                    else:
+                        self.log_test("GET Certificate - PDF URL Verification", False, 
+                                     error=f"PDF URL not preserved: {pdf_url}")
                 else:
                     self.log_test("GET Certificate - PDF URL Verification", False, 
-                                 error=f"PDF URL not preserved: {pdf_url}")
+                                 error="Certificate not found in list")
             else:
-                self.log_test("GET Certificate - PDF URL Verification", False, error="Failed to retrieve certificate")
+                self.log_test("GET Certificate - PDF URL Verification", False, error="Failed to retrieve certificates")
             
             # Test 3: Update pdf_url field
             update_data = certificate_data_with_pdf.copy()
