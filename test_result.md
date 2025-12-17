@@ -544,6 +544,18 @@ test_plan:
   test_priority: "high_first"
 
 frontend:
+  - task: "Crew Photo Drag-and-Drop Upload Tab"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/components/CrewForm.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "✅ CREW PHOTO DRAG-AND-DROP UPLOAD TAB SUCCESSFULLY VERIFIED: Comprehensive testing completed with excellent results across all requirements. TAB STRUCTURE VERIFICATION: ✅ Found exactly 5 tabs with correct names: Details, Qualifications, Training, Sign-off, Photo. ✅ Tab navigation uses grid-cols-5 layout as specified. ✅ All original 4 tabs remain fully functional with proper content loading. PHOTO TAB FUNCTIONALITY: ✅ Photo tab loads correctly with 'Crew Member Photo' label. ✅ Drag-and-drop area is visible with proper border-dashed styling. ✅ All required text elements present: 'Drag and drop crew member photo here', 'or click to browse', 'Supports: JPEG, PNG, WebP, GIF (Max 10MB)'. ✅ Upload icon is visible and properly positioned. FILE INPUT VERIFICATION: ✅ Hidden file input element exists with correct accept attribute: image/jpeg,image/jpg,image/png,image/webp,image/gif. ✅ File input configured for correct image formats as specified. ✅ Click functionality works - clicking drag-drop area triggers file picker. DESIGN CONSISTENCY: ✅ Interface design matches Vessel Photo upload pattern with appropriate text differences ('crew member photo' vs 'vessel photo'). ✅ Both interfaces use identical styling and layout structure. RESPONSIVE DESIGN: ✅ Dialog has responsive classes (max-w-4xl, max-h-[90vh], overflow-y-auto) for proper sizing and scrolling. ✅ Photo tab remains functional and visible on mobile viewport (390x844). All requirements from the review request have been successfully implemented and verified."
+
   - task: "Vessel Photo Drag-and-Drop Upload"
     implemented: true
     working: true
