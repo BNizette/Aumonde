@@ -1446,15 +1446,20 @@ class AMSAComprehensiveTester:
             if success:
                 self.log_test("PUT Certificate - Update PDF URL", True, "Successfully updated PDF URL")
                 
-                # Verify updated value
-                success, verify_response, _ = self.make_request('GET', f'compliance/certificates/{certificate_id}')
+                # Verify updated value (using GET all certificates and filter)
+                success, updated_certificates, _ = self.make_request('GET', 'compliance/certificates')
                 if success:
-                    updated_url = verify_response.get('pdf_url')
-                    if updated_url == "https://example.com/certificates/updated-cert-002.pdf":
-                        self.log_test("Verify Updated Certificate PDF URL", True, "PDF URL updated correctly")
+                    updated_cert = next((cert for cert in updated_certificates if cert['id'] == certificate_id), None)
+                    if updated_cert:
+                        updated_url = updated_cert.get('pdf_url')
+                        if updated_url == "https://example.com/certificates/updated-cert-002.pdf":
+                            self.log_test("Verify Updated Certificate PDF URL", True, "PDF URL updated correctly")
+                        else:
+                            self.log_test("Verify Updated Certificate PDF URL", False, 
+                                         error=f"Updated URL incorrect: {updated_url}")
                     else:
                         self.log_test("Verify Updated Certificate PDF URL", False, 
-                                     error=f"Updated URL incorrect: {updated_url}")
+                                     error="Updated certificate not found in list")
                 else:
                     self.log_test("Verify Updated Certificate PDF URL", False, error="Failed to verify update")
             else:
