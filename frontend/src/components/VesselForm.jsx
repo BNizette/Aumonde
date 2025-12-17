@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -10,7 +10,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Shield, Calendar, AlertTriangle, CheckCircle, Clock, FileText, Wrench } from 'lucide-react';
+import { Shield, Calendar, AlertTriangle, CheckCircle, Clock, FileText, Wrench, Upload, X, Image } from 'lucide-react';
 
 const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create' }) => {
   const API = process.env.REACT_APP_BACKEND_URL + '/api';
@@ -21,6 +21,8 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create' }) => {
   const [loadingIncidents, setLoadingIncidents] = useState(false);
   const [vesselMaintenance, setVesselMaintenance] = useState([]);
   const [loadingMaintenance, setLoadingMaintenance] = useState(false);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const [dragActive, setDragActive] = useState(false);
   const [formData, setFormData] = useState({
     // Tab 1: Basic Details
     vessel_name: '',
