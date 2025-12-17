@@ -1215,6 +1215,375 @@ class AMSAComprehensiveTester:
         print(f"      - Consistent filtering by trip_id and crew_id")
 
     # ============================================================================
+    # NEW FIELDS TESTING (REVIEW REQUEST SPECIFIC)
+    # ============================================================================
+
+    def test_risk_assessment_new_fields(self):
+        """Test Risk Assessment new fields: next_risk_date, risk_frequency_quantity, risk_frequency_duration, completion_notes"""
+        print("\n⚠️ Testing Risk Assessment New Fields...")
+        
+        # Test 1: Create risk assessment with new fields
+        risk_data_with_new_fields = {
+            "activity_task": "Testing new risk assessment fields",
+            "location": "Test Location",
+            "hazard": "Test hazard for new fields",
+            "risk_description": "Testing new field implementation",
+            "likelihood": "3",
+            "consequence": "4", 
+            "risk_level": "High",
+            "risk_rating": "12",
+            "control_measures": "Test control measures",
+            "responsible_person": "Test Officer",
+            "review_date": "2024-06-15T00:00:00Z",
+            "status": "Active",
+            # NEW FIELDS
+            "next_risk_date": "2024-12-15T00:00:00Z",
+            "risk_frequency_quantity": 3,
+            "risk_frequency_duration": "Monthly",
+            "completion_notes": "Test completion notes for new field validation"
+        }
+        
+        success, response, status = self.make_request('POST', 'risk-assessments', data=risk_data_with_new_fields)
+        if success and 'id' in response:
+            risk_id = response['id']
+            self.created_risks.append(risk_id)
+            self.log_test("Create Risk Assessment with New Fields", True, f"Created risk: {risk_id}")
+            
+            # Test 2: Verify GET returns new fields
+            success, get_response, _ = self.make_request('GET', f'risk-assessments/{risk_id}')
+            if success:
+                # Check all new fields are present and correct
+                new_fields_correct = (
+                    get_response.get('next_risk_date') is not None and
+                    get_response.get('risk_frequency_quantity') == 3 and
+                    get_response.get('risk_frequency_duration') == "Monthly" and
+                    get_response.get('completion_notes') == "Test completion notes for new field validation"
+                )
+                
+                if new_fields_correct:
+                    self.log_test("GET Risk Assessment - New Fields Verification", True, 
+                                 f"All new fields preserved: next_risk_date, risk_frequency_quantity=3, risk_frequency_duration=Monthly")
+                else:
+                    self.log_test("GET Risk Assessment - New Fields Verification", False, 
+                                 error=f"New fields not preserved correctly: {get_response}")
+            else:
+                self.log_test("GET Risk Assessment - New Fields Verification", False, error="Failed to retrieve risk assessment")
+            
+            # Test 3: Update risk assessment with new fields
+            update_data = risk_data_with_new_fields.copy()
+            update_data['next_risk_date'] = "2025-01-15T00:00:00Z"
+            update_data['risk_frequency_quantity'] = 6
+            update_data['risk_frequency_duration'] = "Quarterly"
+            update_data['completion_notes'] = "Updated completion notes for testing"
+            
+            success, update_response, _ = self.make_request('PUT', f'risk-assessments/{risk_id}', data=update_data)
+            if success:
+                self.log_test("PUT Risk Assessment - Update New Fields", True, "Successfully updated new fields")
+                
+                # Verify updated values
+                success, verify_response, _ = self.make_request('GET', f'risk-assessments/{risk_id}')
+                if success:
+                    updated_fields_correct = (
+                        verify_response.get('risk_frequency_quantity') == 6 and
+                        verify_response.get('risk_frequency_duration') == "Quarterly" and
+                        "Updated completion notes" in verify_response.get('completion_notes', '')
+                    )
+                    
+                    if updated_fields_correct:
+                        self.log_test("Verify Updated New Fields", True, "New fields updated correctly")
+                    else:
+                        self.log_test("Verify Updated New Fields", False, 
+                                     error=f"Updated fields incorrect: {verify_response}")
+                else:
+                    self.log_test("Verify Updated New Fields", False, error="Failed to verify updates")
+            else:
+                self.log_test("PUT Risk Assessment - Update New Fields", False, error="Failed to update risk assessment")
+                
+        else:
+            self.log_test("Create Risk Assessment with New Fields", False, 
+                         error=f"Status: {status}, Response: {response}")
+        
+        # Test 4: Test all valid risk_frequency_duration values
+        valid_durations = ["Daily", "Monthly", "Quarterly", "Annually", "Bi-Annually"]
+        for duration in valid_durations:
+            test_risk_data = {
+                "activity_task": f"Test {duration} frequency",
+                "hazard": "Test hazard",
+                "likelihood": "2",
+                "consequence": "3",
+                "risk_level": "Medium",
+                "risk_rating": "6",
+                "risk_frequency_quantity": 1,
+                "risk_frequency_duration": duration
+            }
+            
+            success, response, status = self.make_request('POST', 'risk-assessments', data=test_risk_data)
+            if success and 'id' in response:
+                test_risk_id = response['id']
+                self.created_risks.append(test_risk_id)
+                self.log_test(f"Risk Frequency Duration - {duration}", True, f"Accepted {duration} frequency")
+            else:
+                self.log_test(f"Risk Frequency Duration - {duration}", False, 
+                             error=f"Failed to create with {duration} frequency")
+
+    def test_maintenance_quote_pdf_field(self):
+        """Test Maintenance quote_pdf_url field"""
+        print("\n🔧 Testing Maintenance Quote PDF Field...")
+        
+        # Test 1: Create maintenance record with quote_pdf_url
+        maintenance_data_with_pdf = {
+            "title": "Test Maintenance with Quote PDF",
+            "maintenance_type": "Scheduled",
+            "equipment_system": "Engine",
+            "description": "Testing quote PDF URL field",
+            "status": "Scheduled",
+            "priority": "Medium",
+            "responsible_person": "Test Technician",
+            "cost": 1500.00,
+            "quote_pdf_url": "https://example.com/quotes/maintenance-quote-123.pdf"
+        }
+        
+        success, response, status = self.make_request('POST', 'maintenance', data=maintenance_data_with_pdf)
+        if success and 'id' in response:
+            maintenance_id = response['id']
+            self.log_test("Create Maintenance with Quote PDF URL", True, f"Created maintenance: {maintenance_id}")
+            
+            # Test 2: Verify GET returns quote_pdf_url field
+            success, get_response, _ = self.make_request('GET', f'maintenance/{maintenance_id}')
+            if success:
+                quote_pdf_url = get_response.get('quote_pdf_url')
+                if quote_pdf_url == "https://example.com/quotes/maintenance-quote-123.pdf":
+                    self.log_test("GET Maintenance - Quote PDF URL Verification", True, 
+                                 f"Quote PDF URL preserved: {quote_pdf_url}")
+                else:
+                    self.log_test("GET Maintenance - Quote PDF URL Verification", False, 
+                                 error=f"Quote PDF URL not preserved: {quote_pdf_url}")
+            else:
+                self.log_test("GET Maintenance - Quote PDF URL Verification", False, error="Failed to retrieve maintenance")
+            
+            # Test 3: Update quote_pdf_url field
+            update_data = maintenance_data_with_pdf.copy()
+            update_data['quote_pdf_url'] = "https://example.com/quotes/updated-quote-456.pdf"
+            update_data['status'] = "In Progress"
+            
+            success, update_response, _ = self.make_request('PUT', f'maintenance/{maintenance_id}', data=update_data)
+            if success:
+                self.log_test("PUT Maintenance - Update Quote PDF URL", True, "Successfully updated quote PDF URL")
+                
+                # Verify updated value
+                success, verify_response, _ = self.make_request('GET', f'maintenance/{maintenance_id}')
+                if success:
+                    updated_url = verify_response.get('quote_pdf_url')
+                    if updated_url == "https://example.com/quotes/updated-quote-456.pdf":
+                        self.log_test("Verify Updated Quote PDF URL", True, "Quote PDF URL updated correctly")
+                    else:
+                        self.log_test("Verify Updated Quote PDF URL", False, 
+                                     error=f"Updated URL incorrect: {updated_url}")
+                else:
+                    self.log_test("Verify Updated Quote PDF URL", False, error="Failed to verify update")
+            else:
+                self.log_test("PUT Maintenance - Update Quote PDF URL", False, error="Failed to update maintenance")
+                
+        else:
+            self.log_test("Create Maintenance with Quote PDF URL", False, 
+                         error=f"Status: {status}, Response: {response}")
+        
+        # Test 4: Test GET all maintenance includes quote_pdf_url
+        success, all_maintenance, status = self.make_request('GET', 'maintenance')
+        if success and isinstance(all_maintenance, list):
+            maintenance_with_pdf = [m for m in all_maintenance if m.get('quote_pdf_url')]
+            self.log_test("GET All Maintenance - Quote PDF URL Field", True, 
+                         f"Retrieved {len(all_maintenance)} maintenance records, {len(maintenance_with_pdf)} with quote PDF URLs")
+        else:
+            self.log_test("GET All Maintenance - Quote PDF URL Field", False, error=f"Status: {status}")
+
+    def test_compliance_certificate_pdf_field(self):
+        """Test Compliance Certificate pdf_url field"""
+        print("\n📋 Testing Compliance Certificate PDF Field...")
+        
+        # Test 1: Create certificate with pdf_url
+        certificate_data_with_pdf = {
+            "certificate_type": "Vessel Certificate",
+            "certificate_name": "Test Safety Certificate",
+            "certificate_number": "TSC-2024-001",
+            "issuing_authority": "Test Maritime Authority",
+            "issue_date": "2024-01-01T00:00:00Z",
+            "expiry_date": "2025-01-01T00:00:00Z",
+            "pdf_url": "https://example.com/certificates/safety-cert-001.pdf",
+            "notes": "Test certificate with PDF URL"
+        }
+        
+        success, response, status = self.make_request('POST', 'compliance/certificates', data=certificate_data_with_pdf)
+        if success and 'id' in response:
+            certificate_id = response['id']
+            self.log_test("Create Certificate with PDF URL", True, f"Created certificate: {certificate_id}")
+            
+            # Test 2: Verify GET returns pdf_url field
+            success, get_response, _ = self.make_request('GET', f'compliance/certificates/{certificate_id}')
+            if success:
+                pdf_url = get_response.get('pdf_url')
+                if pdf_url == "https://example.com/certificates/safety-cert-001.pdf":
+                    self.log_test("GET Certificate - PDF URL Verification", True, 
+                                 f"PDF URL preserved: {pdf_url}")
+                else:
+                    self.log_test("GET Certificate - PDF URL Verification", False, 
+                                 error=f"PDF URL not preserved: {pdf_url}")
+            else:
+                self.log_test("GET Certificate - PDF URL Verification", False, error="Failed to retrieve certificate")
+            
+            # Test 3: Update pdf_url field
+            update_data = certificate_data_with_pdf.copy()
+            update_data['pdf_url'] = "https://example.com/certificates/updated-cert-002.pdf"
+            update_data['notes'] = "Updated certificate with new PDF URL"
+            
+            success, update_response, _ = self.make_request('PUT', f'compliance/certificates/{certificate_id}', data=update_data)
+            if success:
+                self.log_test("PUT Certificate - Update PDF URL", True, "Successfully updated PDF URL")
+                
+                # Verify updated value
+                success, verify_response, _ = self.make_request('GET', f'compliance/certificates/{certificate_id}')
+                if success:
+                    updated_url = verify_response.get('pdf_url')
+                    if updated_url == "https://example.com/certificates/updated-cert-002.pdf":
+                        self.log_test("Verify Updated Certificate PDF URL", True, "PDF URL updated correctly")
+                    else:
+                        self.log_test("Verify Updated Certificate PDF URL", False, 
+                                     error=f"Updated URL incorrect: {updated_url}")
+                else:
+                    self.log_test("Verify Updated Certificate PDF URL", False, error="Failed to verify update")
+            else:
+                self.log_test("PUT Certificate - Update PDF URL", False, error="Failed to update certificate")
+                
+        else:
+            self.log_test("Create Certificate with PDF URL", False, 
+                         error=f"Status: {status}, Response: {response}")
+        
+        # Test 4: Test GET all certificates includes pdf_url
+        success, all_certificates, status = self.make_request('GET', 'compliance/certificates')
+        if success and isinstance(all_certificates, list):
+            certificates_with_pdf = [c for c in all_certificates if c.get('pdf_url')]
+            self.log_test("GET All Certificates - PDF URL Field", True, 
+                         f"Retrieved {len(all_certificates)} certificates, {len(certificates_with_pdf)} with PDF URLs")
+        else:
+            self.log_test("GET All Certificates - PDF URL Field", False, error=f"Status: {status}")
+
+    def test_file_upload_api(self):
+        """Test document upload API endpoint"""
+        print("\n📤 Testing File Upload API...")
+        
+        # Test 1: Verify POST /api/documents/upload endpoint exists
+        # Create a temporary test file
+        test_content = b"This is a test PDF file content for upload testing"
+        
+        try:
+            with tempfile.NamedTemporaryFile(suffix='.pdf', delete=False) as temp_file:
+                temp_file.write(test_content)
+                temp_file_path = temp_file.name
+            
+            # Test file upload
+            with open(temp_file_path, 'rb') as f:
+                files = {'file': ('test-document.pdf', f, 'application/pdf')}
+                
+                success, response, status = self.make_request(
+                    'POST', 'documents/upload',
+                    files=files,
+                    expected_status=200
+                )
+                
+                if success:
+                    # Test 2: Verify response structure
+                    expected_fields = ['file_url', 'filename', 'file_type', 'size']
+                    has_all_fields = all(field in response for field in expected_fields)
+                    
+                    if has_all_fields:
+                        file_url = response.get('file_url')
+                        filename = response.get('filename')
+                        file_type = response.get('file_type')
+                        file_size = response.get('size')
+                        
+                        self.log_test("POST /api/documents/upload - Response Structure", True, 
+                                     f"file_url: {file_url}, filename: {filename}, type: {file_type}, size: {file_size}")
+                        
+                        # Test 3: Verify file_url is returned
+                        if file_url and file_url.startswith('/api/uploads/'):
+                            self.log_test("File Upload - file_url Format", True, 
+                                         f"Correct file_url format: {file_url}")
+                        else:
+                            self.log_test("File Upload - file_url Format", False, 
+                                         error=f"Incorrect file_url format: {file_url}")
+                        
+                        # Test 4: Verify filename preservation
+                        if filename == 'test-document.pdf':
+                            self.log_test("File Upload - Filename Preservation", True, 
+                                         f"Original filename preserved: {filename}")
+                        else:
+                            self.log_test("File Upload - Filename Preservation", False, 
+                                         error=f"Filename not preserved: {filename}")
+                        
+                        # Test 5: Verify file type detection
+                        if file_type == 'application/pdf':
+                            self.log_test("File Upload - File Type Detection", True, 
+                                         f"Correct file type detected: {file_type}")
+                        else:
+                            self.log_test("File Upload - File Type Detection", False, 
+                                         error=f"Incorrect file type: {file_type}")
+                        
+                        # Test 6: Verify file size
+                        if file_size == len(test_content):
+                            self.log_test("File Upload - File Size Calculation", True, 
+                                         f"Correct file size: {file_size} bytes")
+                        else:
+                            self.log_test("File Upload - File Size Calculation", False, 
+                                         error=f"Incorrect file size: {file_size}, expected: {len(test_content)}")
+                    else:
+                        missing_fields = [field for field in expected_fields if field not in response]
+                        self.log_test("POST /api/documents/upload - Response Structure", False, 
+                                     error=f"Missing fields: {missing_fields}")
+                else:
+                    self.log_test("POST /api/documents/upload - Endpoint Exists", False, 
+                                 error=f"Status: {status}, Response: {response}")
+            
+            # Clean up temporary file
+            os.unlink(temp_file_path)
+            
+        except Exception as e:
+            self.log_test("File Upload API Test", False, error=f"Exception: {str(e)}")
+        
+        # Test 7: Test upload with different file types
+        test_files = [
+            ('test.jpg', b'fake jpeg content', 'image/jpeg'),
+            ('test.png', b'fake png content', 'image/png'),
+            ('test.txt', b'fake text content', 'text/plain')
+        ]
+        
+        for filename, content, content_type in test_files:
+            try:
+                with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+                    temp_file.write(content)
+                    temp_file_path = temp_file.name
+                
+                with open(temp_file_path, 'rb') as f:
+                    files = {'file': (filename, f, content_type)}
+                    
+                    success, response, status = self.make_request(
+                        'POST', 'documents/upload',
+                        files=files,
+                        expected_status=200
+                    )
+                    
+                    if success and 'file_url' in response:
+                        self.log_test(f"File Upload - {filename}", True, 
+                                     f"Successfully uploaded {filename}")
+                    else:
+                        self.log_test(f"File Upload - {filename}", False, 
+                                     error=f"Failed to upload {filename}: {status}")
+                
+                os.unlink(temp_file_path)
+                
+            except Exception as e:
+                self.log_test(f"File Upload - {filename}", False, error=f"Exception: {str(e)}")
+
+    # ============================================================================
     # CLEANUP AND MAIN EXECUTION
     # ============================================================================
 
