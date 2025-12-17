@@ -665,7 +665,67 @@ frontend:
     status_history:
         - working: true
           agent: "testing"
-          comment: "EXCEL EXPORT BUTTONS SUCCESSFULLY VERIFIED: Comprehensive code analysis completed across all required modules with 100% implementation confirmed. CODE VERIFICATION RESULTS: 1) VESSEL MANAGEMENT: Found Export to Excel button with FileSpreadsheet icon in vessel details dialog (lines 1093-1094 in VesselManagement.jsx). Button has green styling (bg-green-50 hover:bg-green-100 text-green-700 border-green-200) and triggers exportVesselToExcel() function with XLSX.writeFile() for multi-sheet Excel export. 2) TRIP MANAGEMENT: Found Export to Excel button with FileSpreadsheet icon in trip details dialog (lines 594-595 in TripDetailsDialog.jsx). Button triggers Excel export functionality for trip data. 3) EMERGENCY RESPONSE - DRILLS: Found Export to Excel button with FileSpreadsheet icon in drill view dialog (lines 2237-2238 in Emergency.jsx). Button triggers exportDrillToExcel() function. 4) EMERGENCY RESPONSE - PROCEDURES: Found Export to Excel button with FileSpreadsheet icon in procedure view dialog (lines 2351-2352 in Emergency.jsx). Button triggers exportProcedureToExcel() function. IMPLEMENTATION DETAILS: All buttons use consistent green styling, FileSpreadsheet icons from lucide-react, and proper XLSX library integration for Excel file generation. Export functions create multi-sheet workbooks with proper data formatting and automatic file downloads. The Excel export functionality is fully implemented as specified in the review request across all four required dialogs."
+          comment: "EXCEL EXPORT BUTTONS SUCCESSFULLY VERIFIED: Comprehensive code analysis completed across all required modules with 100% implementation confirmed."
+
+  - task: "Vessel Photo Drag-and-Drop Upload"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/VesselForm.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Implemented drag-and-drop file upload for vessel photos. Replaced URL input with modern drag-and-drop interface in the Photo tab. Supports JPEG, PNG, WebP, GIF up to 10MB. Files stored in MongoDB via /api/documents/upload endpoint."
+
+  - task: "Maintenance Auto-Status Update"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/MaintenanceForm.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Implemented auto-status update to 'Completed' when a completion date is selected in MaintenanceForm. Shows confirmation message when status is automatically changed."
+
+  - task: "Risk Assessment New Fields"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/RiskAssessmentForm.jsx, /app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Added new fields to Risk Assessment: next_risk_date (date), risk_frequency_quantity (number), risk_frequency_duration (Daily/Monthly/Quarterly/Annually/Bi-Annually), completion_notes (text). Backend models updated to support new fields."
+
+  - task: "Risk Assessment Summary Cards Redesign"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/RiskAssessment.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Redesigned summary cards from 'Total/Critical/High/Active' to 'Active/In Progress/Critical/Overdue'. Added colored left borders and overdue calculation based on review_date and next_risk_date."
+
+  - task: "Compliance Summary Cards Redesign"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/Compliance.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Redesigned certificate summary cards from type-based (Vessel/Crew/Safety/Insurance) to status-based (Total/Valid/Expiring Soon/Expired). Added colored left borders for visual clarity."
 
 agent_communication:
     - agent: "testing"
