@@ -70,7 +70,11 @@ const RiskAssessmentForm = ({ open, onClose, onSave, risk, mode = 'create' }) =>
         responsible_person: risk.responsible_person || '',
         review_date: risk.review_date ? risk.review_date.split('T')[0] : '',
         status: risk.status || 'Active',
-        notes: risk.notes || ''
+        notes: risk.notes || '',
+        next_risk_date: risk.next_risk_date ? risk.next_risk_date.split('T')[0] : '',
+        risk_frequency_quantity: risk.risk_frequency_quantity || '',
+        risk_frequency_duration: risk.risk_frequency_duration || '',
+        completion_notes: risk.completion_notes || ''
       });
     } else if (mode === 'create') {
       setFormData({
@@ -92,7 +96,11 @@ const RiskAssessmentForm = ({ open, onClose, onSave, risk, mode = 'create' }) =>
         responsible_person: '',
         review_date: '',
         status: 'Active',
-        notes: ''
+        notes: '',
+        next_risk_date: '',
+        risk_frequency_quantity: '',
+        risk_frequency_duration: '',
+        completion_notes: ''
       });
     }
     setError('');
