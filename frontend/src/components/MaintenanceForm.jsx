@@ -378,6 +378,97 @@ const MaintenanceForm = ({ open, onClose, onSave, record, mode = 'create' }) => 
                     rows={2}
                   />
                 </div>
+
+                {/* Quote PDF Upload */}
+                <div className="space-y-2 col-span-2">
+                  <Label>Quote (PDF)</Label>
+                  {formData.quote_pdf_url ? (
+                    <div className="flex items-center gap-3 p-3 border rounded-lg bg-gray-50">
+                      <FileText className="h-8 w-8 text-red-500" />
+                      <div className="flex-1">
+                        <p className="text-sm font-medium">Quote PDF attached</p>
+                        <a 
+                          href={formData.quote_pdf_url} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-xs text-blue-600 hover:underline flex items-center gap-1"
+                        >
+                          <ExternalLink className="h-3 w-3" /> View PDF
+                        </a>
+                      </div>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleChange('quote_pdf_url', '')}
+                      >
+                        <X className="h-4 w-4 mr-1" /> Remove
+                      </Button>
+                    </div>
+                  ) : (
+                    <div 
+                      className={`border-2 border-dashed rounded-lg p-4 text-center cursor-pointer hover:border-gray-400 transition-colors ${uploadingQuote ? 'opacity-50' : ''}`}
+                      onClick={() => !uploadingQuote && document.getElementById('quote-pdf-upload').click()}
+                    >
+                      <input
+                        id="quote-pdf-upload"
+                        type="file"
+                        accept=".pdf,application/pdf"
+                        className="hidden"
+                        disabled={uploadingQuote}
+                        onChange={async (e) => {
+                          const file = e.target.files?.[0];
+                          if (!file) return;
+                          
+                          if (file.type !== 'application/pdf') {
+                            setError('Please upload a PDF file');
+                            return;
+                          }
+                          
+                          if (file.size > 10 * 1024 * 1024) {
+                            setError('File size must be less than 10MB');
+                            return;
+                          }
+                          
+                          setUploadingQuote(true);
+                          try {
+                            const token = localStorage.getItem('token');
+                            const uploadFormData = new FormData();
+                            uploadFormData.append('file', file);
+                            
+                            const response = await axios.post(`${API}/documents/upload`, uploadFormData, {
+                              headers: {
+                                Authorization: `Bearer ${token}`,
+                                'Content-Type': 'multipart/form-data'
+                              }
+                            });
+                            
+                            if (response.data?.file_url) {
+                              handleChange('quote_pdf_url', BACKEND_URL + response.data.file_url);
+                            }
+                          } catch (err) {
+                            setError('Failed to upload PDF');
+                          } finally {
+                            setUploadingQuote(false);
+                            e.target.value = '';
+                          }
+                        }}
+                      />
+                      {uploadingQuote ? (
+                        <div className="flex items-center justify-center gap-2">
+                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-gray-600"></div>
+                          <span className="text-sm text-gray-600">Uploading...</span>
+                        </div>
+                      ) : (
+                        <>
+                          <Upload className="h-6 w-6 mx-auto text-gray-400 mb-2" />
+                          <p className="text-sm text-gray-600">Click to upload quote PDF</p>
+                          <p className="text-xs text-gray-400">Max 10MB</p>
+                        </>
+                      )}
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 
