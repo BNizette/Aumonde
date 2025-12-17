@@ -850,6 +850,9 @@ class Crew(BaseModel):
     staff_signature: Optional[str] = None
     staff_date: Optional[str] = None
     
+    # Tab 5: Photo
+    crew_photo_url: Optional[str] = None
+    
     created_by: str
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: Optional[datetime] = None
