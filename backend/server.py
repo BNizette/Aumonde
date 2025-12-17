@@ -1980,8 +1980,17 @@ async def create_risk_assessment(risk_data: RiskAssessmentCreate, current_user: 
         except:
             pass
     
+    # Convert next_risk_date string to datetime if provided
+    next_risk_date = None
+    if risk_data.next_risk_date:
+        try:
+            next_risk_date = datetime.fromisoformat(risk_data.next_risk_date.replace('Z', '+00:00'))
+        except:
+            pass
+    
     risk_dict = risk_data.model_dump()
     risk_dict['review_date'] = review_date
+    risk_dict['next_risk_date'] = next_risk_date
     
     risk_assessment = RiskAssessment(
         **risk_dict,
