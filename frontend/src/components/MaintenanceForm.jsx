@@ -302,7 +302,7 @@ const MaintenanceForm = ({ open, onClose, onSave, record, mode = 'create' }) => 
                     }}
                   />
                   {formData.completed_date && formData.status === 'Completed' && (
-                    <p className="text-xs text-green-600">✓ Status automatically set to "Completed"</p>
+                    <p className="text-xs text-green-600">✓ Status automatically set to Completed</p>
                   )}
                 </div>
 
