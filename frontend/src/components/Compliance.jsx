@@ -91,8 +91,10 @@ const Compliance = () => {
     vessel_name: '',
     crew_id: '',
     crew_name: '',
-    notes: ''
+    notes: '',
+    pdf_url: ''
   });
+  const [uploadingPdf, setUploadingPdf] = useState(false);
 
   const [reqForm, setReqForm] = useState({
     requirement_name: '',
