@@ -1,61 +1,92 @@
 <analysis>**original_problem_statement:**
-The user initiated this session to resolve a critical scrolling issue in dialogs. Following that, a series of feature requests and bug reports were addressed, including:
-- Refactoring duplicated list UI into a reusable component.
-- Fixing a broken drag-and-drop feature in the Settings panel.
-- Adding regulatory tooltips (AMSA Marine Order 504) to all module headings.
-- Implementing a comprehensive system for recording drill and training history within the Emergency module, and displaying this history in the Crew member's detail view.
-- Significantly enhancing the Incidents module with numerous new fields and a more user-friendly multi-select input.
-- Fixing runtime errors that appeared in the Incidents module after the enhancements.
-- Improving UI consistency by refactoring UI patterns (tabs, multi-selects) across several modules.
-- Implementing a view details dialog pattern for Emergency Drills and Procedures, similar to other modules.
-- Adding Export to CSV functionality to every data table within the Vessel and Crew detail-view dialogs.
-- The most recent request was to fix an error that prevented data from loading in the Vessel detail view.
+The user's initial goal was to resolve a scrolling issue in dialogs. The scope expanded significantly to include:
+- Refactoring UI to reduce code duplication.
+- Adding regulatory tooltips.
+- Implementing a drill and training history system.
+- Enhancing the Incidents module with new fields.
+- Standardizing UI patterns (tabs, multi-selects).
+- Adding Export to CSV functionality across the application.
+- Fixing a data loading bug in the Vessel detail view.
+- The latest user requests involve a batch of 8 new features and improvements, including:
+    1.  Changing the vessel photo upload to a drag-and-drop component.
+    2.  Embedding PDFs in the Compliance module with CRUD controls.
+    3.  Automating the status change of Maintenance records to Completed when a completion date is set.
+    4.  Adding a Quote PDF attachment feature to Maintenance records.
+    5.  Adding new date and frequency fields to Risk Assessment records.
+    6.  Redesigning the Risk Assessment summary cards.
+    7.  Redesigning the Compliance summary cards.
+    8.  Fixing responsive UI layout issues on mobile devices for multiple components.
 
 **User's preferred language**: English
 
 **what currently exists?**
-The application is a comprehensive full-stack maritime management system. Key functionalities include modules for Vessels, Crew, Trips, Compliance, Incidents, Maintenance, and a highly detailed Emergency module with procedures, drills, and record-keeping. A centralized Admin Settings panel allows for dynamic management of all dropdowns. The UI has been progressively standardized with reusable components and consistent interaction patterns (e.g., Popover-based multi-selects, view details dialogs with tabs). The agent has just applied a fix for a data loading error in the Vessel view dialog.
+The application is a comprehensive maritime management system with modules for Vessels, Crew, Trips, Compliance, Incidents, Maintenance, and Emergency. Recent work focused on replacing all CSV exports with more robust multi-sheet Excel exports, powered by a new central utility function. A major refactoring effort was undertaken to extract the large, complex view details dialogs from  and  into their own dedicated components (, ), significantly reducing the line count and complexity of the parent components. The application has also been prepared for deployment, with the addition of a health check endpoint and fixes for several 404 errors that were discovered during a deployment dry-run.
 
 **Last working item**:
--   **Last item agent was working**: Fixing a critical bug where data (Risks, Maintenance, Incidents) failed to load in the vessel view details dialog. The  identified the root cause: an incorrect API endpoint for fetching risk assessments in . The agent corrected the endpoint from  to .
--   **Status**: IN PROGRESS
+-   **Last item agent was working**: The agent received and acknowledged a list of 8 new feature requests from the user. It was preparing to start work on the first task: revamping the Edit vessel photo tab to use a drag-and-drop interface instead of a URL input.
+-   **Status**: NOT STARTED
 -   **Agent Testing Done**: N
 -   **Which testing method agent to use?**: frontend testing agent
 -   **User Testing Done**: N
 
 **All Pending/In progress Issue list**:
--   **Issue 1 (P0): Verify Vessel Logs Loading Fix**
-    -   **Description:** An incorrect API endpoint was causing a data loading failure in the vessel view details dialog. A fix has been applied to  to correct the API path for risk assessments. This fix needs to be verified to ensure all tabs within the dialog load their data correctly.
-    -   **Status:** IN PROGRESS
-    -   **Attempted fixes:** The agent used  to identify the incorrect API endpoint and applied a  to correct it in .
+-   **Issue 1 (P0): Fix Responsive UI on Mobile**
+    -   **Description:** The user reported that on an iPhone, the responsive view for several components is broken, with content being horizontally cut off. This affects edit risk assessment, view crew member, edit trip, and view maintenance. A full review of all views on mobile is required.
+    -   **Status:** NOT STARTED
+    -   **Attempted fixes:** None.
     -   **Next debug checklist:**
-        1.  Invoke the .
-        2.  The test should log in, navigate to Vessel Management, click the eye icon to open the view dialog, and cycle through all tabs (Details, Running Logs, Trip Logs, Staff, Risk, Maintenance, Incidents) to confirm data loads without errors in each one.
-    -   **Why fix this issue and what will be achieved with the fix?** This is a critical bug blocking a key feature that provides a consolidated view of all vessel-related activities. Fixing it will restore core functionality.
+        1.  Use the screenshot tool with mobile dimensions for each reported view to visualize the issue.
+        2.  Inspect the Tailwind CSS classes in the respective components (, , , ).
+        3.  Adjust flexbox, grid, and width properties to ensure content wraps or scales correctly on small screens.
+    -   **Why fix this issue and what will be achieved with the fix?** To ensure the application is usable and professional on mobile devices, which is critical for users in the field.
     -   **Is recurring issue?** N
     -   **Should Test frontend/backend/both after fix?** Frontend
+    -   **Blocked on other issue:** None.
 
 **In progress Task List**:
 -   None.
 
 **Upcoming and Future Tasks**
--   None requested by the user.
+-   **Task 1 (P0): Refactor Vessel Photo Upload to Drag-and-Drop**
+    -   **File:** 
+    -   **Action:** Replace the current URL input field for the vessel photo with a modern drag-and-drop file upload component. This will require frontend changes to handle file objects and potentially backend changes to handle file uploads instead of URLs.
+
+-   **Task 2 (P0): Implement PDF Embedding in Compliance Module**
+    -   **File:** 
+    -   **Action:** Add functionality to allow a PDF file to be uploaded and embedded for each certificate. This requires full CRUD (Create, Read, Update, Delete) controls for the PDF.
+
+-   **Task 3 (P0): Automate Maintenance Status Update**
+    -   **File:** 
+    -   **Action:** Implement logic so that when a user selects a completed date, the record's status is automatically changed to Completed.
+
+-   **Task 4 (P0): Add Quote PDF Attachment to Maintenance**
+    -   **File:** , 
+    -   **Action:** Under the Costs and Resources section of a Maintenance record, add a field labeled Quote that allows for a PDF to be attached. Reuse the PDF handling pattern from the Compliance module task.
+
+-   **Task 5 (P0): Enhance Risk Assessment Records**
+    -   **File:** , 
+    -   **Action:** Add new fields to Risk Assessment records: Next Risk Date, Risk Frequency, and Completion Notes, similar to the pattern used in Maintenance records.
+
+-   **Task 6 (P0): Redesign Risk Assessment Summary Cards**
+    -   **File:** 
+    -   **Action:** Replace the current summary cards with: Active, In Progress, Critical, and Overdue.
+
+-   **Task 7 (P0): Redesign Compliance Summary Cards**
+    -   **File:** 
+    -   **Action:** Replace the current certificate summary cards with: Total, Valid, Expiring soon, and Expired.
 
 **Completed work in this session**
--   **Feature: Widespread CSV Export:** Added Export to CSV functionality to all data tables within the Crew and Vessel view details dialogs, covering logs, assignments, risks, incidents, and more.
--   **Feature: Expanded Vessel View:** Added Risk, Maintenance, and Incidents tabs to the vessel detail view in , creating a centralized hub for all vessel-related information.
--   **UI Refactor: Emergency Module View Pattern:** Replaced inline tables for drill/procedure records with a view details dialog, triggered by an eye icon, for a consistent and cleaner UI.
--   **UI Refactor: Crew View Tabs & Incident Forms:** Separated Drills and Training into their own tabs in the crew view. Refactored  multi-select dropdowns to use the consistent Popover+Checkbox pattern, improving UX.
--   **Bug Fix: Incidents Runtime Errors:** Resolved runtime errors in the Incidents module related to unsafe array access and inconsistent data types, ensuring stability after major feature additions.
--   **Feature: Incident Module Enhancement:** Added 11 new fields (e.g., , , , ) to the Incidents module, including updating the backend model, frontend form, and detail views. Converted  to a multi-select field.
--   **Feature: Emergency Drill & Training Records:** Implemented a full CRUD system for recording drill and training execution history in , complete with new backend APIs and DB collections (, ).
--   **Feature: Regulatory Tooltips:** Added tooltips with links to AMSA Marine Order 504 on all module title headings (, , etc.).
--   **Bug Fix: Settings Drag-and-Drop:** Repaired the broken drag-and-drop reordering functionality in the Admin Settings panel ().
--   **Refactoring: Reusable List Component:** Created a generic responsive list card component () and refactored  and  to use it, reducing code duplication.
--   **Bug Fix Verification:** Confirmed that the fix for dialog scrolling was working correctly across the application.
+-   **Deployment Readiness:** Fixed deployment-blocking bugs by adding a  endpoint and implementing missing  and  endpoints in . Passed a full deployment health check.
+-   **Major Code Refactoring:**
+    -   Created a centralized Excel export utility ().
+    -   Extracted large dialogs from  and  into new, separate components (, ), saving over 1,000 lines of code and improving maintainability.
+-   **Feature: Application-Wide Excel Export:**
+    -   Replaced every Export to CSV button throughout the application with a more powerful Export to Excel function.
+    -   Implemented multi-sheet exports for detailed views in Crew, Vessels, Trips, and Emergency modules.
+-   **Bug Fix Verification:** Confirmed that the fix for the vessel data loading error was working correctly by running the frontend testing agent.
 
 **Earlier issues found/mentioned but not fixed**
--   None.
+-   The responsive UI issues on mobile (listed in All Pending/In progress Issue list) were reported by the user but have not yet been addressed.
 
 **Known issue recurrence from previous fork**
 -   None.
@@ -64,72 +95,79 @@ The application is a comprehensive full-stack maritime management system. Key fu
 
 
 **Key Technical Concepts**
--   **Frontend:** React, Shadcn UI (used Tooltip, Popover, Checkbox, Tabs extensively), Custom Hooks, Tailwind CSS.
--   **Backend:** FastAPI, Pydantic Models, Motor (async MongoDB driver).
--   **UI Patterns:** Creation and adoption of reusable components, standardization of complex inputs (Popover+Checkbox for multi-select), and consistent view details dialog patterns across modules.
--   **Data Handling:** Implemented CSV export functionality using client-side JavaScript.
+-   **Frontend:** React, Shadcn UI, Custom Hooks, Tailwind CSS.
+-   **Backend:** FastAPI, Pydantic Models, Motor.
+-   **Code Refactoring:** Large-scale component extraction to improve modularity and reduce complexity. Creation of a shared utility module () to follow the DRY principle.
+-   **File Generation:** Client-side generation of multi-sheet  files using the  library.
+-   **Deployment Health Checks:** Added a  endpoint and resolved 404 errors to ensure the application is ready for a production deployment pipeline.
 
 **key DB schema**
--   ** (New):** 
--   ** (New):** 
--   ** (Modified):** Added fields like , , , , .  and  changed to .
+-   No schema changes were made in this session.
 
 **changes in tech stack**
--   No new dependencies were added in this session.
+-   **Frontend:** Added  library for Excel file generation.
 
 **All files of reference**
--    (Received the last fix)
--    (Heavily modified for new features)
--   
--   
--   
--    (New file)
+-    (New file for centralized Excel logic)
+-    (New component, extracted from )
+-    (New component, extracted from )
+-    (Heavily refactored)
+-    (Heavily refactored)
+-    (Exports updated)
+-    (Exports updated)
+-    (Endpoints added for deployment readiness)
+-   All other management components (, , , etc.) were updated to replace CSV exports with Excel exports.
 
 **Areas that need refactoring**:
--   The major refactoring task (reusable list component) was completed. No new areas have been identified.
+-   The newly created  and  are currently shells. The refactoring was only partially completed. The next step is to move the state management and data fetching logic related to the dialogs from the parent components (, ) into these new, dedicated components to complete the decoupling.
 
 **key api endpoints**
--   ****: CRUD for drill records.
--   ****: CRUD for training records.
--   ****: Fetches drills for a specific crew member.
--   ****: Fetches training for a specific crew member.
--   ****: Correct endpoint for fetching risks, related to the last bug fix.
--   ****: Updated to handle the new, expanded  model.
+-   **GET  (New):** Health check endpoint for deployment monitoring.
+-   **GET  (New):** Fetches trips allocated to a specific crew member.
+-   **GET  (New):** Fetches shifts for a specific crew member.
 
 **Critical Info for New Agent**
-Your immediate and highest priority is to **verify the fix for the vessel data loading error**. The previous agent corrected an API endpoint in  but did not get to test it. Use the  to confirm that opening the view details dialog on a vessel successfully loads data in all its tabs (especially Risk, Maintenance, and Incidents). This is a critical blocker for a major feature.
+Your primary objective is to implement the 8 new tasks requested by the user. They have been approved and should be worked on sequentially, starting with the highest priority item.
+
+1.  **Start with Task 1:** Refactor the vessel photo upload to a drag-and-drop interface.
+2.  **Proceed through the task list:** Address each of the 8 new features/fixes. The final task is to fix the responsive UI issues on mobile, which will require testing across multiple views.
+3.  **Complete the Refactoring:** While working, be aware that the  and  components are not fully independent. The logic for them still resides in the parent components. Completing this refactoring should be considered a background task to be addressed if you touch those files.
 
 **documents created in this job**
 -   
+-   
+-   
 
 **Last 10 User Messages and any pending user messages**
-1.  **the trips routine for export to csv should be applied to all...**: Request to add CSV export to all vessel/crew detail tabs. **(Completed)**
-2.  **error loading vessel logs to fix**: User reports the bug that is currently being fixed. **(In Progress)**
-3.  **uncaught runtime errors in incidents**: Report of runtime errors after incident module update. **(Completed)**
-4.  **under crew separate drills and training to there own tabs...**: Request to split crew tabs and make incident multi-selects consistent. **(Completed)**
-5.  **The drills records should be handled the same as crew logs...**: Request to refactor drill/procedure record display into a view details dialog. **(Completed)**
-6.  **Emergency multiselect drop downs are inconsistent...**: User pointed out a UI inconsistency. Agent verified it was already consistent. **(Completed)**
-7.  **Under vessel view log details and activity add tabs for Risk, Maintenance and incidents...**: Request to add more tabs to the vessel view. **(Completed)**
-8.  **FOr incidents Ensure that an incident contains...**: Request for major enhancements to the Incidents module with many new fields. **(Completed)**
-9.  **under each Emergency Drill add a table to record...**: Initial request to add drill/training record-keeping. **(Completed)**
-10. **create tool tips for each module heading...**: Request to add regulatory tooltips. **(Completed)**
+1.  **on header of Emergency response add the excel export...**: User requested a master Excel export on the Emergency page and conversion of all CSV buttons to Excel. **(Completed)**
+2.  **review code for refactoring**: User requested a code review to identify refactoring opportunities. **(Completed)**
+3.  **3**: User approved the proposed refactoring plan (create excel utility, split components). **(Completed)**
+4.  **1 2 3**: User approved a more detailed plan to refactor  and . **(Completed)**
+5.  **extend testing**: User requested more comprehensive testing after the major refactoring. **(Completed)**
+6.  **Call Deployer Agent and Run Health Check...**: User requested a check for deployment readiness. **(Completed)**
+-   The agent found and fixed several deployment issues.
+7.  **Use deployment agent to identify the issues...**: User provided deployment logs showing 404 errors. **(Completed)**
+8.  **go**: User confirmed to proceed after the deployment agent's analysis. **(Completed)**
+9.  **change Edit vessel photo tab to have a frame...**: The user provided a list of 8 new feature requests and bug fixes. **(Pending)**
+10. **yes**: User confirmed the agent's plan to tackle all 8 new tasks. **(Pending)**
 
 **Project Health Check:**
--   **Broken:** The vessel view details dialog is non-functional due to a data loading error. A fix has been applied but requires verification.
+-   **Broken:** None.
 -   **Mocked:** None.
 
 **3rd Party Integrations**
 -    (Used in Settings)
+-    (Used for Excel export)
 
 **Testing status**
--   **Testing agent used after significant changes:** YES (Extensively used after every feature/fix)
--   **Troubleshoot agent used after agent stuck in loop:** YES (Used to diagnose the final bug)
--   **Test files created:** None.
--   **Known regressions:** The data loading error in the Vessel view dialog.
+-   **Testing agent used after significant changes:** YES. The agent ran both frontend and backend tests after the major refactoring and deployment fixes. All tests passed.
+-   **Troubleshoot agent used after agent stuck in loop:** NO.
+-   **Test files created:** A temporary backend test file was created and used by the agent but not saved.
+-   **Known regressions:** None.
 
 **Credentials to test flow:**
 -   **Username:** 
 -   **Password:** 
 
 **What agent forgot to execute**
--   The agent has not forgotten any tasks. The final action of the session was applying a bug fix, and the next logical step is to test that fix, which is pending.</analysis>
+-   The agent did not fully complete the refactoring of  and . It created the files and removed the code from the parents, but it did not move the corresponding state and logic into the new components, leaving them as empty shells that rely on props passed from the still-complex parent. This work remains to be done to achieve true component decoupling.</analysis>
