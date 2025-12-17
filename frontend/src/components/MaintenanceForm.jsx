@@ -36,8 +36,10 @@ const MaintenanceForm = ({ open, onClose, onSave, record, mode = 'create' }) => 
     completion_notes: '',
     next_service_date: '',
     service_frequency: '',
-    notes: ''
+    notes: '',
+    quote_pdf_url: ''
   });
+  const [uploadingQuote, setUploadingQuote] = useState(false);
 
   useEffect(() => {
     if (open) {
