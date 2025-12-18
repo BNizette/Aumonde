@@ -553,6 +553,136 @@ const AdminPanel = () => {
   const canEdit = currentUser.access_level === 'Edit' || currentUser.access_level === 'Full';
   const canDelete = currentUser.access_level === 'Full';
 
+  // Excel Export Functions
+  const exportUsersToExcel = () => {
+    const sheets = [{
+      name: 'Users',
+      headers: ['Name', 'Email', 'Role', 'Access Level', 'Status', 'Created At'],
+      data: filteredUsers.map(user => [
+        safeValue(user.full_name),
+        safeValue(user.email),
+        safeValue(user.role),
+        safeValue(user.access_level),
+        safeValue(user.account_status),
+        formatDate(user.created_at)
+      ]),
+      columnWidths: [25, 30, 15, 15, 12, 20]
+    }];
+    exportMultiSheetExcel(sheets, 'admin_users');
+    setMessage('Users exported to Excel successfully');
+  };
+
+  const exportActivityLogsToExcel = () => {
+    const sheets = [{
+      name: 'Activity Logs',
+      headers: ['User', 'Action', 'Timestamp', 'Details'],
+      data: filteredActivityLogs.map(log => [
+        safeValue(log.user_name || log.user_email),
+        safeValue(log.action),
+        formatDate(log.timestamp, true),
+        safeValue(log.details)
+      ]),
+      columnWidths: [25, 20, 25, 40]
+    }];
+    exportMultiSheetExcel(sheets, 'admin_activity_logs');
+    setMessage('Activity logs exported to Excel successfully');
+  };
+
+  const exportAuditLogsToExcel = () => {
+    const sheets = [{
+      name: 'Audit Trail',
+      headers: ['User', 'Action', 'Entity Type', 'Entity ID', 'Description', 'Timestamp'],
+      data: filteredAuditLogs.map(log => [
+        safeValue(log.user_name),
+        safeValue(log.action),
+        safeValue(log.entity_type),
+        safeValue(log.entity_id),
+        safeValue(log.description),
+        formatDate(log.timestamp, true)
+      ]),
+      columnWidths: [25, 15, 15, 30, 40, 25]
+    }];
+    exportMultiSheetExcel(sheets, 'admin_audit_trail');
+    setMessage('Audit trail exported to Excel successfully');
+  };
+
+  const exportSessionsToExcel = () => {
+    const sheets = [{
+      name: 'Sessions',
+      headers: ['User', 'Email', 'Login Time', 'Last Activity', 'IP Address', 'User Agent', 'Status'],
+      data: filteredSessions.map(session => [
+        safeValue(session.user_name),
+        safeValue(session.user_email),
+        formatDate(session.login_time, true),
+        formatDate(session.last_activity, true),
+        safeValue(session.ip_address),
+        safeValue(session.user_agent),
+        session.is_active ? 'Active' : 'Expired'
+      ]),
+      columnWidths: [25, 30, 22, 22, 18, 40, 12]
+    }];
+    exportMultiSheetExcel(sheets, 'admin_sessions');
+    setMessage('Sessions exported to Excel successfully');
+  };
+
+  const exportAllAdminDataToExcel = () => {
+    const sheets = [
+      {
+        name: 'Users',
+        headers: ['Name', 'Email', 'Role', 'Access Level', 'Status', 'Created At'],
+        data: users.map(user => [
+          safeValue(user.full_name),
+          safeValue(user.email),
+          safeValue(user.role),
+          safeValue(user.access_level),
+          safeValue(user.account_status),
+          formatDate(user.created_at)
+        ]),
+        columnWidths: [25, 30, 15, 15, 12, 20]
+      },
+      {
+        name: 'Activity Logs',
+        headers: ['User', 'Action', 'Timestamp', 'Details'],
+        data: activityLogs.map(log => [
+          safeValue(log.user_name || log.user_email),
+          safeValue(log.action),
+          formatDate(log.timestamp, true),
+          safeValue(log.details)
+        ]),
+        columnWidths: [25, 20, 25, 40]
+      },
+      {
+        name: 'Audit Trail',
+        headers: ['User', 'Action', 'Entity Type', 'Entity ID', 'Description', 'Timestamp'],
+        data: auditLogs.map(log => [
+          safeValue(log.user_name),
+          safeValue(log.action),
+          safeValue(log.entity_type),
+          safeValue(log.entity_id),
+          safeValue(log.description),
+          formatDate(log.timestamp, true)
+        ]),
+        columnWidths: [25, 15, 15, 30, 40, 25]
+      },
+      {
+        name: 'Sessions',
+        headers: ['User', 'Email', 'Login Time', 'Last Activity', 'IP Address', 'User Agent', 'Status'],
+        data: sessions.map(session => [
+          safeValue(session.user_name),
+          safeValue(session.user_email),
+          formatDate(session.login_time, true),
+          formatDate(session.last_activity, true),
+          safeValue(session.ip_address),
+          safeValue(session.user_agent),
+          session.is_active ? 'Active' : 'Expired'
+        ]),
+        columnWidths: [25, 30, 22, 22, 18, 40, 12]
+      }
+    ];
+    exportMultiSheetExcel(sheets, 'admin_panel_complete');
+    setMessage('All admin data exported to Excel successfully');
+  };
+
   return (
     <div className="space-y-6">
       <div>
