@@ -509,10 +509,21 @@ const Compliance = () => {
 
   if (loading) return <div className="flex items-center justify-center h-64">Loading...</div>;
 
-  // Count statistics for Certificates tab
-  const validCerts = certificates.filter(c => c.status === 'Valid').length;
-  const expiringSoon = certificates.filter(c => c.status === 'Expiring Soon').length;
-  const expired = certificates.filter(c => c.status === 'Expired').length;
+  // Count statistics for Certificates tab (using same date-based logic as filter)
+  const now = new Date();
+  const thirtyDaysFromNow = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+  const validCerts = certificates.filter(c => {
+    const expiryDate = c.expiry_date ? new Date(c.expiry_date) : null;
+    return expiryDate && expiryDate > thirtyDaysFromNow;
+  }).length;
+  const expiringSoon = certificates.filter(c => {
+    const expiryDate = c.expiry_date ? new Date(c.expiry_date) : null;
+    return expiryDate && expiryDate >= now && expiryDate <= thirtyDaysFromNow;
+  }).length;
+  const expired = certificates.filter(c => {
+    const expiryDate = c.expiry_date ? new Date(c.expiry_date) : null;
+    return expiryDate && expiryDate < now;
+  }).length;
   
   // Count certificate types
   const vesselCerts = certificates.filter(c => c.certificate_type === 'Vessel Certificate').length;
