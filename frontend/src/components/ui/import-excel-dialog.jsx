@@ -13,9 +13,10 @@ import { Upload, Download, FileSpreadsheet, X, CheckCircle, AlertTriangle } from
  * @param {function} props.onClose - Close handler
  * @param {string} props.title - Dialog title (e.g., "Import Vessels")
  * @param {string} props.description - Dialog description
- * @param {Array} props.templateColumns - Array of column names for the template
- * @param {Array} props.templateSampleData - Optional sample data rows for template
- * @param {function} props.onImport - Callback with parsed data array
+ * @param {Array} props.templateColumns - Array of column names for the template (single sheet)
+ * @param {Array} props.templateSampleData - Optional sample data rows for template (single sheet)
+ * @param {Array} props.worksheets - For multi-sheet: [{name, columns, sampleData}]
+ * @param {function} props.onImport - Callback with parsed data (array for single sheet, object with sheet names for multi)
  * @param {function} props.validateRow - Optional row validation function
  * @param {string} props.templateFileName - Filename for template download
  */
@@ -26,10 +27,12 @@ const ImportExcelDialog = ({
   description = 'Upload an Excel file to import data. Download the template for the correct format.',
   templateColumns = [],
   templateSampleData = [],
+  worksheets = [], // For multi-worksheet support
   onImport,
   validateRow,
   templateFileName = 'import_template.xlsx'
 }) => {
+  const isMultiSheet = worksheets.length > 0;
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState([]);
   const [error, setError] = useState('');
