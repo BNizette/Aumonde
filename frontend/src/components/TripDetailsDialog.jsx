@@ -747,6 +747,61 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
                   )}
                 </TabsContent>
 
+                {/* Passengers Tab */}
+                <TabsContent value="passengers" className="space-y-4 mt-4">
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm text-gray-500">
+                      {tripPassengers.length} passenger{tripPassengers.length !== 1 ? 's' : ''} on this trip
+                    </p>
+                    {canEdit && (
+                      <Button size="sm" onClick={() => {
+                        setPassengerForm({ name: '', status: 'Adult', comment: '' });
+                        setEditingPassenger(null);
+                        setPassengerDialogOpen(true);
+                      }}>
+                        <Plus className="h-4 w-4 mr-1" />
+                        Add Passenger
+                      </Button>
+                    )}
+                  </div>
+                  {tripPassengers.length === 0 ? (
+                    <div className="text-center py-8 text-gray-500">
+                      <Users className="h-12 w-12 mx-auto mb-2 opacity-30" />
+                      <p>No passengers recorded for this trip</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      {tripPassengers.map(passenger => (
+                        <div key={passenger.id} className="p-3 border rounded-lg bg-gray-50 flex items-center justify-between">
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <span className="font-medium">{passenger.name}</span>
+                              <span className={`px-2 py-0.5 rounded text-xs font-medium ${getStatusColor(passenger.status)}`}>
+                                {passenger.status}
+                              </span>
+                            </div>
+                            {passenger.comment && (
+                              <p className="text-sm text-gray-500 mt-1">{passenger.comment}</p>
+                            )}
+                          </div>
+                          <div className="flex gap-1">
+                            {canEdit && (
+                              <Button size="sm" variant="ghost" onClick={() => handleEditPassenger(passenger)}>
+                                <Edit className="h-4 w-4" />
+                              </Button>
+                            )}
+                            {canDelete && (
+                              <Button size="sm" variant="ghost" onClick={() => handleDeletePassenger(passenger)} className="text-red-600 hover:text-red-700 hover:bg-red-50">
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </TabsContent>
+
                 {/* Crew Shift Logs Tab */}
                 <TabsContent value="shift" className="space-y-4 mt-4">
                   <div className="flex items-center justify-between">
