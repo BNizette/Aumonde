@@ -192,8 +192,9 @@ const TripManagement = () => {
     }
   };
 
-  const tripImportColumns = ['Trip Name', 'Trip Type', 'Vessel ID', 'Departure Port', 'Arrival Port', 'Departure Date', 'Arrival Date', 'Status'];
-  const tripImportSample = [['Sydney Charter', 'Charter', '', 'Sydney', 'Newcastle', '2024-01-15', '2024-01-15', 'upcoming']];
+  // Import template columns matching export format exactly
+  const tripImportColumns = ['Trip Name', 'Vessel', 'Trip Type', 'Depart Date', 'Return Date', 'Operating Area', 'Passengers', 'Crew'];
+  const tripImportSample = [['Sydney Charter', 'MV Coral Queen', 'Charter', '2024-01-15 08:00', '2024-01-15 18:00', 'Sydney Harbour', '25', '4']];
 
   const fetchTrips = async () => {
     try {
