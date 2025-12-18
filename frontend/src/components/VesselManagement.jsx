@@ -349,74 +349,40 @@ const VesselManagement = () => {
 
       {/* Statistics Cards - Clickable */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-        <Card 
-          className="cursor-pointer hover:shadow-lg transition-shadow border-l-4 border-l-blue-500"
+        <SummaryCard
+          value={vessels.length}
+          label="Total Vessels"
+          description="All vessels"
+          color="blue"
           onClick={() => clearFilters()}
-        >
-          <CardContent className="pt-3 pb-3">
-            <div className="text-center">
-              <div className="text-lg font-bold text-blue-600">{vessels.length}</div>
-              <div className="text-sm text-gray-600">Total Vessels</div>
-              <p className="text-xs text-gray-400 mt-1">All vessels</p>
-            </div>
-          </CardContent>
-        </Card>
-        <Card 
-          className="cursor-pointer hover:shadow-lg transition-shadow border-l-4 border-l-cyan-500"
+        />
+        <SummaryCard
+          value={vessels.filter(v => v.vessel_type?.includes('Passenger')).length}
+          label="Passenger Vessels"
+          description="Click to filter"
+          color="cyan"
           onClick={() => {
             setSearchQuery('Passenger');
-            setFilters({
-              vessel_types: [],
-              min_length: '',
-              max_length: ''
-            });
+            setFilters({ vessel_types: [], min_length: '', max_length: '' });
           }}
-        >
-          <CardContent className="pt-3 pb-3">
-            <div className="text-center">
-              <div className="text-lg font-bold text-cyan-600">
-                {vessels.filter(v => v.vessel_type?.includes('Passenger')).length}
-              </div>
-              <div className="text-sm text-gray-600">Passenger Vessels</div>
-              <p className="text-xs text-gray-400 mt-1">Click to filter</p>
-            </div>
-          </CardContent>
-        </Card>
-        <Card 
-          className="cursor-pointer hover:shadow-lg transition-shadow border-l-4 border-l-green-500"
+        />
+        <SummaryCard
+          value={vessels.filter(v => v.operational_status === 'Operational').length}
+          label="Active Fleet"
+          description="Operational vessels"
+          color="green"
           onClick={() => {
             setSearchQuery('Operational');
-            setFilters({
-              vessel_types: [],
-              min_length: '',
-              max_length: ''
-            });
+            setFilters({ vessel_types: [], min_length: '', max_length: '' });
           }}
-        >
-          <CardContent className="pt-3 pb-3">
-            <div className="text-center">
-              <div className="text-lg font-bold text-green-600">
-                {vessels.filter(v => v.operational_status === 'Operational').length}
-              </div>
-              <div className="text-sm text-gray-600">Active Fleet</div>
-              <p className="text-xs text-gray-400 mt-1">Operational vessels</p>
-            </div>
-          </CardContent>
-        </Card>
-        <Card 
-          className="cursor-pointer hover:shadow-lg transition-shadow border-l-4 border-l-purple-500"
+        />
+        <SummaryCard
+          value={`${vessels.reduce((sum, v) => sum + (parseInt(v.max_passengers) || 0), 0)} pax`}
+          label="Total Capacity"
+          description="Passenger capacity"
+          color="purple"
           onClick={() => clearFilters()}
-        >
-          <CardContent className="pt-3 pb-3">
-            <div className="text-center">
-              <div className="text-lg font-bold text-purple-600">
-                {vessels.reduce((sum, v) => sum + (parseInt(v.max_passengers) || 0), 0)} pax
-              </div>
-              <div className="text-sm text-gray-600">Total Capacity</div>
-              <p className="text-xs text-gray-400 mt-1">Passenger capacity</p>
-            </div>
-          </CardContent>
-        </Card>
+        />
       </div>
 
       {/* Search and Filter Bar */}
