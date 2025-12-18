@@ -1511,7 +1511,7 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create' }) => {
                       </Button>
                     </div>
                     <p className="text-sm text-gray-500 text-center">
-                      Click "Remove" to upload a different photo
+                      Click Remove to upload a different photo
                     </p>
                   </div>
                 ) : (
