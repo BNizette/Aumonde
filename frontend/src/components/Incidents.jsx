@@ -338,7 +338,13 @@ const Incidents = () => {
     setFormData({
       ...incident,
       incident_date: incident.incident_date ? new Date(incident.incident_date).toISOString().slice(0, 16) : '',
-      target_completion_date: incident.target_completion_date ? new Date(incident.target_completion_date).toISOString().slice(0, 16) : ''
+      target_completion_date: incident.target_completion_date ? new Date(incident.target_completion_date).toISOString().slice(0, 16) : '',
+      date_closed: incident.date_closed ? new Date(incident.date_closed).toISOString().slice(0, 10) : '',
+      date_risk_assessment_performed: incident.date_risk_assessment_performed ? new Date(incident.date_risk_assessment_performed).toISOString().slice(0, 10) : '',
+      date_amsa_notified: incident.date_amsa_notified ? new Date(incident.date_amsa_notified).toISOString().slice(0, 10) : '',
+      risk_creator: incident.risk_creator || '',
+      linked_trip_id: incident.linked_trip_id || '',
+      linked_trip_name: incident.linked_trip_name || ''
     });
     setDialogOpen(true);
   };
