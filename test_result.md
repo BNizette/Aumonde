@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Identify summary cards showing incorrect quantities (displaying 0 but filtering to actual records). User reports summary cards displaying '0' count but when clicked, they filter and show actual records (e.g., showing 2 records). The filtering works correctly, but the counting logic is broken."
+user_problem_statement: "Fix Compliance module summary card filter bug and standardize summary card UI across modules (Vessels, Crew, Trips, Incidents, Maintenance, Risk Assessment)."
 
 backend:
   - task: "User Export File Import Functionality"
