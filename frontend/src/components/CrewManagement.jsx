@@ -253,6 +253,49 @@ const CrewManagement = () => {
     setSortBy('name');
   };
 
+  // Import from Excel handler
+  const handleImport = async (data) => {
+    try {
+      const token = localStorage.getItem('token');
+      let successCount = 0;
+      let errorCount = 0;
+
+      for (const row of data) {
+        try {
+          const crewData = {
+            full_name: row['Full Name'] || row['full_name'] || '',
+            email: row['Email'] || row['email'] || '',
+            phone: row['Phone'] || row['phone'] || '',
+            default_position: row['Position'] || row['default_position'] || '',
+            role: row['Role'] || row['role'] || 'crew',
+            emergency_contact_name: row['Emergency Contact'] || row['emergency_contact_name'] || '',
+            emergency_contact_phone: row['Emergency Phone'] || row['emergency_contact_phone'] || '',
+          };
+
+          if (!crewData.full_name || !crewData.email) continue;
+
+          await axios.post(`${API}/crew`, crewData, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          successCount++;
+        } catch (err) {
+          console.error('Error importing crew:', err);
+          errorCount++;
+        }
+      }
+
+      setMessage(`Import complete: ${successCount} crew added${errorCount > 0 ? `, ${errorCount} failed` : ''}`);
+      setTimeout(() => setMessage(''), 5000);
+      fetchCrew();
+    } catch (err) {
+      setError('Error importing data: ' + err.message);
+      setTimeout(() => setError(''), 5000);
+    }
+  };
+
+  const crewImportColumns = ['Full Name', 'Email', 'Phone', 'Position', 'Role', 'Emergency Contact', 'Emergency Phone'];
+  const crewImportSample = [['John Smith', 'john@example.com', '+61400000000', 'Master', 'crew', 'Jane Smith', '+61400000001']];
+
   const hasActiveFilters = searchQuery || filters.positions.length > 0 || filters.roles.length > 0 || filters.start_date || filters.end_date || sortBy !== 'name';
 
   const fetchCrew = async () => {
