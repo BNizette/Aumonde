@@ -976,6 +976,38 @@ const Incidents = () => {
               </div>
             </div>
 
+            {/* Link to Existing Trip */}
+            <div>
+              <Label>Link to Existing Trip (Optional)</Label>
+              <Select 
+                value={formData.linked_trip_id || 'none'} 
+                onValueChange={(value) => {
+                  if (value === 'none') {
+                    setFormData({...formData, linked_trip_id: '', linked_trip_name: ''});
+                  } else {
+                    const selectedTrip = trips.find(t => t.id === value);
+                    setFormData({
+                      ...formData, 
+                      linked_trip_id: value, 
+                      linked_trip_name: selectedTrip ? `${selectedTrip.trip_name || 'Trip'} - ${selectedTrip.vessel_name || ''}` : ''
+                    });
+                  }
+                }}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a trip to link" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">No linked trip</SelectItem>
+                  {trips.map(trip => (
+                    <SelectItem key={trip.id} value={trip.id}>
+                      {trip.trip_name || 'Unnamed Trip'} - {trip.vessel_name || 'No vessel'} ({trip.departure_date ? new Date(trip.departure_date).toLocaleDateString() : 'No date'})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
             <div className="grid grid-cols-3 gap-4">
               <div>
                 <Label>Trip From</Label>
