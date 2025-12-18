@@ -571,7 +571,7 @@ frontend:
   - task: "Import from Excel Functionality Verification"
     implemented: true
     working: true
-    file: "/app/frontend/src/components/VesselManagement.jsx, /app/frontend/src/components/CrewManagement.jsx, /app/frontend/src/components/TripManagement.jsx, /app/frontend/src/components/Incidents.jsx, /app/frontend/src/components/Maintenance.jsx, /app/frontend/src/components/RiskAssessment.jsx, /app/frontend/src/components/ui/import-excel-dialog.jsx"
+    file: "/app/frontend/src/components/VesselManagement.jsx, /app/frontend/src/components/CrewManagement.jsx, /app/frontend/src/components/TripManagement.jsx, /app/frontend/src/components/Incidents.jsx, /app/frontend/src/components/Maintenance.jsx, /app/frontend/src/components/RiskAssessment.jsx, /app/frontend/src/components/Emergency.jsx, /app/frontend/src/components/Compliance.jsx, /app/frontend/src/components/ui/import-excel-dialog.jsx"
     stuck_count: 0
     priority: "high"
     needs_retesting: false
