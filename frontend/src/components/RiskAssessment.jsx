@@ -540,6 +540,18 @@ const RiskAssessment = () => {
         onClose={() => setDetailsOpen(false)}
         risk={selectedRisk}
       />
+
+      {/* Import Excel Dialog */}
+      <ImportExcelDialog
+        open={importDialogOpen}
+        onClose={() => setImportDialogOpen(false)}
+        title="Import Risk Assessments"
+        description="Upload an Excel file to import risk assessments. Download the template for the correct format."
+        templateColumns={riskImportColumns}
+        templateSampleData={riskImportSample}
+        onImport={handleImport}
+        templateFileName="risk_assessments_import_template.xlsx"
+      />
     </div>
   );
 };
