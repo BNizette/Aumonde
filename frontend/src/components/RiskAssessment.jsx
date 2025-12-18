@@ -150,14 +150,15 @@ const RiskAssessment = () => {
       for (const row of data) {
         try {
           const riskData = {
-            title: row['Title'] || row['title'] || '',
-            category: row['Category'] || row['category'] || '',
+            activity_task: row['Activity/Task'] || row['activity_task'] || '',
+            vessel_name: row['Vessel'] || row['vessel_name'] || '',
+            hazard: row['Hazard'] || row['hazard'] || '',
             risk_level: row['Risk Level'] || row['risk_level'] || 'Low',
             status: row['Status'] || row['status'] || 'Active',
-            description: row['Description'] || row['description'] || '',
             controls: row['Controls'] || row['controls'] || '',
-            likelihood: row['Likelihood'] || row['likelihood'] || 'Unlikely',
-            consequence: row['Consequence'] || row['consequence'] || 'Minor',
+            responsible_person: row['Responsible Person'] || row['responsible_person'] || '',
+            assessment_date: row['Assessment Date'] || row['assessment_date'] || '',
+            review_date: row['Review Date'] || row['review_date'] || '',
           };
 
           if (!riskData.title) continue;
