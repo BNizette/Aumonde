@@ -1281,14 +1281,24 @@ const Emergency = () => {
           </div>
           <p className="text-gray-500 mt-1">Manage emergency contacts, procedures, and drills</p>
         </div>
-        <Button 
-          variant="outline" 
-          onClick={exportAllEmergencyToExcel}
-          className="flex items-center gap-2 bg-green-50 hover:bg-green-100 text-green-700 border-green-200"
-        >
-          <FileSpreadsheet className="h-4 w-4" />
-          Export to Excel
-        </Button>
+        <div className="flex gap-2">
+          <Button 
+            variant="outline" 
+            onClick={() => setImportAllOpen(true)}
+            className="flex items-center gap-2 bg-blue-50 hover:bg-blue-100 text-blue-700 border-blue-200"
+          >
+            <Download className="h-4 w-4" />
+            Import from Excel
+          </Button>
+          <Button 
+            variant="outline" 
+            onClick={exportAllEmergencyToExcel}
+            className="flex items-center gap-2 bg-green-50 hover:bg-green-100 text-green-700 border-green-200"
+          >
+            <FileSpreadsheet className="h-4 w-4" />
+            Export to Excel
+          </Button>
+        </div>
       </div>
 
       {message && (
