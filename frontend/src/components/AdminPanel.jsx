@@ -731,12 +731,23 @@ const AdminPanel = () => {
                   <CardTitle>User Management</CardTitle>
                   <CardDescription>View and manage all users in the system</CardDescription>
                 </div>
-                {canEdit && (
-                  <Button onClick={() => setCreateDialogOpen(true)}>
-                    <UserPlus className="mr-2 h-4 w-4" />
-                    Create User
+                <div className="flex gap-2">
+                  <Button 
+                    onClick={exportUsersToExcel}
+                    variant="outline"
+                    size="sm"
+                    className="bg-green-50 hover:bg-green-100 text-green-700 border-green-200"
+                  >
+                    <FileSpreadsheet className="mr-2 h-4 w-4" />
+                    Export to Excel
                   </Button>
-                )}
+                  {canEdit && (
+                    <Button onClick={() => setCreateDialogOpen(true)}>
+                      <UserPlus className="mr-2 h-4 w-4" />
+                      Create User
+                    </Button>
+                  )}
+                </div>
               </div>
             </CardHeader>
             <CardContent>
