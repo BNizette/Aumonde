@@ -172,8 +172,9 @@ const Maintenance = () => {
     }
   };
 
-  const maintenanceImportColumns = ['Title', 'Type', 'Priority', 'Status', 'Equipment/System', 'Description', 'Scheduled Date', 'Vessel ID'];
-  const maintenanceImportSample = [['Engine Oil Change', 'Preventive', 'Medium', 'Scheduled', 'Main Engine', 'Routine oil change', '2024-01-20', '']];
+  // Import template columns matching export format exactly
+  const maintenanceImportColumns = ['Title', 'Equipment/System', 'Vessel', 'Type', 'Status', 'Priority', 'Scheduled Date', 'Completed Date', 'Responsible Person'];
+  const maintenanceImportSample = [['Engine Oil Change', 'Main Engine', 'MV Coral Queen', 'Preventive', 'Scheduled', 'Medium', '2024-01-20', '', 'John Smith']];
 
   const clearFilters = () => { setSearchQuery(''); clearAllFilters(); setSortBy('priority'); };
   const hasActiveFilters = searchQuery || filters.statuses.length > 0 || filters.priorities.length > 0 || filters.start_date || filters.end_date || sortBy !== 'priority';
