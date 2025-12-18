@@ -336,60 +336,60 @@ const TripManagement = () => {
       {/* Statistics Cards - Clickable */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
         <Card 
-          className="cursor-pointer hover:shadow-lg transition-shadow" 
+          className="cursor-pointer hover:shadow-lg transition-shadow border-l-4 border-l-blue-500" 
           onClick={() => {
             clearAllFilters();
             setSortBy('date');
           }}
         >
-          <CardHeader className="pb-2">
-            <CardTitle className="text-xs font-medium text-gray-500">Total Trips</CardTitle>
-          </CardHeader>
-          <CardContent className="pt-0">
-            <div className="text-lg font-bold">{trips.length}</div>
-            <p className="text-[10px] text-gray-500 mt-0.5">Click to show all</p>
+          <CardContent className="pt-3 pb-3">
+            <div className="text-center">
+              <div className="text-lg font-bold text-blue-600">{trips.length}</div>
+              <div className="text-sm text-gray-600">Total Trips</div>
+              <p className="text-xs text-gray-400 mt-1">All trips</p>
+            </div>
           </CardContent>
         </Card>
         <Card 
-          className="cursor-pointer hover:shadow-lg transition-shadow" 
+          className="cursor-pointer hover:shadow-lg transition-shadow border-l-4 border-l-green-500" 
           onClick={() => updateFilters({ statuses: ['active'], vessels: [], start_date: '', end_date: '' })}
         >
-          <CardHeader className="pb-2">
-            <CardTitle className="text-xs font-medium text-gray-500">Active</CardTitle>
-          </CardHeader>
-          <CardContent className="pt-0">
-            <div className="text-lg font-bold text-green-600">
-              {trips.filter(t => t.status === 'active').length}
+          <CardContent className="pt-3 pb-3">
+            <div className="text-center">
+              <div className="text-lg font-bold text-green-600">
+                {trips.filter(t => t.status === 'active').length}
+              </div>
+              <div className="text-sm text-gray-600">Active</div>
+              <p className="text-xs text-gray-400 mt-1">In progress</p>
             </div>
-            <p className="text-[10px] text-gray-500 mt-0.5">Click to filter</p>
           </CardContent>
         </Card>
         <Card 
-          className="cursor-pointer hover:shadow-lg transition-shadow" 
+          className="cursor-pointer hover:shadow-lg transition-shadow border-l-4 border-l-yellow-500" 
           onClick={() => updateFilters({ statuses: ['upcoming'], vessels: [], start_date: '', end_date: '' })}
         >
-          <CardHeader className="pb-2">
-            <CardTitle className="text-xs font-medium text-gray-500">Upcoming</CardTitle>
-          </CardHeader>
-          <CardContent className="pt-0">
-            <div className="text-lg font-bold text-blue-600">
-              {trips.filter(t => t.status === 'upcoming').length}
+          <CardContent className="pt-3 pb-3">
+            <div className="text-center">
+              <div className="text-lg font-bold text-yellow-600">
+                {trips.filter(t => t.status === 'upcoming').length}
+              </div>
+              <div className="text-sm text-gray-600">Upcoming</div>
+              <p className="text-xs text-gray-400 mt-1">Scheduled</p>
             </div>
-            <p className="text-[10px] text-gray-500 mt-0.5">Click to filter</p>
           </CardContent>
         </Card>
         <Card 
-          className="cursor-pointer hover:shadow-lg transition-shadow" 
+          className="cursor-pointer hover:shadow-lg transition-shadow border-l-4 border-l-gray-500" 
           onClick={() => updateFilters({ statuses: ['completed'], vessels: [], start_date: '', end_date: '' })}
         >
-          <CardHeader className="pb-2">
-            <CardTitle className="text-xs font-medium text-gray-500">Completed</CardTitle>
-          </CardHeader>
-          <CardContent className="pt-0">
-            <div className="text-lg font-bold text-gray-600">
-              {trips.filter(t => t.status === 'completed').length}
+          <CardContent className="pt-3 pb-3">
+            <div className="text-center">
+              <div className="text-lg font-bold text-gray-600">
+                {trips.filter(t => t.status === 'completed').length}
+              </div>
+              <div className="text-sm text-gray-600">Completed</div>
+              <p className="text-xs text-gray-400 mt-1">Finished trips</p>
             </div>
-            <p className="text-[10px] text-gray-500 mt-0.5">Click to filter</p>
           </CardContent>
         </Card>
       </div>
