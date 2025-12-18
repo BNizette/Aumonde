@@ -17,6 +17,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { SummaryCard } from '@/components/ui/summary-card';
+import { ImportExcelDialog } from '@/components/ui/import-excel-dialog';
 import useAdvancedFilters from '../hooks/useAdvancedFilters';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
