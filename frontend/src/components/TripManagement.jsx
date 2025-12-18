@@ -162,13 +162,13 @@ const TripManagement = () => {
         try {
           const tripData = {
             trip_name: row['Trip Name'] || row['trip_name'] || '',
+            vessel_name: row['Vessel'] || row['vessel_name'] || '',
             trip_type: row['Trip Type'] || row['trip_type'] || '',
-            vessel_id: row['Vessel ID'] || row['vessel_id'] || '',
-            departure_port: row['Departure Port'] || row['departure_port'] || '',
-            arrival_port: row['Arrival Port'] || row['arrival_port'] || '',
-            departure_date: row['Departure Date'] || row['departure_date'] || '',
-            arrival_date: row['Arrival Date'] || row['arrival_date'] || '',
-            status: row['Status'] || row['status'] || 'upcoming',
+            planned_depart_datetime: row['Depart Date'] || row['planned_depart_datetime'] || '',
+            return_datetime: row['Return Date'] || row['return_datetime'] || '',
+            operating_area: row['Operating Area'] || row['operating_area'] || '',
+            number_of_passengers: row['Passengers'] || row['number_of_passengers'] || '0',
+            number_of_crew: row['Crew'] || row['number_of_crew'] || '0',
           };
 
           if (!tripData.trip_name) continue;
