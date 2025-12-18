@@ -762,6 +762,42 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create' }) => {
                   />
                 </div>
                 <div className="space-y-2">
+                  <Label htmlFor="engine1_model">Engine 1 Model</Label>
+                  <Input
+                    id="engine1_model"
+                    value={formData.engine1_model}
+                    onChange={(e) => handleChange('engine1_model', e.target.value)}
+                    placeholder="e.g., Caterpillar C18"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="engine1_serial">Engine 1 Serial Number</Label>
+                  <Input
+                    id="engine1_serial"
+                    value={formData.engine1_serial}
+                    onChange={(e) => handleChange('engine1_serial', e.target.value)}
+                    placeholder="Serial number"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="engine2_model">Engine 2 Model</Label>
+                  <Input
+                    id="engine2_model"
+                    value={formData.engine2_model}
+                    onChange={(e) => handleChange('engine2_model', e.target.value)}
+                    placeholder="e.g., Caterpillar C18"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="engine2_serial">Engine 2 Serial Number</Label>
+                  <Input
+                    id="engine2_serial"
+                    value={formData.engine2_serial}
+                    onChange={(e) => handleChange('engine2_serial', e.target.value)}
+                    placeholder="Serial number"
+                  />
+                </div>
+                <div className="space-y-2">
                   <Label htmlFor="propeller_type">Propeller Type</Label>
                   <Input
                     id="propeller_type"
