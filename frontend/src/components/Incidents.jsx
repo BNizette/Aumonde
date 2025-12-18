@@ -205,19 +205,88 @@ const Incidents = () => {
   const exportToExcel = () => {
     if (incidents.length === 0) { setError('No incidents to export'); setTimeout(() => setError(''), 3000); return; }
     const wb = XLSX.utils.book_new();
-    const headers = ['Incident #', 'Title', 'Type', 'Severity', 'Status', 'Date', 'Location', 'Vessel', 'Description', 'Injuries'];
+    const headers = ['Incident #', 'Title', 'Type', 'Severity', 'Status', 'Date', 'Location', 'Vessel', 'Description', 'Injuries', 'Risk Creator', 'Date Closed', 'Date Risk Assessment', 'Date AMSA Notified', 'Linked Trip'];
     const data = [headers, ...incidents.map(i => [
       i.incident_number || '-', i.title || '-',
       Array.isArray(i.incident_type) ? i.incident_type.join(', ') : (i.incident_type || '-'),
       i.severity || '-', i.investigation_status || '-',
       i.incident_date ? new Date(i.incident_date).toLocaleString() : '-',
-      i.location || '-', i.vessel_name || '-', i.description || '-', i.injuries ? 'Yes' : 'No'
+      i.location || '-', i.vessel_name || '-', i.description || '-', i.injuries ? 'Yes' : 'No',
+      i.risk_creator || '-',
+      i.date_closed ? new Date(i.date_closed).toLocaleDateString() : '-',
+      i.date_risk_assessment_performed ? new Date(i.date_risk_assessment_performed).toLocaleDateString() : '-',
+      i.date_amsa_notified ? new Date(i.date_amsa_notified).toLocaleDateString() : '-',
+      i.linked_trip_name || '-'
     ])];
     const ws = XLSX.utils.aoa_to_sheet(data);
-    ws['!cols'] = [{ wch: 12 }, { wch: 25 }, { wch: 20 }, { wch: 10 }, { wch: 15 }, { wch: 18 }, { wch: 20 }, { wch: 15 }, { wch: 40 }, { wch: 8 }];
+    ws['!cols'] = [{ wch: 14 }, { wch: 25 }, { wch: 25 }, { wch: 10 }, { wch: 15 }, { wch: 18 }, { wch: 20 }, { wch: 15 }, { wch: 40 }, { wch: 8 }, { wch: 25 }, { wch: 12 }, { wch: 18 }, { wch: 18 }, { wch: 20 }];
     XLSX.utils.book_append_sheet(wb, ws, 'Incidents');
     XLSX.writeFile(wb, `incidents_export_${new Date().toISOString().slice(0, 10)}.xlsx`);
     setMessage(`Exported ${incidents.length} incidents to Excel`);
+    setTimeout(() => setMessage(''), 3000);
+  };
+
+  const exportIncidentToExcel = (incident) => {
+    const wb = XLSX.utils.book_new();
+    
+    // Incident Details sheet
+    const detailsData = [
+      ['INCIDENT REPORT'],
+      [''],
+      ['Incident Number', incident.incident_number || '-'],
+      ['Title', incident.title || '-'],
+      ['Incident Type', Array.isArray(incident.incident_type) ? incident.incident_type.join(', ') : (incident.incident_type || '-')],
+      ['Severity', incident.severity || '-'],
+      ['Status', incident.investigation_status || '-'],
+      ['Date', incident.incident_date ? new Date(incident.incident_date).toLocaleString() : '-'],
+      ['Location', incident.location || '-'],
+      ['GPS Location', incident.gps_location || '-'],
+      ['Vessel', incident.vessel_name || '-'],
+      ['Trip From', incident.trip_from || '-'],
+      ['Trip To', incident.trip_to || '-'],
+      ['Linked Trip', incident.linked_trip_name || '-'],
+      [''],
+      ['DESCRIPTION'],
+      [incident.description || '-'],
+      [''],
+      ['CIRCUMSTANCES'],
+      ['Activity', Array.isArray(incident.activity) ? incident.activity.join(', ') : (incident.activity || '-')],
+      ['Pilot On Board', incident.pilot_on_board ? 'Yes' : 'No'],
+      ['Cargo On Board', incident.cargo_on_board ? 'Yes' : 'No'],
+      [''],
+      ['INJURIES'],
+      ['Injuries Occurred', incident.injuries ? 'Yes' : 'No'],
+      ['Injury Details', incident.injury_details || '-'],
+      ['Witnesses', incident.witnesses || '-'],
+      [''],
+      ['IMMEDIATE ACTIONS'],
+      [incident.immediate_actions || '-'],
+      [''],
+      ['INVESTIGATION'],
+      ['Root Cause', incident.root_cause || '-'],
+      ['Risk Creator', incident.risk_creator || '-'],
+      ['Corrective Actions', incident.corrective_actions || '-'],
+      ['Preventive Actions', incident.preventive_actions || '-'],
+      ['Responsible Person', incident.responsible_person || '-'],
+      ['Target Completion', incident.target_completion_date ? new Date(incident.target_completion_date).toLocaleDateString() : '-'],
+      [''],
+      ['INVESTIGATION DATES'],
+      ['Date Closed', incident.date_closed ? new Date(incident.date_closed).toLocaleDateString() : '-'],
+      ['Date Risk Assessment Performed', incident.date_risk_assessment_performed ? new Date(incident.date_risk_assessment_performed).toLocaleDateString() : '-'],
+      ['Date AMSA Notified', incident.date_amsa_notified ? new Date(incident.date_amsa_notified).toLocaleDateString() : '-'],
+      [''],
+      ['METADATA'],
+      ['Reported By', incident.reported_by_name || '-'],
+      ['Created At', incident.created_at ? new Date(incident.created_at).toLocaleString() : '-'],
+      ['Updated At', incident.updated_at ? new Date(incident.updated_at).toLocaleString() : '-']
+    ];
+    
+    const ws = XLSX.utils.aoa_to_sheet(detailsData);
+    ws['!cols'] = [{ wch: 30 }, { wch: 50 }];
+    XLSX.utils.book_append_sheet(wb, ws, 'Incident Details');
+    
+    XLSX.writeFile(wb, `incident_${incident.incident_number || 'export'}_${new Date().toISOString().slice(0, 10)}.xlsx`);
+    setMessage('Incident exported to Excel');
     setTimeout(() => setMessage(''), 3000);
   };
 
