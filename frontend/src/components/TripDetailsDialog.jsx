@@ -205,6 +205,24 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
     setTimeout(() => setMessage(''), 3000);
   };
 
+  // Export passengers to Excel
+  const exportPassengersToExcel = () => {
+    if (tripPassengers.length === 0) return;
+    const wb = XLSX.utils.book_new();
+    const headers = ['Name', 'Status', 'Comment'];
+    const data = [headers, ...tripPassengers.map(p => [
+      p.name || 'N/A',
+      p.status || 'N/A',
+      p.comment || ''
+    ])];
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    ws['!cols'] = [{ wch: 25 }, { wch: 15 }, { wch: 40 }];
+    XLSX.utils.book_append_sheet(wb, ws, 'Passengers');
+    XLSX.writeFile(wb, `trip_passengers_${trip?.trip_name?.replace(/\s+/g, '_') || 'export'}_${new Date().toISOString().slice(0, 10)}.xlsx`);
+    setMessage('Passengers exported to Excel successfully');
+    setTimeout(() => setMessage(''), 3000);
+  };
+
   // Export all trip data to Excel with multiple worksheets
   const exportTripToExcel = () => {
     if (!trip) return;
