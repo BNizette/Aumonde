@@ -19,6 +19,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { ResponsiveListCard } from '@/components/ui/responsive-list-card';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { SummaryCard } from '@/components/ui/summary-card';
+import { ImportExcelDialog } from '@/components/ui/import-excel-dialog';
 import VesselForm from './VesselForm';
 import ManualLogEntry from './ManualLogEntry';
 import useAdvancedFilters from '../hooks/useAdvancedFilters';
