@@ -140,19 +140,70 @@ const VesselManagement = () => {
       return;
     }
     const wb = XLSX.utils.book_new();
-    const headers = ['Vessel Name', 'Registration Number', 'Vessel Type', 'Year Built', 'Length (m)', 'Beam (m)', 'Draft (m)', 'Gross Tonnage', 'Operational Status', 'Owner Name', 'Port of Registry', 'Last Survey Date', 'Next Survey Due'];
+    
+    // Comprehensive headers covering Basic, Specs & Safety, and Equipment
+    const headers = [
+      // Basic Details
+      'Vessel Name', 'Registration Number', 'Unique ID', 'Vessel Type', 'Owner Name', 'Owner Contact', 
+      'Boat Phone', 'Flag', 'Port of Registry', 'IMO Number', 'MMSI Number', 'Call Sign', 
+      'AIS Class', 'Home Port', 'Operational Status',
+      // Specifications
+      'Length Overall (m)', 'Length at Waterline (m)', 'Beam (m)', 'Draft (m)', 'Air Draft (m)',
+      'CE Category', 'Gross Tonnage', 'Construction Material', 'Year Built', 'Builder',
+      'Number of Engines', 'Engine Type', 'Engine Power', 'Engine 1 Model', 'Engine 1 Serial',
+      'Engine 2 Model', 'Engine 2 Serial', 'Propeller Type', 'Propeller Material',
+      'Fuel Type', 'Fuel Capacity (L)', 'Water Capacity (L)',
+      // Auxiliary Engine
+      'Aux Engine Type', 'Aux Engine Power', 'Aux Engine Fuel', 'Aux Engine Serial',
+      // Capacity
+      'Max Passengers Berthed', 'Max Passengers Unberthed', 'Max Crew',
+      // Equipment
+      'Navigation Equipment', 'Communication Equipment', 'Safety Equipment',
+      'Inside Equipment', 'Outside Equipment',
+      // Safety Equipment
+      'Life Rafts', 'Life Jackets', 'EPIRB', 'Fire Extinguishers', 'Flares',
+      // Certificates
+      'Survey Cert Issue', 'Survey Cert Expiry', 'Operation Cert Issue', 'Operation Cert Expiry',
+      'Loadline Cert Issue', 'Loadline Cert Expiry', 'Stability Book Date', 'Stability Book Expiry'
+    ];
+    
     const data = [headers, ...filteredVessels.map(v => [
-      v.vessel_name || '-', v.registration_number || '-', v.vessel_type || '-', v.year_built || '-',
-      v.length || '-', v.beam || '-', v.draft || '-', v.gross_tonnage || '-', v.operational_status || '-',
-      v.owner_name || '-', v.port_of_registry || '-',
-      v.last_survey_date ? new Date(v.last_survey_date).toLocaleDateString() : '-',
-      v.next_survey_due ? new Date(v.next_survey_due).toLocaleDateString() : '-'
+      // Basic Details
+      v.vessel_name || '', v.registration_number || '', v.unique_identifier_number || '', 
+      v.vessel_type || '', v.owner_name || '', v.owner_contact || '',
+      v.boat_phone || '', v.flag || '', v.port_of_registry || '', v.imo_number || '', 
+      v.mmsi_number || '', v.call_sign || '', v.ais_class || '', v.home_port || '', 
+      v.operational_status || '',
+      // Specifications
+      v.length_overall || v.length || '', v.length_at_waterline || '', v.beam || '', 
+      v.draft || '', v.air_draft || '', v.ce_category || '', v.gross_tonnage || '', 
+      v.construction_material || '', v.year_built || '', v.builder || '',
+      v.number_of_engines || '', v.engine_type || '', v.engine_power || '', 
+      v.engine1_model || '', v.engine1_serial || '', v.engine2_model || '', v.engine2_serial || '',
+      v.propeller_type || '', v.propeller_material || '', v.fuel_type || '', 
+      v.fuel_capacity || '', v.water_capacity || '',
+      // Auxiliary Engine
+      v.aux_type || '', v.aux_power || '', v.aux_fuel || '', v.aux_serial || '',
+      // Capacity
+      v.max_passengers_berthed || '', v.max_passengers_unberthed || '', v.max_crew || '',
+      // Equipment
+      v.navigation_equipment || '', v.communication_equipment || '', v.safety_equipment || '',
+      v.inside_equipment || '', v.outside_equipment || '',
+      // Safety Equipment
+      v.life_rafts || '', v.life_jackets || '', v.epirb ? 'Yes' : 'No', 
+      v.fire_extinguishers || '', v.flares || '',
+      // Certificates
+      v.cert_survey_issue || '', v.cert_survey_expiry || '', v.cert_operation_issue || '', 
+      v.cert_operation_expiry || '', v.cert_loadline_issue || '', v.cert_loadline_expiry || '',
+      v.stability_book_date || '', v.stability_book_expiry || ''
     ])];
+    
     const ws = XLSX.utils.aoa_to_sheet(data);
-    ws['!cols'] = [{ wch: 20 }, { wch: 15 }, { wch: 15 }, { wch: 10 }, { wch: 10 }, { wch: 10 }, { wch: 10 }, { wch: 12 }, { wch: 15 }, { wch: 20 }, { wch: 15 }, { wch: 15 }, { wch: 15 }];
+    // Set column widths
+    ws['!cols'] = headers.map(() => ({ wch: 18 }));
     XLSX.utils.book_append_sheet(wb, ws, 'Vessels');
-    XLSX.writeFile(wb, `vessels_export_${new Date().toISOString().slice(0, 10)}.xlsx`);
-    setMessage(`Exported ${filteredVessels.length} vessels to Excel`);
+    XLSX.writeFile(wb, `vessels_full_export_${new Date().toISOString().slice(0, 10)}.xlsx`);
+    setMessage(`Exported ${filteredVessels.length} vessels with all fields to Excel`);
     setTimeout(() => setMessage(''), 3000);
   };
 
