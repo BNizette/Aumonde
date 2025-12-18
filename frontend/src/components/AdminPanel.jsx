@@ -1377,6 +1377,78 @@ const AdminPanel = () => {
           </Card>
         </TabsContent>
 
+        {/* SMS REVISIONS TAB */}
+        <TabsContent value="sms">
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle>SMS Revision Management</CardTitle>
+                  <CardDescription>Track Safety Management System document revisions</CardDescription>
+                </div>
+                <div className="flex gap-2">
+                  <Button 
+                    onClick={exportSmsRevisionsToExcel}
+                    variant="outline"
+                    size="sm"
+                    className="bg-green-50 hover:bg-green-100 text-green-700 border-green-200"
+                  >
+                    <FileSpreadsheet className="mr-2 h-4 w-4" />
+                    Export to Excel
+                  </Button>
+                  <Button onClick={() => setSmsDialogOpen(true)}>
+                    <Plus className="mr-2 h-4 w-4" />
+                    Add Revision
+                  </Button>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              {smsRevisions.length === 0 ? (
+                <div className="text-center py-8 text-gray-500">
+                  No SMS revisions recorded yet
+                </div>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Date</TableHead>
+                      <TableHead>Version</TableHead>
+                      <TableHead>Description</TableHead>
+                      <TableHead>Crew Member</TableHead>
+                      <TableHead>Created By</TableHead>
+                      <TableHead className="w-[100px]">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {smsRevisions.map(rev => (
+                      <TableRow key={rev.id}>
+                        <TableCell>{rev.revision_date ? new Date(rev.revision_date).toLocaleDateString() : '-'}</TableCell>
+                        <TableCell>{rev.version_number || '-'}</TableCell>
+                        <TableCell className="max-w-md truncate">{rev.revision_description}</TableCell>
+                        <TableCell>{rev.crew_member_name || '-'}</TableCell>
+                        <TableCell>{rev.created_by_name}</TableCell>
+                        <TableCell>
+                          {canDelete && (
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              onClick={() => handleDeleteSmsRevision(rev.id)}
+                              className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
         {/* BACKUP & RESTORE TAB */}
         <TabsContent value="backup">
           <BackupManagement />
