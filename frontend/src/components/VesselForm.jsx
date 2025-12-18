@@ -209,10 +209,33 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create' }) => {
         } finally {
           setLoadingMaintenance(false);
         }
+
+        // Fetch emergency data (contacts, procedures, drills for this vessel)
+        setLoadingEmergency(true);
+        try {
+          const [contactsRes, proceduresRes, drillsRes] = await Promise.all([
+            axios.get(`${API}/api/emergency/contacts`, { headers: { Authorization: `Bearer ${token}` } }),
+            axios.get(`${API}/api/emergency/procedures`, { headers: { Authorization: `Bearer ${token}` } }),
+            axios.get(`${API}/api/emergency/drills`, { headers: { Authorization: `Bearer ${token}` } })
+          ]);
+          // Filter drills by vessel
+          const vesselDrills = (drillsRes.data || []).filter(d => d.vessel_id === vessel.id);
+          setVesselEmergency({
+            contacts: contactsRes.data || [],
+            procedures: proceduresRes.data || [],
+            drills: vesselDrills
+          });
+        } catch (err) {
+          console.error('Error fetching emergency data:', err);
+          setVesselEmergency({ contacts: [], procedures: [], drills: [] });
+        } finally {
+          setLoadingEmergency(false);
+        }
       } else {
         setVesselCertificates([]);
         setVesselIncidents([]);
         setVesselMaintenance([]);
+        setVesselEmergency({ contacts: [], procedures: [], drills: [] });
       }
     };
 
