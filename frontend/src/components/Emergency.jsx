@@ -2756,6 +2756,15 @@ const Emergency = () => {
 
       {/* Import Excel Dialogs */}
       <ImportExcelDialog
+        open={importAllOpen}
+        onClose={() => setImportAllOpen(false)}
+        title="Import All Emergency Response Data"
+        description="Upload an Excel file with 3 worksheets (Contacts, Procedures, Drills) to import all emergency data. Download the template for the correct multi-sheet format."
+        worksheets={allEmergencyWorksheets}
+        onImport={handleImportAllEmergency}
+        templateFileName="emergency_response_import_template.xlsx"
+      />
+      <ImportExcelDialog
         open={importContactsOpen}
         onClose={() => setImportContactsOpen(false)}
         title="Import Emergency Contacts"
