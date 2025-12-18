@@ -253,9 +253,47 @@ const VesselManagement = () => {
     }
   };
 
-  // Import template columns matching export format exactly
-  const vesselImportColumns = ['Vessel Name', 'Registration Number', 'Vessel Type', 'Year Built', 'Length (m)', 'Beam (m)', 'Draft (m)', 'Gross Tonnage', 'Operational Status', 'Owner Name', 'Port of Registry', 'Last Survey Date', 'Next Survey Due'];
-  const vesselImportSample = [['MV Example', 'REG123', 'Passenger', '2020', '25', '8', '2.5', '150', 'Operational', 'Maritime Co', 'Sydney', '2024-01-01', '2025-01-01']];
+  // Import template columns matching comprehensive export format
+  const vesselImportColumns = [
+    // Basic Details
+    'Vessel Name', 'Registration Number', 'Unique ID', 'Vessel Type', 'Owner Name', 'Owner Contact', 
+    'Boat Phone', 'Flag', 'Port of Registry', 'IMO Number', 'MMSI Number', 'Call Sign', 
+    'AIS Class', 'Home Port', 'Operational Status',
+    // Specifications
+    'Length Overall (m)', 'Length at Waterline (m)', 'Beam (m)', 'Draft (m)', 'Air Draft (m)',
+    'CE Category', 'Gross Tonnage', 'Construction Material', 'Year Built', 'Builder',
+    'Number of Engines', 'Engine Type', 'Engine Power', 'Engine 1 Model', 'Engine 1 Serial',
+    'Engine 2 Model', 'Engine 2 Serial', 'Propeller Type', 'Propeller Material',
+    'Fuel Type', 'Fuel Capacity (L)', 'Water Capacity (L)',
+    // Auxiliary Engine
+    'Aux Engine Type', 'Aux Engine Power', 'Aux Engine Fuel', 'Aux Engine Serial',
+    // Capacity
+    'Max Passengers Berthed', 'Max Passengers Unberthed', 'Max Crew',
+    // Equipment
+    'Navigation Equipment', 'Communication Equipment', 'Safety Equipment',
+    'Inside Equipment', 'Outside Equipment',
+    // Safety Equipment
+    'Life Rafts', 'Life Jackets', 'EPIRB', 'Fire Extinguishers', 'Flares',
+    // Certificates
+    'Survey Cert Issue', 'Survey Cert Expiry', 'Operation Cert Issue', 'Operation Cert Expiry',
+    'Loadline Cert Issue', 'Loadline Cert Expiry', 'Stability Book Date', 'Stability Book Expiry'
+  ];
+  const vesselImportSample = [[
+    'MV Example', 'REG123', 'UID001', 'Passenger', 'Maritime Co', '+61400000000',
+    '+61400000001', 'Australia', 'Sydney', 'IMO1234567', '123456789', 'VK1234',
+    'A', 'Sydney', 'Operational',
+    '25', '23', '8', '2.5', '4',
+    'Category B', '150', 'Fibreglass', '2020', 'Boat Builder Pty Ltd',
+    '2', 'Diesel', '500 HP', 'Yanmar 6LY3', 'YM123456', 'Yanmar 6LY3', 'YM654321',
+    'Fixed pitch', 'Bronze', 'Diesel', '2000', '500',
+    'Generator', '15 kW', 'Diesel', 'GEN123',
+    '50', '100', '8',
+    'GPS, Radar, AIS', 'VHF Radio, EPIRB', 'Life rafts, Life jackets',
+    'Galley, Heads', 'Swim platform',
+    '2', '50', 'Yes', '6', '12',
+    '2024-01-01', '2025-01-01', '2024-01-01', '2025-01-01',
+    '2024-01-01', '2025-01-01', '2024-01-01', '2025-01-01'
+  ]];
 
   const clearFilters = () => {
     setSearchQuery('');
