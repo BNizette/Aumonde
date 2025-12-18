@@ -802,6 +802,18 @@ const CrewManagement = () => {
         onClose={() => setManualCrewLogOpen(false)}
         type="crew"
       />
+
+      {/* Import Excel Dialog */}
+      <ImportExcelDialog
+        open={importDialogOpen}
+        onClose={() => setImportDialogOpen(false)}
+        title="Import Crew Members"
+        description="Upload an Excel file to import crew members. Download the template for the correct format."
+        templateColumns={crewImportColumns}
+        templateSampleData={crewImportSample}
+        onImport={handleImport}
+        templateFileName="crew_import_template.xlsx"
+      />
     </div>
   );
 };
