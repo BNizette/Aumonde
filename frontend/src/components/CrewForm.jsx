@@ -228,9 +228,8 @@ const CrewForm = ({ open, onClose, onSave, crew, mode = 'create', prefilledData 
       });
 
       if (response.data && response.data.file_url) {
-        // Construct full URL for the image
-        const fullUrl = BACKEND_URL + response.data.file_url;
-        handleChange('crew_photo_url', fullUrl);
+        // Store only the relative URL (will be prefixed with BACKEND_URL when displaying)
+        handleChange('crew_photo_url', response.data.file_url);
       }
     } catch (err) {
       console.error('Error uploading photo:', err);
