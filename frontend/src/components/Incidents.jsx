@@ -31,6 +31,7 @@ const Incidents = () => {
   const [viewingIncident, setViewingIncident] = useState(null);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+  const [importDialogOpen, setImportDialogOpen] = useState(false);
 
   // Use custom hook for advanced filtering
   const {
