@@ -565,22 +565,30 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
 
               {/* Tabbed Logs */}
               <Tabs defaultValue="allocated" className="w-full">
-                <TabsList className="grid w-full grid-cols-4">
+                <TabsList className="grid w-full grid-cols-6">
                   <TabsTrigger value="allocated">
-                    <User className="h-4 w-4 mr-2" />
-                    Allocated Crew ({allocatedCrew.length})
+                    <User className="h-4 w-4 mr-1" />
+                    Crew ({allocatedCrew.length})
                   </TabsTrigger>
                   <TabsTrigger value="shift">
-                    <Clock className="h-4 w-4 mr-2" />
-                    Crew Shifts ({shiftLogs.length})
+                    <Clock className="h-4 w-4 mr-1" />
+                    Shifts ({shiftLogs.length})
                   </TabsTrigger>
                   <TabsTrigger value="running">
-                    <Activity className="h-4 w-4 mr-2" />
+                    <Activity className="h-4 w-4 mr-1" />
                     Running ({runningLogs.length})
                   </TabsTrigger>
                   <TabsTrigger value="engine">
-                    <Gauge className="h-4 w-4 mr-2" />
+                    <Gauge className="h-4 w-4 mr-1" />
                     Engine ({engineLogs.length})
+                  </TabsTrigger>
+                  <TabsTrigger value="incidents">
+                    <AlertTriangle className="h-4 w-4 mr-1" />
+                    Incidents ({tripIncidents.length})
+                  </TabsTrigger>
+                  <TabsTrigger value="drills">
+                    <Shield className="h-4 w-4 mr-1" />
+                    Drills ({tripDrills.length})
                   </TabsTrigger>
                 </TabsList>
 
