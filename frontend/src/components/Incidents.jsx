@@ -229,6 +229,50 @@ const Incidents = () => {
     setTimeout(() => setMessage(''), 3000);
   };
 
+  // Import from Excel handler
+  const handleImport = async (data) => {
+    try {
+      const token = localStorage.getItem('token');
+      let successCount = 0;
+      let errorCount = 0;
+
+      for (const row of data) {
+        try {
+          const incidentData = {
+            title: row['Title'] || row['title'] || '',
+            incident_type: row['Incident Type'] ? [row['Incident Type']] : [],
+            severity: row['Severity'] || row['severity'] || 'Minor',
+            incident_date: row['Date'] || row['incident_date'] || new Date().toISOString(),
+            location: row['Location'] || row['location'] || '',
+            description: row['Description'] || row['description'] || '',
+            vessel_id: row['Vessel ID'] || row['vessel_id'] || '',
+            investigation_status: row['Status'] || row['investigation_status'] || 'Reported',
+          };
+
+          if (!incidentData.title) continue;
+
+          await axios.post(`${API}/incidents`, incidentData, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          successCount++;
+        } catch (err) {
+          console.error('Error importing incident:', err);
+          errorCount++;
+        }
+      }
+
+      setMessage(`Import complete: ${successCount} incidents added${errorCount > 0 ? `, ${errorCount} failed` : ''}`);
+      setTimeout(() => setMessage(''), 5000);
+      fetchIncidents();
+    } catch (err) {
+      setError('Error importing data: ' + err.message);
+      setTimeout(() => setError(''), 5000);
+    }
+  };
+
+  const incidentImportColumns = ['Title', 'Incident Type', 'Severity', 'Date', 'Location', 'Description', 'Vessel ID', 'Status'];
+  const incidentImportSample = [['Engine Failure', 'Mechanical', 'Minor', '2024-01-15', 'Port Jackson', 'Engine failed during routine operation', '', 'Reported']];
+
   const exportIncidentToExcel = (incident) => {
     const wb = XLSX.utils.book_new();
     
