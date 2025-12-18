@@ -151,6 +151,50 @@ const TripManagement = () => {
   const clearFilters = () => { setSearchQuery(''); clearAllFilters(); setSortBy('date'); };
   const hasActiveFilters = searchQuery || filters.statuses.length > 0 || filters.vessels.length > 0 || filters.start_date || filters.end_date || sortBy !== 'date';
 
+  // Import from Excel handler
+  const handleImport = async (data) => {
+    try {
+      const token = localStorage.getItem('token');
+      let successCount = 0;
+      let errorCount = 0;
+
+      for (const row of data) {
+        try {
+          const tripData = {
+            trip_name: row['Trip Name'] || row['trip_name'] || '',
+            trip_type: row['Trip Type'] || row['trip_type'] || '',
+            vessel_id: row['Vessel ID'] || row['vessel_id'] || '',
+            departure_port: row['Departure Port'] || row['departure_port'] || '',
+            arrival_port: row['Arrival Port'] || row['arrival_port'] || '',
+            departure_date: row['Departure Date'] || row['departure_date'] || '',
+            arrival_date: row['Arrival Date'] || row['arrival_date'] || '',
+            status: row['Status'] || row['status'] || 'upcoming',
+          };
+
+          if (!tripData.trip_name) continue;
+
+          await axios.post(`${API}/trips`, tripData, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          successCount++;
+        } catch (err) {
+          console.error('Error importing trip:', err);
+          errorCount++;
+        }
+      }
+
+      setMessage(`Import complete: ${successCount} trips added${errorCount > 0 ? `, ${errorCount} failed` : ''}`);
+      setTimeout(() => setMessage(''), 5000);
+      fetchTrips();
+    } catch (err) {
+      setError('Error importing data: ' + err.message);
+      setTimeout(() => setError(''), 5000);
+    }
+  };
+
+  const tripImportColumns = ['Trip Name', 'Trip Type', 'Vessel ID', 'Departure Port', 'Arrival Port', 'Departure Date', 'Arrival Date', 'Status'];
+  const tripImportSample = [['Sydney Charter', 'Charter', '', 'Sydney', 'Newcastle', '2024-01-15', '2024-01-15', 'upcoming']];
+
   const fetchTrips = async () => {
     try {
       const token = localStorage.getItem('token');
