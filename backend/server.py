@@ -2125,6 +2125,8 @@ class Maintenance(BaseModel):
     service_frequency: Optional[str] = None
     notes: Optional[str] = None
     quote_pdf_url: Optional[str] = None  # PDF attachment for quote
+    crew_sign_off_id: Optional[str] = None  # Crew member who signed off
+    crew_sign_off_name: Optional[str] = None
     created_by: Optional[str] = None
     created_by_name: Optional[str] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
@@ -2150,6 +2152,8 @@ class MaintenanceCreate(BaseModel):
     service_frequency: Optional[str] = None
     notes: Optional[str] = None
     quote_pdf_url: Optional[str] = None
+    crew_sign_off_id: Optional[str] = None
+    crew_sign_off_name: Optional[str] = None
 
 @api_router.post("/maintenance")
 async def create_maintenance(maintenance_data: MaintenanceCreate, current_user: dict = Depends(require_access_level(AccessLevel.EDIT))):
