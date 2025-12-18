@@ -306,88 +306,77 @@ const RiskAssessment = () => {
       )}
 
       {/* Statistics Cards - Redesigned: Active, In Progress, Critical, Overdue */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <Card 
           className="cursor-pointer hover:shadow-lg transition-shadow border-l-4 border-l-green-500" 
           onClick={() => {
-            setFilters(prev => ({...prev, risk_levels: [], statuses: ['Active']}));
+            setFilters(prev => ({...prev, risk_levels: [], statuses: ['Active'], overdue: false}));
           }}
         >
-          <CardHeader className="pb-2">
-            <CardTitle className="text-xs font-medium text-gray-500">Active</CardTitle>
-          </CardHeader>
-          <CardContent className="pt-0">
-            <div className="text-lg font-bold text-green-600">
-              {risks.filter(r => r.status === 'Active').length}
+          <CardContent className="pt-3 pb-3">
+            <div className="text-center">
+              <div className="text-lg font-bold text-green-600">
+                {risks.filter(r => r.status === 'Active').length}
+              </div>
+              <div className="text-sm text-gray-600">Active</div>
+              <p className="text-xs text-gray-400 mt-1">Currently monitored</p>
             </div>
-            <p className="text-[10px] text-gray-500 mt-0.5">Currently monitored</p>
           </CardContent>
         </Card>
         <Card 
           className="cursor-pointer hover:shadow-lg transition-shadow border-l-4 border-l-blue-500" 
           onClick={() => {
-            setFilters(prev => ({...prev, risk_levels: [], statuses: ['Under Review']}));
+            setFilters(prev => ({...prev, risk_levels: [], statuses: ['Under Review'], overdue: false}));
           }}
         >
-          <CardHeader className="pb-2">
-            <CardTitle className="text-xs font-medium text-gray-500">In Progress</CardTitle>
-          </CardHeader>
-          <CardContent className="pt-0">
-            <div className="text-lg font-bold text-blue-600">
-              {risks.filter(r => r.status === 'Under Review').length}
+          <CardContent className="pt-3 pb-3">
+            <div className="text-center">
+              <div className="text-lg font-bold text-blue-600">
+                {risks.filter(r => r.status === 'Under Review').length}
+              </div>
+              <div className="text-sm text-gray-600">In Progress</div>
+              <p className="text-xs text-gray-400 mt-1">Under review</p>
             </div>
-            <p className="text-[10px] text-gray-500 mt-0.5">Under review</p>
           </CardContent>
         </Card>
         <Card 
           className="cursor-pointer hover:shadow-lg transition-shadow border-l-4 border-l-red-500" 
           onClick={() => {
-            setFilters(prev => ({...prev, risk_levels: ['Critical'], statuses: []}));
+            setFilters(prev => ({...prev, risk_levels: ['Critical'], statuses: [], overdue: false}));
           }}
         >
-          <CardHeader className="pb-2">
-            <CardTitle className="text-xs font-medium text-gray-500">Critical</CardTitle>
-          </CardHeader>
-          <CardContent className="pt-0">
-            <div className="text-lg font-bold text-red-600">
-              {risks.filter(r => r.risk_level === 'Critical').length}
+          <CardContent className="pt-3 pb-3">
+            <div className="text-center">
+              <div className="text-lg font-bold text-red-600">
+                {risks.filter(r => r.risk_level === 'Critical').length}
+              </div>
+              <div className="text-sm text-gray-600">Critical</div>
+              <p className="text-xs text-gray-400 mt-1">Requires attention</p>
             </div>
-            <p className="text-[10px] text-gray-500 mt-0.5">Requires attention</p>
           </CardContent>
         </Card>
         <Card 
           className="cursor-pointer hover:shadow-lg transition-shadow border-l-4 border-l-orange-500" 
           onClick={() => {
-            // Filter overdue risks (review_date or next_risk_date passed)
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            const overdueIds = risks
-              .filter(r => {
-                const reviewDate = r.review_date ? new Date(r.review_date) : null;
-                const nextRiskDate = r.next_risk_date ? new Date(r.next_risk_date) : null;
-                return (reviewDate && reviewDate < today) || (nextRiskDate && nextRiskDate < today);
-              })
-              .map(r => r.id);
-            // Use status filter workaround - set a special filter state
             setFilters(prev => ({...prev, risk_levels: [], statuses: [], overdue: true}));
           }}
         >
-          <CardHeader className="pb-2">
-            <CardTitle className="text-xs font-medium text-gray-500">Overdue</CardTitle>
-          </CardHeader>
-          <CardContent className="pt-0">
-            <div className="text-lg font-bold text-orange-600">
-              {(() => {
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
-                return risks.filter(r => {
-                  const reviewDate = r.review_date ? new Date(r.review_date) : null;
-                  const nextRiskDate = r.next_risk_date ? new Date(r.next_risk_date) : null;
-                  return (reviewDate && reviewDate < today) || (nextRiskDate && nextRiskDate < today);
-                }).length;
-              })()}
+          <CardContent className="pt-3 pb-3">
+            <div className="text-center">
+              <div className="text-lg font-bold text-orange-600">
+                {(() => {
+                  const today = new Date();
+                  today.setHours(0, 0, 0, 0);
+                  return risks.filter(r => {
+                    const reviewDate = r.review_date ? new Date(r.review_date) : null;
+                    const nextRiskDate = r.next_risk_date ? new Date(r.next_risk_date) : null;
+                    return (reviewDate && reviewDate < today) || (nextRiskDate && nextRiskDate < today);
+                  }).length;
+                })()}
+              </div>
+              <div className="text-sm text-gray-600">Overdue</div>
+              <p className="text-xs text-gray-400 mt-1">Past review date</p>
             </div>
-            <p className="text-[10px] text-gray-500 mt-0.5">Past review date</p>
           </CardContent>
         </Card>
       </div>
