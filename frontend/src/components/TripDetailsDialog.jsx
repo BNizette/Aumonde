@@ -577,10 +577,14 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
 
               {/* Tabbed Logs */}
               <Tabs defaultValue="allocated" className="w-full">
-                <TabsList className="grid w-full grid-cols-6">
+                <TabsList className="grid w-full grid-cols-7">
                   <TabsTrigger value="allocated">
                     <User className="h-4 w-4 mr-1" />
                     Crew ({allocatedCrew.length})
+                  </TabsTrigger>
+                  <TabsTrigger value="passengers">
+                    <Users className="h-4 w-4 mr-1" />
+                    Passengers ({tripPassengers.length})
                   </TabsTrigger>
                   <TabsTrigger value="shift">
                     <Clock className="h-4 w-4 mr-1" />
