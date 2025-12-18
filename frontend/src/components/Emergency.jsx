@@ -504,6 +504,102 @@ const Emergency = () => {
     } catch (err) { setError('Error importing: ' + err.message); setTimeout(() => setError(''), 5000); }
   };
 
+  // Multi-worksheet import configuration (matches export format)
+  const allEmergencyWorksheets = [
+    {
+      name: 'Contacts',
+      columns: ['Name', 'Type', 'Organization', 'Role', 'Primary Phone', 'Secondary Phone', 'Email', 'Address', '24/7 Available', 'Priority', 'Notes'],
+      sampleData: [['Emergency Services', 'External', 'Police', 'Emergency Response', '000', '', 'police@example.com', '123 Main St', 'Yes', '1', 'Primary contact']]
+    },
+    {
+      name: 'Procedures',
+      columns: ['Title', 'Emergency Type', 'Procedure Steps', 'Equipment Required', 'Muster Station', 'Key Contacts'],
+      sampleData: [['Fire Emergency', 'Fire', '1. Sound alarm\n2. Evacuate', 'Fire extinguisher', 'Deck A', 'Fire Warden']]
+    },
+    {
+      name: 'Drills',
+      columns: ['Drill Type', 'Date', 'Duration (min)', 'Vessel', 'Participants', 'Observations', 'Areas for Improvement'],
+      sampleData: [['Fire Drill', '2024-01-15', '30', 'MV Coral Queen', '12', 'Good response time', 'Improve muster point signage']]
+    }
+  ];
+
+  // Multi-worksheet import handler
+  const handleImportAllEmergency = async (sheetsData) => {
+    try {
+      const token = localStorage.getItem('token');
+      let totalSuccess = 0, totalError = 0;
+
+      // Import Contacts
+      const contactsData = sheetsData['Contacts'] || [];
+      for (const row of contactsData) {
+        try {
+          const data = {
+            name: row['Name'] || '',
+            contact_type: row['Type'] || '',
+            organization: row['Organization'] || '',
+            role: row['Role'] || '',
+            phone_primary: row['Primary Phone'] || '',
+            phone_secondary: row['Secondary Phone'] || '',
+            email: row['Email'] || '',
+            address: row['Address'] || '',
+            available_24_7: row['24/7 Available'] === 'Yes',
+            priority: row['Priority'] || '',
+            notes: row['Notes'] || '',
+          };
+          if (!data.name) continue;
+          await axios.post(`${API}/emergency/contacts`, data, { headers: { Authorization: `Bearer ${token}` } });
+          totalSuccess++;
+        } catch (err) { totalError++; }
+      }
+
+      // Import Procedures
+      const proceduresData = sheetsData['Procedures'] || [];
+      for (const row of proceduresData) {
+        try {
+          const data = {
+            title: row['Title'] || '',
+            emergency_type: row['Emergency Type'] || '',
+            procedure_steps: row['Procedure Steps'] || '',
+            equipment_required: row['Equipment Required'] || '',
+            muster_station: row['Muster Station'] || '',
+            key_contacts: row['Key Contacts'] || '',
+          };
+          if (!data.title) continue;
+          await axios.post(`${API}/emergency/procedures`, data, { headers: { Authorization: `Bearer ${token}` } });
+          totalSuccess++;
+        } catch (err) { totalError++; }
+      }
+
+      // Import Drills
+      const drillsData = sheetsData['Drills'] || [];
+      for (const row of drillsData) {
+        try {
+          const data = {
+            drill_type: row['Drill Type'] || '',
+            drill_date: row['Date'] || '',
+            duration_minutes: row['Duration (min)'] || '',
+            vessel_name: row['Vessel'] || '',
+            participants: row['Participants'] || '',
+            observations: row['Observations'] || '',
+            areas_for_improvement: row['Areas for Improvement'] || '',
+          };
+          if (!data.drill_type) continue;
+          await axios.post(`${API}/emergency/drills`, data, { headers: { Authorization: `Bearer ${token}` } });
+          totalSuccess++;
+        } catch (err) { totalError++; }
+      }
+
+      setMessage(`Import complete: ${totalSuccess} records added${totalError > 0 ? `, ${totalError} failed` : ''}`);
+      setTimeout(() => setMessage(''), 5000);
+      fetchContacts();
+      fetchProcedures();
+      fetchDrills();
+    } catch (err) { 
+      setError('Error importing: ' + err.message); 
+      setTimeout(() => setError(''), 5000); 
+    }
+  };
+
   const exportContactsToExcel = () => {
     if (filteredContacts.length === 0) { setError('No contacts to export'); setTimeout(() => setError(''), 3000); return; }
     const wb = XLSX.utils.book_new();
