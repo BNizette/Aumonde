@@ -2381,10 +2381,35 @@ async def create_incident(incident_data: IncidentCreate, current_user: dict = De
         except:
             pass
     
+    # Parse new investigation date fields
+    date_closed = None
+    if incident_data.date_closed:
+        try:
+            date_closed = datetime.fromisoformat(incident_data.date_closed.replace('Z', '+00:00'))
+        except:
+            pass
+    
+    date_risk_assessment = None
+    if incident_data.date_risk_assessment_performed:
+        try:
+            date_risk_assessment = datetime.fromisoformat(incident_data.date_risk_assessment_performed.replace('Z', '+00:00'))
+        except:
+            pass
+    
+    date_amsa = None
+    if incident_data.date_amsa_notified:
+        try:
+            date_amsa = datetime.fromisoformat(incident_data.date_amsa_notified.replace('Z', '+00:00'))
+        except:
+            pass
+    
     incident_dict = incident_data.model_dump()
     incident_dict['incident_number'] = incident_number
     incident_dict['incident_date'] = incident_date
     incident_dict['target_completion_date'] = target_date
+    incident_dict['date_closed'] = date_closed
+    incident_dict['date_risk_assessment_performed'] = date_risk_assessment
+    incident_dict['date_amsa_notified'] = date_amsa
     
     incident = Incident(
         **incident_dict,
