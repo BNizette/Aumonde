@@ -257,12 +257,40 @@ const MaintenanceForm = ({ open, onClose, onSave, record, mode = 'create' }) => 
 
                 <div className="space-y-2">
                   <Label htmlFor="equipment_system">Equipment/System *</Label>
-                  <Input
-                    id="equipment_system"
-                    value={formData.equipment_system}
-                    onChange={(e) => handleChange('equipment_system', e.target.value)}
-                    placeholder="e.g., Main Engine, Navigation System"
-                  />
+                  {equipmentSystems.length > 0 ? (
+                    <Select value={formData.equipment_system || "custom"} onValueChange={(value) => {
+                      if (value === 'custom') {
+                        handleChange('equipment_system', '');
+                      } else {
+                        handleChange('equipment_system', value);
+                      }
+                    }}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select equipment/system" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {equipmentSystems.map((eq) => (
+                          <SelectItem key={eq} value={eq}>{eq}</SelectItem>
+                        ))}
+                        <SelectItem value="custom">Other (type below)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  ) : (
+                    <Input
+                      id="equipment_system"
+                      value={formData.equipment_system}
+                      onChange={(e) => handleChange('equipment_system', e.target.value)}
+                      placeholder="e.g., Main Engine, Navigation System"
+                    />
+                  )}
+                  {equipmentSystems.length > 0 && formData.equipment_system === '' && (
+                    <Input
+                      className="mt-2"
+                      value={formData.equipment_system}
+                      onChange={(e) => handleChange('equipment_system', e.target.value)}
+                      placeholder="Enter custom equipment/system"
+                    />
+                  )}
                 </div>
 
                 <div className="space-y-2">
