@@ -614,6 +614,7 @@ class Vessel(BaseModel):
 class VesselCreate(BaseModel):
     vessel_name: str
     registration_number: Optional[str] = None
+    unique_identifier_number: Optional[str] = None
     vessel_type: Optional[str] = None
     owner_name: Optional[str] = None
     owner_contact: Optional[str] = None
@@ -625,6 +626,7 @@ class VesselCreate(BaseModel):
     call_sign: Optional[str] = None
     ais_class: Optional[str] = None
     home_port: Optional[str] = None
+    crew_requirements: Optional[List[dict]] = None
     length_overall: Optional[float] = None
     length_at_waterline: Optional[float] = None
     beam: Optional[float] = None
