@@ -61,7 +61,11 @@ const MaintenanceForm = ({ open, onClose, onSave, record, mode = 'create' }) => 
         fetch(`${API}/settings/maintenance/equipment_systems`, { headers }).then(r => r.json()).catch(() => ({ options: [] }))
       ]);
       setCrewList(crewRes.data || []);
-      setEquipmentSystems(settingsRes.options || []);
+      // Extract just the value strings from settings options objects
+      const equipmentOptions = (settingsRes.options || [])
+        .filter(opt => opt.is_active !== false)
+        .map(opt => typeof opt === 'string' ? opt : opt.value);
+      setEquipmentSystems(equipmentOptions);
     } catch (err) {
       console.error('Error fetching crew/settings:', err);
     }
