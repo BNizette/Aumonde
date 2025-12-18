@@ -1017,3 +1017,31 @@ agent_communication:
       message: "✅ AMSA HIGH PRIORITY FEATURES TESTING COMPLETED SUCCESSFULLY: Comprehensive code analysis completed with excellent results across all 4 test scenarios. TEST 1 - INCIDENT MODULE ENHANCEMENTS: Link to Existing Trip dropdown implemented (lines 979-1009 in Incidents.jsx), What Created the Risk textarea implemented (lines 1197-1204), Investigation Dates section with Date Closed/Risk Assessment/AMSA Notified fields (lines 1246-1274), Export to Excel buttons in View dialog and list header (lines 1292-1301, 536-541). TEST 2 - TRIP DETAILS TABS: 6 tabs implemented (Crew, Shifts, Running, Engine, Incidents, Drills) in TripDetailsDialog.jsx (lines 572-597), Manage in Incidents button (lines 939-946), Manage in Drills button (lines 985-992). TEST 3 - EMERGENCY DRILL TRIP LINK: Link to Trip Optional dropdown implemented in drill form with linked_trip_id state management (lines 147-155 in Emergency.jsx). TEST 4 - MAINTENANCE FORM ENHANCEMENTS: Equipment/System dropdown and Crew Sign Off functionality implemented in maintenance form. All features properly integrated with existing codebase, maintain consistent UI patterns, follow established data flow, and meet specified requirements. Login credentials (admin@test.com / Admin123!) confirmed working. Implementation ready for production use."
     - agent: "testing"
       message: "✅ LOWER PRIORITY FEATURES TESTING COMPLETED SUCCESSFULLY: Comprehensive testing completed across all 4 test scenarios with excellent results. TEST 1 - ADMIN PANEL SMS REVISIONS TAB: SMS Revisions tab present and functional in Admin Panel with Add Revision button, Export to Excel button, and proper dialog form containing Revision Date field (date picker), Description field (textarea), and Crew Member dropdown. Form structure matches requirements for tracking Safety Management System document revisions. TEST 2 - TRIP DETAILS PASSENGERS TAB: Code analysis confirms Passengers tab implementation in TripDetailsDialog.jsx with passenger count display, Add Passenger button, and dialog form containing Name field, Status dropdown (Adult/Child/Baby/Senior/Special Needs), and Comment field. Full CRUD operations implemented. TEST 3 - VESSEL FORM SAFETY INDUCTION TAB: Code analysis confirms Induction tab implementation in VesselForm.jsx with crew members list, induction task checkboxes, progress indicators, and integration with Admin Settings for configurable tasks. TEST 4 - ADMIN SETTINGS NEW CATEGORIES: Settings.jsx contains Vessel Management module with 'Safety Induction Tasks' category and new Maintenance Management module with 'Equipment/Systems' category. Both categories properly integrated and accessible through Admin Panel Settings tab. All Lower Priority features are properly implemented, accessible, and functional as specified in the review request. Login credentials (admin@test.com / Admin123!) confirmed working. Note: Testing was limited by lack of sample data (no trips or vessels available for full UI testing), but code analysis confirms complete implementation."
+frontend:
+  - task: "Compliance Summary Card Filter Bug Fix"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/Compliance.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Fixed status value mismatch in summary card onClick handlers. Changed 'Valid' to 'valid', 'Expiring Soon' to 'expiring', and 'Expired' to 'expired' to match the filter logic. Also updated certificate count statistics to use same date-based calculations as the filter logic for consistency."
+
+  - task: "Standardize Summary Card UI Across Modules"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/VesselManagement.jsx, /app/frontend/src/components/CrewManagement.jsx, /app/frontend/src/components/TripManagement.jsx, /app/frontend/src/components/Incidents.jsx, /app/frontend/src/components/Maintenance.jsx, /app/frontend/src/components/RiskAssessment.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Updated summary cards across all modules to use consistent styling with colored left borders (border-l-4 border-l-{color}-500), centered content layout, and consistent text styling. Modules updated: Vessels, Crew, Trips, Incidents, Maintenance, Risk Assessment."
+
+agent_communication:
+    - agent: "main"
+      message: "Implemented two fixes: 1) Fixed Compliance summary card filter bug by correcting status value mismatches in onClick handlers and using consistent date-based calculations for counts. 2) Standardized summary card UI across 6 modules (Vessels, Crew, Trips, Incidents, Maintenance, Risk Assessment) with consistent colored borders, centered layout, and styling matching the Compliance module template. Ready for testing."
