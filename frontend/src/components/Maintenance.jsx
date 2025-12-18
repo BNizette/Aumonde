@@ -131,6 +131,50 @@ const Maintenance = () => {
     setTimeout(() => setMessage(''), 3000);
   };
 
+  // Import from Excel handler
+  const handleImport = async (data) => {
+    try {
+      const token = localStorage.getItem('token');
+      let successCount = 0;
+      let errorCount = 0;
+
+      for (const row of data) {
+        try {
+          const maintenanceData = {
+            title: row['Title'] || row['title'] || '',
+            type: row['Type'] || row['type'] || 'Preventive',
+            priority: row['Priority'] || row['priority'] || 'Medium',
+            status: row['Status'] || row['status'] || 'Scheduled',
+            system_affected: row['Equipment/System'] || row['system_affected'] || '',
+            description: row['Description'] || row['description'] || '',
+            scheduled_date: row['Scheduled Date'] || row['scheduled_date'] || '',
+            vessel_id: row['Vessel ID'] || row['vessel_id'] || '',
+          };
+
+          if (!maintenanceData.title) continue;
+
+          await axios.post(`${API}/maintenance`, maintenanceData, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          successCount++;
+        } catch (err) {
+          console.error('Error importing maintenance:', err);
+          errorCount++;
+        }
+      }
+
+      setMessage(`Import complete: ${successCount} records added${errorCount > 0 ? `, ${errorCount} failed` : ''}`);
+      setTimeout(() => setMessage(''), 5000);
+      fetchMaintenanceRecords();
+    } catch (err) {
+      setError('Error importing data: ' + err.message);
+      setTimeout(() => setError(''), 5000);
+    }
+  };
+
+  const maintenanceImportColumns = ['Title', 'Type', 'Priority', 'Status', 'Equipment/System', 'Description', 'Scheduled Date', 'Vessel ID'];
+  const maintenanceImportSample = [['Engine Oil Change', 'Preventive', 'Medium', 'Scheduled', 'Main Engine', 'Routine oil change', '2024-01-20', '']];
+
   const clearFilters = () => { setSearchQuery(''); clearAllFilters(); setSortBy('priority'); };
   const hasActiveFilters = searchQuery || filters.statuses.length > 0 || filters.priorities.length > 0 || filters.start_date || filters.end_date || sortBy !== 'priority';
 
