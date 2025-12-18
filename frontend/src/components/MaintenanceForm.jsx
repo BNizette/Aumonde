@@ -444,7 +444,7 @@ const MaintenanceForm = ({ open, onClose, onSave, record, mode = 'create' }) => 
                       <div className="flex-1">
                         <p className="text-sm font-medium">Quote PDF attached</p>
                         <a 
-                          href={formData.quote_pdf_url} 
+                          href={formData.quote_pdf_url.startsWith('http') ? formData.quote_pdf_url : `${BACKEND_URL}${formData.quote_pdf_url}`} 
                           target="_blank" 
                           rel="noopener noreferrer"
                           className="text-xs text-blue-600 hover:underline flex items-center gap-1"
