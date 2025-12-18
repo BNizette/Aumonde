@@ -270,8 +270,9 @@ const Incidents = () => {
     }
   };
 
-  const incidentImportColumns = ['Title', 'Incident Type', 'Severity', 'Date', 'Location', 'Description', 'Vessel ID', 'Status'];
-  const incidentImportSample = [['Engine Failure', 'Mechanical', 'Minor', '2024-01-15', 'Port Jackson', 'Engine failed during routine operation', '', 'Reported']];
+  // Import template columns matching export format exactly
+  const incidentImportColumns = ['Incident #', 'Title', 'Type', 'Severity', 'Status', 'Date', 'Location', 'Vessel', 'Description', 'Injuries', 'Risk Creator', 'Date Closed', 'Date Risk Assessment', 'Date AMSA Notified', 'Linked Trip'];
+  const incidentImportSample = [['INC-001', 'Engine Failure', 'Mechanical', 'Minor', 'Reported', '2024-01-15 10:30', 'Port Jackson', 'MV Coral Queen', 'Engine failed during routine operation', 'No', 'John Smith', '', '', '', '']];
 
   const exportIncidentToExcel = (incident) => {
     const wb = XLSX.utils.book_new();
