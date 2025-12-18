@@ -296,78 +296,45 @@ const Maintenance = () => {
 
       {/* Statistics Cards - Clickable */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-        <Card 
-          className="cursor-pointer hover:shadow-lg transition-shadow border-l-4 border-l-blue-500" 
+        <SummaryCard
+          value={maintenanceRecords.length}
+          label="Total"
+          description="All records"
+          color="blue"
           onClick={() => {
             setSearchQuery('');
             setFilters({ statuses: [], priorities: [], start_date: '', end_date: '' });
             setSortBy('priority');
           }}
-        >
-          <CardContent className="pt-3 pb-3">
-            <div className="text-center">
-              <div className="text-lg font-bold text-blue-600">{maintenanceRecords.length}</div>
-              <div className="text-sm text-gray-600">Total</div>
-              <p className="text-xs text-gray-400 mt-1">All records</p>
-            </div>
-          </CardContent>
-        </Card>
-        <Card 
-          className="cursor-pointer hover:shadow-lg transition-shadow border-l-4 border-l-cyan-500" 
+        />
+        <SummaryCard
+          value={maintenanceRecords.filter(r => r.status === 'Scheduled').length}
+          label="Scheduled"
+          description="Planned work"
+          color="cyan"
           onClick={() => setFilters(prev => ({ ...prev, statuses: ['Scheduled'] }))}
-        >
-          <CardContent className="pt-3 pb-3">
-            <div className="text-center">
-              <div className="text-lg font-bold text-cyan-600">
-                {maintenanceRecords.filter(r => r.status === 'Scheduled').length}
-              </div>
-              <div className="text-sm text-gray-600">Scheduled</div>
-              <p className="text-xs text-gray-400 mt-1">Planned work</p>
-            </div>
-          </CardContent>
-        </Card>
-        <Card 
-          className="cursor-pointer hover:shadow-lg transition-shadow border-l-4 border-l-yellow-500" 
+        />
+        <SummaryCard
+          value={maintenanceRecords.filter(r => r.status === 'In Progress').length}
+          label="In Progress"
+          description="Ongoing work"
+          color="yellow"
           onClick={() => setFilters(prev => ({ ...prev, statuses: ['In Progress'] }))}
-        >
-          <CardContent className="pt-3 pb-3">
-            <div className="text-center">
-              <div className="text-lg font-bold text-yellow-600">
-                {maintenanceRecords.filter(r => r.status === 'In Progress').length}
-              </div>
-              <div className="text-sm text-gray-600">In Progress</div>
-              <p className="text-xs text-gray-400 mt-1">Ongoing work</p>
-            </div>
-          </CardContent>
-        </Card>
-        <Card 
-          className="cursor-pointer hover:shadow-lg transition-shadow border-l-4 border-l-red-500" 
+        />
+        <SummaryCard
+          value={maintenanceRecords.filter(r => r.status === 'Overdue').length}
+          label="Overdue"
+          description="Requires action"
+          color="red"
           onClick={() => setFilters(prev => ({ ...prev, statuses: ['Overdue'] }))}
-        >
-          <CardContent className="pt-3 pb-3">
-            <div className="text-center">
-              <div className="text-lg font-bold text-red-600">
-                {maintenanceRecords.filter(r => r.status === 'Overdue').length}
-              </div>
-              <div className="text-sm text-gray-600">Overdue</div>
-              <p className="text-xs text-gray-400 mt-1">Requires action</p>
-            </div>
-          </CardContent>
-        </Card>
-        <Card 
-          className="cursor-pointer hover:shadow-lg transition-shadow border-l-4 border-l-green-500" 
+        />
+        <SummaryCard
+          value={maintenanceRecords.filter(r => r.status === 'Completed').length}
+          label="Completed"
+          description="Finished work"
+          color="green"
           onClick={() => setFilters(prev => ({ ...prev, statuses: ['Completed'] }))}
-        >
-          <CardContent className="pt-3 pb-3">
-            <div className="text-center">
-              <div className="text-lg font-bold text-green-600">
-                {maintenanceRecords.filter(r => r.status === 'Completed').length}
-              </div>
-              <div className="text-sm text-gray-600">Completed</div>
-              <p className="text-xs text-gray-400 mt-1">Finished work</p>
-            </div>
-          </CardContent>
-        </Card>
+        />
       </div>
 
       {/* Search and Filter Bar */}
