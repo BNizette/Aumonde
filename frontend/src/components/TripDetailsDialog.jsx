@@ -67,13 +67,14 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
       
       // Crew Shifts and Allocated Crew: filter by trip_id (trip-specific)
       // Running Logs and Engine Logs: filter by vessel_id (vessel-specific across all trips)
-      const [shiftRes, runningRes, engineRes, crewRes, incidentsRes, drillsRes] = await Promise.all([
+      const [shiftRes, runningRes, engineRes, crewRes, incidentsRes, drillsRes, passengersRes] = await Promise.all([
         axios.get(`${API}/trip-logs?trip_id=${trip.id}`, { headers: { Authorization: `Bearer ${token}` } }),
         axios.get(`${API}/running-logs?vessel_id=${trip.vessel_id}`, { headers: { Authorization: `Bearer ${token}` } }),
         axios.get(`${API}/engine-running-logs?vessel_id=${trip.vessel_id}`, { headers: { Authorization: `Bearer ${token}` } }),
         axios.get(`${API}/allocated-crew?trip_id=${trip.id}`, { headers: { Authorization: `Bearer ${token}` } }),
         axios.get(`${API}/incidents`, { headers: { Authorization: `Bearer ${token}` } }),
-        axios.get(`${API}/emergency/drills`, { headers: { Authorization: `Bearer ${token}` } })
+        axios.get(`${API}/emergency/drills`, { headers: { Authorization: `Bearer ${token}` } }),
+        axios.get(`${API}/trip-passengers?trip_id=${trip.id}`, { headers: { Authorization: `Bearer ${token}` } })
       ]);
       
       setShiftLogs(shiftRes.data);
@@ -84,6 +85,7 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
       setTripIncidents((incidentsRes.data || []).filter(i => i.linked_trip_id === trip.id));
       // Filter drills linked to this trip
       setTripDrills((drillsRes.data || []).filter(d => d.linked_trip_id === trip.id));
+      setTripPassengers(passengersRes.data || []);
     } catch (err) {
       console.error('Error fetching logs:', err);
     } finally {
