@@ -2464,9 +2464,34 @@ async def update_incident(incident_id: str, incident_data: IncidentCreate, curre
         except:
             pass
     
+    # Parse new investigation date fields
+    date_closed = None
+    if incident_data.date_closed:
+        try:
+            date_closed = datetime.fromisoformat(incident_data.date_closed.replace('Z', '+00:00'))
+        except:
+            pass
+    
+    date_risk_assessment = None
+    if incident_data.date_risk_assessment_performed:
+        try:
+            date_risk_assessment = datetime.fromisoformat(incident_data.date_risk_assessment_performed.replace('Z', '+00:00'))
+        except:
+            pass
+    
+    date_amsa = None
+    if incident_data.date_amsa_notified:
+        try:
+            date_amsa = datetime.fromisoformat(incident_data.date_amsa_notified.replace('Z', '+00:00'))
+        except:
+            pass
+    
     update_dict = incident_data.model_dump()
     update_dict['incident_date'] = incident_date
     update_dict['target_completion_date'] = target_date
+    update_dict['date_closed'] = date_closed
+    update_dict['date_risk_assessment_performed'] = date_risk_assessment
+    update_dict['date_amsa_notified'] = date_amsa
     update_dict['updated_at'] = datetime.now(timezone.utc)
     
     await db.incidents.update_one({"id": incident_id}, {"$set": update_dict})
