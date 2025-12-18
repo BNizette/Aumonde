@@ -293,8 +293,9 @@ const CrewManagement = () => {
     }
   };
 
-  const crewImportColumns = ['Full Name', 'Email', 'Phone', 'Position', 'Role', 'Emergency Contact', 'Emergency Phone'];
-  const crewImportSample = [['John Smith', 'john@example.com', '+61400000000', 'Master', 'crew', 'Jane Smith', '+61400000001']];
+  // Import template columns matching export format exactly
+  const crewImportColumns = ['Staff Name', 'Position', 'Role', 'Mobile', 'Email', 'Status', 'Date Commenced', 'Next of Kin', 'Next of Kin Contact'];
+  const crewImportSample = [['John Smith', 'Master', 'crew', '+61400000000', 'john@example.com', 'Active', '2024-01-01', 'Jane Smith', '+61400000001']];
 
   const hasActiveFilters = searchQuery || filters.positions.length > 0 || filters.roles.length > 0 || filters.start_date || filters.end_date || sortBy !== 'name';
 
