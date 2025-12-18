@@ -36,7 +36,14 @@ const Settings = () => {
       label: 'Vessel Management',
       categories: {
         vessel_types: 'Vessel Types',
-        operational_status: 'Operational Status'
+        operational_status: 'Operational Status',
+        induction_tasks: 'Safety Induction Tasks'
+      }
+    },
+    maintenance: {
+      label: 'Maintenance Management',
+      categories: {
+        equipment_systems: 'Equipment/Systems'
       }
     },
     trip: {
