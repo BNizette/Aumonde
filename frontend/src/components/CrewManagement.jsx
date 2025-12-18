@@ -443,93 +443,47 @@ const CrewManagement = () => {
 
       {/* Statistics Cards - Clickable */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-        <Card 
-          className="cursor-pointer hover:shadow-lg transition-shadow border-l-4 border-l-blue-500"
+        <SummaryCard
+          value={crewList.length}
+          label="Total Crew"
+          description="All crew members"
+          color="blue"
           onClick={() => {
             setSearchQuery('');
-            updateFilters({
-              positions: [],
-              roles: [],
-              start_date: '',
-              end_date: ''
-            });
+            updateFilters({ positions: [], roles: [], start_date: '', end_date: '' });
             setSortBy('name');
           }}
-        >
-          <CardContent className="pt-3 pb-3">
-            <div className="text-center">
-              <div className="text-lg font-bold text-blue-600">{crewList.length}</div>
-              <div className="text-sm text-gray-600">Total Crew</div>
-              <p className="text-xs text-gray-400 mt-1">All crew members</p>
-            </div>
-          </CardContent>
-        </Card>
-        <Card 
-          className="cursor-pointer hover:shadow-lg transition-shadow border-l-4 border-l-indigo-500"
+        />
+        <SummaryCard
+          value={crewList.filter(c => c.default_position === 'Master').length}
+          label="Masters"
+          description="Vessel commanders"
+          color="indigo"
           onClick={() => {
             setSearchQuery('');
-            updateFilters({
-              positions: ['Master'],
-              roles: [],
-              start_date: '',
-              end_date: ''
-            });
+            updateFilters({ positions: ['Master'], roles: [], start_date: '', end_date: '' });
           }}
-        >
-          <CardContent className="pt-3 pb-3">
-            <div className="text-center">
-              <div className="text-lg font-bold text-indigo-600">
-                {crewList.filter(c => c.default_position === 'Master').length}
-              </div>
-              <div className="text-sm text-gray-600">Masters</div>
-              <p className="text-xs text-gray-400 mt-1">Vessel commanders</p>
-            </div>
-          </CardContent>
-        </Card>
-        <Card 
-          className="cursor-pointer hover:shadow-lg transition-shadow border-l-4 border-l-green-500"
+        />
+        <SummaryCard
+          value={crewList.filter(c => c.default_position?.includes('Engineer')).length}
+          label="Engineers"
+          description="Technical crew"
+          color="green"
           onClick={() => {
             setSearchQuery('');
-            updateFilters({
-              positions: ['Engineer'],
-              roles: [],
-              start_date: '',
-              end_date: ''
-            });
+            updateFilters({ positions: ['Engineer'], roles: [], start_date: '', end_date: '' });
           }}
-        >
-          <CardContent className="pt-3 pb-3">
-            <div className="text-center">
-              <div className="text-lg font-bold text-green-600">
-                {crewList.filter(c => c.default_position?.includes('Engineer')).length}
-              </div>
-              <div className="text-sm text-gray-600">Engineers</div>
-              <p className="text-xs text-gray-400 mt-1">Technical crew</p>
-            </div>
-          </CardContent>
-        </Card>
-        <Card 
-          className="cursor-pointer hover:shadow-lg transition-shadow border-l-4 border-l-purple-500"
+        />
+        <SummaryCard
+          value={crewList.filter(c => c.default_position === 'Crew' || c.default_position === 'Deckhand').length}
+          label="Crew Members"
+          description="Deckhands & crew"
+          color="purple"
           onClick={() => {
             setSearchQuery('');
-            updateFilters({
-              positions: ['Crew', 'Deckhand'],
-              roles: [],
-              start_date: '',
-              end_date: ''
-            });
+            updateFilters({ positions: ['Crew', 'Deckhand'], roles: [], start_date: '', end_date: '' });
           }}
-        >
-          <CardContent className="pt-3 pb-3">
-            <div className="text-center">
-              <div className="text-lg font-bold text-purple-600">
-                {crewList.filter(c => c.default_position === 'Crew' || c.default_position === 'Deckhand').length}
-              </div>
-              <div className="text-sm text-gray-600">Crew Members</div>
-              <p className="text-xs text-gray-400 mt-1">Deckhands & crew</p>
-            </div>
-          </CardContent>
-        </Card>
+        />
       </div>
 
       {/* Search and Filter Bar */}
