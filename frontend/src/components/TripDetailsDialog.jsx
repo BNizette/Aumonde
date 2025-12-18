@@ -1192,6 +1192,58 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
         tripId={trip?.id}
         mode={crewFormMode}
       />
+
+      {/* Passenger Dialog */}
+      <Dialog open={passengerDialogOpen} onOpenChange={setPassengerDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{editingPassenger ? 'Edit Passenger' : 'Add Passenger'}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label>Name *</Label>
+              <Input
+                value={passengerForm.name}
+                onChange={(e) => setPassengerForm({...passengerForm, name: e.target.value})}
+                placeholder="Passenger name"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Status *</Label>
+              <Select 
+                value={passengerForm.status} 
+                onValueChange={(value) => setPassengerForm({...passengerForm, status: value})}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Adult">Adult</SelectItem>
+                  <SelectItem value="Child">Child</SelectItem>
+                  <SelectItem value="Baby">Baby</SelectItem>
+                  <SelectItem value="Senior">Senior</SelectItem>
+                  <SelectItem value="Special Needs">Special Needs</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label>Comment</Label>
+              <Textarea
+                value={passengerForm.comment}
+                onChange={(e) => setPassengerForm({...passengerForm, comment: e.target.value})}
+                placeholder="Any additional notes"
+                rows={2}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setPassengerDialogOpen(false)}>Cancel</Button>
+            <Button onClick={handleSavePassenger} disabled={!passengerForm.name}>
+              {editingPassenger ? 'Update' : 'Add'} Passenger
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };
