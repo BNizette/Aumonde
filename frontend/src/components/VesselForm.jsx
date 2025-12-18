@@ -235,11 +235,32 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create' }) => {
         } finally {
           setLoadingEmergency(false);
         }
+
+        // Fetch induction data
+        setLoadingInduction(true);
+        try {
+          const [tasksRes, recordsRes, crewRes] = await Promise.all([
+            fetch(`${API}/api/settings/vessel/induction_tasks`, { headers: { Authorization: `Bearer ${token}` } }).then(r => r.json()).catch(() => ({ options: [] })),
+            axios.get(`${API}/api/vessel-induction?vessel_id=${vessel.id}`, { headers: { Authorization: `Bearer ${token}` } }),
+            axios.get(`${API}/api/crew`, { headers: { Authorization: `Bearer ${token}` } })
+          ]);
+          setInductionTasks(tasksRes.options || []);
+          setInductionRecords(recordsRes.data || []);
+          setCrewList(crewRes.data || []);
+        } catch (err) {
+          console.error('Error fetching induction data:', err);
+          setInductionTasks([]);
+          setInductionRecords([]);
+        } finally {
+          setLoadingInduction(false);
+        }
       } else {
         setVesselCertificates([]);
         setVesselIncidents([]);
         setVesselMaintenance([]);
         setVesselEmergency({ contacts: [], procedures: [], drills: [] });
+        setInductionTasks([]);
+        setInductionRecords([]);
       }
     };
 
