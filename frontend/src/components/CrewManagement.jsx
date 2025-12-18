@@ -443,7 +443,7 @@ const CrewManagement = () => {
       {/* Statistics Cards - Clickable */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
         <Card 
-          className="cursor-pointer hover:shadow-lg transition-shadow"
+          className="cursor-pointer hover:shadow-lg transition-shadow border-l-4 border-l-blue-500"
           onClick={() => {
             setSearchQuery('');
             updateFilters({
@@ -455,16 +455,16 @@ const CrewManagement = () => {
             setSortBy('name');
           }}
         >
-          <CardHeader className="pb-2">
-            <CardTitle className="text-xs font-medium text-gray-500">Total Crew</CardTitle>
-          </CardHeader>
-          <CardContent className="pt-0">
-            <div className="text-lg font-bold">{crewList.length}</div>
-            <p className="text-[10px] text-gray-500 mt-0.5">Click to show all</p>
+          <CardContent className="pt-3 pb-3">
+            <div className="text-center">
+              <div className="text-lg font-bold text-blue-600">{crewList.length}</div>
+              <div className="text-sm text-gray-600">Total Crew</div>
+              <p className="text-xs text-gray-400 mt-1">All crew members</p>
+            </div>
           </CardContent>
         </Card>
         <Card 
-          className="cursor-pointer hover:shadow-lg transition-shadow"
+          className="cursor-pointer hover:shadow-lg transition-shadow border-l-4 border-l-indigo-500"
           onClick={() => {
             setSearchQuery('');
             updateFilters({
@@ -475,18 +475,18 @@ const CrewManagement = () => {
             });
           }}
         >
-          <CardHeader className="pb-2">
-            <CardTitle className="text-xs font-medium text-gray-500">Masters</CardTitle>
-          </CardHeader>
-          <CardContent className="pt-0">
-            <div className="text-lg font-bold text-blue-600">
-              {crewList.filter(c => c.default_position === 'Master').length}
+          <CardContent className="pt-3 pb-3">
+            <div className="text-center">
+              <div className="text-lg font-bold text-indigo-600">
+                {crewList.filter(c => c.default_position === 'Master').length}
+              </div>
+              <div className="text-sm text-gray-600">Masters</div>
+              <p className="text-xs text-gray-400 mt-1">Vessel commanders</p>
             </div>
-            <p className="text-[10px] text-gray-500 mt-0.5">Click to filter</p>
           </CardContent>
         </Card>
         <Card 
-          className="cursor-pointer hover:shadow-lg transition-shadow"
+          className="cursor-pointer hover:shadow-lg transition-shadow border-l-4 border-l-green-500"
           onClick={() => {
             setSearchQuery('');
             updateFilters({
@@ -497,18 +497,18 @@ const CrewManagement = () => {
             });
           }}
         >
-          <CardHeader className="pb-2">
-            <CardTitle className="text-xs font-medium text-gray-500">Engineers</CardTitle>
-          </CardHeader>
-          <CardContent className="pt-0">
-            <div className="text-lg font-bold text-green-600">
-              {crewList.filter(c => c.default_position?.includes('Engineer')).length}
+          <CardContent className="pt-3 pb-3">
+            <div className="text-center">
+              <div className="text-lg font-bold text-green-600">
+                {crewList.filter(c => c.default_position?.includes('Engineer')).length}
+              </div>
+              <div className="text-sm text-gray-600">Engineers</div>
+              <p className="text-xs text-gray-400 mt-1">Technical crew</p>
             </div>
-            <p className="text-[10px] text-gray-500 mt-0.5">Click to filter</p>
           </CardContent>
         </Card>
         <Card 
-          className="cursor-pointer hover:shadow-lg transition-shadow"
+          className="cursor-pointer hover:shadow-lg transition-shadow border-l-4 border-l-purple-500"
           onClick={() => {
             setSearchQuery('');
             updateFilters({
@@ -519,14 +519,14 @@ const CrewManagement = () => {
             });
           }}
         >
-          <CardHeader className="pb-2">
-            <CardTitle className="text-xs font-medium text-gray-500">Crew Members</CardTitle>
-          </CardHeader>
-          <CardContent className="pt-0">
-            <div className="text-lg font-bold text-purple-600">
-              {crewList.filter(c => c.default_position === 'Crew' || c.default_position === 'Deckhand').length}
+          <CardContent className="pt-3 pb-3">
+            <div className="text-center">
+              <div className="text-lg font-bold text-purple-600">
+                {crewList.filter(c => c.default_position === 'Crew' || c.default_position === 'Deckhand').length}
+              </div>
+              <div className="text-sm text-gray-600">Crew Members</div>
+              <p className="text-xs text-gray-400 mt-1">Deckhands & crew</p>
             </div>
-            <p className="text-[10px] text-gray-500 mt-0.5">Click to filter</p>
           </CardContent>
         </Card>
       </div>
