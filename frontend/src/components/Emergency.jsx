@@ -2055,6 +2055,27 @@ const Emergency = () => {
               </Select>
             </div>
             <div>
+              <Label>Link to Trip (Optional)</Label>
+              <Select value={drillForm.linked_trip_id || 'none'} onValueChange={(value) => {
+                if (value === 'none') {
+                  setDrillForm({...drillForm, linked_trip_id: '', linked_trip_name: ''});
+                } else {
+                  const trip = trips.find(t => t.id === value);
+                  setDrillForm({...drillForm, linked_trip_id: value, linked_trip_name: trip ? `${trip.trip_name || 'Trip'} - ${trip.vessel_name || ''}` : ''});
+                }
+              }}>
+                <SelectTrigger><SelectValue placeholder="Select trip (optional)" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">No linked trip</SelectItem>
+                  {trips.filter(t => !drillForm.vessel_id || t.vessel_id === drillForm.vessel_id).map(t => (
+                    <SelectItem key={t.id} value={t.id}>
+                      {t.trip_name || 'Unnamed Trip'} - {t.vessel_name || 'No vessel'} ({t.departure_date ? new Date(t.departure_date).toLocaleDateString() : 'No date'})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
               <Label>Participants</Label>
               <Textarea rows={2} value={drillForm.participants} onChange={(e) => setDrillForm({...drillForm, participants: e.target.value})} placeholder="List participants..." />
             </div>
