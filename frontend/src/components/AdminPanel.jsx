@@ -698,6 +698,60 @@ const AdminPanel = () => {
     setMessage('All admin data exported to Excel successfully');
   };
 
+  // SMS Revision functions
+  const handleCreateSmsRevision = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      await axios.post(`${API}/sms-revisions`, smsForm, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setSmsDialogOpen(false);
+      setSmsForm({
+        revision_date: new Date().toISOString().slice(0, 10),
+        revision_description: '',
+        crew_member_id: '',
+        crew_member_name: '',
+        version_number: ''
+      });
+      fetchData();
+      setMessage('SMS revision created successfully');
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Error creating SMS revision');
+    }
+  };
+
+  const handleDeleteSmsRevision = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this SMS revision?')) return;
+    try {
+      const token = localStorage.getItem('token');
+      await axios.delete(`${API}/sms-revisions/${id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      fetchData();
+      setMessage('SMS revision deleted');
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Error deleting SMS revision');
+    }
+  };
+
+  const exportSmsRevisionsToExcel = () => {
+    const sheets = [{
+      name: 'SMS Revisions',
+      headers: ['Date', 'Version', 'Description', 'Crew Member', 'Created By', 'Created At'],
+      data: smsRevisions.map(rev => [
+        formatDate(rev.revision_date),
+        safeValue(rev.version_number),
+        safeValue(rev.revision_description),
+        safeValue(rev.crew_member_name),
+        safeValue(rev.created_by_name),
+        formatDate(rev.created_at, true)
+      ]),
+      columnWidths: [12, 10, 40, 20, 20, 20]
+    }];
+    exportMultiSheetExcel(sheets, 'sms_revisions');
+    setMessage('SMS revisions exported to Excel');
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
