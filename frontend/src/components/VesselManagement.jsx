@@ -748,6 +748,18 @@ const VesselManagement = () => {
         vessel={selectedVesselForLogs}
         onMessage={(msg) => { setMessage(msg); setTimeout(() => setMessage(""), 3000); }}
       />
+
+      {/* Import Excel Dialog */}
+      <ImportExcelDialog
+        open={importDialogOpen}
+        onClose={() => setImportDialogOpen(false)}
+        title="Import Vessels"
+        description="Upload an Excel file to import vessels. Download the template for the correct format."
+        templateColumns={vesselImportColumns}
+        templateSampleData={vesselImportSample}
+        onImport={handleImport}
+        templateFileName="vessels_import_template.xlsx"
+      />
     </div>
   );
 };
