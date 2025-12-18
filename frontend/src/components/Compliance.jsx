@@ -1423,7 +1423,8 @@ const Compliance = () => {
                         });
                         
                         if (response.data?.file_url) {
-                          setCertForm(prev => ({...prev, pdf_url: BACKEND_URL + response.data.file_url}));
+                          // Store only relative URL
+                          setCertForm(prev => ({...prev, pdf_url: response.data.file_url}));
                         }
                       } catch (err) {
                         setError('Failed to upload PDF');
