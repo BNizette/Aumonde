@@ -40,6 +40,7 @@ const TripManagement = () => {
   const [duplicateWarning, setDuplicateWarning] = useState(null);
   const [showDuplicateDialog, setShowDuplicateDialog] = useState(false);
   const [pendingFormData, setPendingFormData] = useState(null);
+  const [importDialogOpen, setImportDialogOpen] = useState(false);
 
   // Use custom hook for advanced filtering
   const {
