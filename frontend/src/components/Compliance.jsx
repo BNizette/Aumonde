@@ -274,6 +274,68 @@ const Compliance = () => {
     setFilteredRequirements(filtered);
   };
 
+  // Import template columns matching export formats
+  const certImportColumns = ['Certificate Name', 'Number', 'Type', 'Issuing Authority', 'Issue Date', 'Expiry Date', 'Vessel', 'Crew', 'Status'];
+  const certImportSample = [['Safety Certificate', 'CERT-001', 'Safety', 'AMSA', '2024-01-01', '2025-01-01', 'MV Coral Queen', '', 'Valid']];
+
+  const reqImportColumns = ['Requirement', 'Category', 'Regulator', 'Compliance Status', 'Last Review', 'Next Review', 'Notes'];
+  const reqImportSample = [['Annual Survey', 'Safety', 'AMSA', 'Compliant', '2024-01-01', '2025-01-01', 'Required annually']];
+
+  // Import handlers
+  const handleImportCertificates = async (data) => {
+    try {
+      const token = localStorage.getItem('token');
+      let successCount = 0, errorCount = 0;
+      for (const row of data) {
+        try {
+          const certData = {
+            certificate_name: row['Certificate Name'] || '',
+            certificate_number: row['Number'] || '',
+            certificate_type: row['Type'] || '',
+            issuing_authority: row['Issuing Authority'] || '',
+            issue_date: row['Issue Date'] || '',
+            expiry_date: row['Expiry Date'] || '',
+            vessel_name: row['Vessel'] || '',
+            crew_name: row['Crew'] || '',
+            status: row['Status'] || 'Valid',
+          };
+          if (!certData.certificate_name) continue;
+          await axios.post(`${API}/compliance/certificates`, certData, { headers: { Authorization: `Bearer ${token}` } });
+          successCount++;
+        } catch (err) { errorCount++; }
+      }
+      setMessage(`Import complete: ${successCount} certificates added${errorCount > 0 ? `, ${errorCount} failed` : ''}`);
+      setTimeout(() => setMessage(''), 5000);
+      fetchCertificates();
+    } catch (err) { setError('Error importing: ' + err.message); setTimeout(() => setError(''), 5000); }
+  };
+
+  const handleImportRequirements = async (data) => {
+    try {
+      const token = localStorage.getItem('token');
+      let successCount = 0, errorCount = 0;
+      for (const row of data) {
+        try {
+          const reqData = {
+            requirement: row['Requirement'] || '',
+            category: row['Category'] || '',
+            regulator: row['Regulator'] || '',
+            compliance_status: row['Compliance Status'] || '',
+            last_review: row['Last Review'] || '',
+            next_review: row['Next Review'] || '',
+            notes: row['Notes'] || '',
+          };
+          if (!reqData.requirement) continue;
+          await axios.post(`${API}/compliance/requirements`, reqData, { headers: { Authorization: `Bearer ${token}` } });
+          successCount++;
+        } catch (err) { errorCount++; }
+      }
+      setMessage(`Import complete: ${successCount} requirements added${errorCount > 0 ? `, ${errorCount} failed` : ''}`);
+      setTimeout(() => setMessage(''), 5000);
+      fetchRequirements();
+    } catch (err) { setError('Error importing: ' + err.message); setTimeout(() => setError(''), 5000); }
+  };
+
   const exportCertificatesToExcel = () => {
     if (filteredCertificates.length === 0) { setError('No certificates to export'); setTimeout(() => setError(''), 3000); return; }
     const wb = XLSX.utils.book_new();
