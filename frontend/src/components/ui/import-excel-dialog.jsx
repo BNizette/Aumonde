@@ -115,18 +115,28 @@ const ImportExcelDialog = ({
   const downloadTemplate = () => {
     const wb = XLSX.utils.book_new();
     
-    // Create data array with headers and sample data
-    const data = [templateColumns];
-    if (templateSampleData.length > 0) {
-      templateSampleData.forEach(row => data.push(row));
+    if (isMultiSheet) {
+      // Multi-worksheet template
+      worksheets.forEach(sheet => {
+        const data = [sheet.columns];
+        if (sheet.sampleData && sheet.sampleData.length > 0) {
+          sheet.sampleData.forEach(row => data.push(row));
+        }
+        const ws = XLSX.utils.aoa_to_sheet(data);
+        ws['!cols'] = sheet.columns.map(() => ({ wch: 20 }));
+        XLSX.utils.book_append_sheet(wb, ws, sheet.name);
+      });
+    } else {
+      // Single sheet template
+      const data = [templateColumns];
+      if (templateSampleData.length > 0) {
+        templateSampleData.forEach(row => data.push(row));
+      }
+      const ws = XLSX.utils.aoa_to_sheet(data);
+      ws['!cols'] = templateColumns.map(() => ({ wch: 20 }));
+      XLSX.utils.book_append_sheet(wb, ws, 'Template');
     }
     
-    const ws = XLSX.utils.aoa_to_sheet(data);
-    
-    // Set column widths
-    ws['!cols'] = templateColumns.map(() => ({ wch: 20 }));
-    
-    XLSX.utils.book_append_sheet(wb, ws, 'Template');
     XLSX.writeFile(wb, templateFileName);
   };
 
