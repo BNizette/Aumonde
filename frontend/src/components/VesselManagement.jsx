@@ -156,6 +156,50 @@ const VesselManagement = () => {
     setTimeout(() => setMessage(''), 3000);
   };
 
+  // Import from Excel handler
+  const handleImport = async (data) => {
+    try {
+      const token = localStorage.getItem('token');
+      let successCount = 0;
+      let errorCount = 0;
+
+      for (const row of data) {
+        try {
+          const vesselData = {
+            vessel_name: row['Vessel Name'] || row['vessel_name'] || '',
+            vessel_type: row['Vessel Type'] || row['vessel_type'] || '',
+            registration_number: row['Registration Number'] || row['registration_number'] || '',
+            port_of_registry: row['Port of Registry'] || row['port_of_registry'] || '',
+            owner_operator: row['Owner/Operator'] || row['owner_operator'] || '',
+            length_overall: row['Length (m)'] || row['length_overall'] || '',
+            max_passengers: row['Max Passengers'] || row['max_passengers'] || '',
+            operational_status: row['Status'] || row['operational_status'] || 'Operational',
+          };
+
+          if (!vesselData.vessel_name) continue;
+
+          await axios.post(`${API}/vessels`, vesselData, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          successCount++;
+        } catch (err) {
+          console.error('Error importing vessel:', err);
+          errorCount++;
+        }
+      }
+
+      setMessage(`Import complete: ${successCount} vessels added${errorCount > 0 ? `, ${errorCount} failed` : ''}`);
+      setTimeout(() => setMessage(''), 5000);
+      fetchVessels();
+    } catch (err) {
+      setError('Error importing data: ' + err.message);
+      setTimeout(() => setError(''), 5000);
+    }
+  };
+
+  const vesselImportColumns = ['Vessel Name', 'Vessel Type', 'Registration Number', 'Port of Registry', 'Owner/Operator', 'Length (m)', 'Max Passengers', 'Status'];
+  const vesselImportSample = [['MV Example', 'Passenger', 'REG123', 'Sydney', 'Maritime Co', '25', '50', 'Operational']];
+
   const clearFilters = () => {
     setSearchQuery('');
     clearAllFilters();
