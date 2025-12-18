@@ -112,7 +112,9 @@ const MaintenanceForm = ({ open, onClose, onSave, record, mode = 'create' }) => 
         next_service_date: '',
         service_frequency: '',
         notes: '',
-        quote_pdf_url: ''
+        quote_pdf_url: '',
+        crew_sign_off_id: '',
+        crew_sign_off_name: ''
       });
     }
     setError('');
