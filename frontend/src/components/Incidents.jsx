@@ -471,60 +471,34 @@ const Incidents = () => {
 
       {/* Statistics Cards - Clickable */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-        <Card 
-          className="cursor-pointer hover:shadow-lg transition-shadow border-l-4 border-l-blue-500"
+        <SummaryCard
+          value={incidents.length}
+          label="Total Incidents"
+          description="All incidents"
+          color="blue"
           onClick={() => clearAllFilters()}
-        >
-          <CardContent className="pt-3 pb-3">
-            <div className="text-center">
-              <div className="text-lg font-bold text-blue-600">{incidents.length}</div>
-              <div className="text-sm text-gray-600">Total Incidents</div>
-              <p className="text-xs text-gray-400 mt-1">All incidents</p>
-            </div>
-          </CardContent>
-        </Card>
-        <Card 
-          className="cursor-pointer hover:shadow-lg transition-shadow border-l-4 border-l-red-500"
+        />
+        <SummaryCard
+          value={incidents.filter(i => i.severity === 'Critical').length}
+          label="Critical"
+          description="Requires attention"
+          color="red"
           onClick={() => updateFilters({ severities: ['Critical'] })}
-        >
-          <CardContent className="pt-3 pb-3">
-            <div className="text-center">
-              <div className="text-lg font-bold text-red-600">
-                {incidents.filter(i => i.severity === 'Critical').length}
-              </div>
-              <div className="text-sm text-gray-600">Critical</div>
-              <p className="text-xs text-gray-400 mt-1">Requires attention</p>
-            </div>
-          </CardContent>
-        </Card>
-        <Card 
-          className="cursor-pointer hover:shadow-lg transition-shadow border-l-4 border-l-orange-500"
+        />
+        <SummaryCard
+          value={incidents.filter(i => i.severity === 'Serious').length}
+          label="Serious"
+          description="High priority"
+          color="orange"
           onClick={() => updateFilters({ severities: ['Serious'] })}
-        >
-          <CardContent className="pt-3 pb-3">
-            <div className="text-center">
-              <div className="text-lg font-bold text-orange-600">
-                {incidents.filter(i => i.severity === 'Serious').length}
-              </div>
-              <div className="text-sm text-gray-600">Serious</div>
-              <p className="text-xs text-gray-400 mt-1">High priority</p>
-            </div>
-          </CardContent>
-        </Card>
-        <Card 
-          className="cursor-pointer hover:shadow-lg transition-shadow border-l-4 border-l-yellow-500"
+        />
+        <SummaryCard
+          value={incidents.filter(i => i.investigation_status === 'Under Investigation').length}
+          label="Under Investigation"
+          description="Being reviewed"
+          color="yellow"
           onClick={() => updateFilters({ statuses: ['Under Investigation'] })}
-        >
-          <CardContent className="pt-3 pb-3">
-            <div className="text-center">
-              <div className="text-lg font-bold text-yellow-600">
-                {incidents.filter(i => i.investigation_status === 'Under Investigation').length}
-              </div>
-              <div className="text-sm text-gray-600">Under Investigation</div>
-              <p className="text-xs text-gray-400 mt-1">Being reviewed</p>
-            </div>
-          </CardContent>
-        </Card>
+        />
       </div>
 
       {/* Filters */}
