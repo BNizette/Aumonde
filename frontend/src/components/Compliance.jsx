@@ -596,7 +596,7 @@ const Compliance = () => {
             </Card>
             <Card 
               className="cursor-pointer hover:shadow-lg transition-shadow border-l-4 border-l-green-500"
-              onClick={() => updateCertFilters({ types: [], statuses: ['Valid'], vessels: [], start_date: '', end_date: '' })}
+              onClick={() => updateCertFilters({ types: [], statuses: ['valid'], vessels: [], start_date: '', end_date: '' })}
             >
               <CardContent className="pt-3 pb-3">
                 <div className="text-center">
@@ -608,7 +608,7 @@ const Compliance = () => {
             </Card>
             <Card 
               className="cursor-pointer hover:shadow-lg transition-shadow border-l-4 border-l-yellow-500"
-              onClick={() => updateCertFilters({ types: [], statuses: ['Expiring Soon'], vessels: [], start_date: '', end_date: '' })}
+              onClick={() => updateCertFilters({ types: [], statuses: ['expiring'], vessels: [], start_date: '', end_date: '' })}
             >
               <CardContent className="pt-3 pb-3">
                 <div className="text-center">
@@ -620,7 +620,7 @@ const Compliance = () => {
             </Card>
             <Card 
               className="cursor-pointer hover:shadow-lg transition-shadow border-l-4 border-l-red-500"
-              onClick={() => updateCertFilters({ types: [], statuses: ['Expired'], vessels: [], start_date: '', end_date: '' })}
+              onClick={() => updateCertFilters({ types: [], statuses: ['expired'], vessels: [], start_date: '', end_date: '' })}
             >
               <CardContent className="pt-3 pb-3">
                 <div className="text-center">
