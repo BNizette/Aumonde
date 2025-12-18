@@ -537,7 +537,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Crew Photo Drag-and-Drop Upload Tab"
+    - "Admin Panel Excel Export Functionality"
   stuck_tasks:
     []
   test_all: false
