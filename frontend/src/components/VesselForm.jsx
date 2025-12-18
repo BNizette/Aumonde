@@ -1387,7 +1387,95 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create' }) => {
               )}
             </TabsContent>
 
-            {/* TAB 6: PHOTO */}
+            {/* TAB: EMERGENCY */}
+            <TabsContent value="emergency" className="space-y-4">
+              {mode === 'edit' ? (
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-lg font-semibold">Emergency Information</h3>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => window.location.href = '/emergency'}
+                    >
+                      <ExternalLink className="h-4 w-4 mr-2" />
+                      Manage in Emergency
+                    </Button>
+                  </div>
+
+                  {loadingEmergency ? (
+                    <div className="text-center py-8 text-gray-500">Loading emergency data...</div>
+                  ) : (
+                    <>
+                      {/* Emergency Contacts Summary */}
+                      <div className="border rounded-lg p-4">
+                        <h4 className="font-medium mb-3">Emergency Contacts ({vesselEmergency.contacts.length})</h4>
+                        {vesselEmergency.contacts.length === 0 ? (
+                          <p className="text-sm text-gray-500">No emergency contacts configured</p>
+                        ) : (
+                          <div className="space-y-2">
+                            {vesselEmergency.contacts.slice(0, 3).map(contact => (
+                              <div key={contact.id} className="flex justify-between items-center text-sm p-2 bg-gray-50 rounded">
+                                <span className="font-medium">{contact.name}</span>
+                                <span className="text-gray-600">{contact.phone}</span>
+                              </div>
+                            ))}
+                            {vesselEmergency.contacts.length > 3 && (
+                              <p className="text-xs text-gray-500">+{vesselEmergency.contacts.length - 3} more contacts</p>
+                            )}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Vessel Drills */}
+                      <div className="border rounded-lg p-4">
+                        <h4 className="font-medium mb-3">Drills for this Vessel ({vesselEmergency.drills.length})</h4>
+                        {vesselEmergency.drills.length === 0 ? (
+                          <p className="text-sm text-gray-500">No drills recorded for this vessel</p>
+                        ) : (
+                          <div className="space-y-2">
+                            {vesselEmergency.drills.slice(0, 5).map(drill => (
+                              <div key={drill.id} className="flex justify-between items-center text-sm p-2 bg-gray-50 rounded">
+                                <span className="font-medium">{drill.drill_type}</span>
+                                <span className="text-gray-600">{drill.drill_date ? new Date(drill.drill_date).toLocaleDateString() : 'No date'}</span>
+                              </div>
+                            ))}
+                            {vesselEmergency.drills.length > 5 && (
+                              <p className="text-xs text-gray-500">+{vesselEmergency.drills.length - 5} more drills</p>
+                            )}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Emergency Procedures Summary */}
+                      <div className="border rounded-lg p-4">
+                        <h4 className="font-medium mb-3">Emergency Procedures ({vesselEmergency.procedures.length})</h4>
+                        {vesselEmergency.procedures.length === 0 ? (
+                          <p className="text-sm text-gray-500">No emergency procedures configured</p>
+                        ) : (
+                          <div className="space-y-2">
+                            {vesselEmergency.procedures.slice(0, 3).map(proc => (
+                              <div key={proc.id} className="text-sm p-2 bg-gray-50 rounded">
+                                <span className="font-medium">{proc.procedure_name}</span>
+                              </div>
+                            ))}
+                            {vesselEmergency.procedures.length > 3 && (
+                              <p className="text-xs text-gray-500">+{vesselEmergency.procedures.length - 3} more procedures</p>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </>
+                  )}
+                </div>
+              ) : (
+                <div className="text-center py-8 text-gray-500">
+                  <p>Emergency information will be available after creating the vessel</p>
+                </div>
+              )}
+            </TabsContent>
+
+            {/* TAB 7: PHOTO */}
             <TabsContent value="photo" className="space-y-4">
               <div className="space-y-4">
                 <Label>Vessel Photo</Label>
