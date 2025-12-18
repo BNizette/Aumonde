@@ -537,11 +537,11 @@ metadata:
 
 test_plan:
   current_focus:
-    - "AMSA High Priority Features Testing Complete"
+    - "Medium Priority Vessel Form Enhancements Testing Complete"
   stuck_tasks:
     []
   test_all: false
-  test_priority: "high_first"
+  test_priority: "medium_first"
 
 frontend:
   - task: "AMSA High Priority Features Testing"
