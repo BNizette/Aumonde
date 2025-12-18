@@ -500,7 +500,8 @@ const MaintenanceForm = ({ open, onClose, onSave, record, mode = 'create' }) => 
                             });
                             
                             if (response.data?.file_url) {
-                              handleChange('quote_pdf_url', BACKEND_URL + response.data.file_url);
+                              // Store only relative URL
+                              handleChange('quote_pdf_url', response.data.file_url);
                             }
                           } catch (err) {
                             setError('Failed to upload PDF');
