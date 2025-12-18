@@ -1173,8 +1173,21 @@ const AdminPanel = () => {
         <TabsContent value="sessions">
           <Card>
             <CardHeader>
-              <CardTitle>Active Sessions</CardTitle>
-              <CardDescription>Monitor and manage all active user sessions</CardDescription>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle>Active Sessions</CardTitle>
+                  <CardDescription>Monitor and manage all active user sessions</CardDescription>
+                </div>
+                <Button 
+                  onClick={exportSessionsToExcel}
+                  variant="outline"
+                  size="sm"
+                  className="bg-green-50 hover:bg-green-100 text-green-700 border-green-200"
+                >
+                  <FileSpreadsheet className="mr-2 h-4 w-4" />
+                  Export to Excel
+                </Button>
+              </div>
             </CardHeader>
             <CardContent>
               {/* Filter Section */}
