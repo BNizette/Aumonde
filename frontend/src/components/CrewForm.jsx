@@ -773,7 +773,7 @@ const CrewForm = ({ open, onClose, onSave, crew, mode = 'create', prefilledData 
                     <div className="relative border-2 border-gray-200 rounded-lg p-4 bg-gray-50">
                       <div className="flex justify-center">
                         <img 
-                          src={formData.crew_photo_url} 
+                          src={formData.crew_photo_url.startsWith('http') ? formData.crew_photo_url : `${BACKEND_URL}${formData.crew_photo_url}`} 
                           alt="Crew Member" 
                           className="max-w-full h-auto max-h-64 object-contain rounded-lg shadow-md"
                           onError={(e) => {
