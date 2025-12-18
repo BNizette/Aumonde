@@ -488,6 +488,72 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
   const canEdit = user?.access_level === 'Edit' || user?.access_level === 'Full';
   const canDelete = user?.access_level === 'Full';
 
+  // Passenger CRUD functions
+  const handleSavePassenger = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const data = { ...passengerForm, trip_id: trip.id };
+      
+      if (editingPassenger) {
+        await axios.put(`${API}/trip-passengers/${editingPassenger.id}`, data, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setMessage('Passenger updated');
+      } else {
+        await axios.post(`${API}/trip-passengers`, data, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setMessage('Passenger added');
+      }
+      
+      setPassengerDialogOpen(false);
+      setPassengerForm({ name: '', status: 'Adult', comment: '' });
+      setEditingPassenger(null);
+      fetchAllLogs();
+      setTimeout(() => setMessage(''), 3000);
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Error saving passenger');
+      setTimeout(() => setError(''), 3000);
+    }
+  };
+
+  const handleEditPassenger = (passenger) => {
+    setPassengerForm({
+      name: passenger.name || '',
+      status: passenger.status || 'Adult',
+      comment: passenger.comment || ''
+    });
+    setEditingPassenger(passenger);
+    setPassengerDialogOpen(true);
+  };
+
+  const handleDeletePassenger = async (passenger) => {
+    if (!window.confirm(`Delete passenger ${passenger.name}?`)) return;
+    try {
+      const token = localStorage.getItem('token');
+      await axios.delete(`${API}/trip-passengers/${passenger.id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setMessage('Passenger deleted');
+      fetchAllLogs();
+      setTimeout(() => setMessage(''), 3000);
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Error deleting passenger');
+      setTimeout(() => setError(''), 3000);
+    }
+  };
+
+  const getStatusColor = (status) => {
+    const colors = {
+      'Adult': 'bg-blue-100 text-blue-800',
+      'Child': 'bg-green-100 text-green-800',
+      'Baby': 'bg-pink-100 text-pink-800',
+      'Senior': 'bg-purple-100 text-purple-800',
+      'Special Needs': 'bg-orange-100 text-orange-800'
+    };
+    return colors[status] || 'bg-gray-100 text-gray-800';
+  };
+
   if (!trip) return null;
 
   return (
