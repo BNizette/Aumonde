@@ -685,9 +685,19 @@ const AdminPanel = () => {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-3xl font-bold text-gray-900">Admin Panel</h2>
-        <p className="text-gray-500 mt-1">Manage users, view activity logs, and monitor sessions</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-3xl font-bold text-gray-900">Admin Panel</h2>
+          <p className="text-gray-500 mt-1">Manage users, view activity logs, and monitor sessions</p>
+        </div>
+        <Button 
+          onClick={exportAllAdminDataToExcel}
+          variant="outline"
+          className="bg-green-50 hover:bg-green-100 text-green-700 border-green-200"
+        >
+          <FileSpreadsheet className="mr-2 h-4 w-4" />
+          Export All to Excel
+        </Button>
       </div>
 
       {message && (
