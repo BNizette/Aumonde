@@ -1286,7 +1286,20 @@ const Incidents = () => {
       <Dialog open={viewDialogOpen} onOpenChange={setViewDialogOpen}>
         <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Incident Details</DialogTitle>
+            <div className="flex items-center justify-between">
+              <DialogTitle>Incident Details</DialogTitle>
+              {viewingIncident && (
+                <Button 
+                  onClick={() => exportIncidentToExcel(viewingIncident)}
+                  variant="outline"
+                  size="sm"
+                  className="bg-green-50 hover:bg-green-100 text-green-700 border-green-200"
+                >
+                  <FileSpreadsheet className="mr-2 h-4 w-4" />
+                  Export to Excel
+                </Button>
+              )}
+            </div>
           </DialogHeader>
           {viewingIncident && (
             <div className="space-y-4">
