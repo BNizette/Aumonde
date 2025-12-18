@@ -442,6 +442,15 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create' }) => {
                   />
                 </div>
                 <div className="space-y-2">
+                  <Label htmlFor="unique_identifier_number">Unique Identifier Number</Label>
+                  <Input
+                    id="unique_identifier_number"
+                    value={formData.unique_identifier_number}
+                    onChange={(e) => handleChange('unique_identifier_number', e.target.value)}
+                    placeholder="Enter unique identifier"
+                  />
+                </div>
+                <div className="space-y-2">
                   <Label htmlFor="vessel_type">Vessel Type</Label>
                   {vesselTypes.length > 0 ? (
                     <Select value={formData.vessel_type} onValueChange={(value) => handleChange('vessel_type', value)}>
