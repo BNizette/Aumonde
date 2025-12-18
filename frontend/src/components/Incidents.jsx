@@ -1400,6 +1400,18 @@ const Incidents = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Import Excel Dialog */}
+      <ImportExcelDialog
+        open={importDialogOpen}
+        onClose={() => setImportDialogOpen(false)}
+        title="Import Incidents"
+        description="Upload an Excel file to import incidents. Download the template for the correct format."
+        templateColumns={incidentImportColumns}
+        templateSampleData={incidentImportSample}
+        onImport={handleImport}
+        templateFileName="incidents_import_template.xlsx"
+      />
     </div>
   );
 };
