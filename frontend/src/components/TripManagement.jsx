@@ -638,6 +638,18 @@ const TripManagement = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Import Excel Dialog */}
+      <ImportExcelDialog
+        open={importDialogOpen}
+        onClose={() => setImportDialogOpen(false)}
+        title="Import Trips"
+        description="Upload an Excel file to import trips. Download the template for the correct format."
+        templateColumns={tripImportColumns}
+        templateSampleData={tripImportSample}
+        onImport={handleImport}
+        templateFileName="trips_import_template.xlsx"
+      />
     </div>
   );
 };
