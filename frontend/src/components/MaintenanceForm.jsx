@@ -560,6 +560,33 @@ const MaintenanceForm = ({ open, onClose, onSave, record, mode = 'create' }) => 
                   />
                 </div>
 
+                <div className="space-y-2">
+                  <Label>Crew Sign Off</Label>
+                  <Select 
+                    value={formData.crew_sign_off_id || "none"} 
+                    onValueChange={(value) => {
+                      if (value === 'none') {
+                        setFormData(prev => ({...prev, crew_sign_off_id: '', crew_sign_off_name: ''}));
+                      } else {
+                        const crew = crewList.find(c => c.id === value);
+                        setFormData(prev => ({...prev, crew_sign_off_id: value, crew_sign_off_name: crew?.staff_name || ''}));
+                      }
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select crew member" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">None</SelectItem>
+                      {crewList.map((crew) => (
+                        <SelectItem key={crew.id} value={crew.id}>
+                          {crew.staff_name} {crew.default_position ? `(${crew.default_position})` : ''}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
                 <div className="space-y-2 col-span-2">
                   <Label htmlFor="notes">Additional Notes</Label>
                   <Textarea
