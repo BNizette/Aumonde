@@ -4146,8 +4146,160 @@ async def populate_setting_from_existing(
 
 
 # ============================================================================
-# PLACEHOLDER ENDPOINTS FOR FUTURE PHASES
+# SMS REVISION MANAGEMENT
 # ============================================================================
+
+class SMSRevision(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    revision_date: datetime
+    revision_description: str
+    crew_member_id: Optional[str] = None
+    crew_member_name: Optional[str] = None
+    version_number: Optional[str] = None
+    created_by: str
+    created_by_name: str
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class SMSRevisionCreate(BaseModel):
+    revision_date: str
+    revision_description: str
+    crew_member_id: Optional[str] = None
+    crew_member_name: Optional[str] = None
+    version_number: Optional[str] = None
+
+@api_router.get("/sms-revisions")
+async def get_sms_revisions(current_user: dict = Depends(require_access_level(AccessLevel.VIEW))):
+    revisions = await db.sms_revisions.find({}, {"_id": 0}).sort("revision_date", -1).to_list(1000)
+    return revisions
+
+@api_router.post("/sms-revisions")
+async def create_sms_revision(revision_data: SMSRevisionCreate, current_user: dict = Depends(require_access_level(AccessLevel.EDIT))):
+    revision_date = datetime.fromisoformat(revision_data.revision_date.replace('Z', '+00:00'))
+    
+    revision = SMSRevision(
+        revision_date=revision_date,
+        revision_description=revision_data.revision_description,
+        crew_member_id=revision_data.crew_member_id,
+        crew_member_name=revision_data.crew_member_name,
+        version_number=revision_data.version_number,
+        created_by=current_user["id"],
+        created_by_name=current_user["full_name"]
+    )
+    
+    await db.sms_revisions.insert_one(revision.model_dump())
+    await log_audit(current_user["id"], current_user["full_name"], "create", "sms_revision", revision.id, f"Created SMS revision: {revision_data.revision_description[:50]}")
+    
+    return revision
+
+@api_router.delete("/sms-revisions/{revision_id}")
+async def delete_sms_revision(revision_id: str, current_user: dict = Depends(require_access_level(AccessLevel.FULL))):
+    result = await db.sms_revisions.delete_one({"id": revision_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="SMS revision not found")
+    await log_audit(current_user["id"], current_user["full_name"], "delete", "sms_revision", revision_id, "Deleted SMS revision")
+    return {"message": "SMS revision deleted"}
+
+# ============================================================================
+# TRIP PASSENGER DETAILS
+# ============================================================================
+
+class TripPassenger(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    trip_id: str
+    name: str
+    status: str  # Adult, Child, Baby, Senior, Special Needs
+    comment: Optional[str] = None
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class TripPassengerCreate(BaseModel):
+    trip_id: str
+    name: str
+    status: str
+    comment: Optional[str] = None
+
+@api_router.get("/trip-passengers")
+async def get_trip_passengers(trip_id: Optional[str] = None, current_user: dict = Depends(require_access_level(AccessLevel.VIEW))):
+    query = {}
+    if trip_id:
+        query["trip_id"] = trip_id
+    passengers = await db.trip_passengers.find(query, {"_id": 0}).to_list(1000)
+    return passengers
+
+@api_router.post("/trip-passengers")
+async def create_trip_passenger(passenger_data: TripPassengerCreate, current_user: dict = Depends(require_access_level(AccessLevel.EDIT))):
+    passenger = TripPassenger(**passenger_data.model_dump())
+    await db.trip_passengers.insert_one(passenger.model_dump())
+    return passenger
+
+@api_router.put("/trip-passengers/{passenger_id}")
+async def update_trip_passenger(passenger_id: str, passenger_data: TripPassengerCreate, current_user: dict = Depends(require_access_level(AccessLevel.EDIT))):
+    result = await db.trip_passengers.update_one(
+        {"id": passenger_id},
+        {"$set": passenger_data.model_dump()}
+    )
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Passenger not found")
+    return await db.trip_passengers.find_one({"id": passenger_id}, {"_id": 0})
+
+@api_router.delete("/trip-passengers/{passenger_id}")
+async def delete_trip_passenger(passenger_id: str, current_user: dict = Depends(require_access_level(AccessLevel.EDIT))):
+    result = await db.trip_passengers.delete_one({"id": passenger_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Passenger not found")
+    return {"message": "Passenger deleted"}
+
+# ============================================================================
+# VESSEL SAFETY INDUCTION TRAINING
+# ============================================================================
+
+class VesselInductionRecord(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    vessel_id: str
+    crew_id: str
+    crew_name: str
+    completed_tasks: List[str] = []  # List of task names completed
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class VesselInductionRecordUpdate(BaseModel):
+    vessel_id: str
+    crew_id: str
+    crew_name: str
+    completed_tasks: List[str] = []
+
+@api_router.get("/vessel-induction")
+async def get_vessel_induction_records(vessel_id: Optional[str] = None, current_user: dict = Depends(require_access_level(AccessLevel.VIEW))):
+    query = {}
+    if vessel_id:
+        query["vessel_id"] = vessel_id
+    records = await db.vessel_induction.find(query, {"_id": 0}).to_list(1000)
+    return records
+
+@api_router.post("/vessel-induction")
+async def upsert_vessel_induction(record_data: VesselInductionRecordUpdate, current_user: dict = Depends(require_access_level(AccessLevel.EDIT))):
+    # Check if record exists for this vessel/crew combination
+    existing = await db.vessel_induction.find_one({
+        "vessel_id": record_data.vessel_id,
+        "crew_id": record_data.crew_id
+    })
+    
+    if existing:
+        # Update existing
+        await db.vessel_induction.update_one(
+            {"id": existing["id"]},
+            {"$set": {
+                "completed_tasks": record_data.completed_tasks,
+                "updated_at": datetime.now(timezone.utc)
+            }}
+        )
+        return await db.vessel_induction.find_one({"id": existing["id"]}, {"_id": 0})
+    else:
+        # Create new
+        record = VesselInductionRecord(**record_data.model_dump())
+        await db.vessel_induction.insert_one(record.model_dump())
+        return record
 
 # Include router
 app.include_router(api_router)
