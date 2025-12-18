@@ -1511,6 +1511,28 @@ const Compliance = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Import Excel Dialogs */}
+      <ImportExcelDialog
+        open={importCertDialogOpen}
+        onClose={() => setImportCertDialogOpen(false)}
+        title="Import Certificates"
+        description="Upload an Excel file to import certificates. Download the template for the correct format."
+        templateColumns={certImportColumns}
+        templateSampleData={certImportSample}
+        onImport={handleImportCertificates}
+        templateFileName="certificates_import_template.xlsx"
+      />
+      <ImportExcelDialog
+        open={importReqDialogOpen}
+        onClose={() => setImportReqDialogOpen(false)}
+        title="Import Compliance Requirements"
+        description="Upload an Excel file to import compliance requirements. Download the template for the correct format."
+        templateColumns={reqImportColumns}
+        templateSampleData={reqImportSample}
+        onImport={handleImportRequirements}
+        templateFileName="compliance_requirements_import_template.xlsx"
+      />
     </div>
   );
 };
