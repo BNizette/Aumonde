@@ -45,6 +45,18 @@ const AdminPanel = () => {
   const [backupLoading, setBackupLoading] = useState(false);
   const [restoreFile, setRestoreFile] = useState(null);
 
+  // SMS Revision states
+  const [smsRevisions, setSmsRevisions] = useState([]);
+  const [smsDialogOpen, setSmsDialogOpen] = useState(false);
+  const [crewList, setCrewList] = useState([]);
+  const [smsForm, setSmsForm] = useState({
+    revision_date: new Date().toISOString().slice(0, 10),
+    revision_description: '',
+    crew_member_id: '',
+    crew_member_name: '',
+    version_number: ''
+  });
+
   // Filter states for Users
   const [userSearch, setUserSearch] = useState('');
   const [userRoleFilter, setUserRoleFilter] = useState('all');
