@@ -68,11 +68,18 @@ const Incidents = () => {
     immediate_actions: '',
     investigation_status: 'Reported',
     root_cause: '',
+    risk_creator: '',
     corrective_actions: '',
     preventive_actions: '',
     responsible_person: '',
-    target_completion_date: ''
+    target_completion_date: '',
+    date_closed: '',
+    date_risk_assessment_performed: '',
+    date_amsa_notified: '',
+    linked_trip_id: '',
+    linked_trip_name: ''
   });
+  const [trips, setTrips] = useState([]);
 
   const [incidentTypes, setIncidentTypes] = useState([
     'Contact with something other than a vessel',
