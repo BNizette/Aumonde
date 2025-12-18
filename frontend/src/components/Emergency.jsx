@@ -145,11 +145,14 @@ const Emergency = () => {
     drill_date: new Date().toISOString().slice(0, 16),
     vessel_id: '',
     vessel_name: '',
+    linked_trip_id: '',
+    linked_trip_name: '',
     participants: '',
     duration_minutes: '',
     observations: '',
     areas_for_improvement: ''
   });
+  const [trips, setTrips] = useState([]);
 
   const [recordForm, setRecordForm] = useState({
     record_date: new Date().toISOString().slice(0, 16),
