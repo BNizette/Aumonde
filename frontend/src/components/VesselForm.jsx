@@ -219,12 +219,16 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create' }) => {
 
   useEffect(() => {
     if (vessel && mode === 'edit') {
-      setFormData({ ...vessel });
+      setFormData({ 
+        ...vessel,
+        crew_requirements: vessel.crew_requirements || []
+      });
     } else if (mode === 'create') {
       // Reset form for create mode
       setFormData({
         vessel_name: '',
         registration_number: '',
+        unique_identifier_number: '',
         vessel_type: '',
         owner_name: '',
         owner_contact: '',
@@ -236,6 +240,7 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create' }) => {
         call_sign: '',
         ais_class: '',
         home_port: '',
+        crew_requirements: [],
         length_overall: '',
         length_at_waterline: '',
         beam: '',
@@ -249,14 +254,23 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create' }) => {
         number_of_engines: '',
         engine_type: '',
         engine_power: '',
+        engine1_model: '',
+        engine1_serial: '',
+        engine2_model: '',
+        engine2_serial: '',
         propeller_type: '',
         propeller_material: '',
         fuel_type: '',
         fuel_capacity: '',
+        aux_type: '',
+        aux_power: '',
+        aux_fuel: '',
+        aux_serial: '',
         inside_equipment: '',
         outside_equipment: '',
         water_capacity: '',
-        max_passengers: '',
+        max_passengers_berthed: '',
+        max_passengers_unberthed: '',
         max_crew: '',
         navigation_equipment: '',
         communication_equipment: '',
