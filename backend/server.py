@@ -506,6 +506,7 @@ class Vessel(BaseModel):
     # Basic Details
     vessel_name: str
     registration_number: Optional[str] = None
+    unique_identifier_number: Optional[str] = None
     vessel_type: Optional[str] = None
     owner_name: Optional[str] = None
     owner_contact: Optional[str] = None
@@ -517,6 +518,7 @@ class Vessel(BaseModel):
     call_sign: Optional[str] = None
     ais_class: Optional[str] = None  # A or B
     home_port: Optional[str] = None
+    crew_requirements: Optional[List[dict]] = None  # List of {quantity, title}
     
     # Specifications
     length_overall: Optional[float] = None
