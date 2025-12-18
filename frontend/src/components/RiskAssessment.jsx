@@ -140,6 +140,50 @@ const RiskAssessment = () => {
     setTimeout(() => setMessage(''), 3000);
   };
 
+  // Import from Excel handler
+  const handleImport = async (data) => {
+    try {
+      const token = localStorage.getItem('token');
+      let successCount = 0;
+      let errorCount = 0;
+
+      for (const row of data) {
+        try {
+          const riskData = {
+            title: row['Title'] || row['title'] || '',
+            category: row['Category'] || row['category'] || '',
+            risk_level: row['Risk Level'] || row['risk_level'] || 'Low',
+            status: row['Status'] || row['status'] || 'Active',
+            description: row['Description'] || row['description'] || '',
+            controls: row['Controls'] || row['controls'] || '',
+            likelihood: row['Likelihood'] || row['likelihood'] || 'Unlikely',
+            consequence: row['Consequence'] || row['consequence'] || 'Minor',
+          };
+
+          if (!riskData.title) continue;
+
+          await axios.post(`${API}/risk-assessments`, riskData, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          successCount++;
+        } catch (err) {
+          console.error('Error importing risk:', err);
+          errorCount++;
+        }
+      }
+
+      setMessage(`Import complete: ${successCount} risks added${errorCount > 0 ? `, ${errorCount} failed` : ''}`);
+      setTimeout(() => setMessage(''), 5000);
+      fetchRisks();
+    } catch (err) {
+      setError('Error importing data: ' + err.message);
+      setTimeout(() => setError(''), 5000);
+    }
+  };
+
+  const riskImportColumns = ['Title', 'Category', 'Risk Level', 'Status', 'Description', 'Controls', 'Likelihood', 'Consequence'];
+  const riskImportSample = [['Fire Hazard', 'Safety', 'High', 'Active', 'Risk of fire in engine room', 'Fire suppression system installed', 'Possible', 'Major']];
+
   const clearFilters = () => {
     setSearchQuery('');
     clearAllFilters();
