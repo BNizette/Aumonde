@@ -10,7 +10,7 @@ import sys
 from datetime import datetime
 
 # Configuration
-BACKEND_URL = input("Enter your backend URL (e.g., https://fleet-command-38.preview.emergentagent.com): ").strip()
+BACKEND_URL = input("Enter your backend URL (e.g., https://nauticardbug.preview.emergentagent.com): ").strip()
 if not BACKEND_URL:
     BACKEND_URL = "http://localhost:8001"
 

@@ -45,7 +45,7 @@
 ### Testing Instructions
 
 1. **Access the Application:**
-   - Open: https://fleet-command-38.preview.emergentagent.com
+   - Open: https://nauticardbug.preview.emergentagent.com
    - You should see the login page
 
 2. **Test Registration:**

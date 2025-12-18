@@ -308,7 +308,7 @@ Login as admin, go to Admin Panel → Users
 
 ## 🚀 LOGIN URL
 
-**Preview:** https://fleet-command-38.preview.emergentagent.com
+**Preview:** https://nauticardbug.preview.emergentagent.com
 
 ---
 

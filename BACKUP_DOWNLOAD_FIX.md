@@ -62,7 +62,7 @@ python3 download_backup.py
 ```bash
 $ python3 download_backup.py
 
-Enter your backend URL: https://fleet-command-38.preview.emergentagent.com
+Enter your backend URL: https://nauticardbug.preview.emergentagent.com
 
 🔐 Login
 Email [admin@test.com]: 
