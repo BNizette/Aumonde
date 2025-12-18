@@ -197,8 +197,9 @@ const VesselManagement = () => {
     }
   };
 
-  const vesselImportColumns = ['Vessel Name', 'Vessel Type', 'Registration Number', 'Port of Registry', 'Owner/Operator', 'Length (m)', 'Max Passengers', 'Status'];
-  const vesselImportSample = [['MV Example', 'Passenger', 'REG123', 'Sydney', 'Maritime Co', '25', '50', 'Operational']];
+  // Import template columns matching export format exactly
+  const vesselImportColumns = ['Vessel Name', 'Registration Number', 'Vessel Type', 'Year Built', 'Length (m)', 'Beam (m)', 'Draft (m)', 'Gross Tonnage', 'Operational Status', 'Owner Name', 'Port of Registry', 'Last Survey Date', 'Next Survey Due'];
+  const vesselImportSample = [['MV Example', 'REG123', 'Passenger', '2020', '25', '8', '2.5', '150', 'Operational', 'Maritime Co', 'Sydney', '2024-01-01', '2025-01-01']];
 
   const clearFilters = () => {
     setSearchQuery('');
