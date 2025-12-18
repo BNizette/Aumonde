@@ -549,11 +549,11 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Lower Priority Features Testing Complete"
+    - "Trip Passengers Excel Export Button Testing Complete"
   stuck_tasks:
     []
   test_all: false
-  test_priority: "lower_first"
+  test_priority: "high_first"
 
 frontend:
   - task: "AMSA High Priority Features Testing"
