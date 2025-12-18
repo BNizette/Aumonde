@@ -36,6 +36,7 @@ const RiskAssessment = () => {
   const [selectedRisk, setSelectedRisk] = useState(null);
   const [formMode, setFormMode] = useState('create');
   const [user, setUser] = useState(null);
+  const [importDialogOpen, setImportDialogOpen] = useState(false);
 
   // Use custom hook for advanced filtering
   const {
