@@ -718,6 +718,7 @@ const AdminPanel = () => {
           <TabsTrigger value="activity">Activity Logs</TabsTrigger>
           <TabsTrigger value="audit">Audit Trail</TabsTrigger>
           <TabsTrigger value="sessions">Sessions ({sessions.length})</TabsTrigger>
+          <TabsTrigger value="sms">SMS Revisions</TabsTrigger>
           <TabsTrigger value="backup">Backup & Restore</TabsTrigger>
           <TabsTrigger value="settings">Settings</TabsTrigger>
         </TabsList>
