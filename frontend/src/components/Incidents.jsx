@@ -146,10 +146,12 @@ const Incidents = () => {
       const headers = { Authorization: `Bearer ${token}` };
 
       // Fetch all incidents (no backend filtering)
-      const [incidentsRes, vesselsRes] = await Promise.all([
+      const [incidentsRes, vesselsRes, tripsRes] = await Promise.all([
         axios.get(`${API}/incidents`, { headers }),
-        axios.get(`${API}/vessels`, { headers })
+        axios.get(`${API}/vessels`, { headers }),
+        axios.get(`${API}/trips`, { headers })
       ]);
+      setTrips(tripsRes.data || []);
 
       let filteredIncidents = incidentsRes.data;
 
