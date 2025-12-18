@@ -36,6 +36,7 @@ const Maintenance = () => {
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [formMode, setFormMode] = useState('create');
   const [user, setUser] = useState(null);
+  const [importDialogOpen, setImportDialogOpen] = useState(false);
 
   // Use custom hook for advanced filtering
   const {
