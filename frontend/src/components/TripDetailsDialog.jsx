@@ -22,6 +22,8 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
   const [runningLogs, setRunningLogs] = useState([]);
   const [engineLogs, setEngineLogs] = useState([]);
   const [allocatedCrew, setAllocatedCrew] = useState([]);
+  const [tripIncidents, setTripIncidents] = useState([]);
+  const [tripDrills, setTripDrills] = useState([]);
   const [loading, setLoading] = useState(false);
   
   const [shiftFormOpen, setShiftFormOpen] = useState(false);
