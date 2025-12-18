@@ -16,6 +16,8 @@ const API = `${BACKEND_URL}/api`;
 const MaintenanceForm = ({ open, onClose, onSave, record, mode = 'create' }) => {
   const [error, setError] = useState('');
   const [vessels, setVessels] = useState([]);
+  const [crewList, setCrewList] = useState([]);
+  const [equipmentSystems, setEquipmentSystems] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -37,7 +39,9 @@ const MaintenanceForm = ({ open, onClose, onSave, record, mode = 'create' }) => 
     next_service_date: '',
     service_frequency: '',
     notes: '',
-    quote_pdf_url: ''
+    quote_pdf_url: '',
+    crew_sign_off_id: '',
+    crew_sign_off_name: ''
   });
   const [uploadingQuote, setUploadingQuote] = useState(false);
 
