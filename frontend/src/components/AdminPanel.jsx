@@ -1639,6 +1639,73 @@ const AdminPanel = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* SMS Revision Dialog */}
+      <Dialog open={smsDialogOpen} onOpenChange={setSmsDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Add SMS Revision</DialogTitle>
+            <DialogDescription>Record a new Safety Management System revision</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Revision Date</Label>
+                <Input
+                  type="date"
+                  value={smsForm.revision_date}
+                  onChange={(e) => setSmsForm({...smsForm, revision_date: e.target.value})}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Version Number</Label>
+                <Input
+                  value={smsForm.version_number}
+                  onChange={(e) => setSmsForm({...smsForm, version_number: e.target.value})}
+                  placeholder="e.g., 1.0, 2.1"
+                />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label>Revision Description</Label>
+              <Textarea
+                value={smsForm.revision_description}
+                onChange={(e) => setSmsForm({...smsForm, revision_description: e.target.value})}
+                placeholder="Describe the changes made in this revision"
+                rows={3}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Crew Member</Label>
+              <Select 
+                value={smsForm.crew_member_id || 'none'} 
+                onValueChange={(value) => {
+                  if (value === 'none') {
+                    setSmsForm({...smsForm, crew_member_id: '', crew_member_name: ''});
+                  } else {
+                    const crew = crewList.find(c => c.id === value);
+                    setSmsForm({...smsForm, crew_member_id: value, crew_member_name: crew?.staff_name || ''});
+                  }
+                }}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select crew member" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">None</SelectItem>
+                  {crewList.map(crew => (
+                    <SelectItem key={crew.id} value={crew.id}>{crew.staff_name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setSmsDialogOpen(false)}>Cancel</Button>
+            <Button onClick={handleCreateSmsRevision}>Add Revision</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
