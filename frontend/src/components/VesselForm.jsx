@@ -23,6 +23,10 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create' }) => {
   const [loadingMaintenance, setLoadingMaintenance] = useState(false);
   const [vesselEmergency, setVesselEmergency] = useState({ contacts: [], procedures: [], drills: [] });
   const [loadingEmergency, setLoadingEmergency] = useState(false);
+  const [inductionTasks, setInductionTasks] = useState([]);
+  const [inductionRecords, setInductionRecords] = useState([]);
+  const [crewList, setCrewList] = useState([]);
+  const [loadingInduction, setLoadingInduction] = useState(false);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [dragActive, setDragActive] = useState(false);
   const [formData, setFormData] = useState({
