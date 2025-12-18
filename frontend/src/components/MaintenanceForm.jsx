@@ -48,8 +48,24 @@ const MaintenanceForm = ({ open, onClose, onSave, record, mode = 'create' }) => 
   useEffect(() => {
     if (open) {
       fetchVessels();
+      fetchCrewAndSettings();
     }
   }, [open]);
+
+  const fetchCrewAndSettings = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const headers = { Authorization: `Bearer ${token}` };
+      const [crewRes, settingsRes] = await Promise.all([
+        axios.get(`${API}/crew`, { headers }),
+        fetch(`${API}/settings/maintenance/equipment_systems`, { headers }).then(r => r.json()).catch(() => ({ options: [] }))
+      ]);
+      setCrewList(crewRes.data || []);
+      setEquipmentSystems(settingsRes.options || []);
+    } catch (err) {
+      console.error('Error fetching crew/settings:', err);
+    }
+  };
 
   useEffect(() => {
     if (record && mode === 'edit') {
@@ -72,7 +88,9 @@ const MaintenanceForm = ({ open, onClose, onSave, record, mode = 'create' }) => 
         next_service_date: record.next_service_date ? record.next_service_date.split('T')[0] : '',
         service_frequency: record.service_frequency || '',
         notes: record.notes || '',
-        quote_pdf_url: record.quote_pdf_url || ''
+        quote_pdf_url: record.quote_pdf_url || '',
+        crew_sign_off_id: record.crew_sign_off_id || '',
+        crew_sign_off_name: record.crew_sign_off_name || ''
       });
     } else if (mode === 'create') {
       setFormData({
