@@ -46,6 +46,7 @@ const VesselManagement = () => {
   const [manualLogOpen, setManualLogOpen] = useState(false);
   const [logsDialogOpen, setLogsDialogOpen] = useState(false);
   const [selectedVesselForLogs, setSelectedVesselForLogs] = useState(null);
+  const [importDialogOpen, setImportDialogOpen] = useState(false);
 
   // Use custom hook for advanced filtering
   const {
