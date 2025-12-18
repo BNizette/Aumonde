@@ -537,7 +537,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Admin Panel Excel Export Functionality"
+    - "AMSA High Priority Features Testing Complete"
   stuck_tasks:
     []
   test_all: false
