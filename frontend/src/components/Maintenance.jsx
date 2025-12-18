@@ -294,77 +294,77 @@ const Maintenance = () => {
       )}
 
       {/* Statistics Cards - Clickable */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
         <Card 
-          className="cursor-pointer hover:shadow-lg transition-shadow" 
+          className="cursor-pointer hover:shadow-lg transition-shadow border-l-4 border-l-blue-500" 
           onClick={() => {
             setSearchQuery('');
             setFilters({ statuses: [], priorities: [], start_date: '', end_date: '' });
             setSortBy('priority');
           }}
         >
-          <CardHeader className="pb-2">
-            <CardTitle className="text-xs font-medium text-gray-500">Total Records</CardTitle>
-          </CardHeader>
-          <CardContent className="pt-0">
-            <div className="text-lg font-bold">{maintenanceRecords.length}</div>
-            <p className="text-[10px] text-gray-500 mt-0.5">Click to show all</p>
+          <CardContent className="pt-3 pb-3">
+            <div className="text-center">
+              <div className="text-lg font-bold text-blue-600">{maintenanceRecords.length}</div>
+              <div className="text-sm text-gray-600">Total</div>
+              <p className="text-xs text-gray-400 mt-1">All records</p>
+            </div>
           </CardContent>
         </Card>
         <Card 
-          className="cursor-pointer hover:shadow-lg transition-shadow" 
+          className="cursor-pointer hover:shadow-lg transition-shadow border-l-4 border-l-cyan-500" 
           onClick={() => setFilters(prev => ({ ...prev, statuses: ['Scheduled'] }))}
         >
-          <CardHeader className="pb-2">
-            <CardTitle className="text-xs font-medium text-gray-500">Scheduled</CardTitle>
-          </CardHeader>
-          <CardContent className="pt-0">
-            <div className="text-lg font-bold text-blue-600">
-              {maintenanceRecords.filter(r => r.status === 'Scheduled').length}
+          <CardContent className="pt-3 pb-3">
+            <div className="text-center">
+              <div className="text-lg font-bold text-cyan-600">
+                {maintenanceRecords.filter(r => r.status === 'Scheduled').length}
+              </div>
+              <div className="text-sm text-gray-600">Scheduled</div>
+              <p className="text-xs text-gray-400 mt-1">Planned work</p>
             </div>
-            <p className="text-[10px] text-gray-500 mt-0.5">Click to filter</p>
           </CardContent>
         </Card>
         <Card 
-          className="cursor-pointer hover:shadow-lg transition-shadow" 
+          className="cursor-pointer hover:shadow-lg transition-shadow border-l-4 border-l-yellow-500" 
           onClick={() => setFilters(prev => ({ ...prev, statuses: ['In Progress'] }))}
         >
-          <CardHeader className="pb-2">
-            <CardTitle className="text-xs font-medium text-gray-500">In Progress</CardTitle>
-          </CardHeader>
-          <CardContent className="pt-0">
-            <div className="text-lg font-bold text-yellow-600">
-              {maintenanceRecords.filter(r => r.status === 'In Progress').length}
+          <CardContent className="pt-3 pb-3">
+            <div className="text-center">
+              <div className="text-lg font-bold text-yellow-600">
+                {maintenanceRecords.filter(r => r.status === 'In Progress').length}
+              </div>
+              <div className="text-sm text-gray-600">In Progress</div>
+              <p className="text-xs text-gray-400 mt-1">Ongoing work</p>
             </div>
-            <p className="text-[10px] text-gray-500 mt-0.5">Click to filter</p>
           </CardContent>
         </Card>
         <Card 
-          className="cursor-pointer hover:shadow-lg transition-shadow" 
+          className="cursor-pointer hover:shadow-lg transition-shadow border-l-4 border-l-red-500" 
           onClick={() => setFilters(prev => ({ ...prev, statuses: ['Overdue'] }))}
         >
-          <CardHeader className="pb-2">
-            <CardTitle className="text-xs font-medium text-gray-500">Overdue</CardTitle>
-          </CardHeader>
-          <CardContent className="pt-0">
-            <div className="text-lg font-bold text-red-600">
-              {maintenanceRecords.filter(r => r.status === 'Overdue').length}
+          <CardContent className="pt-3 pb-3">
+            <div className="text-center">
+              <div className="text-lg font-bold text-red-600">
+                {maintenanceRecords.filter(r => r.status === 'Overdue').length}
+              </div>
+              <div className="text-sm text-gray-600">Overdue</div>
+              <p className="text-xs text-gray-400 mt-1">Requires action</p>
             </div>
-            <p className="text-[10px] text-gray-500 mt-0.5">Click to filter</p>
           </CardContent>
         </Card>
         <Card 
-          className="cursor-pointer hover:shadow-lg transition-shadow" 
+          className="cursor-pointer hover:shadow-lg transition-shadow border-l-4 border-l-green-500" 
           onClick={() => setFilters(prev => ({ ...prev, statuses: ['Completed'] }))}
         >
-          <CardHeader className="pb-2">
-            <CardTitle className="text-xs font-medium text-gray-500">Completed</CardTitle>
-          </CardHeader>
-          <CardContent className="pt-0">
-            <div className="text-lg font-bold text-green-600">
-              {maintenanceRecords.filter(r => r.status === 'Completed').length}
+          <CardContent className="pt-3 pb-3">
+            <div className="text-center">
+              <div className="text-lg font-bold text-green-600">
+                {maintenanceRecords.filter(r => r.status === 'Completed').length}
+              </div>
+              <div className="text-sm text-gray-600">Completed</div>
+              <p className="text-xs text-gray-400 mt-1">Finished work</p>
             </div>
-            <p className="text-[10px] text-gray-500 mt-0.5">Click to filter</p>
           </CardContent>
         </Card>
       </div>
