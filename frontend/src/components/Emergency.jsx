@@ -411,6 +411,98 @@ const Emergency = () => {
   const hasActiveProcedureFilters = procedureSearch || procedureFilters.types.length > 0 || procedureFilters.start_date || procedureFilters.end_date;
   const hasActiveDrillFilters = drillSearch || drillFilters.types.length > 0 || drillFilters.vessels.length > 0 || drillFilters.start_date || drillFilters.end_date;
 
+  // Import template columns matching export formats
+  const contactImportColumns = ['Name', 'Type', 'Organization', 'Role', 'Primary Phone', 'Secondary Phone', 'Email', 'Address', '24/7 Available', 'Priority', 'Notes'];
+  const contactImportSample = [['Emergency Services', 'External', 'Police', 'Emergency Response', '000', '', 'police@example.com', '123 Main St', 'Yes', '1', 'Primary emergency contact']];
+
+  const procedureImportColumns = ['Title', 'Emergency Type', 'Procedure Steps', 'Equipment Required', 'Muster Station', 'Key Contacts'];
+  const procedureImportSample = [['Fire Emergency', 'Fire', '1. Sound alarm\n2. Evacuate\n3. Call 000', 'Fire extinguisher, Life jackets', 'Deck A Forward', 'Fire Warden, Captain']];
+
+  const drillImportColumns = ['Drill Type', 'Vessel', 'Scheduled Date', 'Completed Date', 'Status', 'Participants', 'Notes'];
+  const drillImportSample = [['Fire Drill', 'MV Coral Queen', '2024-01-15', '2024-01-15', 'Completed', '12', 'All crew participated']];
+
+  // Import handlers
+  const handleImportContacts = async (data) => {
+    try {
+      const token = localStorage.getItem('token');
+      let successCount = 0, errorCount = 0;
+      for (const row of data) {
+        try {
+          const contactData = {
+            name: row['Name'] || '',
+            contact_type: row['Type'] || '',
+            organization: row['Organization'] || '',
+            role: row['Role'] || '',
+            phone_primary: row['Primary Phone'] || '',
+            phone_secondary: row['Secondary Phone'] || '',
+            email: row['Email'] || '',
+            address: row['Address'] || '',
+            available_24_7: row['24/7 Available'] === 'Yes',
+            priority: row['Priority'] || '',
+            notes: row['Notes'] || '',
+          };
+          if (!contactData.name) continue;
+          await axios.post(`${API}/emergency/contacts`, contactData, { headers: { Authorization: `Bearer ${token}` } });
+          successCount++;
+        } catch (err) { errorCount++; }
+      }
+      setMessage(`Import complete: ${successCount} contacts added${errorCount > 0 ? `, ${errorCount} failed` : ''}`);
+      setTimeout(() => setMessage(''), 5000);
+      fetchContacts();
+    } catch (err) { setError('Error importing: ' + err.message); setTimeout(() => setError(''), 5000); }
+  };
+
+  const handleImportProcedures = async (data) => {
+    try {
+      const token = localStorage.getItem('token');
+      let successCount = 0, errorCount = 0;
+      for (const row of data) {
+        try {
+          const procedureData = {
+            title: row['Title'] || '',
+            emergency_type: row['Emergency Type'] || '',
+            procedure_steps: row['Procedure Steps'] || '',
+            equipment_required: row['Equipment Required'] || '',
+            muster_station: row['Muster Station'] || '',
+            key_contacts: row['Key Contacts'] || '',
+          };
+          if (!procedureData.title) continue;
+          await axios.post(`${API}/emergency/procedures`, procedureData, { headers: { Authorization: `Bearer ${token}` } });
+          successCount++;
+        } catch (err) { errorCount++; }
+      }
+      setMessage(`Import complete: ${successCount} procedures added${errorCount > 0 ? `, ${errorCount} failed` : ''}`);
+      setTimeout(() => setMessage(''), 5000);
+      fetchProcedures();
+    } catch (err) { setError('Error importing: ' + err.message); setTimeout(() => setError(''), 5000); }
+  };
+
+  const handleImportDrills = async (data) => {
+    try {
+      const token = localStorage.getItem('token');
+      let successCount = 0, errorCount = 0;
+      for (const row of data) {
+        try {
+          const drillData = {
+            drill_type: row['Drill Type'] || '',
+            vessel_name: row['Vessel'] || '',
+            scheduled_date: row['Scheduled Date'] || '',
+            completed_date: row['Completed Date'] || '',
+            status: row['Status'] || 'Scheduled',
+            participants: row['Participants'] || '',
+            notes: row['Notes'] || '',
+          };
+          if (!drillData.drill_type) continue;
+          await axios.post(`${API}/emergency/drills`, drillData, { headers: { Authorization: `Bearer ${token}` } });
+          successCount++;
+        } catch (err) { errorCount++; }
+      }
+      setMessage(`Import complete: ${successCount} drills added${errorCount > 0 ? `, ${errorCount} failed` : ''}`);
+      setTimeout(() => setMessage(''), 5000);
+      fetchDrills();
+    } catch (err) { setError('Error importing: ' + err.message); setTimeout(() => setError(''), 5000); }
+  };
+
   const exportContactsToExcel = () => {
     if (filteredContacts.length === 0) { setError('No contacts to export'); setTimeout(() => setError(''), 3000); return; }
     const wb = XLSX.utils.book_new();
