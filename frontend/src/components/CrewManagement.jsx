@@ -263,16 +263,18 @@ const CrewManagement = () => {
       for (const row of data) {
         try {
           const crewData = {
-            full_name: row['Full Name'] || row['full_name'] || '',
-            email: row['Email'] || row['email'] || '',
-            phone: row['Phone'] || row['phone'] || '',
+            staff_name: row['Staff Name'] || row['staff_name'] || '',
             default_position: row['Position'] || row['default_position'] || '',
             role: row['Role'] || row['role'] || 'crew',
-            emergency_contact_name: row['Emergency Contact'] || row['emergency_contact_name'] || '',
-            emergency_contact_phone: row['Emergency Phone'] || row['emergency_contact_phone'] || '',
+            mobile: row['Mobile'] || row['mobile'] || '',
+            email: row['Email'] || row['email'] || '',
+            status: row['Status'] || row['status'] || 'Active',
+            date_commenced: row['Date Commenced'] || row['date_commenced'] || '',
+            next_of_kin: row['Next of Kin'] || row['next_of_kin'] || '',
+            next_of_kin_contact: row['Next of Kin Contact'] || row['next_of_kin_contact'] || '',
           };
 
-          if (!crewData.full_name || !crewData.email) continue;
+          if (!crewData.staff_name || !crewData.email) continue;
 
           await axios.post(`${API}/crew`, crewData, {
             headers: { Authorization: `Bearer ${token}` }
