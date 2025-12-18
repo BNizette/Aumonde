@@ -569,6 +569,62 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create' }) => {
                   </select>
                 </div>
               </div>
+
+              {/* Crew Requirements Section */}
+              <div className="mt-6">
+                <h3 className="text-lg font-semibold mb-4 text-gray-900 border-b pb-2">Crew Requirements and Qualifications</h3>
+                <div className="space-y-3">
+                  {(formData.crew_requirements || []).map((req, index) => (
+                    <div key={index} className="flex items-center gap-3">
+                      <Input
+                        type="number"
+                        min="1"
+                        value={req.quantity || ''}
+                        onChange={(e) => {
+                          const updated = [...(formData.crew_requirements || [])];
+                          updated[index] = { ...updated[index], quantity: e.target.value };
+                          handleChange('crew_requirements', updated);
+                        }}
+                        placeholder="Qty"
+                        className="w-20"
+                      />
+                      <Input
+                        value={req.title || ''}
+                        onChange={(e) => {
+                          const updated = [...(formData.crew_requirements || [])];
+                          updated[index] = { ...updated[index], title: e.target.value };
+                          handleChange('crew_requirements', updated);
+                        }}
+                        placeholder="Title/Qualification (e.g., Master Class 5, Deckhand)"
+                        className="flex-1"
+                      />
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {
+                          const updated = (formData.crew_requirements || []).filter((_, i) => i !== index);
+                          handleChange('crew_requirements', updated);
+                        }}
+                      >
+                        <Trash2 className="h-4 w-4 text-red-500" />
+                      </Button>
+                    </div>
+                  ))}
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      const updated = [...(formData.crew_requirements || []), { quantity: '', title: '' }];
+                      handleChange('crew_requirements', updated);
+                    }}
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Crew Requirement
+                  </Button>
+                </div>
+              </div>
             </TabsContent>
 
             {/* TAB 2: SPECIFICATIONS & SAFETY */}
