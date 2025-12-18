@@ -442,6 +442,7 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create' }) => {
             <TabsTrigger value="maintenance">Maintenance</TabsTrigger>
             <TabsTrigger value="certificates">Certificates</TabsTrigger>
             <TabsTrigger value="emergency">Emergency</TabsTrigger>
+            <TabsTrigger value="induction">Induction</TabsTrigger>
             <TabsTrigger value="photo">Photo</TabsTrigger>
           </TabsList>
 
