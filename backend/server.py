@@ -2318,11 +2318,17 @@ class Incident(BaseModel):
     immediate_actions: Optional[str] = None
     investigation_status: str = "Reported"  # Reported, Under Investigation, Completed, Closed
     root_cause: Optional[str] = None
+    risk_creator: Optional[str] = None  # What created the risk
     corrective_actions: Optional[str] = None
     preventive_actions: Optional[str] = None
     responsible_person: Optional[str] = None
     target_completion_date: Optional[datetime] = None
     actual_completion_date: Optional[datetime] = None
+    date_closed: Optional[datetime] = None  # Investigation fields
+    date_risk_assessment_performed: Optional[datetime] = None
+    date_amsa_notified: Optional[datetime] = None
+    linked_trip_id: Optional[str] = None  # Link to existing trip
+    linked_trip_name: Optional[str] = None
     reported_by: str
     reported_by_name: str
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
@@ -2349,10 +2355,16 @@ class IncidentCreate(BaseModel):
     immediate_actions: Optional[str] = None
     investigation_status: str = "Reported"
     root_cause: Optional[str] = None
+    risk_creator: Optional[str] = None
     corrective_actions: Optional[str] = None
     preventive_actions: Optional[str] = None
     responsible_person: Optional[str] = None
     target_completion_date: Optional[str] = None
+    date_closed: Optional[str] = None
+    date_risk_assessment_performed: Optional[str] = None
+    date_amsa_notified: Optional[str] = None
+    linked_trip_id: Optional[str] = None
+    linked_trip_name: Optional[str] = None
 
 @api_router.post("/incidents")
 async def create_incident(incident_data: IncidentCreate, current_user: dict = Depends(require_access_level(AccessLevel.EDIT))):
