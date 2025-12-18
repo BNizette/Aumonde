@@ -2574,6 +2574,8 @@ class EmergencyDrill(BaseModel):
     drill_date: datetime
     vessel_id: Optional[str] = None
     vessel_name: Optional[str] = None
+    linked_trip_id: Optional[str] = None  # Link to trip
+    linked_trip_name: Optional[str] = None
     participants: Optional[str] = None
     duration_minutes: Optional[int] = None
     observations: Optional[str] = None
@@ -2587,6 +2589,8 @@ class EmergencyDrillCreate(BaseModel):
     drill_date: str
     vessel_id: Optional[str] = None
     vessel_name: Optional[str] = None
+    linked_trip_id: Optional[str] = None
+    linked_trip_name: Optional[str] = None
     participants: Optional[str] = None
     duration_minutes: Optional[int] = None
     observations: Optional[str] = None
