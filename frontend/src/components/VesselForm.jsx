@@ -844,13 +844,68 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create' }) => {
                     onChange={(e) => handleChange('water_capacity', e.target.value)}
                   />
                 </div>
+                </div>
+
+                {/* Auxiliary Engine Section */}
+                <h4 className="text-md font-medium mt-6 mb-3 text-gray-700">Auxiliary Engine</h4>
+                <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="max_passengers">Max Passengers</Label>
+                  <Label htmlFor="aux_type">Auxiliary Type</Label>
                   <Input
-                    id="max_passengers"
+                    id="aux_type"
+                    value={formData.aux_type}
+                    onChange={(e) => handleChange('aux_type', e.target.value)}
+                    placeholder="e.g., Generator"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="aux_power">Aux Power</Label>
+                  <Input
+                    id="aux_power"
+                    value={formData.aux_power}
+                    onChange={(e) => handleChange('aux_power', e.target.value)}
+                    placeholder="e.g., 50 kW"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="aux_fuel">Aux Fuel</Label>
+                  <Input
+                    id="aux_fuel"
+                    value={formData.aux_fuel}
+                    onChange={(e) => handleChange('aux_fuel', e.target.value)}
+                    placeholder="e.g., Diesel"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="aux_serial">Aux Serial Number</Label>
+                  <Input
+                    id="aux_serial"
+                    value={formData.aux_serial}
+                    onChange={(e) => handleChange('aux_serial', e.target.value)}
+                    placeholder="Serial number"
+                  />
+                </div>
+                </div>
+
+                {/* Capacity Section */}
+                <h4 className="text-md font-medium mt-6 mb-3 text-gray-700">Capacity</h4>
+                <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="max_passengers_berthed">Max Passengers Berthed</Label>
+                  <Input
+                    id="max_passengers_berthed"
                     type="number"
-                    value={formData.max_passengers}
-                    onChange={(e) => handleChange('max_passengers', e.target.value)}
+                    value={formData.max_passengers_berthed}
+                    onChange={(e) => handleChange('max_passengers_berthed', e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="max_passengers_unberthed">Max Passengers Unberthed</Label>
+                  <Input
+                    id="max_passengers_unberthed"
+                    type="number"
+                    value={formData.max_passengers_unberthed}
+                    onChange={(e) => handleChange('max_passengers_unberthed', e.target.value)}
                   />
                 </div>
                 <div className="space-y-2">
