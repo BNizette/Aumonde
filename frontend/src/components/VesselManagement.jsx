@@ -167,13 +167,18 @@ const VesselManagement = () => {
         try {
           const vesselData = {
             vessel_name: row['Vessel Name'] || row['vessel_name'] || '',
-            vessel_type: row['Vessel Type'] || row['vessel_type'] || '',
             registration_number: row['Registration Number'] || row['registration_number'] || '',
+            vessel_type: row['Vessel Type'] || row['vessel_type'] || '',
+            year_built: row['Year Built'] || row['year_built'] || '',
+            length: row['Length (m)'] || row['length'] || '',
+            beam: row['Beam (m)'] || row['beam'] || '',
+            draft: row['Draft (m)'] || row['draft'] || '',
+            gross_tonnage: row['Gross Tonnage'] || row['gross_tonnage'] || '',
+            operational_status: row['Operational Status'] || row['operational_status'] || 'Operational',
+            owner_name: row['Owner Name'] || row['owner_name'] || '',
             port_of_registry: row['Port of Registry'] || row['port_of_registry'] || '',
-            owner_operator: row['Owner/Operator'] || row['owner_operator'] || '',
-            length_overall: row['Length (m)'] || row['length_overall'] || '',
-            max_passengers: row['Max Passengers'] || row['max_passengers'] || '',
-            operational_status: row['Status'] || row['operational_status'] || 'Operational',
+            last_survey_date: row['Last Survey Date'] || row['last_survey_date'] || '',
+            next_survey_due: row['Next Survey Due'] || row['next_survey_due'] || '',
           };
 
           if (!vesselData.vessel_name) continue;
