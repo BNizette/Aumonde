@@ -549,7 +549,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "SummaryCard Component Refactoring Verification Complete"
+    - "Import from Excel Functionality Verification Complete"
   stuck_tasks:
     []
   test_all: false
