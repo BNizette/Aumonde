@@ -714,6 +714,8 @@ const Emergency = () => {
       drill_date: drill.drill_date ? new Date(drill.drill_date).toISOString().slice(0, 16) : new Date().toISOString().slice(0, 16),
       vessel_id: drill.vessel_id || '',
       vessel_name: drill.vessel_name || '',
+      linked_trip_id: drill.linked_trip_id || '',
+      linked_trip_name: drill.linked_trip_name || '',
       participants: drill.participants || '',
       duration_minutes: drill.duration_minutes || '',
       observations: drill.observations || '',
