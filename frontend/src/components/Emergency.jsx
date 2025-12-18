@@ -2646,6 +2646,38 @@ const Emergency = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Import Excel Dialogs */}
+      <ImportExcelDialog
+        open={importContactsOpen}
+        onClose={() => setImportContactsOpen(false)}
+        title="Import Emergency Contacts"
+        description="Upload an Excel file to import emergency contacts. Download the template for the correct format."
+        templateColumns={contactImportColumns}
+        templateSampleData={contactImportSample}
+        onImport={handleImportContacts}
+        templateFileName="emergency_contacts_import_template.xlsx"
+      />
+      <ImportExcelDialog
+        open={importProceduresOpen}
+        onClose={() => setImportProceduresOpen(false)}
+        title="Import Emergency Procedures"
+        description="Upload an Excel file to import emergency procedures. Download the template for the correct format."
+        templateColumns={procedureImportColumns}
+        templateSampleData={procedureImportSample}
+        onImport={handleImportProcedures}
+        templateFileName="emergency_procedures_import_template.xlsx"
+      />
+      <ImportExcelDialog
+        open={importDrillsOpen}
+        onClose={() => setImportDrillsOpen(false)}
+        title="Import Emergency Drills"
+        description="Upload an Excel file to import emergency drills. Download the template for the correct format."
+        templateColumns={drillImportColumns}
+        templateSampleData={drillImportSample}
+        onImport={handleImportDrills}
+        templateFileName="emergency_drills_import_template.xlsx"
+      />
     </div>
   );
 };
