@@ -181,8 +181,9 @@ const RiskAssessment = () => {
     }
   };
 
-  const riskImportColumns = ['Title', 'Category', 'Risk Level', 'Status', 'Description', 'Controls', 'Likelihood', 'Consequence'];
-  const riskImportSample = [['Fire Hazard', 'Safety', 'High', 'Active', 'Risk of fire in engine room', 'Fire suppression system installed', 'Possible', 'Major']];
+  // Import template columns matching export format exactly
+  const riskImportColumns = ['Activity/Task', 'Vessel', 'Hazard', 'Risk Level', 'Status', 'Controls', 'Responsible Person', 'Assessment Date', 'Review Date'];
+  const riskImportSample = [['Engine Operation', 'MV Coral Queen', 'Fire hazard from fuel leak', 'High', 'Active', 'Fire suppression system installed', 'John Smith', '2024-01-01', '2024-06-01']];
 
   const clearFilters = () => {
     setSearchQuery('');
