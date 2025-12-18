@@ -189,11 +189,7 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
     ws['!cols'] = [{ wch: 20 }, { wch: 12 }, { wch: 8 }, { wch: 12 }, { wch: 12 }, { wch: 15 }, { wch: 10 }, { wch: 20 }, { wch: 15 }];
     XLSX.utils.book_append_sheet(wb, ws, 'Engine Logs');
     XLSX.writeFile(wb, `engine_logs_${trip?.trip_name?.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.xlsx`);
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    window.URL.revokeObjectURL(url);
-    setMessage('Engine logs exported to CSV successfully');
+    setMessage('Engine logs exported to Excel successfully');
     setTimeout(() => setMessage(''), 3000);
   };
 
