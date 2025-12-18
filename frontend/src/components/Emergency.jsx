@@ -1226,6 +1226,10 @@ const Emergency = () => {
                   <CardDescription>Critical contacts for emergency situations</CardDescription>
                 </div>
                 <div className="flex gap-2">
+                  <Button variant="outline" onClick={() => setImportContactsOpen(true)} className="bg-blue-50 hover:bg-blue-100 text-blue-700 border-blue-200">
+                    <Download className="mr-2 h-4 w-4" />
+                    Import from Excel
+                  </Button>
                   <Button variant="outline" onClick={exportContactsToExcel} className="bg-green-50 hover:bg-green-100 text-green-700 border-green-200">
                     <FileSpreadsheet className="mr-2 h-4 w-4" />
                     Export to Excel
