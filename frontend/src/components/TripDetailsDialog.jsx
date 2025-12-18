@@ -775,16 +775,29 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
                     <p className="text-sm text-gray-500">
                       {tripPassengers.length} passenger{tripPassengers.length !== 1 ? 's' : ''} on this trip
                     </p>
-                    {canEdit && (
-                      <Button size="sm" onClick={() => {
-                        setPassengerForm({ name: '', status: 'Adult', comment: '' });
-                        setEditingPassenger(null);
-                        setPassengerDialogOpen(true);
-                      }}>
-                        <Plus className="h-4 w-4 mr-1" />
-                        Add Passenger
-                      </Button>
-                    )}
+                    <div className="flex gap-2">
+                      {tripPassengers.length > 0 && (
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          onClick={exportPassengersToExcel}
+                          className="flex items-center gap-2 bg-green-50 hover:bg-green-100 text-green-700 border-green-200"
+                        >
+                          <FileSpreadsheet className="h-4 w-4" />
+                          Export to Excel
+                        </Button>
+                      )}
+                      {canEdit && (
+                        <Button size="sm" onClick={() => {
+                          setPassengerForm({ name: '', status: 'Adult', comment: '' });
+                          setEditingPassenger(null);
+                          setPassengerDialogOpen(true);
+                        }}>
+                          <Plus className="h-4 w-4 mr-1" />
+                          Add Passenger
+                        </Button>
+                      )}
+                    </div>
                   </div>
                   {tripPassengers.length === 0 ? (
                     <div className="text-center py-8 text-gray-500">
