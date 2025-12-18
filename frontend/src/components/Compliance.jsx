@@ -594,54 +594,34 @@ const Compliance = () => {
         <TabsContent value="certificates">
           {/* Certificate Status Summary Cards - Total, Valid, Expiring Soon, Expired */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
-            <Card 
-              className="cursor-pointer hover:shadow-lg transition-shadow border-l-4 border-l-blue-500"
+            <SummaryCard
+              value={certificates.length}
+              label="Total"
+              description="All certificates"
+              color="blue"
               onClick={() => updateCertFilters({ types: [], statuses: [], vessels: [], start_date: '', end_date: '' })}
-            >
-              <CardContent className="pt-3 pb-3">
-                <div className="text-center">
-                  <div className="text-lg font-bold text-blue-600">{certificates.length}</div>
-                  <div className="text-sm text-gray-600">Total</div>
-                  <p className="text-xs text-gray-400 mt-1">All certificates</p>
-                </div>
-              </CardContent>
-            </Card>
-            <Card 
-              className="cursor-pointer hover:shadow-lg transition-shadow border-l-4 border-l-green-500"
+            />
+            <SummaryCard
+              value={validCerts}
+              label="Valid"
+              description="30+ days remaining"
+              color="green"
               onClick={() => updateCertFilters({ types: [], statuses: ['valid'], vessels: [], start_date: '', end_date: '' })}
-            >
-              <CardContent className="pt-3 pb-3">
-                <div className="text-center">
-                  <div className="text-lg font-bold text-green-600">{validCerts}</div>
-                  <div className="text-sm text-gray-600">Valid</div>
-                  <p className="text-xs text-gray-400 mt-1">30+ days remaining</p>
-                </div>
-              </CardContent>
-            </Card>
-            <Card 
-              className="cursor-pointer hover:shadow-lg transition-shadow border-l-4 border-l-yellow-500"
+            />
+            <SummaryCard
+              value={expiringSoon}
+              label="Expiring Soon"
+              description="Within 30 days"
+              color="yellow"
               onClick={() => updateCertFilters({ types: [], statuses: ['expiring'], vessels: [], start_date: '', end_date: '' })}
-            >
-              <CardContent className="pt-3 pb-3">
-                <div className="text-center">
-                  <div className="text-lg font-bold text-yellow-600">{expiringSoon}</div>
-                  <div className="text-sm text-gray-600">Expiring Soon</div>
-                  <p className="text-xs text-gray-400 mt-1">Within 30 days</p>
-                </div>
-              </CardContent>
-            </Card>
-            <Card 
-              className="cursor-pointer hover:shadow-lg transition-shadow border-l-4 border-l-red-500"
+            />
+            <SummaryCard
+              value={expired}
+              label="Expired"
+              description="Requires renewal"
+              color="red"
               onClick={() => updateCertFilters({ types: [], statuses: ['expired'], vessels: [], start_date: '', end_date: '' })}
-            >
-              <CardContent className="pt-3 pb-3">
-                <div className="text-center">
-                  <div className="text-lg font-bold text-red-600">{expired}</div>
-                  <div className="text-sm text-gray-600">Expired</div>
-                  <p className="text-xs text-gray-400 mt-1">Requires renewal</p>
-                </div>
-              </CardContent>
-            </Card>
+            />
           </div>
 
           <Card>
