@@ -1045,8 +1045,21 @@ const AdminPanel = () => {
         <TabsContent value="audit">
           <Card>
             <CardHeader>
-              <CardTitle>Audit Trail</CardTitle>
-              <CardDescription>Complete log of all administrative actions</CardDescription>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle>Audit Trail</CardTitle>
+                  <CardDescription>Complete log of all administrative actions</CardDescription>
+                </div>
+                <Button 
+                  onClick={exportAuditLogsToExcel}
+                  variant="outline"
+                  size="sm"
+                  className="bg-green-50 hover:bg-green-100 text-green-700 border-green-200"
+                >
+                  <FileSpreadsheet className="mr-2 h-4 w-4" />
+                  Export to Excel
+                </Button>
+              </div>
             </CardHeader>
             <CardContent>
               {/* Filter Section */}
