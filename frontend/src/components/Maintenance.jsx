@@ -142,13 +142,14 @@ const Maintenance = () => {
         try {
           const maintenanceData = {
             title: row['Title'] || row['title'] || '',
-            type: row['Type'] || row['type'] || 'Preventive',
-            priority: row['Priority'] || row['priority'] || 'Medium',
+            equipment_system: row['Equipment/System'] || row['equipment_system'] || '',
+            vessel_name: row['Vessel'] || row['vessel_name'] || '',
+            maintenance_type: row['Type'] || row['maintenance_type'] || 'Preventive',
             status: row['Status'] || row['status'] || 'Scheduled',
-            system_affected: row['Equipment/System'] || row['system_affected'] || '',
-            description: row['Description'] || row['description'] || '',
+            priority: row['Priority'] || row['priority'] || 'Medium',
             scheduled_date: row['Scheduled Date'] || row['scheduled_date'] || '',
-            vessel_id: row['Vessel ID'] || row['vessel_id'] || '',
+            completed_date: row['Completed Date'] || row['completed_date'] || '',
+            responsible_person: row['Responsible Person'] || row['responsible_person'] || '',
           };
 
           if (!maintenanceData.title) continue;
