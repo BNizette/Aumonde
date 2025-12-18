@@ -527,6 +527,18 @@ const Maintenance = () => {
         onClose={() => setDetailsOpen(false)}
         record={selectedRecord}
       />
+
+      {/* Import Excel Dialog */}
+      <ImportExcelDialog
+        open={importDialogOpen}
+        onClose={() => setImportDialogOpen(false)}
+        title="Import Maintenance Records"
+        description="Upload an Excel file to import maintenance records. Download the template for the correct format."
+        templateColumns={maintenanceImportColumns}
+        templateSampleData={maintenanceImportSample}
+        onImport={handleImport}
+        templateFileName="maintenance_import_template.xlsx"
+      />
     </div>
   );
 };
