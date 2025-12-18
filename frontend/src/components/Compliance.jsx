@@ -37,6 +37,8 @@ const Compliance = () => {
   const [editingReqId, setEditingReqId] = useState(null);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+  const [importCertDialogOpen, setImportCertDialogOpen] = useState(false);
+  const [importReqDialogOpen, setImportReqDialogOpen] = useState(false);
 
   // Filter states for Certificates
   const [certSearch, setCertSearch] = useState('');
