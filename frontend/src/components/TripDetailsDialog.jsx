@@ -933,6 +933,95 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
                     </div>
                   )}
                 </TabsContent>
+
+                {/* Incidents Tab */}
+                <TabsContent value="incidents" className="space-y-4 mt-4">
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm text-gray-500">
+                      {tripIncidents.length} incident{tripIncidents.length !== 1 ? 's' : ''} linked to this trip
+                    </p>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => window.location.href = '/incidents'}
+                    >
+                      <ExternalLink className="h-4 w-4 mr-2" />
+                      Manage in Incidents
+                    </Button>
+                  </div>
+                  {tripIncidents.length === 0 ? (
+                    <div className="text-center py-8 text-gray-500">
+                      <AlertTriangle className="h-12 w-12 mx-auto mb-2 opacity-30" />
+                      <p>No incidents linked to this trip</p>
+                      <p className="text-xs mt-1">Link incidents from the Incidents module</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      {tripIncidents.map(incident => (
+                        <div key={incident.id} className="p-3 border rounded-lg bg-gray-50">
+                          <div className="flex items-start justify-between">
+                            <div>
+                              <div className="flex items-center gap-2 mb-1">
+                                <span className="font-medium">{incident.incident_number}</span>
+                                <Badge variant={incident.severity === 'Critical' ? 'destructive' : incident.severity === 'Major' ? 'warning' : 'secondary'}>
+                                  {incident.severity}
+                                </Badge>
+                                <Badge variant="outline">{incident.investigation_status}</Badge>
+                              </div>
+                              <p className="text-sm font-medium">{incident.title}</p>
+                              <p className="text-xs text-gray-500">
+                                {incident.incident_date ? new Date(incident.incident_date).toLocaleDateString() : 'No date'} • {incident.location || 'No location'}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </TabsContent>
+
+                {/* Drills Tab */}
+                <TabsContent value="drills" className="space-y-4 mt-4">
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm text-gray-500">
+                      {tripDrills.length} drill{tripDrills.length !== 1 ? 's' : ''} linked to this trip
+                    </p>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => window.location.href = '/emergency'}
+                    >
+                      <ExternalLink className="h-4 w-4 mr-2" />
+                      Manage in Drills
+                    </Button>
+                  </div>
+                  {tripDrills.length === 0 ? (
+                    <div className="text-center py-8 text-gray-500">
+                      <Shield className="h-12 w-12 mx-auto mb-2 opacity-30" />
+                      <p>No drills linked to this trip</p>
+                      <p className="text-xs mt-1">Link drills from the Emergency module</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      {tripDrills.map(drill => (
+                        <div key={drill.id} className="p-3 border rounded-lg bg-gray-50">
+                          <div className="flex items-start justify-between">
+                            <div>
+                              <p className="font-medium">{drill.drill_type}</p>
+                              <p className="text-xs text-gray-500">
+                                {drill.drill_date ? new Date(drill.drill_date).toLocaleDateString() : 'No date'} • {drill.vessel_name || 'No vessel'}
+                              </p>
+                              {drill.notes && <p className="text-sm text-gray-600 mt-1">{drill.notes}</p>}
+                            </div>
+                            <Badge variant={drill.status === 'Completed' ? 'success' : 'secondary'}>
+                              {drill.status || 'Scheduled'}
+                            </Badge>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </TabsContent>
               </Tabs>
             </div>
           </ScrollArea>
