@@ -58,6 +58,9 @@ const Emergency = () => {
   const [selectedProcedureId, setSelectedProcedureId] = useState(null);
   const [trainingEditMode, setTrainingEditMode] = useState(false);
   const [editingTrainingId, setEditingTrainingId] = useState(null);
+  const [importContactsOpen, setImportContactsOpen] = useState(false);
+  const [importProceduresOpen, setImportProceduresOpen] = useState(false);
+  const [importDrillsOpen, setImportDrillsOpen] = useState(false);
 
   // Filter states for Contacts
   const [contactSearch, setContactSearch] = useState('');
