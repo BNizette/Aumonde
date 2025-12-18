@@ -946,7 +946,7 @@ const Compliance = () => {
                               {cert.crew_name && <p><strong>Crew:</strong> {cert.crew_name}</p>}
                               {cert.pdf_url && (
                                 <a 
-                                  href={cert.pdf_url} 
+                                  href={cert.pdf_url.startsWith('http') ? cert.pdf_url : `${BACKEND_URL}${cert.pdf_url}`} 
                                   target="_blank" 
                                   rel="noopener noreferrer"
                                   className="inline-flex items-center gap-1 text-blue-600 hover:underline font-medium"
