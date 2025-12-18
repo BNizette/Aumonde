@@ -532,14 +532,24 @@ class Vessel(BaseModel):
     number_of_engines: Optional[int] = None
     engine_type: Optional[str] = None
     engine_power: Optional[str] = None
+    engine1_model: Optional[str] = None
+    engine1_serial: Optional[str] = None
+    engine2_model: Optional[str] = None
+    engine2_serial: Optional[str] = None
     propeller_type: Optional[str] = None
     propeller_material: Optional[str] = None
     fuel_type: Optional[str] = None
     fuel_capacity: Optional[float] = None
+    # Auxiliary Engine
+    aux_type: Optional[str] = None
+    aux_power: Optional[str] = None
+    aux_fuel: Optional[str] = None
+    aux_serial: Optional[str] = None
     inside_equipment: Optional[str] = None
     outside_equipment: Optional[str] = None
     water_capacity: Optional[float] = None
-    max_passengers: Optional[int] = None
+    max_passengers_berthed: Optional[int] = None
+    max_passengers_unberthed: Optional[int] = None
     max_crew: Optional[int] = None
     
     # Equipment
