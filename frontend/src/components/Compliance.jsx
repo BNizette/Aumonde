@@ -1367,7 +1367,7 @@ const Compliance = () => {
                   <div className="flex-1">
                     <p className="text-sm font-medium">Certificate PDF attached</p>
                     <a 
-                      href={certForm.pdf_url} 
+                      href={certForm.pdf_url.startsWith('http') ? certForm.pdf_url : `${BACKEND_URL}${certForm.pdf_url}`} 
                       target="_blank" 
                       rel="noopener noreferrer"
                       className="text-xs text-blue-600 hover:underline flex items-center gap-1"
