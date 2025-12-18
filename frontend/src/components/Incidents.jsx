@@ -239,14 +239,21 @@ const Incidents = () => {
       for (const row of data) {
         try {
           const incidentData = {
+            incident_number: row['Incident #'] || row['incident_number'] || '',
             title: row['Title'] || row['title'] || '',
-            incident_type: row['Incident Type'] ? [row['Incident Type']] : [],
+            incident_type: row['Type'] ? [row['Type']] : [],
             severity: row['Severity'] || row['severity'] || 'Minor',
+            investigation_status: row['Status'] || row['investigation_status'] || 'Reported',
             incident_date: row['Date'] || row['incident_date'] || new Date().toISOString(),
             location: row['Location'] || row['location'] || '',
+            vessel_name: row['Vessel'] || row['vessel_name'] || '',
             description: row['Description'] || row['description'] || '',
-            vessel_id: row['Vessel ID'] || row['vessel_id'] || '',
-            investigation_status: row['Status'] || row['investigation_status'] || 'Reported',
+            injuries: row['Injuries'] === 'Yes' || row['injuries'] === true,
+            risk_creator: row['Risk Creator'] || row['risk_creator'] || '',
+            date_closed: row['Date Closed'] || row['date_closed'] || '',
+            date_risk_assessment_performed: row['Date Risk Assessment'] || row['date_risk_assessment_performed'] || '',
+            date_amsa_notified: row['Date AMSA Notified'] || row['date_amsa_notified'] || '',
+            linked_trip_name: row['Linked Trip'] || row['linked_trip_name'] || '',
           };
 
           if (!incidentData.title) continue;
