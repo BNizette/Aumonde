@@ -1162,6 +1162,16 @@ const Incidents = () => {
                 </div>
 
                 <div>
+                  <Label>What Created the Risk?</Label>
+                  <Textarea
+                    value={formData.risk_creator}
+                    onChange={(e) => setFormData({...formData, risk_creator: e.target.value})}
+                    rows={2}
+                    placeholder="Describe what created or contributed to the risk"
+                  />
+                </div>
+
+                <div>
                   <Label>Corrective Actions</Label>
                   <Textarea
                     value={formData.corrective_actions}
@@ -1197,6 +1207,37 @@ const Incidents = () => {
                       value={formData.target_completion_date}
                       onChange={(e) => setFormData({...formData, target_completion_date: e.target.value})}
                     />
+                  </div>
+                </div>
+
+                {/* Investigation Date Fields */}
+                <div className="border-t pt-4 mt-4">
+                  <h4 className="font-medium mb-3">Investigation Dates</h4>
+                  <div className="grid grid-cols-3 gap-4">
+                    <div>
+                      <Label>Date Closed</Label>
+                      <Input
+                        type="date"
+                        value={formData.date_closed}
+                        onChange={(e) => setFormData({...formData, date_closed: e.target.value})}
+                      />
+                    </div>
+                    <div>
+                      <Label>Date Risk Assessment Performed</Label>
+                      <Input
+                        type="date"
+                        value={formData.date_risk_assessment_performed}
+                        onChange={(e) => setFormData({...formData, date_risk_assessment_performed: e.target.value})}
+                      />
+                    </div>
+                    <div>
+                      <Label>Date AMSA Notified</Label>
+                      <Input
+                        type="date"
+                        value={formData.date_amsa_notified}
+                        onChange={(e) => setFormData({...formData, date_amsa_notified: e.target.value})}
+                      />
+                    </div>
                   </div>
                 </div>
               </>
