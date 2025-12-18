@@ -244,7 +244,11 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create' }) => {
             axios.get(`${API}/api/vessel-induction?vessel_id=${vessel.id}`, { headers: { Authorization: `Bearer ${token}` } }),
             axios.get(`${API}/api/crew`, { headers: { Authorization: `Bearer ${token}` } })
           ]);
-          setInductionTasks(tasksRes.options || []);
+          // Extract just the value strings from settings options objects
+          const taskOptions = (tasksRes.options || [])
+            .filter(opt => opt.is_active !== false)
+            .map(opt => typeof opt === 'string' ? opt : opt.value);
+          setInductionTasks(taskOptions);
           setInductionRecords(recordsRes.data || []);
           setCrewList(crewRes.data || []);
         } catch (err) {
