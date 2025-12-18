@@ -207,7 +207,7 @@ const VesselManagement = () => {
     setTimeout(() => setMessage(''), 3000);
   };
 
-  // Import from Excel handler
+  // Import from Excel handler - handles all vessel fields
   const handleImport = async (data) => {
     try {
       const token = localStorage.getItem('token');
@@ -217,19 +217,75 @@ const VesselManagement = () => {
       for (const row of data) {
         try {
           const vesselData = {
-            vessel_name: row['Vessel Name'] || row['vessel_name'] || '',
-            registration_number: row['Registration Number'] || row['registration_number'] || '',
-            vessel_type: row['Vessel Type'] || row['vessel_type'] || '',
-            year_built: row['Year Built'] || row['year_built'] || '',
-            length: row['Length (m)'] || row['length'] || '',
-            beam: row['Beam (m)'] || row['beam'] || '',
-            draft: row['Draft (m)'] || row['draft'] || '',
-            gross_tonnage: row['Gross Tonnage'] || row['gross_tonnage'] || '',
-            operational_status: row['Operational Status'] || row['operational_status'] || 'Operational',
-            owner_name: row['Owner Name'] || row['owner_name'] || '',
-            port_of_registry: row['Port of Registry'] || row['port_of_registry'] || '',
-            last_survey_date: row['Last Survey Date'] || row['last_survey_date'] || '',
-            next_survey_due: row['Next Survey Due'] || row['next_survey_due'] || '',
+            // Basic Details
+            vessel_name: row['Vessel Name'] || '',
+            registration_number: row['Registration Number'] || '',
+            unique_identifier_number: row['Unique ID'] || '',
+            vessel_type: row['Vessel Type'] || '',
+            owner_name: row['Owner Name'] || '',
+            owner_contact: row['Owner Contact'] || '',
+            boat_phone: row['Boat Phone'] || '',
+            flag: row['Flag'] || '',
+            port_of_registry: row['Port of Registry'] || '',
+            imo_number: row['IMO Number'] || '',
+            mmsi_number: row['MMSI Number'] || '',
+            call_sign: row['Call Sign'] || '',
+            ais_class: row['AIS Class'] || '',
+            home_port: row['Home Port'] || '',
+            operational_status: row['Operational Status'] || 'Operational',
+            // Specifications
+            length_overall: row['Length Overall (m)'] || '',
+            length_at_waterline: row['Length at Waterline (m)'] || '',
+            beam: row['Beam (m)'] || '',
+            draft: row['Draft (m)'] || '',
+            air_draft: row['Air Draft (m)'] || '',
+            ce_category: row['CE Category'] || '',
+            gross_tonnage: row['Gross Tonnage'] || '',
+            construction_material: row['Construction Material'] || '',
+            year_built: row['Year Built'] || '',
+            builder: row['Builder'] || '',
+            number_of_engines: row['Number of Engines'] || '',
+            engine_type: row['Engine Type'] || '',
+            engine_power: row['Engine Power'] || '',
+            engine1_model: row['Engine 1 Model'] || '',
+            engine1_serial: row['Engine 1 Serial'] || '',
+            engine2_model: row['Engine 2 Model'] || '',
+            engine2_serial: row['Engine 2 Serial'] || '',
+            propeller_type: row['Propeller Type'] || '',
+            propeller_material: row['Propeller Material'] || '',
+            fuel_type: row['Fuel Type'] || '',
+            fuel_capacity: row['Fuel Capacity (L)'] || '',
+            water_capacity: row['Water Capacity (L)'] || '',
+            // Auxiliary Engine
+            aux_type: row['Aux Engine Type'] || '',
+            aux_power: row['Aux Engine Power'] || '',
+            aux_fuel: row['Aux Engine Fuel'] || '',
+            aux_serial: row['Aux Engine Serial'] || '',
+            // Capacity
+            max_passengers_berthed: row['Max Passengers Berthed'] || '',
+            max_passengers_unberthed: row['Max Passengers Unberthed'] || '',
+            max_crew: row['Max Crew'] || '',
+            // Equipment
+            navigation_equipment: row['Navigation Equipment'] || '',
+            communication_equipment: row['Communication Equipment'] || '',
+            safety_equipment: row['Safety Equipment'] || '',
+            inside_equipment: row['Inside Equipment'] || '',
+            outside_equipment: row['Outside Equipment'] || '',
+            // Safety Equipment
+            life_rafts: row['Life Rafts'] || '',
+            life_jackets: row['Life Jackets'] || '',
+            epirb: row['EPIRB'] === 'Yes' || row['EPIRB'] === true,
+            fire_extinguishers: row['Fire Extinguishers'] || '',
+            flares: row['Flares'] || '',
+            // Certificates
+            cert_survey_issue: row['Survey Cert Issue'] || '',
+            cert_survey_expiry: row['Survey Cert Expiry'] || '',
+            cert_operation_issue: row['Operation Cert Issue'] || '',
+            cert_operation_expiry: row['Operation Cert Expiry'] || '',
+            cert_loadline_issue: row['Loadline Cert Issue'] || '',
+            cert_loadline_expiry: row['Loadline Cert Expiry'] || '',
+            stability_book_date: row['Stability Book Date'] || '',
+            stability_book_expiry: row['Stability Book Expiry'] || '',
           };
 
           if (!vesselData.vessel_name) continue;
