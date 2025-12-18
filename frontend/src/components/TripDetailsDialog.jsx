@@ -24,7 +24,13 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
   const [allocatedCrew, setAllocatedCrew] = useState([]);
   const [tripIncidents, setTripIncidents] = useState([]);
   const [tripDrills, setTripDrills] = useState([]);
+  const [tripPassengers, setTripPassengers] = useState([]);
   const [loading, setLoading] = useState(false);
+  
+  // Passenger form state
+  const [passengerDialogOpen, setPassengerDialogOpen] = useState(false);
+  const [passengerForm, setPassengerForm] = useState({ name: '', status: 'Adult', comment: '' });
+  const [editingPassenger, setEditingPassenger] = useState(null);
   
   const [shiftFormOpen, setShiftFormOpen] = useState(false);
   const [runningFormOpen, setRunningFormOpen] = useState(false);
