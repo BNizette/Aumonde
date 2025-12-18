@@ -61,6 +61,7 @@ const Emergency = () => {
   const [importContactsOpen, setImportContactsOpen] = useState(false);
   const [importProceduresOpen, setImportProceduresOpen] = useState(false);
   const [importDrillsOpen, setImportDrillsOpen] = useState(false);
+  const [importAllOpen, setImportAllOpen] = useState(false);
 
   // Filter states for Contacts
   const [contactSearch, setContactSearch] = useState('');
