@@ -448,6 +448,34 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create' }) => {
     handleChange('vessel_photo_url', '');
   };
 
+  // Update induction record for a crew member
+  const handleInductionUpdate = async (crewId, crewName, completedTasks) => {
+    try {
+      const token = localStorage.getItem('token');
+      await axios.post(`${API}/api/vessel-induction`, {
+        vessel_id: vessel.id,
+        crew_id: crewId,
+        crew_name: crewName,
+        completed_tasks: completedTasks
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      // Refresh records
+      const recordsRes = await axios.get(`${API}/api/vessel-induction?vessel_id=${vessel.id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setInductionRecords(recordsRes.data || []);
+    } catch (err) {
+      console.error('Error updating induction record:', err);
+    }
+  };
+
+  // Get completed tasks for a crew member
+  const getCrewCompletedTasks = (crewId) => {
+    const record = inductionRecords.find(r => r.crew_id === crewId);
+    return record?.completed_tasks || [];
+  };
+
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
