@@ -27,6 +27,7 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create' }) => {
     // Tab 1: Basic Details
     vessel_name: '',
     registration_number: '',
+    unique_identifier_number: '',
     vessel_type: '',
     owner_name: '',
     owner_contact: '',
@@ -38,6 +39,7 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create' }) => {
     call_sign: '',
     ais_class: '',
     home_port: '',
+    crew_requirements: [],
     
     // Tab 2: Specifications
     length_overall: '',
@@ -53,14 +55,24 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create' }) => {
     number_of_engines: '',
     engine_type: '',
     engine_power: '',
+    engine1_model: '',
+    engine1_serial: '',
+    engine2_model: '',
+    engine2_serial: '',
     propeller_type: '',
     propeller_material: '',
     fuel_type: '',
     fuel_capacity: '',
+    // Auxiliary Engine
+    aux_type: '',
+    aux_power: '',
+    aux_fuel: '',
+    aux_serial: '',
     inside_equipment: '',
     outside_equipment: '',
     water_capacity: '',
-    max_passengers: '',
+    max_passengers_berthed: '',
+    max_passengers_unberthed: '',
     max_crew: '',
     
     // Tab 3: Equipment
