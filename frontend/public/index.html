@@ -81,6 +81,21 @@
                 </p>
             </div>
         </a>
-        <script src="%PUBLIC_URL%/posthog.js"></script>
+        <!-- PostHog analytics loaded dynamically to avoid template conflicts -->
+        <script>
+            (function() {
+                var d = document;
+                var s = d.createElement('script');
+                s.async = true;
+                s.src = 'https://us-assets.i.posthog.com/static/array.js';
+                s.onload = function() {
+                    posthog.init('phc_yJW1VjHGGwmCbbrtczfqqNxgBDbhlhOWcdzcIJEOTFE', {
+                        api_host: 'https://us.i.posthog.com',
+                        person_profiles: 'identified_only'
+                    });
+                };
+                d.head.appendChild(s);
+            })();
+        </script>
     </body>
 </html>
