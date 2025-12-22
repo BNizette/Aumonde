@@ -612,31 +612,63 @@ const CrewForm = ({ open, onClose, onSave, crew, mode = 'create', prefilledData 
                   </Button>
                 </div>
                 {formData.briefings_observed.map((item, index) => (
-                  <div key={index} className="border rounded-lg p-3 grid grid-cols-4 gap-2">
-                    <Input
-                      type="number"
-                      placeholder="Number"
-                      value={item.number}
-                      onChange={(e) => updateTrainingItem('briefings_observed', index, 'number', e.target.value)}
-                    />
-                    <Input
-                      type="date"
-                      value={item.date}
-                      onChange={(e) => updateTrainingItem('briefings_observed', index, 'date', e.target.value)}
-                    />
-                    <Input
-                      placeholder="Supervisor"
-                      value={item.supervisor}
-                      onChange={(e) => updateTrainingItem('briefings_observed', index, 'supervisor', e.target.value)}
-                    />
-                    <Button
-                      type="button"
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => removeTrainingItem('briefings_observed', index)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
+                  <div key={index} className="border rounded-lg p-3 space-y-2">
+                    <div className="grid grid-cols-4 gap-2">
+                      <Input
+                        type="number"
+                        placeholder="Number"
+                        value={item.number}
+                        readOnly
+                        className="bg-gray-50"
+                      />
+                      <Input
+                        type="date"
+                        value={item.date}
+                        onChange={(e) => updateTrainingItem('briefings_observed', index, 'date', e.target.value)}
+                      />
+                      <Select
+                        value={item.supervisor || ''}
+                        onValueChange={(value) => updateTrainingItem('briefings_observed', index, 'supervisor', value)}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select Supervisor" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {crewList.map(c => (
+                            <SelectItem key={c.id} value={c.staff_name}>{c.staff_name}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => removeTrainingItem('briefings_observed', index)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      <Select
+                        value={item.vessel_id || ''}
+                        onValueChange={(value) => updateTrainingItem('briefings_observed', index, 'vessel_id', value)}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select Vessel (Optional)" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="">No Vessel</SelectItem>
+                          {vessels.map(v => (
+                            <SelectItem key={v.id} value={v.id}>{v.vessel_name}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <Input
+                        placeholder="Comments (optional)"
+                        value={item.comments || ''}
+                        onChange={(e) => updateTrainingItem('briefings_observed', index, 'comments', e.target.value)}
+                      />
+                    </div>
                   </div>
                 ))}
               </div>
@@ -651,31 +683,63 @@ const CrewForm = ({ open, onClose, onSave, crew, mode = 'create', prefilledData 
                   </Button>
                 </div>
                 {formData.briefings_delivered.map((item, index) => (
-                  <div key={index} className="border rounded-lg p-3 grid grid-cols-4 gap-2">
-                    <Input
-                      type="number"
-                      placeholder="Number"
-                      value={item.number}
-                      onChange={(e) => updateTrainingItem('briefings_delivered', index, 'number', e.target.value)}
-                    />
-                    <Input
-                      type="date"
-                      value={item.date}
-                      onChange={(e) => updateTrainingItem('briefings_delivered', index, 'date', e.target.value)}
-                    />
-                    <Input
-                      placeholder="Supervisor"
-                      value={item.supervisor}
-                      onChange={(e) => updateTrainingItem('briefings_delivered', index, 'supervisor', e.target.value)}
-                    />
-                    <Button
-                      type="button"
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => removeTrainingItem('briefings_delivered', index)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
+                  <div key={index} className="border rounded-lg p-3 space-y-2">
+                    <div className="grid grid-cols-4 gap-2">
+                      <Input
+                        type="number"
+                        placeholder="Number"
+                        value={item.number}
+                        readOnly
+                        className="bg-gray-50"
+                      />
+                      <Input
+                        type="date"
+                        value={item.date}
+                        onChange={(e) => updateTrainingItem('briefings_delivered', index, 'date', e.target.value)}
+                      />
+                      <Select
+                        value={item.supervisor || ''}
+                        onValueChange={(value) => updateTrainingItem('briefings_delivered', index, 'supervisor', value)}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select Supervisor" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {crewList.map(c => (
+                            <SelectItem key={c.id} value={c.staff_name}>{c.staff_name}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => removeTrainingItem('briefings_delivered', index)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      <Select
+                        value={item.vessel_id || ''}
+                        onValueChange={(value) => updateTrainingItem('briefings_delivered', index, 'vessel_id', value)}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select Vessel (Optional)" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="">No Vessel</SelectItem>
+                          {vessels.map(v => (
+                            <SelectItem key={v.id} value={v.id}>{v.vessel_name}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <Input
+                        placeholder="Comments (optional)"
+                        value={item.comments || ''}
+                        onChange={(e) => updateTrainingItem('briefings_delivered', index, 'comments', e.target.value)}
+                      />
+                    </div>
                   </div>
                 ))}
               </div>
@@ -690,31 +754,63 @@ const CrewForm = ({ open, onClose, onSave, crew, mode = 'create', prefilledData 
                   </Button>
                 </div>
                 {formData.practical_experience.map((item, index) => (
-                  <div key={index} className="border rounded-lg p-3 grid grid-cols-4 gap-2">
-                    <Input
-                      type="number"
-                      placeholder="Number"
-                      value={item.number}
-                      onChange={(e) => updateTrainingItem('practical_experience', index, 'number', e.target.value)}
-                    />
-                    <Input
-                      type="date"
-                      value={item.date}
-                      onChange={(e) => updateTrainingItem('practical_experience', index, 'date', e.target.value)}
-                    />
-                    <Input
-                      placeholder="Supervisor"
-                      value={item.supervisor}
-                      onChange={(e) => updateTrainingItem('practical_experience', index, 'supervisor', e.target.value)}
-                    />
-                    <Button
-                      type="button"
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => removeTrainingItem('practical_experience', index)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
+                  <div key={index} className="border rounded-lg p-3 space-y-2">
+                    <div className="grid grid-cols-4 gap-2">
+                      <Input
+                        type="number"
+                        placeholder="Number"
+                        value={item.number}
+                        readOnly
+                        className="bg-gray-50"
+                      />
+                      <Input
+                        type="date"
+                        value={item.date}
+                        onChange={(e) => updateTrainingItem('practical_experience', index, 'date', e.target.value)}
+                      />
+                      <Select
+                        value={item.supervisor || ''}
+                        onValueChange={(value) => updateTrainingItem('practical_experience', index, 'supervisor', value)}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select Supervisor" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {crewList.map(c => (
+                            <SelectItem key={c.id} value={c.staff_name}>{c.staff_name}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => removeTrainingItem('practical_experience', index)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      <Select
+                        value={item.vessel_id || ''}
+                        onValueChange={(value) => updateTrainingItem('practical_experience', index, 'vessel_id', value)}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select Vessel (Optional)" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="">No Vessel</SelectItem>
+                          {vessels.map(v => (
+                            <SelectItem key={v.id} value={v.id}>{v.vessel_name}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <Input
+                        placeholder="Comments (optional)"
+                        value={item.comments || ''}
+                        onChange={(e) => updateTrainingItem('practical_experience', index, 'comments', e.target.value)}
+                      />
+                    </div>
                   </div>
                 ))}
               </div>
