@@ -19,6 +19,8 @@ const CrewForm = ({ open, onClose, onSave, crew, mode = 'create', prefilledData 
   const [roles, setRoles] = useState([]);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [dragActive, setDragActive] = useState(false);
+  const [crewList, setCrewList] = useState([]);
+  const [vessels, setVessels] = useState([]);
   
   const [formData, setFormData] = useState({
     // Tab 1: Crew Details
