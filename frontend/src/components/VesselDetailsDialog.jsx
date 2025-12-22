@@ -14,6 +14,7 @@ const API = `${BACKEND_URL}/api`;
 
 const VesselDetailsDialog = ({ open, onClose, vessel, onMessage }) => {
   const [loading, setLoading] = useState(false);
+  const [trips, setTrips] = useState([]);
   const [runningLogs, setRunningLogs] = useState([]);
   const [staffLogs, setStaffLogs] = useState([]);
   const [risks, setRisks] = useState([]);
