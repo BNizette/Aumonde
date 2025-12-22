@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { MapPin, Navigation } from 'lucide-react';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -14,6 +15,8 @@ const API = `${BACKEND_URL}/api`;
 const TripLogForm = ({ open, onClose, onSave, log, tripId, mode = 'create' }) => {
   const [crew, setCrew] = useState([]);
   const [error, setError] = useState('');
+  const [message, setMessage] = useState('');
+  const [gpsLoading, setGpsLoading] = useState({ start: false, end: false });
 
   const [formData, setFormData] = useState({
     trip_id: tripId || '',
@@ -21,7 +24,11 @@ const TripLogForm = ({ open, onClose, onSave, log, tripId, mode = 'create' }) =>
     crew_name: '',
     shift_start_datetime: '',
     shift_stop_datetime: '',
-    task_performed: ''
+    task_performed: '',
+    location_start: '',
+    location_end: '',
+    gps_location_start: '',
+    gps_location_end: ''
   });
 
   useEffect(() => {
@@ -38,7 +45,11 @@ const TripLogForm = ({ open, onClose, onSave, log, tripId, mode = 'create' }) =>
         crew_name: log.crew_name || '',
         shift_start_datetime: log.shift_start_datetime ? new Date(log.shift_start_datetime).toISOString().slice(0, 16) : '',
         shift_stop_datetime: log.shift_stop_datetime ? new Date(log.shift_stop_datetime).toISOString().slice(0, 16) : '',
-        task_performed: log.task_performed || ''
+        task_performed: log.task_performed || '',
+        location_start: log.location_start || '',
+        location_end: log.location_end || '',
+        gps_location_start: log.gps_location_start || '',
+        gps_location_end: log.gps_location_end || ''
       });
     } else if (mode === 'create') {
       setFormData({
@@ -47,10 +58,15 @@ const TripLogForm = ({ open, onClose, onSave, log, tripId, mode = 'create' }) =>
         crew_name: '',
         shift_start_datetime: '',
         shift_stop_datetime: '',
-        task_performed: ''
+        task_performed: '',
+        location_start: '',
+        location_end: '',
+        gps_location_start: '',
+        gps_location_end: ''
       });
     }
     setError('');
+    setMessage('');
   }, [log, mode, open, tripId]);
 
   const fetchCrew = async () => {
@@ -78,6 +94,47 @@ const TripLogForm = ({ open, onClose, onSave, log, tripId, mode = 'create' }) =>
 
   const handleChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const getGPSLocation = (field) => {
+    if (!navigator.geolocation) {
+      setError('Geolocation is not supported by your browser');
+      setTimeout(() => setError(''), 3000);
+      return;
+    }
+
+    const loadingKey = field === 'gps_location_start' ? 'start' : 'end';
+    setGpsLoading(prev => ({ ...prev, [loadingKey]: true }));
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const coords = `${position.coords.latitude.toFixed(6)}, ${position.coords.longitude.toFixed(6)}`;
+        setFormData(prev => ({ ...prev, [field]: coords }));
+        setGpsLoading(prev => ({ ...prev, [loadingKey]: false }));
+        setMessage(`GPS location captured: ${coords}`);
+        setTimeout(() => setMessage(''), 2000);
+      },
+      (err) => {
+        setGpsLoading(prev => ({ ...prev, [loadingKey]: false }));
+        let errorMessage = 'Unable to retrieve location';
+        switch (err.code) {
+          case err.PERMISSION_DENIED:
+            errorMessage = 'Location permission denied. Please enable location access in your browser.';
+            break;
+          case err.POSITION_UNAVAILABLE:
+            errorMessage = 'Location information unavailable.';
+            break;
+          case err.TIMEOUT:
+            errorMessage = 'Location request timed out.';
+            break;
+          default:
+            errorMessage = 'An unknown error occurred.';
+        }
+        setError(errorMessage);
+        setTimeout(() => setError(''), 4000);
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+    );
   };
 
   const handleSubmit = () => {
@@ -110,7 +167,11 @@ const TripLogForm = ({ open, onClose, onSave, log, tripId, mode = 'create' }) =>
       crew_name: formData.crew_name,
       shift_start_datetime: new Date(formData.shift_start_datetime).toISOString(),
       shift_stop_datetime: formData.shift_stop_datetime ? new Date(formData.shift_stop_datetime).toISOString() : null,
-      task_performed: formData.task_performed || null
+      task_performed: formData.task_performed || null,
+      location_start: formData.location_start || null,
+      location_end: formData.location_end || null,
+      gps_location_start: formData.gps_location_start || null,
+      gps_location_end: formData.gps_location_end || null
     };
 
     onSave(submitData);
@@ -118,17 +179,23 @@ const TripLogForm = ({ open, onClose, onSave, log, tripId, mode = 'create' }) =>
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{mode === 'create' ? 'Add Shift Log' : 'Edit Shift Log'}</DialogTitle>
           <DialogDescription>
-            Record crew shift details and tasks performed
+            Record crew shift details, locations, and tasks performed
           </DialogDescription>
         </DialogHeader>
 
         {error && (
           <Alert variant="destructive">
             <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
+
+        {message && (
+          <Alert className="bg-green-50 border-green-200">
+            <AlertDescription className="text-green-800">{message}</AlertDescription>
           </Alert>
         )}
 
@@ -168,6 +235,96 @@ const TripLogForm = ({ open, onClose, onSave, log, tripId, mode = 'create' }) =>
                 value={formData.shift_stop_datetime}
                 onChange={(e) => handleChange('shift_stop_datetime', e.target.value)}
               />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="location_start" className="flex items-center gap-1">
+                <MapPin className="h-4 w-4" />
+                Location Start
+              </Label>
+              <Input
+                id="location_start"
+                value={formData.location_start}
+                onChange={(e) => handleChange('location_start', e.target.value)}
+                placeholder="e.g., Cairns Marina"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="location_end" className="flex items-center gap-1">
+                <MapPin className="h-4 w-4" />
+                Location End
+              </Label>
+              <Input
+                id="location_end"
+                value={formData.location_end}
+                onChange={(e) => handleChange('location_end', e.target.value)}
+                placeholder="e.g., Port Douglas"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="gps_location_start" className="flex items-center gap-1">
+                <Navigation className="h-4 w-4" />
+                GPS Location Start
+              </Label>
+              <div className="flex gap-2">
+                <Input
+                  id="gps_location_start"
+                  value={formData.gps_location_start}
+                  onChange={(e) => handleChange('gps_location_start', e.target.value)}
+                  placeholder="Lat, Long"
+                  className="flex-1"
+                />
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => getGPSLocation('gps_location_start')}
+                  disabled={gpsLoading.start}
+                  className="whitespace-nowrap"
+                >
+                  {gpsLoading.start ? (
+                    <span className="animate-pulse">Getting...</span>
+                  ) : (
+                    <>📍 Get GPS</>
+                  )}
+                </Button>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="gps_location_end" className="flex items-center gap-1">
+                <Navigation className="h-4 w-4" />
+                GPS Location End
+              </Label>
+              <div className="flex gap-2">
+                <Input
+                  id="gps_location_end"
+                  value={formData.gps_location_end}
+                  onChange={(e) => handleChange('gps_location_end', e.target.value)}
+                  placeholder="Lat, Long"
+                  className="flex-1"
+                />
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => getGPSLocation('gps_location_end')}
+                  disabled={gpsLoading.end}
+                  className="whitespace-nowrap"
+                >
+                  {gpsLoading.end ? (
+                    <span className="animate-pulse">Getting...</span>
+                  ) : (
+                    <>📍 Get GPS</>
+                  )}
+                </Button>
+              </div>
             </div>
           </div>
 
