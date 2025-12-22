@@ -286,9 +286,11 @@ const CrewForm = ({ open, onClose, onSave, crew, mode = 'create', prefilledData 
 
   // Training record functions
   const addTrainingItem = (type) => {
+    const currentItems = formData[type] || [];
+    const nextNumber = currentItems.length + 1;
     setFormData(prev => ({
       ...prev,
-      [type]: [...prev[type], { number: '', date: '', supervisor: '' }]
+      [type]: [...prev[type], { number: nextNumber.toString(), date: '', supervisor: '', vessel_id: '', comments: '' }]
     }));
   };
 
@@ -299,10 +301,12 @@ const CrewForm = ({ open, onClose, onSave, crew, mode = 'create', prefilledData 
   };
 
   const removeTrainingItem = (type, index) => {
-    setFormData(prev => ({
-      ...prev,
-      [type]: prev[type].filter((_, i) => i !== index)
-    }));
+    setFormData(prev => {
+      const filtered = prev[type].filter((_, i) => i !== index);
+      // Re-number remaining items
+      const renumbered = filtered.map((item, i) => ({ ...item, number: (i + 1).toString() }));
+      return { ...prev, [type]: renumbered };
+    });
   };
 
   const handleSubmit = () => {
