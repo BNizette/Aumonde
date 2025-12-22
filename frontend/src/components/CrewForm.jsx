@@ -721,14 +721,14 @@ const CrewForm = ({ open, onClose, onSave, crew, mode = 'create', prefilledData 
                     </div>
                     <div className="grid grid-cols-2 gap-2">
                       <Select
-                        value={item.vessel_id || ''}
-                        onValueChange={(value) => updateTrainingItem('briefings_delivered', index, 'vessel_id', value)}
+                        value={item.vessel_id || 'none'}
+                        onValueChange={(value) => updateTrainingItem('briefings_delivered', index, 'vessel_id', value === 'none' ? '' : value)}
                       >
                         <SelectTrigger>
                           <SelectValue placeholder="Select Vessel (Optional)" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="">No Vessel</SelectItem>
+                          <SelectItem value="none">No Vessel</SelectItem>
                           {vessels.map(v => (
                             <SelectItem key={v.id} value={v.id}>{v.vessel_name}</SelectItem>
                           ))}
