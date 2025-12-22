@@ -198,7 +198,7 @@ const VesselDetailsDialog = ({ open, onClose, vessel, onMessage }) => {
           <Tabs defaultValue="details" className="w-full">
             <TabsList>
               <TabsTrigger value="details">Vessel Details</TabsTrigger>
-              <TabsTrigger value="running">Trip Logs ({runningLogs.length})</TabsTrigger>
+              <TabsTrigger value="trips">Trips ({trips.length})</TabsTrigger>
               <TabsTrigger value="staff">Allocated Staff ({staffLogs.length})</TabsTrigger>
               <TabsTrigger value="risks">Risk Assessments ({risks.length})</TabsTrigger>
               <TabsTrigger value="maintenance">Maintenance ({maintenance.length})</TabsTrigger>
