@@ -581,6 +581,29 @@ frontend:
     stuck_count: 0
     priority: "high"
     needs_retesting: false
+  - task: "Crew Training Tab Enhancements Testing"
+    implemented: true
+    working: false
+    file: "/app/frontend/src/components/CrewForm.jsx"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: false
+          agent: "testing"
+          comment: "🔍 CREW TRAINING TAB ENHANCEMENTS TESTING RESULTS: PARTIAL SUCCESS with critical React 19 compatibility issue. SUCCESSFUL VERIFICATION: ✅ All 3 training sections found and functional: '10 Safety Briefings Observed', '5 Safety Briefings Delivered', 'Acted as Guide / Practical Experience'. ✅ Add buttons present and functional for all sections. ✅ Training item structure correct with auto-assigned sequential numbering (read-only number field). ✅ All required fields present: Date picker, Supervisor dropdown, Vessel dropdown (with 'Select Vessel (Optional)' and 'No Vessel' option), Comments text input. ✅ Supervisor dropdown populated with actual crew names from system. ✅ Vessel dropdown populated with actual vessel names. CRITICAL ISSUE IDENTIFIED: ❌ React 19 + Radix UI Select component compatibility error: 'A <Select.Item /> must have a value prop that is not an empty string'. This error blocks further interaction with dropdowns and prevents complete testing of sequential numbering and delete functionality. The error appears when interacting with Select components that have empty string values, violating React 19 + Radix UI requirements. IMPACT: Core training tab functionality is implemented correctly, but runtime errors prevent full user interaction. This is the same pattern previously fixed in AdminPanel, MaintenanceForm, and RiskAssessmentForm components."
+
+  - task: "Vessel Details Dialog Dropdown Selector Testing"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/components/VesselDetailsDialog.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "✅ VESSEL DETAILS DIALOG DROPDOWN SELECTOR TESTING FULLY SUCCESSFUL: Comprehensive testing completed with excellent results. DIALOG ACCESS: ✅ Successfully opened vessel details dialog by clicking eye icon (View button) on vessel management page. ✅ Dialog opens correctly with proper title and structure. DROPDOWN FUNCTIONALITY: ✅ 'View:' dropdown selector found and functional (replaces previous tab structure). ✅ All 10 expected dropdown options present and working: 'Vessel Details', 'Trips (count)', 'Passengers (count)', 'Shift Logs (count)', 'Running Logs (count)', 'Engine Logs (count)', 'Drill Logs (count)', 'Risk Assessments (count)', 'Maintenance (count)', 'Incidents (count)'. ✅ Dropdown shows proper counts for each category in parentheses. CONTENT VERIFICATION: ✅ View selection works correctly - content changes appropriately when different options are selected. ✅ Vessel Details view loads with 'Basic Information' section and proper vessel data display. ✅ Tables display correctly for different views with proper columns and data structure. ✅ Empty state messages show correctly when no data exists ('No trips recorded', etc.). EXPORT FUNCTIONALITY: ✅ 'Export All to Excel' button present in dialog header with correct green styling (bg-green-50 hover:bg-green-100 text-green-700 border-green-200). ✅ FileSpreadsheet icon properly displayed. COMPREHENSIVE SUCCESS: The vessel details dialog dropdown selector implementation is working perfectly as specified in the review request. All functionality tested and verified working correctly."
     status_history:
         - working: true
           agent: "testing"
