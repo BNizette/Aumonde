@@ -308,7 +308,7 @@ Login as admin, go to Admin Panel → Users
 
 ## 🚀 LOGIN URL
 
-**Preview:** https://nauticardbug.preview.emergentagent.com
+**Preview:** https://maritime-import.preview.emergentagent.com
 
 ---
 

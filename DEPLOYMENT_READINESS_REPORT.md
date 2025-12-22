@@ -97,7 +97,7 @@ The AMSA (Australian Maritime Safety Authority) Safety Management System has bee
 
 **Frontend (.env):**
 ```env
-✅ REACT_APP_BACKEND_URL=https://nauticardbug.preview.emergentagent.com
+✅ REACT_APP_BACKEND_URL=https://maritime-import.preview.emergentagent.com
 ✅ WDS_SOCKET_PORT=443
 ✅ REACT_APP_ENABLE_VISUAL_EDITS=false
 ✅ ENABLE_HEALTH_CHECK=false

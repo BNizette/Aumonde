@@ -15,7 +15,7 @@ The backup export feature has been **fixed** with the following improvements:
 The export feature should now work in your preview application:
 
 ### Steps:
-1. Go to preview: https://nauticardbug.preview.emergentagent.com
+1. Go to preview: https://maritime-import.preview.emergentagent.com
 2. Login: admin@test.com / Admin123!
 3. Navigate to: **Admin Panel** → **Backup & Restore** tab
 4. Click **"Export Database"** button
@@ -37,7 +37,7 @@ If the UI button still doesn't work, use this direct API call:
 
 ```javascript
 const token = localStorage.getItem('token');
-fetch('https://nauticardbug.preview.emergentagent.com/api/backup/export', {
+fetch('https://maritime-import.preview.emergentagent.com/api/backup/export', {
   headers: { 'Authorization': `Bearer ${token}` }
 })
 .then(response => response.blob())
@@ -59,13 +59,13 @@ fetch('https://nauticardbug.preview.emergentagent.com/api/backup/export', {
 ### Method B: Using curl (from terminal with access to preview)
 ```bash
 # Login and get token
-TOKEN=$(curl -s -X POST "https://nauticardbug.preview.emergentagent.com/api/auth/login" \
+TOKEN=$(curl -s -X POST "https://maritime-import.preview.emergentagent.com/api/auth/login" \
   -H "Content-Type: application/json" \
   -d '{"email": "admin@test.com", "password": "Admin123!"}' | jq -r '.access_token')
 
 # Download backup
 curl -H "Authorization: Bearer $TOKEN" \
-  "https://nauticardbug.preview.emergentagent.com/api/backup/export" \
+  "https://maritime-import.preview.emergentagent.com/api/backup/export" \
   -o amsa_backup.json
 
 # Verify
@@ -300,7 +300,7 @@ Contact Emergent support to enable user registration or manually create admin vi
 ```bash
 # From preview (after login)
 curl -H "Authorization: Bearer YOUR_TOKEN" \
-  "https://nauticardbug.preview.emergentagent.com/api/backup/export" \
+  "https://maritime-import.preview.emergentagent.com/api/backup/export" \
   -o backup.json
 ```
 

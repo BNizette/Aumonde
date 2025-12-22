@@ -235,4 +235,4 @@ With 12 users now available:
 - ✅ Diverse email domains
 - ✅ Ready for comprehensive filter testing
 
-**Login and start testing:** https://nauticardbug.preview.emergentagent.com
+**Login and start testing:** https://maritime-import.preview.emergentagent.com
