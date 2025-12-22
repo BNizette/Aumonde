@@ -1196,6 +1196,10 @@ class TripLog(BaseModel):
     shift_start_datetime: datetime
     shift_stop_datetime: Optional[datetime] = None
     task_performed: Optional[str] = None
+    location_start: Optional[str] = None
+    location_end: Optional[str] = None
+    gps_location_start: Optional[str] = None
+    gps_location_end: Optional[str] = None
     total_hours: Optional[float] = None
     created_by: str
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
@@ -1207,6 +1211,10 @@ class TripLogCreate(BaseModel):
     shift_start_datetime: datetime
     shift_stop_datetime: Optional[datetime] = None
     task_performed: Optional[str] = None
+    location_start: Optional[str] = None
+    location_end: Optional[str] = None
+    gps_location_start: Optional[str] = None
+    gps_location_end: Optional[str] = None
 
 class RunningLog(BaseModel):
     model_config = ConfigDict(extra="ignore")
