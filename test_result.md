@@ -558,6 +558,8 @@ test_plan:
 agent_communication:
     - agent: "testing"
       message: "✅ QUICK VERIFICATION TASK COMPLETED SUCCESSFULLY: All Import from Excel buttons verified across all 11 module locations (6 main modules + 3 Emergency tabs + 2 Compliance tabs). 100% success rate - all buttons present with proper blue styling and no JavaScript console errors detected. Login credentials (admin@test.com/Admin123!) working correctly. Ready for main agent to summarize and finish if no other testing needed."
+    - agent: "testing"
+      message: "🧪 NEW FEATURES TESTING COMPLETED: Tested two new features in AMSA Safety Management application as requested. FEATURE 1 - Crew Training Tab Enhancements: Successfully verified all 3 training sections (10 Safety Briefings Observed, 5 Safety Briefings Delivered, Acted as Guide/Practical Experience) are present in CrewForm Training tab. Add buttons functional, training item fields present with auto-assigned sequential numbering, supervisor/vessel dropdowns populated correctly. However, encountered React 19 + Radix UI Select component compatibility issue causing runtime errors when interacting with dropdowns (empty string value prop issue). FEATURE 2 - Vessel Details Dialog Dropdown Selector: FULLY FUNCTIONAL - Successfully verified VesselDetailsDialog has dropdown selector instead of tabs with all 10 expected options (Vessel Details, Trips, Passengers, Shift Logs, Running Logs, Engine Logs, Drill Logs, Risk Assessments, Maintenance, Incidents). View selection works correctly, content changes appropriately, Export All to Excel button present in dialog header. Login credentials (admin@test.com/Admin123!) working correctly."
 
 frontend:
   - task: "SummaryCard Component Refactoring Verification"
