@@ -84,6 +84,16 @@ const CrewForm = ({ open, onClose, onSave, crew, mode = 'create', prefilledData 
       const rolesRes = await fetch(`${API}/settings/crew/roles`, { headers });
       const rolesData = await rolesRes.json();
       setRoles(rolesData.options || []);
+      
+      // Fetch crew list for supervisor dropdown
+      const crewRes = await fetch(`${API}/crew`, { headers });
+      const crewData = await crewRes.json();
+      setCrewList(crewData || []);
+      
+      // Fetch vessels for vessel dropdown
+      const vesselsRes = await fetch(`${API}/vessels`, { headers });
+      const vesselsData = await vesselsRes.json();
+      setVessels(vesselsData || []);
     } catch (err) {
       console.error('Error fetching settings:', err);
       // Fallback to defaults if settings not available
