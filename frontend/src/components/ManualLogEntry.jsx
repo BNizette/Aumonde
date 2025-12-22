@@ -172,7 +172,11 @@ const ManualLogEntry = ({ open, onClose, type = 'running' }) => {
           activity_details: '',
           shift_start_datetime: '',
           shift_stop_datetime: '',
-          task_performed: ''
+          task_performed: '',
+          location_start: '',
+          location_end: '',
+          gps_location_start: '',
+          gps_location_end: ''
         });
       }, 2000);
     } catch (err) {
