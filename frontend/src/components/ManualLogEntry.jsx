@@ -145,7 +145,11 @@ const ManualLogEntry = ({ open, onClose, type = 'running' }) => {
           crew_name: formData.crew_name,
           shift_start_datetime: formData.shift_start_datetime,
           shift_stop_datetime: formData.shift_stop_datetime || null,
-          task_performed: formData.task_performed || null
+          task_performed: formData.task_performed || null,
+          location_start: formData.location_start || null,
+          location_end: formData.location_end || null,
+          gps_location_start: formData.gps_location_start || null,
+          gps_location_end: formData.gps_location_end || null
         };
 
         await axios.post(`${API}/trip-logs`, logData, { 
