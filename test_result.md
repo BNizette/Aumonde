@@ -549,9 +549,9 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Import from Excel Functionality Verification Complete"
+    - "Crew Training Tab Enhancements Testing"
   stuck_tasks:
-    []
+    - "Crew Training Tab Enhancements Testing"
   test_all: false
   test_priority: "high_first"
 
