@@ -287,22 +287,110 @@ const ManualLogEntry = ({ open, onClose, type = 'running' }) => {
 
           {type === 'crew' && (
             <>
-              <div className="space-y-2">
-                <Label>Shift Start *</Label>
-                <Input
-                  type="datetime-local"
-                  value={formData.shift_start_datetime}
-                  onChange={(e) => handleChange('shift_start_datetime', e.target.value)}
-                />
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Shift Start *</Label>
+                  <Input
+                    type="datetime-local"
+                    value={formData.shift_start_datetime}
+                    onChange={(e) => handleChange('shift_start_datetime', e.target.value)}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Shift End</Label>
+                  <Input
+                    type="datetime-local"
+                    value={formData.shift_stop_datetime}
+                    onChange={(e) => handleChange('shift_stop_datetime', e.target.value)}
+                  />
+                </div>
               </div>
 
-              <div className="space-y-2">
-                <Label>Shift End</Label>
-                <Input
-                  type="datetime-local"
-                  value={formData.shift_stop_datetime}
-                  onChange={(e) => handleChange('shift_stop_datetime', e.target.value)}
-                />
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label className="flex items-center gap-1">
+                    <MapPin className="h-4 w-4" />
+                    Location Start
+                  </Label>
+                  <Input
+                    value={formData.location_start}
+                    onChange={(e) => handleChange('location_start', e.target.value)}
+                    placeholder="e.g., Cairns Marina"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="flex items-center gap-1">
+                    <MapPin className="h-4 w-4" />
+                    Location End
+                  </Label>
+                  <Input
+                    value={formData.location_end}
+                    onChange={(e) => handleChange('location_end', e.target.value)}
+                    placeholder="e.g., Port Douglas"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label className="flex items-center gap-1">
+                    <Navigation className="h-4 w-4" />
+                    GPS Location Start
+                  </Label>
+                  <div className="flex gap-2">
+                    <Input
+                      value={formData.gps_location_start}
+                      onChange={(e) => handleChange('gps_location_start', e.target.value)}
+                      placeholder="Lat, Long (e.g., -16.9186, 145.7781)"
+                      className="flex-1"
+                    />
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => getGPSLocation('gps_location_start')}
+                      disabled={gpsLoading.start}
+                      className="whitespace-nowrap"
+                    >
+                      {gpsLoading.start ? (
+                        <span className="animate-pulse">Getting...</span>
+                      ) : (
+                        <>📍 Get GPS</>
+                      )}
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="flex items-center gap-1">
+                    <Navigation className="h-4 w-4" />
+                    GPS Location End
+                  </Label>
+                  <div className="flex gap-2">
+                    <Input
+                      value={formData.gps_location_end}
+                      onChange={(e) => handleChange('gps_location_end', e.target.value)}
+                      placeholder="Lat, Long (e.g., -16.4827, 145.4650)"
+                      className="flex-1"
+                    />
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => getGPSLocation('gps_location_end')}
+                      disabled={gpsLoading.end}
+                      className="whitespace-nowrap"
+                    >
+                      {gpsLoading.end ? (
+                        <span className="animate-pulse">Getting...</span>
+                      ) : (
+                        <>📍 Get GPS</>
+                      )}
+                    </Button>
+                  </div>
+                </div>
               </div>
 
               <div className="space-y-2">
