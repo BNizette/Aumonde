@@ -1099,3 +1099,28 @@ agent_communication:
       message: "✅ SUMMARY CARD UI STANDARDIZATION AND FILTER FUNCTIONALITY TESTING COMPLETED: PRIORITY 1 - Compliance Module: All 4 summary cards have correct colored left borders (blue, green, yellow, red) and proper click-to-filter functionality. Valid, Expiring Soon, and Expired cards correctly show 'Clear All Filters' button after clicking. PRIORITY 2 - All Modules Standardized: Tested 6 modules (Vessels, Crew, Trips, Incidents, Maintenance, Risk Assessment) - all have proper colored borders (border-l-4 styling), centered content layout, and click functionality without runtime errors. Found correct card counts: Vessels(4), Crew(4), Trips(4), Incidents(4), Maintenance(5), Risk Assessment(4). All cards use consistent border-l-4 styling with appropriate colors and centered text layout. No JavaScript runtime errors detected across any modules. The summary card standardization and filter bug fixes are working correctly as specified in the review request."
     - agent: "testing"
       message: "🎉 IMPORT FROM EXCEL FUNCTIONALITY VERIFICATION COMPLETE: Successfully tested Import from Excel functionality across all 6 main modules (Vessels, Crew, Trips, Incidents, Maintenance, Risk Assessment) with 100% success rate. All modules have properly implemented blue 'Import from Excel' buttons positioned next to green 'Export to Excel' buttons in Filters cards. Dialog functionality working correctly with proper titles (e.g., 'Import Vessels', 'Import Crew Members'), Download Template buttons (clickable), file upload/drop areas with drag-and-drop support, and Import Data buttons. The ImportExcelDialog component is consistently implemented across all modules with proper styling (bg-blue-50, text-blue-700, border-blue-200). All requirements from the review request have been fully satisfied - Import from Excel functionality has been successfully added to all main modules as requested. Testing exceeded requirements by verifying at least 3 modules (Vessels, Crew, Incidents) but actually tested all 6 modules successfully."
+
+  - task: "Crew Training Tab - Auto Sequential Numbers, Vessel Selection, Supervisor Dropdown, Comments Field"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/CrewForm.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Updated CrewForm.jsx training tab: 1) Auto-assign sequential numbers when adding training items (read-only field), 2) Added optional Vessel selection dropdown, 3) Changed Supervisor from text input to dropdown of crew members, 4) Added Comments field. Also fetches crew list and vessels on form open."
+
+  - task: "Vessel Details Dialog - Dropdown Selector and Additional Log Types"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/VesselDetailsDialog.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Refactored VesselDetailsDialog: 1) Replaced tabs with dropdown selector for view selection, 2) Added Passengers, Shift Logs, Running Logs, Engine Logs, and Drill Logs views, 3) Fetches passengers, engine logs, and drills data, 4) All views have proper tables and empty state handling."
+
