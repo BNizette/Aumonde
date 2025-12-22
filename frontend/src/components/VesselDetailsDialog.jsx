@@ -82,16 +82,33 @@ const VesselDetailsDialog = ({ open, onClose, vessel, onMessage }) => {
         columnWidths: [20, 30]
       },
       {
-        name: 'Trip Logs',
-        headers: ['Date & Time', 'Category', 'Activity', 'Details', 'Crew'],
-        data: runningLogs.length > 0 ? runningLogs.map(log => [
-          formatDate(log.log_datetime, true),
-          safeValue(log.category, 'General'),
-          safeValue(log.activity),
-          safeValue(log.activity_details),
-          safeValue(log.crew_name)
-        ]) : [['No trip logs recorded', '', '', '', '']],
-        columnWidths: [20, 12, 20, 30, 15]
+        name: 'Trips',
+        headers: ['Trip Name', 'Type', 'Status', 'Departure', 'Arrival', 'From', 'To', 'Passengers', 'Crew'],
+        data: trips.length > 0 ? trips.map(trip => {
+          const now = new Date();
+          const plannedDepart = trip.planned_depart_datetime ? new Date(trip.planned_depart_datetime) : null;
+          const plannedArrival = trip.planned_arrival_datetime ? new Date(trip.planned_arrival_datetime) : null;
+          const actualDepart = trip.actual_depart_datetime ? new Date(trip.actual_depart_datetime) : null;
+          const actualArrival = trip.actual_arrival_datetime ? new Date(trip.actual_arrival_datetime) : null;
+          
+          let status = 'Scheduled';
+          if (actualArrival) status = 'Completed';
+          else if (actualDepart && !actualArrival) status = 'In Progress';
+          else if (plannedDepart && now > plannedDepart && !actualDepart) status = 'Overdue';
+          
+          return [
+            safeValue(trip.trip_name),
+            safeValue(trip.trip_type),
+            status,
+            formatDate(actualDepart || plannedDepart, true),
+            formatDate(actualArrival || plannedArrival, true),
+            safeValue(trip.depart_location),
+            safeValue(trip.arrival_location),
+            trip.number_of_passengers || 0,
+            trip.number_of_crew || 0
+          ];
+        }) : [['No trips recorded', '', '', '', '', '', '', '', '']],
+        columnWidths: [25, 15, 12, 20, 20, 15, 15, 12, 10]
       },
       {
         name: 'Allocated Staff',
