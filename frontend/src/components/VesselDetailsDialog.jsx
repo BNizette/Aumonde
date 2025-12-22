@@ -35,7 +35,8 @@ const VesselDetailsDialog = ({ open, onClose, vessel, onMessage }) => {
       const headers = { Authorization: `Bearer ${token}` };
       const vesselId = vessel.id;
 
-      const [logsRes, staffRes, risksRes, maintenanceRes, incidentsRes] = await Promise.all([
+      const [tripsRes, logsRes, staffRes, risksRes, maintenanceRes, incidentsRes] = await Promise.all([
+        axios.get(`${API}/trips?vessel_id=${vesselId}`, { headers }).catch(() => ({ data: [] })),
         axios.get(`${API}/vessels/${vesselId}/running-logs`, { headers }).catch(() => ({ data: [] })),
         axios.get(`${API}/vessels/${vesselId}/staff-logs`, { headers }).catch(() => ({ data: [] })),
         axios.get(`${API}/risk-assessments`, { headers }).catch(() => ({ data: [] })),
@@ -43,6 +44,7 @@ const VesselDetailsDialog = ({ open, onClose, vessel, onMessage }) => {
         axios.get(`${API}/incidents`, { headers }).catch(() => ({ data: [] }))
       ]);
 
+      setTrips(tripsRes.data || []);
       setRunningLogs(logsRes.data || []);
       setStaffLogs(staffRes.data || []);
       setRisks((risksRes.data || []).filter(r => r.vessel_id === vesselId));
