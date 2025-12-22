@@ -247,50 +247,90 @@ const VesselDetailsDialog = ({ open, onClose, vessel, onMessage }) => {
               </div>
             </TabsContent>
 
-            {/* Trip Logs Tab */}
-            <TabsContent value="running" className="space-y-4">
+            {/* Trips Tab */}
+            <TabsContent value="trips" className="space-y-4">
               <div className="flex justify-between items-center">
-                <div className="text-sm text-gray-600">Running logs for {vessel.vessel_name}</div>
-                {runningLogs.length > 0 && (
+                <div className="text-sm text-gray-600">Trips for {vessel.vessel_name}</div>
+                {trips.length > 0 && (
                   <Button variant="outline" size="sm" onClick={() => {
                     exportMultiSheetExcel([{
-                      name: 'Trip Logs',
-                      headers: ['Date & Time', 'Category', 'Activity', 'Details', 'Crew'],
-                      data: runningLogs.map(log => [formatDate(log.log_datetime, true), safeValue(log.category, 'General'), safeValue(log.activity), safeValue(log.activity_details), safeValue(log.crew_name)]),
-                      columnWidths: [20, 12, 20, 30, 15]
+                      name: 'Trips',
+                      headers: ['Trip Name', 'Type', 'Status', 'Departure', 'Arrival', 'From', 'To', 'Passengers', 'Crew'],
+                      data: trips.map(trip => {
+                        const now = new Date();
+                        const plannedDepart = trip.planned_depart_datetime ? new Date(trip.planned_depart_datetime) : null;
+                        const actualDepart = trip.actual_depart_datetime ? new Date(trip.actual_depart_datetime) : null;
+                        const actualArrival = trip.actual_arrival_datetime ? new Date(trip.actual_arrival_datetime) : null;
+                        let status = 'Scheduled';
+                        if (actualArrival) status = 'Completed';
+                        else if (actualDepart && !actualArrival) status = 'In Progress';
+                        else if (plannedDepart && now > plannedDepart && !actualDepart) status = 'Overdue';
+                        return [
+                          safeValue(trip.trip_name),
+                          safeValue(trip.trip_type),
+                          status,
+                          formatDate(actualDepart || trip.planned_depart_datetime, true),
+                          formatDate(actualArrival || trip.planned_arrival_datetime, true),
+                          safeValue(trip.depart_location),
+                          safeValue(trip.arrival_location),
+                          trip.number_of_passengers || 0,
+                          trip.number_of_crew || 0
+                        ];
+                      }),
+                      columnWidths: [25, 15, 12, 20, 20, 15, 15, 12, 10]
                     }], `vessel_trips_${vessel.vessel_name}`);
                   }} className="bg-green-50 hover:bg-green-100 text-green-700 border-green-200">
                     <FileSpreadsheet className="h-4 w-4 mr-2" />Export to Excel
                   </Button>
                 )}
               </div>
-              {runningLogs.length > 0 ? (
+              {trips.length > 0 ? (
                 <div className="border rounded-lg overflow-auto">
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>Date & Time</TableHead>
-                        <TableHead>Category</TableHead>
-                        <TableHead>Activity</TableHead>
-                        <TableHead>Details</TableHead>
+                        <TableHead>Trip Name</TableHead>
+                        <TableHead>Type</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Departure</TableHead>
+                        <TableHead>Arrival</TableHead>
+                        <TableHead>From</TableHead>
+                        <TableHead>To</TableHead>
+                        <TableHead>Passengers</TableHead>
                         <TableHead>Crew</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {runningLogs.map((log) => (
-                        <TableRow key={log.id}>
-                          <TableCell className="font-medium">{log.log_datetime ? new Date(log.log_datetime).toLocaleString() : 'N/A'}</TableCell>
-                          <TableCell><Badge variant="outline">{log.category || 'General'}</Badge></TableCell>
-                          <TableCell>{log.activity || '-'}</TableCell>
-                          <TableCell className="max-w-xs truncate">{log.activity_details || '-'}</TableCell>
-                          <TableCell>{log.crew_name || '-'}</TableCell>
-                        </TableRow>
-                      ))}
+                      {trips.map((trip) => {
+                        const now = new Date();
+                        const plannedDepart = trip.planned_depart_datetime ? new Date(trip.planned_depart_datetime) : null;
+                        const actualDepart = trip.actual_depart_datetime ? new Date(trip.actual_depart_datetime) : null;
+                        const actualArrival = trip.actual_arrival_datetime ? new Date(trip.actual_arrival_datetime) : null;
+                        let status = 'Scheduled';
+                        let statusVariant = 'outline';
+                        if (actualArrival) { status = 'Completed'; statusVariant = 'default'; }
+                        else if (actualDepart && !actualArrival) { status = 'In Progress'; statusVariant = 'secondary'; }
+                        else if (plannedDepart && now > plannedDepart && !actualDepart) { status = 'Overdue'; statusVariant = 'destructive'; }
+                        
+                        return (
+                          <TableRow key={trip.id}>
+                            <TableCell className="font-medium">{trip.trip_name || '-'}</TableCell>
+                            <TableCell><Badge variant="outline">{trip.trip_type || 'N/A'}</Badge></TableCell>
+                            <TableCell><Badge variant={statusVariant}>{status}</Badge></TableCell>
+                            <TableCell>{(actualDepart || plannedDepart) ? new Date(actualDepart || plannedDepart).toLocaleString() : '-'}</TableCell>
+                            <TableCell>{(actualArrival || trip.planned_arrival_datetime) ? new Date(actualArrival || trip.planned_arrival_datetime).toLocaleString() : '-'}</TableCell>
+                            <TableCell>{trip.depart_location || '-'}</TableCell>
+                            <TableCell>{trip.arrival_location || '-'}</TableCell>
+                            <TableCell>{trip.number_of_passengers || 0}</TableCell>
+                            <TableCell>{trip.number_of_crew || 0}</TableCell>
+                          </TableRow>
+                        );
+                      })}
                     </TableBody>
                   </Table>
                 </div>
               ) : (
-                <p className="text-gray-500 text-center py-8">No trip logs recorded for this vessel.</p>
+                <p className="text-gray-500 text-center py-8">No trips recorded for this vessel.</p>
               )}
             </TabsContent>
 
