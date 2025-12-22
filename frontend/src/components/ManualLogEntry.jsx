@@ -6,12 +6,13 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { FileText, Users } from 'lucide-react';
+import { FileText, Users, MapPin, Navigation } from 'lucide-react';
 
 const ManualLogEntry = ({ open, onClose, type = 'running' }) => {
   const API = process.env.REACT_APP_BACKEND_URL + '/api';
   const [crew, setCrew] = useState([]);
   const [vessels, setVessels] = useState([]);
+  const [gpsLoading, setGpsLoading] = useState({ start: false, end: false });
   const [formData, setFormData] = useState({
     crew_id: '',
     crew_name: '',
@@ -22,7 +23,11 @@ const ManualLogEntry = ({ open, onClose, type = 'running' }) => {
     activity_details: '',
     shift_start_datetime: '',
     shift_stop_datetime: '',
-    task_performed: ''
+    task_performed: '',
+    location_start: '',
+    location_end: '',
+    gps_location_start: '',
+    gps_location_end: ''
   });
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
