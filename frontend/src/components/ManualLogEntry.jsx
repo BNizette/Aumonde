@@ -66,6 +66,47 @@ const ManualLogEntry = ({ open, onClose, type = 'running' }) => {
     }
   };
 
+  const getGPSLocation = (field) => {
+    if (!navigator.geolocation) {
+      setError('Geolocation is not supported by your browser');
+      setTimeout(() => setError(''), 3000);
+      return;
+    }
+
+    const loadingKey = field === 'gps_location_start' ? 'start' : 'end';
+    setGpsLoading(prev => ({ ...prev, [loadingKey]: true }));
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const coords = `${position.coords.latitude.toFixed(6)}, ${position.coords.longitude.toFixed(6)}`;
+        setFormData(prev => ({ ...prev, [field]: coords }));
+        setGpsLoading(prev => ({ ...prev, [loadingKey]: false }));
+        setMessage(`GPS location captured: ${coords}`);
+        setTimeout(() => setMessage(''), 2000);
+      },
+      (err) => {
+        setGpsLoading(prev => ({ ...prev, [loadingKey]: false }));
+        let errorMessage = 'Unable to retrieve location';
+        switch (err.code) {
+          case err.PERMISSION_DENIED:
+            errorMessage = 'Location permission denied. Please enable location access in your browser.';
+            break;
+          case err.POSITION_UNAVAILABLE:
+            errorMessage = 'Location information unavailable.';
+            break;
+          case err.TIMEOUT:
+            errorMessage = 'Location request timed out.';
+            break;
+          default:
+            errorMessage = 'An unknown error occurred.';
+        }
+        setError(errorMessage);
+        setTimeout(() => setError(''), 4000);
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+    );
+  };
+
   const handleSubmit = async () => {
     setMessage('');
     setError('');
