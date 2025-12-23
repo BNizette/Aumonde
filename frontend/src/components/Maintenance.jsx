@@ -113,6 +113,9 @@ const Maintenance = () => {
     if (filters.priorities.length > 0) {
       filtered = filtered.filter(record => filters.priorities.includes(record.priority));
     }
+    if (filters.vessels && filters.vessels.length > 0) {
+      filtered = filtered.filter(record => filters.vessels.includes(record.vessel_name));
+    }
     if (filters.start_date || filters.end_date) {
       filtered = filtered.filter(record => {
         if (!record.scheduled_date) return false;
