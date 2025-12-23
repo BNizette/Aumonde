@@ -1068,62 +1068,125 @@ const CrewForm = ({ open, onClose, onSave, crew, mode = 'create', prefilledData 
               )}
             </TabsContent>
 
-            {/* TAB 4: SIGN-OFF */}
-            <TabsContent value="signoff" className="space-y-4">
-              <div className="space-y-4">
-                <h3 className="font-semibold text-lg">Vessel Owner</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="owner_name">Name</Label>
-                    <Input
-                      id="owner_name"
-                      value={formData.owner_name}
-                      onChange={(e) => handleChange('owner_name', e.target.value)}
-                      placeholder="Owner name"
-                    />
+            {/* TAB 4: INDUCTION */}
+            <TabsContent value="induction" className="space-y-6">
+              {/* Vessel Selection at Top */}
+              <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+                <Label className="text-base font-semibold text-green-800 mb-2 block">Select Vessel for Induction Checklist</Label>
+                <Select value={selectedInductionVessel} onValueChange={handleInductionVesselChange}>
+                  <SelectTrigger className="bg-white">
+                    <SelectValue placeholder="Select a vessel to manage induction" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {vessels.map(v => (
+                      <SelectItem key={v.id} value={v.id}>{v.vessel_name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {Object.keys(formData.induction_by_vessel || {}).length > 0 && (
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    <span className="text-sm text-green-600">Vessels with induction:</span>
+                    {Object.entries(formData.induction_by_vessel || {}).map(([vId, vData]) => (
+                      <Badge key={vId} variant="secondary" className="bg-green-100 text-green-800">
+                        {vData.vessel_name} ({(vData.completed_tasks || []).length}/{inductionTasks.length} tasks)
+                      </Badge>
+                    ))}
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="owner_date">Date</Label>
-                    <Input
-                      id="owner_date"
-                      type="date"
-                      value={formData.owner_date}
-                      onChange={(e) => handleChange('owner_date', e.target.value)}
-                    />
-                  </div>
-                  <div className="space-y-2 col-span-2">
-                    <Label htmlFor="owner_signature">Signature</Label>
-                    <Input
-                      id="owner_signature"
-                      value={formData.owner_signature}
-                      onChange={(e) => handleChange('owner_signature', e.target.value)}
-                      placeholder="Signature or typed name"
-                    />
-                  </div>
-                </div>
-
-                <h3 className="font-semibold text-lg pt-4">Staff Member</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="staff_date">Date</Label>
-                    <Input
-                      id="staff_date"
-                      type="date"
-                      value={formData.staff_date}
-                      onChange={(e) => handleChange('staff_date', e.target.value)}
-                    />
-                  </div>
-                  <div className="space-y-2 col-span-2">
-                    <Label htmlFor="staff_signature">Signature</Label>
-                    <Input
-                      id="staff_signature"
-                      value={formData.staff_signature}
-                      onChange={(e) => handleChange('staff_signature', e.target.value)}
-                      placeholder="Signature or typed name"
-                    />
-                  </div>
-                </div>
+                )}
               </div>
+
+              {selectedInductionVessel ? (
+                <>
+                  {/* Safety Induction Checklist */}
+                  <div className="space-y-3">
+                    <Label className="text-base font-semibold">Safety Induction Tasks</Label>
+                    {inductionTasks.length === 0 ? (
+                      <div className="text-center py-4 text-gray-500 border rounded-lg">
+                        <p>No induction tasks configured.</p>
+                        <p className="text-sm">Add tasks in Admin Panel → Settings → Vessel Management → Safety Induction Tasks</p>
+                      </div>
+                    ) : (
+                      <div className="border rounded-lg divide-y">
+                        {inductionTasks.map((task, index) => {
+                          const isCompleted = (formData.induction_by_vessel[selectedInductionVessel]?.completed_tasks || []).includes(task);
+                          return (
+                            <div
+                              key={index}
+                              className={`flex items-center space-x-3 p-3 cursor-pointer hover:bg-gray-50 ${isCompleted ? 'bg-green-50' : ''}`}
+                              onClick={() => toggleInductionTask(selectedInductionVessel, task)}
+                            >
+                              <Checkbox
+                                checked={isCompleted}
+                                onCheckedChange={() => toggleInductionTask(selectedInductionVessel, task)}
+                              />
+                              <label className={`flex-1 cursor-pointer ${isCompleted ? 'text-green-700 line-through' : ''}`}>
+                                {task}
+                              </label>
+                              {isCompleted && (
+                                <Badge variant="secondary" className="bg-green-100 text-green-700">Completed</Badge>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                    <div className="text-sm text-gray-500">
+                      {(formData.induction_by_vessel[selectedInductionVessel]?.completed_tasks || []).length} of {inductionTasks.length} tasks completed
+                    </div>
+                  </div>
+
+                  {/* Sign-off Section */}
+                  <div className="border-t pt-4 mt-6 space-y-4">
+                    <h3 className="font-semibold text-lg">Induction Sign-off</h3>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label>Authorising Staff Member</Label>
+                        <Select
+                          value={formData.induction_by_vessel[selectedInductionVessel]?.authorising_staff || ''}
+                          onValueChange={(value) => updateInductionSignoff(selectedInductionVessel, 'authorising_staff', value)}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select staff member" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {crewList.map(c => (
+                              <SelectItem key={c.id} value={c.staff_name}>{c.staff_name}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Date Signed</Label>
+                        <Input
+                          type="date"
+                          value={formData.induction_by_vessel[selectedInductionVessel]?.date_signed || ''}
+                          onChange={(e) => updateInductionSignoff(selectedInductionVessel, 'date_signed', e.target.value)}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Vessel Owner</Label>
+                        <Input
+                          value={formData.induction_by_vessel[selectedInductionVessel]?.vessel_owner || ''}
+                          onChange={(e) => updateInductionSignoff(selectedInductionVessel, 'vessel_owner', e.target.value)}
+                          placeholder="Vessel owner name"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Date Signed (Owner)</Label>
+                        <Input
+                          type="date"
+                          value={formData.induction_by_vessel[selectedInductionVessel]?.date_signed_owner || ''}
+                          onChange={(e) => updateInductionSignoff(selectedInductionVessel, 'date_signed_owner', e.target.value)}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <div className="text-center py-8 text-gray-500">
+                  <p>Please select a vessel above to manage induction checklist</p>
+                </div>
+              )}
             </TabsContent>
 
             {/* TAB 5: PHOTO */}
