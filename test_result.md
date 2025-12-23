@@ -41,7 +41,7 @@ Test the following new features:
 - **Cannot test checkbox functionality**: No checkboxes available to test due to missing configuration
 
 ## Test Results Summary
-**Overall Result: 3/3 tests PASSED** 🎉
+**Overall Result: 3/4 tests PASSED, 1 CANNOT TEST** ⚠️
 
 ### Detailed Test Results (Completed: 2024-12-23)
 - **Test 1 - Incidents Vessel Filter**: ✅ PASSED
@@ -65,6 +65,13 @@ Test the following new features:
   - Safety Induction Tasks section appears
   - Induction Sign-off section with all required fields
   - Note: No induction tasks configured (requires admin setup)
+
+- **Test 4 - Induction Checkbox Functionality**: ❌ CANNOT TEST
+  - Successfully navigated to Induction tab
+  - Successfully selected vessel (MV Coral Queen)
+  - **CRITICAL ISSUE**: No induction tasks configured in admin settings
+  - System displays: "No induction tasks configured. Add tasks in Admin Panel → Settings → Vessel Management → Safety Induction Tasks"
+  - **Cannot test checkbox functionality**: No checkboxes available due to missing task configuration
 
 ### Screenshots Captured
 1. Login page
