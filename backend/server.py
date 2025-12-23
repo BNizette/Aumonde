@@ -2921,6 +2921,8 @@ class ComplianceRequirement(BaseModel):
     category: str  # Safety, Environmental, Operational, Administrative
     description: str
     regulatory_reference: Optional[str] = None
+    linked_document_id: Optional[str] = None
+    linked_document_name: Optional[str] = None
     compliance_status: str  # Compliant, Non-Compliant, Partial, Under Review
     last_audit_date: Optional[datetime] = None
     next_audit_date: Optional[datetime] = None
@@ -2933,6 +2935,8 @@ class ComplianceRequirementCreate(BaseModel):
     category: str
     description: str
     regulatory_reference: Optional[str] = None
+    linked_document_id: Optional[str] = None
+    linked_document_name: Optional[str] = None
     compliance_status: str = "Under Review"
     last_audit_date: Optional[str] = None
     next_audit_date: Optional[str] = None
