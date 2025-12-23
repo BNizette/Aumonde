@@ -157,14 +157,6 @@ const TripLogForm = ({ open, onClose, onSave, log, tripId, mode = 'create' }) =>
       }
     );
   };
-            errorMessage = 'An unknown error occurred.';
-        }
-        setError(errorMessage);
-        setTimeout(() => setError(''), 4000);
-      },
-      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-    );
-  };
 
   const handleSubmit = () => {
     setError('');
