@@ -329,7 +329,7 @@ const CrewDetailsDialog = ({ open, onClose, crew, onMessage }) => {
               <Button 
                 variant="outline" 
                 size="sm"
-                onClick={() => window.location.href = '/emergency'}
+                onClick={() => window.location.href = '/emergency#drills'}
               >
                 <ExternalLink className="h-4 w-4 mr-2" />
                 Manage in Emergency
