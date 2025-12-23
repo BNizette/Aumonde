@@ -355,7 +355,22 @@ const VesselDetailsDialog = ({ open, onClose, vessel, onMessage }) => {
           </div>
         );
       case 'shifts':
-        return staffLogs.length > 0 ? (
+        return (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <p className="text-sm text-gray-500">
+                {staffLogs.length} shift log{staffLogs.length !== 1 ? 's' : ''} for this vessel
+              </p>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => window.location.href = '/trips'}
+              >
+                <ExternalLink className="h-4 w-4 mr-2" />
+                Manage in Trips
+              </Button>
+            </div>
+            {staffLogs.length > 0 ? (
           <Table>
             <TableHeader>
               <TableRow>
