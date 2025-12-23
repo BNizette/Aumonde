@@ -348,7 +348,7 @@ const VesselDetailsDialog = ({ open, onClose, vessel, onMessage }) => {
           </Table>
             ) : (
               <div className="text-center py-8 text-gray-500">
-                <p>No passengers recorded for this vessel's trips.</p>
+                <p>No passengers recorded for this vessel&apos;s trips.</p>
                 <p className="text-xs mt-1">Add passengers from the Trips module</p>
               </div>
             )}
