@@ -825,10 +825,12 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
                       ))}
                     </div>
                   )}
-                </TabsContent>
+                </div>
+                )}
 
-                {/* Crew Shift Logs Tab */}
-                <TabsContent value="shift" className="space-y-4 mt-4">
+                {/* Shifts View */}
+                {selectedLogView === 'shift' && (
+                  <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <p className="text-sm text-gray-500">
                       {shiftLogs.length} {shiftLogs.length === 1 ? 'entry' : 'entries'} • Total: {getTotalShiftHours()} hours
