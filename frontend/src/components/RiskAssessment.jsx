@@ -23,12 +23,14 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
 const RiskAssessment = () => {
+  const location = useLocation();
   const [risks, setRisks] = useState([]);
   const [filteredRisks, setFilteredRisks] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [riskLevels, setRiskLevels] = useState([]);
   const [statuses, setStatuses] = useState([]);
+  const [vessels, setVessels] = useState([]);
   const [sortBy, setSortBy] = useState('riskLevel');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
@@ -50,6 +52,7 @@ const RiskAssessment = () => {
   } = useAdvancedFilters({
     risk_levels: [],
     statuses: [],
+    vessels: [],
     start_date: '',
     end_date: '',
     overdue: false
@@ -61,7 +64,34 @@ const RiskAssessment = () => {
       setUser(JSON.parse(userData));
     }
     fetchRisks();
+    fetchVessels();
   }, []);
+
+  // Handle URL parameters for pre-filtering
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const vesselName = params.get('vessel_name');
+    
+    if (vesselName) {
+      const decodedVesselName = decodeURIComponent(vesselName);
+      setFilters(prev => ({
+        ...prev,
+        vessels: [decodedVesselName]
+      }));
+    }
+  }, [location.search]);
+
+  const fetchVessels = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`${API}/vessels`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setVessels(response.data || []);
+    } catch (err) {
+      console.error('Error fetching vessels:', err);
+    }
+  };
 
   useEffect(() => {
     applyFiltersAndSort();
