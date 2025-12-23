@@ -545,7 +545,7 @@ const CrewForm = ({ open, onClose, onSave, crew, mode = 'create', prefilledData 
             <TabsTrigger value="details">Details</TabsTrigger>
             <TabsTrigger value="qualifications">Qualifications</TabsTrigger>
             <TabsTrigger value="training">Training</TabsTrigger>
-            <TabsTrigger value="signoff">Sign-off</TabsTrigger>
+            <TabsTrigger value="induction">Induction</TabsTrigger>
             <TabsTrigger value="photo">Photo</TabsTrigger>
           </TabsList>
 
