@@ -4292,22 +4292,34 @@ class VesselInductionRecord(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     vessel_id: str
+    vessel_name: Optional[str] = None
     crew_id: str
     crew_name: str
     completed_tasks: List[str] = []  # List of task names completed
+    authorising_staff: Optional[str] = None
+    date_signed: Optional[str] = None
+    vessel_owner: Optional[str] = None
+    date_signed_owner: Optional[str] = None
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class VesselInductionRecordUpdate(BaseModel):
     vessel_id: str
+    vessel_name: Optional[str] = None
     crew_id: str
     crew_name: str
     completed_tasks: List[str] = []
+    authorising_staff: Optional[str] = None
+    date_signed: Optional[str] = None
+    vessel_owner: Optional[str] = None
+    date_signed_owner: Optional[str] = None
 
 @api_router.get("/vessel-induction")
-async def get_vessel_induction_records(vessel_id: Optional[str] = None, current_user: dict = Depends(require_access_level(AccessLevel.VIEW))):
+async def get_vessel_induction_records(vessel_id: Optional[str] = None, crew_id: Optional[str] = None, current_user: dict = Depends(require_access_level(AccessLevel.VIEW))):
     query = {}
     if vessel_id:
         query["vessel_id"] = vessel_id
+    if crew_id:
+        query["crew_id"] = crew_id
     records = await db.vessel_induction.find(query, {"_id": 0}).to_list(1000)
     return records
 
@@ -4324,7 +4336,12 @@ async def upsert_vessel_induction(record_data: VesselInductionRecordUpdate, curr
         await db.vessel_induction.update_one(
             {"id": existing["id"]},
             {"$set": {
+                "vessel_name": record_data.vessel_name,
                 "completed_tasks": record_data.completed_tasks,
+                "authorising_staff": record_data.authorising_staff,
+                "date_signed": record_data.date_signed,
+                "vessel_owner": record_data.vessel_owner,
+                "date_signed_owner": record_data.date_signed_owner,
                 "updated_at": datetime.now(timezone.utc)
             }}
         )
