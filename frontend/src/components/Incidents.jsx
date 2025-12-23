@@ -295,7 +295,7 @@ const Incidents = () => {
 
       setMessage(`Import complete: ${successCount} incidents added${errorCount > 0 ? `, ${errorCount} failed` : ''}`);
       setTimeout(() => setMessage(''), 5000);
-      fetchIncidents();
+      fetchData();
     } catch (err) {
       setError('Error importing data: ' + err.message);
       setTimeout(() => setError(''), 5000);
