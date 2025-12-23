@@ -2284,6 +2284,104 @@ const Emergency = () => {
               <Textarea rows={6} value={procedureForm.procedure_steps} onChange={(e) => setProcedureForm({...procedureForm, procedure_steps: e.target.value})} placeholder="Step 1: ...\nStep 2: ..." />
             </div>
             <div>
+              <Label>Applicable Vessels (Optional)</Label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" className="w-full justify-between">
+                    <span className="truncate">
+                      {procedureForm.vessel_ids.length === 0 
+                        ? 'All vessels / Not specified' 
+                        : `${procedureForm.vessel_ids.length} vessel${procedureForm.vessel_ids.length !== 1 ? 's' : ''} selected`}
+                    </span>
+                    <ChevronDown className="h-4 w-4 ml-2 shrink-0" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-72 p-0" align="start">
+                  <div className="p-2 max-h-64 overflow-y-auto">
+                    <div className="flex items-center justify-between px-2 py-1.5 mb-1">
+                      <span className="text-sm font-medium">Select Vessels</span>
+                      {procedureForm.vessel_ids.length > 0 && (
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          onClick={() => setProcedureForm({...procedureForm, vessel_ids: [], vessel_names: []})} 
+                          className="h-auto p-1 text-xs"
+                        >
+                          Clear
+                        </Button>
+                      )}
+                    </div>
+                    {vessels.map(vessel => (
+                      <div 
+                        key={vessel.id} 
+                        className="flex items-center space-x-2 px-2 py-1.5 hover:bg-gray-100 rounded cursor-pointer"
+                        onClick={() => {
+                          const isSelected = procedureForm.vessel_ids.includes(vessel.id);
+                          if (isSelected) {
+                            setProcedureForm({
+                              ...procedureForm, 
+                              vessel_ids: procedureForm.vessel_ids.filter(id => id !== vessel.id),
+                              vessel_names: procedureForm.vessel_names.filter(name => name !== vessel.vessel_name)
+                            });
+                          } else {
+                            setProcedureForm({
+                              ...procedureForm, 
+                              vessel_ids: [...procedureForm.vessel_ids, vessel.id],
+                              vessel_names: [...procedureForm.vessel_names, vessel.vessel_name]
+                            });
+                          }
+                        }}
+                      >
+                        <Checkbox 
+                          checked={procedureForm.vessel_ids.includes(vessel.id)} 
+                          onCheckedChange={() => {
+                            const isSelected = procedureForm.vessel_ids.includes(vessel.id);
+                            if (isSelected) {
+                              setProcedureForm({
+                                ...procedureForm, 
+                                vessel_ids: procedureForm.vessel_ids.filter(id => id !== vessel.id),
+                                vessel_names: procedureForm.vessel_names.filter(name => name !== vessel.vessel_name)
+                              });
+                            } else {
+                              setProcedureForm({
+                                ...procedureForm, 
+                                vessel_ids: [...procedureForm.vessel_ids, vessel.id],
+                                vessel_names: [...procedureForm.vessel_names, vessel.vessel_name]
+                              });
+                            }
+                          }}
+                        />
+                        <label className="text-sm flex-1 cursor-pointer">
+                          {vessel.vessel_name} {vessel.vessel_type ? `(${vessel.vessel_type})` : ''}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </PopoverContent>
+              </Popover>
+              {procedureForm.vessel_ids.length > 0 && (
+                <div className="flex flex-wrap gap-1 mt-2">
+                  {procedureForm.vessel_names.map((name, index) => (
+                    <Badge 
+                      key={index} 
+                      variant="secondary" 
+                      className="text-xs cursor-pointer hover:bg-destructive hover:text-destructive-foreground"
+                      onClick={() => {
+                        const vesselId = procedureForm.vessel_ids[index];
+                        setProcedureForm({
+                          ...procedureForm,
+                          vessel_ids: procedureForm.vessel_ids.filter(id => id !== vesselId),
+                          vessel_names: procedureForm.vessel_names.filter(n => n !== name)
+                        });
+                      }}
+                    >
+                      🚢 {name} ×
+                    </Badge>
+                  ))}
+                </div>
+              )}
+            </div>
+            <div>
               <Label>Equipment Required</Label>
               <Textarea rows={6} value={procedureForm.equipment_required} onChange={(e) => setProcedureForm({...procedureForm, equipment_required: e.target.value})} placeholder="List required equipment..." />
             </div>
