@@ -925,7 +925,20 @@ const VesselDetailsDialog = ({ open, onClose, vessel, onMessage }) => {
 
       case 'emergency_procedures':
         return (
-          <div className="p-4">
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <p className="text-sm text-gray-500">
+                {emergencyProcedures.length} emergency procedure{emergencyProcedures.length !== 1 ? 's' : ''} for this vessel
+              </p>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => window.location.href = `/emergency?tab=procedures&vessel_id=${vessel.id}&vessel_name=${encodeURIComponent(vessel.vessel_name)}`}
+              >
+                <ExternalLink className="h-4 w-4 mr-2" />
+                Manage in Emergency
+              </Button>
+            </div>
             {emergencyProcedures.length > 0 ? (
               <Table>
                 <TableHeader>
