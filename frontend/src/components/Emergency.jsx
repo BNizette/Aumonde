@@ -2882,6 +2882,15 @@ const Emergency = () => {
                   <strong>Procedure Steps:</strong>
                   <p className="text-sm text-gray-700 mt-1 whitespace-pre-wrap">{viewingProcedure.procedure_steps}</p>
                 </div>
+                {(viewingProcedure.authorised_by || viewingProcedure.date_authorised) && (
+                  <div className="border-t pt-4 mt-4">
+                    <h4 className="font-medium text-sm mb-2">Authorization</h4>
+                    <div className="grid grid-cols-2 gap-4 text-sm">
+                      {viewingProcedure.authorised_by && <div><strong>Authorised By:</strong> {viewingProcedure.authorised_by}</div>}
+                      {viewingProcedure.date_authorised && <div><strong>Date Authorised:</strong> {new Date(viewingProcedure.date_authorised).toLocaleDateString()}</div>}
+                    </div>
+                  </div>
+                )}
               </TabsContent>
 
               <TabsContent value="records">
