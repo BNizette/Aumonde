@@ -1186,6 +1186,7 @@ const Emergency = () => {
     setProcedureForm({
       emergency_type: 'Fire',
       title: '',
+      purpose: '',
       procedure_steps: '',
       equipment_required: '',
       muster_station: '',
