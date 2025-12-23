@@ -663,41 +663,29 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
                 </CardContent>
               </Card>
 
-              {/* Tabbed Logs */}
-              <Tabs defaultValue="allocated" className="w-full">
-                <TabsList className="grid w-full grid-cols-7">
-                  <TabsTrigger value="allocated">
-                    <User className="h-4 w-4 mr-1" />
-                    Crew ({allocatedCrew.length})
-                  </TabsTrigger>
-                  <TabsTrigger value="passengers">
-                    <Users className="h-4 w-4 mr-1" />
-                    Passengers ({tripPassengers.length})
-                  </TabsTrigger>
-                  <TabsTrigger value="shift">
-                    <Clock className="h-4 w-4 mr-1" />
-                    Shifts ({shiftLogs.length})
-                  </TabsTrigger>
-                  <TabsTrigger value="running">
-                    <Activity className="h-4 w-4 mr-1" />
-                    Running ({runningLogs.length})
-                  </TabsTrigger>
-                  <TabsTrigger value="engine">
-                    <Gauge className="h-4 w-4 mr-1" />
-                    Engine ({engineLogs.length})
-                  </TabsTrigger>
-                  <TabsTrigger value="incidents">
-                    <AlertTriangle className="h-4 w-4 mr-1" />
-                    Incidents ({tripIncidents.length})
-                  </TabsTrigger>
-                  <TabsTrigger value="drills">
-                    <Shield className="h-4 w-4 mr-1" />
-                    Drills ({tripDrills.length})
-                  </TabsTrigger>
-                </TabsList>
+              {/* Logs Dropdown Selector */}
+              <div className="space-y-4">
+                <div className="flex items-center gap-4">
+                  <span className="text-sm font-medium text-gray-700">View:</span>
+                  <Select value={selectedLogView} onValueChange={setSelectedLogView}>
+                    <SelectTrigger className="w-[280px]">
+                      <SelectValue placeholder="Select view" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="allocated">Crew ({allocatedCrew.length})</SelectItem>
+                      <SelectItem value="passengers">Passengers ({tripPassengers.length})</SelectItem>
+                      <SelectItem value="shift">Shifts ({shiftLogs.length})</SelectItem>
+                      <SelectItem value="running">Running Logs ({runningLogs.length})</SelectItem>
+                      <SelectItem value="engine">Engine Logs ({engineLogs.length})</SelectItem>
+                      <SelectItem value="incidents">Incidents ({tripIncidents.length})</SelectItem>
+                      <SelectItem value="drills">Drills ({tripDrills.length})</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
 
-                {/* Allocated Crew Tab */}
-                <TabsContent value="allocated" className="space-y-4 mt-4">
+                {/* Allocated Crew View */}
+                {selectedLogView === 'allocated' && (
+                  <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <p className="text-sm text-gray-500">
                       {allocatedCrew.length} crew {allocatedCrew.length === 1 ? 'member' : 'members'} allocated
