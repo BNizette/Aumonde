@@ -1173,7 +1173,7 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create' }) => {
                   <FileText className="h-16 w-16 text-gray-300 mb-4" />
                   <h3 className="text-lg font-semibold text-gray-700 mb-2">No Certificates Found</h3>
                   <p className="text-sm text-gray-500 mb-4 max-w-md">
-                    This vessel doesn't have any compliance certificates registered yet. Add certificates from the Compliance module.
+                    This vessel doesn&apos;t have any compliance certificates registered yet. Add certificates from the Compliance module.
                   </p>
                   <Button
                     type="button"
