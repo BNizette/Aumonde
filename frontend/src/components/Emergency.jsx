@@ -650,13 +650,14 @@ const Emergency = () => {
   const exportProceduresToExcel = () => {
     if (filteredProcedures.length === 0) { setError('No procedures to export'); setTimeout(() => setError(''), 3000); return; }
     const wb = XLSX.utils.book_new();
-    const headers = ['Title', 'Emergency Type', 'Procedure Steps', 'Equipment Required', 'Muster Station', 'Key Contacts'];
+    const headers = ['Title', 'Emergency Type', 'Procedure Steps', 'Equipment Required', 'Muster Station', 'Key Contacts', "Master's Guidance Notes", 'Reference Documents'];
     const data = [headers, ...filteredProcedures.map(p => [
       p.title || '-', p.emergency_type || '-', p.procedure_steps || '-',
-      p.equipment_required || '-', p.muster_station || '-', p.key_contacts || '-'
+      p.equipment_required || '-', p.muster_station || '-', p.key_contacts || '-',
+      p.masters_guidance_notes || '-', p.reference_documents || '-'
     ])];
     const ws = XLSX.utils.aoa_to_sheet(data);
-    ws['!cols'] = [{ wch: 25 }, { wch: 18 }, { wch: 50 }, { wch: 25 }, { wch: 20 }, { wch: 25 }];
+    ws['!cols'] = [{ wch: 25 }, { wch: 18 }, { wch: 50 }, { wch: 25 }, { wch: 20 }, { wch: 25 }, { wch: 30 }, { wch: 30 }];
     XLSX.utils.book_append_sheet(wb, ws, 'Procedures');
     XLSX.writeFile(wb, `emergency_procedures_${new Date().toISOString().slice(0, 10)}.xlsx`);
     setMessage(`Exported ${filteredProcedures.length} emergency procedures to Excel`);
