@@ -636,7 +636,14 @@ const VesselDetailsDialog = ({ open, onClose, vessel, onMessage }) => {
               ))}
             </TableBody>
           </Table>
-        ) : <p className="text-gray-500 text-center py-8">No maintenance records for this vessel.</p>;
+            ) : (
+              <div className="text-center py-8 text-gray-500">
+                <p>No maintenance records for this vessel.</p>
+                <p className="text-xs mt-1">Add maintenance records from the Maintenance module</p>
+              </div>
+            )}
+          </div>
+        );
       case 'incidents':
         return incidents.length > 0 ? (
           <Table>
