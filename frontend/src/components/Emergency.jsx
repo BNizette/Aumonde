@@ -935,7 +935,9 @@ const Emergency = () => {
       muster_station: procedure.muster_station || '',
       key_contacts: procedure.key_contacts || '',
       masters_guidance_notes: procedure.masters_guidance_notes || '',
-      reference_documents: procedure.reference_documents || ''
+      reference_documents: procedure.reference_documents || '',
+      authorised_by: procedure.authorised_by || '',
+      date_authorised: procedure.date_authorised ? procedure.date_authorised.slice(0, 10) : ''
     });
     setEditingProcedureId(procedure.id);
     setProcedureEditMode(true);
