@@ -2327,9 +2327,7 @@ const Emergency = () => {
                     <span className="truncate">
                       {drillForm.crew_participants.length === 0 
                         ? 'Select crew members...' 
-                        : drillForm.crew_participants.length === 1 
-                          ? drillForm.crew_participants[0] 
-                          : `${drillForm.crew_participants.length} crew selected`}
+                        : `${drillForm.crew_participants.length} crew selected`}
                     </span>
                     <ChevronDown className="h-4 w-4 ml-2 shrink-0" />
                   </Button>
@@ -2383,6 +2381,23 @@ const Emergency = () => {
                   </div>
                 </PopoverContent>
               </Popover>
+              {drillForm.crew_participants.length > 0 && (
+                <div className="flex flex-wrap gap-1 mt-2">
+                  {drillForm.crew_participants.map((name, index) => (
+                    <Badge 
+                      key={index} 
+                      variant="secondary" 
+                      className="text-xs cursor-pointer hover:bg-destructive hover:text-destructive-foreground"
+                      onClick={() => setDrillForm({
+                        ...drillForm,
+                        crew_participants: drillForm.crew_participants.filter(n => n !== name)
+                      })}
+                    >
+                      {name} ×
+                    </Badge>
+                  ))}
+                </div>
+              )}
             </div>
             <div>
               <Label>Other Participants</Label>
