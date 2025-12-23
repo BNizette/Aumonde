@@ -225,9 +225,13 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create' }) => {
           ]);
           // Filter drills by vessel
           const vesselDrills = (drillsRes.data || []).filter(d => d.vessel_id === vessel.id);
+          // Filter contacts by vessel
+          const vesselContacts = (contactsRes.data || []).filter(c => c.vessel_ids?.includes(vessel.id) || c.vessel_id === vessel.id);
+          // Filter procedures by vessel (procedures have vessel_ids array)
+          const vesselProcedures = (proceduresRes.data || []).filter(p => p.vessel_ids?.includes(vessel.id) || !p.vessel_ids || p.vessel_ids.length === 0);
           setVesselEmergency({
-            contacts: contactsRes.data || [],
-            procedures: proceduresRes.data || [],
+            contacts: vesselContacts,
+            procedures: vesselProcedures,
             drills: vesselDrills
           });
         } catch (err) {
