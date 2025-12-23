@@ -126,14 +126,28 @@ const Compliance = () => {
     fetchData();
   }, []);
 
-  // Handle URL parameters for pre-filtering (e.g., from vessel edit)
+  // Handle URL parameters for pre-filtering (e.g., from vessel details dialog)
   useEffect(() => {
     const params = new URLSearchParams(location.search);
-    const vesselParam = params.get('vessel');
+    const vesselId = params.get('vessel_id');
+    const vesselName = params.get('vessel_name');
+    const tab = params.get('tab');
     
-    if (vesselParam && vessels.length > 0) {
-      // Find vessel name from ID
-      const vessel = vessels.find(v => v.id === vesselParam);
+    // Set active tab if specified
+    if (tab === 'certificates' || tab === 'requirements') {
+      setActiveTab(tab);
+    }
+    
+    // Apply vessel filter if specified
+    if (vesselName && vessels.length > 0) {
+      const decodedVesselName = decodeURIComponent(vesselName);
+      setCertFilters(prev => ({
+        ...prev,
+        vessels: [decodedVesselName]
+      }));
+    } else if (vesselId && vessels.length > 0) {
+      // Fallback to finding vessel by ID
+      const vessel = vessels.find(v => v.id === vesselId);
       if (vessel) {
         setCertFilters(prev => ({
           ...prev,
