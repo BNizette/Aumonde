@@ -803,6 +803,71 @@ const Incidents = () => {
                   </div>
                 )}
               </div>
+
+              {/* Vessel Multi-Select */}
+              <div>
+                <Label>Vessel</Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="w-full justify-between"
+                    >
+                      <span className="truncate">
+                        {filters.vessels.length === 0
+                          ? 'All Vessels'
+                          : filters.vessels.length === 1
+                          ? filters.vessels[0]
+                          : `${filters.vessels.length} selected`}
+                      </span>
+                      <ChevronDown className="h-4 w-4 ml-2 shrink-0" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-64 p-0" align="start">
+                    <div className="p-2">
+                      <div className="flex items-center justify-between px-2 py-1.5 mb-1">
+                        <span className="text-sm font-medium">Select Vessels</span>
+                        {filters.vessels.length > 0 && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => clearFilter('vessels')}
+                            className="h-auto p-1 text-xs"
+                          >
+                            Clear
+                          </Button>
+                        )}
+                      </div>
+                      {vessels.map(vessel => (
+                        <div
+                          key={vessel.id}
+                          className="flex items-center space-x-2 px-2 py-1.5 hover:bg-gray-100 rounded cursor-pointer"
+                          onClick={() => toggleFilter('vessels', vessel.vessel_name)}
+                        >
+                          <Checkbox
+                            checked={filters.vessels.includes(vessel.vessel_name)}
+                            onCheckedChange={() => toggleFilter('vessels', vessel.vessel_name)}
+                          />
+                          <label className="text-sm flex-1 cursor-pointer">{vessel.vessel_name}</label>
+                        </div>
+                      ))}
+                    </div>
+                  </PopoverContent>
+                </Popover>
+                {filters.vessels.length > 0 && (
+                  <div className="flex flex-wrap gap-1 mt-2">
+                    {filters.vessels.map(vesselName => (
+                      <Badge key={vesselName} variant="secondary" className="text-xs">
+                        {vesselName}
+                        <X
+                          className="h-3 w-3 ml-1 cursor-pointer"
+                          onClick={() => toggleFilter('vessels', vesselName)}
+                        />
+                      </Badge>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Second Row: Date Range */}
