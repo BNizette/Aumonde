@@ -393,7 +393,14 @@ const VesselDetailsDialog = ({ open, onClose, vessel, onMessage }) => {
               ))}
             </TableBody>
           </Table>
-        ) : <p className="text-gray-500 text-center py-8">No shift logs recorded for this vessel.</p>;
+            ) : (
+              <div className="text-center py-8 text-gray-500">
+                <p>No shift logs recorded for this vessel.</p>
+                <p className="text-xs mt-1">Add shift logs from the Trips module</p>
+              </div>
+            )}
+          </div>
+        );
       case 'running':
         return runningLogs.length > 0 ? (
           <Table>
