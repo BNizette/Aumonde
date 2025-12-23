@@ -510,6 +510,42 @@ const MaintenanceForm = ({ open, onClose, onSave, record, mode = 'create' }) => 
               
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
+                  <Label htmlFor="completed_date">Completed Date</Label>
+                  <Input
+                    id="completed_date"
+                    type="date"
+                    value={formData.completed_date}
+                    onChange={(e) => {
+                      const newDate = e.target.value;
+                      // Auto-update status to "Completed" when a completion date is set
+                      if (newDate && formData.status !== 'Completed') {
+                        setFormData(prev => ({
+                          ...prev,
+                          completed_date: newDate,
+                          status: 'Completed'
+                        }));
+                      } else {
+                        handleChange('completed_date', newDate);
+                      }
+                    }}
+                  />
+                  {formData.completed_date && formData.status === 'Completed' && (
+                    <p className="text-xs text-green-600">✓ Status automatically set to Completed</p>
+                  )}
+                </div>
+
+                <div className="space-y-2 col-span-2">
+                  <Label htmlFor="completion_notes">Completion Notes</Label>
+                  <Textarea
+                    id="completion_notes"
+                    value={formData.completion_notes}
+                    onChange={(e) => handleChange('completion_notes', e.target.value)}
+                    placeholder="Notes about work completed and findings"
+                    rows={3}
+                  />
+                </div>
+
+                <div className="space-y-2">
                   <Label htmlFor="next_service_date">Next Service Date</Label>
                   <Input
                     id="next_service_date"
