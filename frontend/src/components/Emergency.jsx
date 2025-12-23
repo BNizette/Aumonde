@@ -146,7 +146,9 @@ const Emergency = () => {
     muster_station: '',
     key_contacts: '',
     masters_guidance_notes: '',
-    reference_documents: ''
+    reference_documents: '',
+    authorised_by: '',
+    date_authorised: ''
   });
 
   const [drillForm, setDrillForm] = useState({
