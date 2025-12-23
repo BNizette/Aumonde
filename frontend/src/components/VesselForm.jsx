@@ -1311,7 +1311,7 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create' }) => {
                           <Button 
                             variant="outline" 
                             size="sm"
-                            onClick={() => window.location.href = `/emergency?vessel_name=${encodeURIComponent(vessel?.vessel_name || '')}`}
+                            onClick={() => window.location.href = `/emergency?tab=contacts&vessel_name=${encodeURIComponent(vessel?.vessel_name || '')}`}
                           >
                             <ExternalLink className="h-4 w-4 mr-2" />
                             Manage in Emergency
