@@ -2243,7 +2243,7 @@ const Emergency = () => {
             </div>
             <div>
               <Label>Equipment Required</Label>
-              <Input value={procedureForm.equipment_required} onChange={(e) => setProcedureForm({...procedureForm, equipment_required: e.target.value})} />
+              <Textarea rows={6} value={procedureForm.equipment_required} onChange={(e) => setProcedureForm({...procedureForm, equipment_required: e.target.value})} placeholder="List required equipment..." />
             </div>
           </div>
           <DialogFooter>
