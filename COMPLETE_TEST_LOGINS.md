@@ -308,7 +308,7 @@ Login as admin, go to Admin Panel → Users
 
 ## 🚀 LOGIN URL
 
-**Preview:** https://maritime-import.preview.emergentagent.com
+**Preview:** https://crew-navigation.preview.emergentagent.com
 
 ---
 
