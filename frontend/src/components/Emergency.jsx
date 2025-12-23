@@ -2282,6 +2282,52 @@ const Emergency = () => {
               <Label>Reference Documents</Label>
               <Textarea rows={6} value={procedureForm.reference_documents} onChange={(e) => setProcedureForm({...procedureForm, reference_documents: e.target.value})} placeholder="List reference documents, manuals, regulations..." />
             </div>
+            
+            {/* Authorization Footer */}
+            <div className="border-t pt-4 mt-4">
+              <h4 className="font-medium text-sm mb-3">Authorization</h4>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label>Authorised By</Label>
+                  <Select 
+                    value={procedureForm.authorised_by || "custom"} 
+                    onValueChange={(value) => {
+                      if (value === 'custom') {
+                        setProcedureForm({...procedureForm, authorised_by: ''});
+                      } else {
+                        setProcedureForm({...procedureForm, authorised_by: value});
+                      }
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select crew or type below" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="custom">-- Type custom name --</SelectItem>
+                      {crewList.map(crew => (
+                        <SelectItem key={crew.id} value={crew.staff_name}>
+                          {crew.staff_name} {crew.default_position ? `(${crew.default_position})` : ''}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <Input 
+                    className="mt-2"
+                    value={procedureForm.authorised_by} 
+                    onChange={(e) => setProcedureForm({...procedureForm, authorised_by: e.target.value})} 
+                    placeholder="Or type name here..."
+                  />
+                </div>
+                <div>
+                  <Label>Date Authorised</Label>
+                  <Input 
+                    type="date" 
+                    value={procedureForm.date_authorised} 
+                    onChange={(e) => setProcedureForm({...procedureForm, date_authorised: e.target.value})} 
+                  />
+                </div>
+              </div>
+            </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setProcedureDialogOpen(false)}>Cancel</Button>
