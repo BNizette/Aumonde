@@ -547,12 +547,22 @@ const Compliance = () => {
       category: 'Safety',
       description: '',
       regulatory_reference: '',
+      linked_document_id: '',
+      linked_document_name: '',
       compliance_status: 'Under Review',
       responsible_person: '',
       notes: ''
     });
     setReqEditMode(false);
     setEditingReqId(null);
+  };
+
+  const handleViewDocument = (docId) => {
+    const doc = documents.find(d => d.id === docId);
+    if (doc) {
+      setViewingDocument(doc);
+      setViewDocumentDialogOpen(true);
+    }
   };
 
   const getStatusColor = (status) => {
