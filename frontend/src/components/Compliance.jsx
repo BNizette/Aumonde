@@ -153,17 +153,19 @@ const Compliance = () => {
       const token = localStorage.getItem('token');
       const headers = { Authorization: `Bearer ${token}` };
 
-      const [certsRes, reqsRes, vesselsRes, crewRes] = await Promise.all([
+      const [certsRes, reqsRes, vesselsRes, crewRes, docsRes] = await Promise.all([
         axios.get(`${API}/compliance/certificates`, { headers }),
         axios.get(`${API}/compliance/requirements`, { headers }),
         axios.get(`${API}/vessels`, { headers }),
-        axios.get(`${API}/crew`, { headers })
+        axios.get(`${API}/crew`, { headers }),
+        axios.get(`${API}/documents`, { headers })
       ]);
 
       setCertificates(certsRes.data);
       setRequirements(reqsRes.data);
       setVessels(vesselsRes.data);
       setCrew(crewRes.data);
+      setDocuments(docsRes.data);
       
       // Extract unique values for filters
       const uniqueCertTypes = [...new Set(certsRes.data.map(c => c.certificate_type).filter(Boolean))];
