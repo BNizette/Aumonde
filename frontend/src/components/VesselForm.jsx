@@ -558,6 +558,22 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create' }) => {
                   )}
                 </div>
                 <div className="space-y-2">
+                  <Label htmlFor="operational_status">Operational Status</Label>
+                  <Select value={formData.operational_status || 'none'} onValueChange={(value) => handleChange('operational_status', value === 'none' ? '' : value)}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">Select status</SelectItem>
+                      <SelectItem value="Operational">Operational</SelectItem>
+                      <SelectItem value="Under Maintenance">Under Maintenance</SelectItem>
+                      <SelectItem value="Out of Service">Out of Service</SelectItem>
+                      <SelectItem value="Laid Up">Laid Up</SelectItem>
+                      <SelectItem value="Decommissioned">Decommissioned</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
                   <Label htmlFor="owner_name">Owner Name</Label>
                   <Input
                     id="owner_name"
