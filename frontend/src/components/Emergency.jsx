@@ -589,6 +589,7 @@ const Emergency = () => {
           const data = {
             title: row['Title'] || '',
             emergency_type: row['Emergency Type'] || '',
+            purpose: row['Purpose'] || '',
             procedure_steps: row['Procedure Steps'] || '',
             equipment_required: row['Equipment Required'] || '',
             muster_station: row['Muster Station'] || '',
