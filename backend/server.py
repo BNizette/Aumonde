@@ -617,6 +617,7 @@ class VesselCreate(BaseModel):
     registration_number: Optional[str] = None
     unique_identifier_number: Optional[str] = None
     vessel_type: Optional[str] = None
+    operational_status: Optional[str] = None
     owner_name: Optional[str] = None
     owner_contact: Optional[str] = None
     boat_phone: Optional[str] = None
