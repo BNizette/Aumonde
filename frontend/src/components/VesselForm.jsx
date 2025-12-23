@@ -285,6 +285,7 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create' }) => {
         registration_number: '',
         unique_identifier_number: '',
         vessel_type: '',
+        operational_status: '',
         owner_name: '',
         owner_contact: '',
         boat_phone: '',
