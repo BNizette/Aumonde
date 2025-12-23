@@ -1,54 +1,32 @@
 # Test Results
 
-## Emergent Branding Removal - COMPLETED ✅
+## Current Testing Focus
+Test the following new features:
+1. Vessel filter added to Incidents module
+2. Training tab restructured with vessel dropdown at top and per-vessel records
+3. Induction tab (replaced Sign-off) with checklist from admin settings
 
-### Test Results Summary (December 23, 2024)
-**Status: ALL TESTS PASSED** - Emergent branding successfully removed from application
+## Test Cases
 
-### Detailed Test Results:
+### 1. Incidents Module - Vessel Filter
+- Navigate to Incidents page
+- Verify there is a new "Vessel" filter dropdown in the Filters section
+- Test that the filter works to show only incidents for selected vessels
 
-#### ✅ Page Title Test - PASSED
-- **Expected**: "Vessel Management System"
-- **Actual**: "Vessel Management System"
-- **Status**: Correctly updated from previous "Emergent | Fullstack App"
+### 2. Crew Form - Training Tab
+- Navigate to Crew Management
+- Edit or create a crew member
+- Go to the Training tab
+- Verify there is a vessel dropdown at the top
+- Select a vessel and verify training records can be added per vessel
+- Verify sign-off fields at bottom: Authorising Staff (dropdown), Date Signed Off, Vessel Owner (text), Date Signed Owner
 
-#### ✅ Login Page Branding Test - PASSED
-- **Test**: Check for "Made with Emergent" floating badge in bottom right corner
-- **Result**: No Emergent branding elements found on login page
-- **Status**: Bottom right corner is completely clean
+### 3. Crew Form - Induction Tab (formerly Sign-off)
+- In the crew form, verify the tab is now called "Induction" not "Sign-off"
+- Verify there is a vessel dropdown at the top
+- Select a vessel and verify checklist items appear (from Admin > Settings > Vessel Management > Safety Induction Tasks)
+- Verify sign-off fields at bottom: Authorising Staff, Date Signed, Vessel Owner, Date Signed Owner
 
-#### ✅ Dashboard Branding Test - PASSED
-- **Test**: Verify no Emergent branding after login with admin@test.com
-- **Result**: No Emergent branding elements found on dashboard
-- **Status**: All pages free of visible Emergent branding
-
-#### ✅ Floating Widget Test - PASSED
-- **Test**: Check for floating badges/widgets in bottom right corners
-- **Result**: No floating elements detected on login or dashboard pages
-- **Status**: Bottom right corners completely empty as expected
-
-#### ✅ External Scripts Test - PASSED
-- **Test**: Check for external branding scripts
-- **Result**: Only domain URL references found (maritime-ops-3.preview.emergentagent.com)
-- **Status**: No actual branding scripts detected - domain references are expected
-
-### Code Changes Verified:
-1. **index.html**: Title updated to "Vessel Management System" (line 21)
-2. **index.html**: Comments show "Branding badge removed" (line 37)
-3. **index.html**: Comments show "External scripts removed" (line 22)
-4. **Components**: No Emergent branding found in Login.jsx or Layout.jsx
-
-### Screenshots Captured:
-- login_page_branding_check.png: Shows clean login page
-- dashboard_branding_check.png: Shows clean dashboard
-
-### Testing Agent: Testing Subagent
-### Test Date: December 23, 2024
-### Test Status: COMPLETE - ALL REQUIREMENTS MET
-
-## Previous Test Results
-All major features tested and working in previous sessions.
-
-## Credentials Used
+## Credentials
 - Email: admin@test.com
 - Password: Admin123!
