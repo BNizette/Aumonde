@@ -596,7 +596,22 @@ const VesselDetailsDialog = ({ open, onClose, vessel, onMessage }) => {
           </div>
         );
       case 'maintenance':
-        return maintenance.length > 0 ? (
+        return (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <p className="text-sm text-gray-500">
+                {maintenance.length} maintenance record{maintenance.length !== 1 ? 's' : ''} for this vessel
+              </p>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => window.location.href = '/maintenance'}
+              >
+                <ExternalLink className="h-4 w-4 mr-2" />
+                Manage in Maintenance
+              </Button>
+            </div>
+            {maintenance.length > 0 ? (
           <Table>
             <TableHeader>
               <TableRow>
