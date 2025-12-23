@@ -819,218 +819,253 @@ const CrewForm = ({ open, onClose, onSave, crew, mode = 'create', prefilledData 
 
             {/* TAB 3: TRAINING RECORD */}
             <TabsContent value="training" className="space-y-6">
-              {/* Safety Briefings Observed */}
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <Label className="text-base font-semibold">10 Safety Briefings Observed</Label>
-                  <Button type="button" size="sm" onClick={() => addTrainingItem('briefings_observed')}>
-                    <Plus className="h-4 w-4 mr-1" />
-                    Add
-                  </Button>
-                </div>
-                {formData.briefings_observed.map((item, index) => (
-                  <div key={index} className="border rounded-lg p-3 space-y-2">
-                    <div className="grid grid-cols-4 gap-2">
-                      <Input
-                        type="number"
-                        placeholder="Number"
-                        value={item.number}
-                        readOnly
-                        className="bg-gray-50"
-                      />
-                      <Input
-                        type="date"
-                        value={item.date}
-                        onChange={(e) => updateTrainingItem('briefings_observed', index, 'date', e.target.value)}
-                      />
-                      <Select
-                        value={item.supervisor || ''}
-                        onValueChange={(value) => updateTrainingItem('briefings_observed', index, 'supervisor', value)}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select Supervisor" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {crewList.map(c => (
-                            <SelectItem key={c.id} value={c.staff_name}>{c.staff_name}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <Button
-                        type="button"
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => removeTrainingItem('briefings_observed', index)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                    <div className="grid grid-cols-2 gap-2">
-                      <Select
-                        value={item.vessel_id || 'none'}
-                        onValueChange={(value) => updateTrainingItem('briefings_observed', index, 'vessel_id', value === 'none' ? '' : value)}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select Vessel (Optional)" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="none">No Vessel</SelectItem>
-                          {vessels.map(v => (
-                            <SelectItem key={v.id} value={v.id}>{v.vessel_name}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <Input
-                        placeholder="Comments (optional)"
-                        value={item.comments || ''}
-                        onChange={(e) => updateTrainingItem('briefings_observed', index, 'comments', e.target.value)}
-                      />
-                    </div>
+              {/* Vessel Selection at Top */}
+              <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                <Label className="text-base font-semibold text-blue-800 mb-2 block">Select Vessel for Training Records</Label>
+                <Select value={selectedTrainingVessel} onValueChange={handleTrainingVesselChange}>
+                  <SelectTrigger className="bg-white">
+                    <SelectValue placeholder="Select a vessel to manage training records" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {vessels.map(v => (
+                      <SelectItem key={v.id} value={v.id}>{v.vessel_name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {Object.keys(formData.training_by_vessel || {}).length > 0 && (
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    <span className="text-sm text-blue-600">Vessels with training:</span>
+                    {Object.entries(formData.training_by_vessel || {}).map(([vId, vData]) => (
+                      <Badge key={vId} variant="secondary" className="bg-blue-100 text-blue-800">
+                        {vData.vessel_name} ({(vData.records || []).length} records)
+                      </Badge>
+                    ))}
                   </div>
-                ))}
+                )}
               </div>
 
-              {/* Safety Briefings Delivered */}
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <Label className="text-base font-semibold">5 Safety Briefings Delivered</Label>
-                  <Button type="button" size="sm" onClick={() => addTrainingItem('briefings_delivered')}>
-                    <Plus className="h-4 w-4 mr-1" />
-                    Add
-                  </Button>
-                </div>
-                {formData.briefings_delivered.map((item, index) => (
-                  <div key={index} className="border rounded-lg p-3 space-y-2">
-                    <div className="grid grid-cols-4 gap-2">
-                      <Input
-                        type="number"
-                        placeholder="Number"
-                        value={item.number}
-                        readOnly
-                        className="bg-gray-50"
-                      />
-                      <Input
-                        type="date"
-                        value={item.date}
-                        onChange={(e) => updateTrainingItem('briefings_delivered', index, 'date', e.target.value)}
-                      />
-                      <Select
-                        value={item.supervisor || ''}
-                        onValueChange={(value) => updateTrainingItem('briefings_delivered', index, 'supervisor', value)}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select Supervisor" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {crewList.map(c => (
-                            <SelectItem key={c.id} value={c.staff_name}>{c.staff_name}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <Button
-                        type="button"
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => removeTrainingItem('briefings_delivered', index)}
-                      >
-                        <Trash2 className="h-4 w-4" />
+              {selectedTrainingVessel ? (
+                <>
+                  {/* Safety Briefings Observed */}
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <Label className="text-base font-semibold">10 Safety Briefings Observed</Label>
+                      <Button type="button" size="sm" onClick={() => addVesselTrainingRecord(selectedTrainingVessel, 'briefings_observed')}>
+                        <Plus className="h-4 w-4 mr-1" />
+                        Add
                       </Button>
                     </div>
-                    <div className="grid grid-cols-2 gap-2">
-                      <Select
-                        value={item.vessel_id || 'none'}
-                        onValueChange={(value) => updateTrainingItem('briefings_delivered', index, 'vessel_id', value === 'none' ? '' : value)}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select Vessel (Optional)" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="none">No Vessel</SelectItem>
-                          {vessels.map(v => (
-                            <SelectItem key={v.id} value={v.id}>{v.vessel_name}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <Input
-                        placeholder="Comments (optional)"
-                        value={item.comments || ''}
-                        onChange={(e) => updateTrainingItem('briefings_delivered', index, 'comments', e.target.value)}
-                      />
-                    </div>
+                    {((formData.training_by_vessel[selectedTrainingVessel]?.records || [])
+                      .filter(r => r.type === 'briefings_observed')).map((item) => (
+                      <div key={item.id} className="border rounded-lg p-3 space-y-2">
+                        <div className="grid grid-cols-4 gap-2">
+                          <Input
+                            type="number"
+                            placeholder="Number"
+                            value={item.number}
+                            readOnly
+                            className="bg-gray-50"
+                          />
+                          <Input
+                            type="date"
+                            value={item.date}
+                            onChange={(e) => updateVesselTrainingRecord(selectedTrainingVessel, item.id, 'date', e.target.value)}
+                          />
+                          <Select
+                            value={item.supervisor || ''}
+                            onValueChange={(value) => updateVesselTrainingRecord(selectedTrainingVessel, item.id, 'supervisor', value)}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select Supervisor" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {crewList.map(c => (
+                                <SelectItem key={c.id} value={c.staff_name}>{c.staff_name}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => removeVesselTrainingRecord(selectedTrainingVessel, item.id)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                        <Input
+                          placeholder="Comments (optional)"
+                          value={item.comments || ''}
+                          onChange={(e) => updateVesselTrainingRecord(selectedTrainingVessel, item.id, 'comments', e.target.value)}
+                        />
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
 
-              {/* Practical Experience */}
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <Label className="text-base font-semibold">Acted as Guide / Practical Experience</Label>
-                  <Button type="button" size="sm" onClick={() => addTrainingItem('practical_experience')}>
-                    <Plus className="h-4 w-4 mr-1" />
-                    Add
-                  </Button>
-                </div>
-                {formData.practical_experience.map((item, index) => (
-                  <div key={index} className="border rounded-lg p-3 space-y-2">
-                    <div className="grid grid-cols-4 gap-2">
-                      <Input
-                        type="number"
-                        placeholder="Number"
-                        value={item.number}
-                        readOnly
-                        className="bg-gray-50"
-                      />
-                      <Input
-                        type="date"
-                        value={item.date}
-                        onChange={(e) => updateTrainingItem('practical_experience', index, 'date', e.target.value)}
-                      />
-                      <Select
-                        value={item.supervisor || ''}
-                        onValueChange={(value) => updateTrainingItem('practical_experience', index, 'supervisor', value)}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select Supervisor" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {crewList.map(c => (
-                            <SelectItem key={c.id} value={c.staff_name}>{c.staff_name}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <Button
-                        type="button"
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => removeTrainingItem('practical_experience', index)}
-                      >
-                        <Trash2 className="h-4 w-4" />
+                  {/* Safety Briefings Delivered */}
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <Label className="text-base font-semibold">5 Safety Briefings Delivered</Label>
+                      <Button type="button" size="sm" onClick={() => addVesselTrainingRecord(selectedTrainingVessel, 'briefings_delivered')}>
+                        <Plus className="h-4 w-4 mr-1" />
+                        Add
                       </Button>
                     </div>
-                    <div className="grid grid-cols-2 gap-2">
-                      <Select
-                        value={item.vessel_id || 'none'}
-                        onValueChange={(value) => updateTrainingItem('practical_experience', index, 'vessel_id', value === 'none' ? '' : value)}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select Vessel (Optional)" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="none">No Vessel</SelectItem>
-                          {vessels.map(v => (
-                            <SelectItem key={v.id} value={v.id}>{v.vessel_name}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <Input
-                        placeholder="Comments (optional)"
-                        value={item.comments || ''}
-                        onChange={(e) => updateTrainingItem('practical_experience', index, 'comments', e.target.value)}
-                      />
+                    {((formData.training_by_vessel[selectedTrainingVessel]?.records || [])
+                      .filter(r => r.type === 'briefings_delivered')).map((item) => (
+                      <div key={item.id} className="border rounded-lg p-3 space-y-2">
+                        <div className="grid grid-cols-4 gap-2">
+                          <Input
+                            type="number"
+                            placeholder="Number"
+                            value={item.number}
+                            readOnly
+                            className="bg-gray-50"
+                          />
+                          <Input
+                            type="date"
+                            value={item.date}
+                            onChange={(e) => updateVesselTrainingRecord(selectedTrainingVessel, item.id, 'date', e.target.value)}
+                          />
+                          <Select
+                            value={item.supervisor || ''}
+                            onValueChange={(value) => updateVesselTrainingRecord(selectedTrainingVessel, item.id, 'supervisor', value)}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select Supervisor" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {crewList.map(c => (
+                                <SelectItem key={c.id} value={c.staff_name}>{c.staff_name}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => removeVesselTrainingRecord(selectedTrainingVessel, item.id)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                        <Input
+                          placeholder="Comments (optional)"
+                          value={item.comments || ''}
+                          onChange={(e) => updateVesselTrainingRecord(selectedTrainingVessel, item.id, 'comments', e.target.value)}
+                        />
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Practical Experience */}
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <Label className="text-base font-semibold">Acted as Guide / Practical Experience</Label>
+                      <Button type="button" size="sm" onClick={() => addVesselTrainingRecord(selectedTrainingVessel, 'practical_experience')}>
+                        <Plus className="h-4 w-4 mr-1" />
+                        Add
+                      </Button>
+                    </div>
+                    {((formData.training_by_vessel[selectedTrainingVessel]?.records || [])
+                      .filter(r => r.type === 'practical_experience')).map((item) => (
+                      <div key={item.id} className="border rounded-lg p-3 space-y-2">
+                        <div className="grid grid-cols-4 gap-2">
+                          <Input
+                            type="number"
+                            placeholder="Number"
+                            value={item.number}
+                            readOnly
+                            className="bg-gray-50"
+                          />
+                          <Input
+                            type="date"
+                            value={item.date}
+                            onChange={(e) => updateVesselTrainingRecord(selectedTrainingVessel, item.id, 'date', e.target.value)}
+                          />
+                          <Select
+                            value={item.supervisor || ''}
+                            onValueChange={(value) => updateVesselTrainingRecord(selectedTrainingVessel, item.id, 'supervisor', value)}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select Supervisor" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {crewList.map(c => (
+                                <SelectItem key={c.id} value={c.staff_name}>{c.staff_name}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => removeVesselTrainingRecord(selectedTrainingVessel, item.id)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                        <Input
+                          placeholder="Comments (optional)"
+                          value={item.comments || ''}
+                          onChange={(e) => updateVesselTrainingRecord(selectedTrainingVessel, item.id, 'comments', e.target.value)}
+                        />
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Sign-off Section */}
+                  <div className="border-t pt-4 mt-6 space-y-4">
+                    <h3 className="font-semibold text-lg">Training Sign-off</h3>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label>Authorising Staff Member</Label>
+                        <Select
+                          value={formData.training_by_vessel[selectedTrainingVessel]?.authorising_staff || ''}
+                          onValueChange={(value) => updateVesselTrainingSignoff(selectedTrainingVessel, 'authorising_staff', value)}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select staff member" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {crewList.map(c => (
+                              <SelectItem key={c.id} value={c.staff_name}>{c.staff_name}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Date Signed Off</Label>
+                        <Input
+                          type="date"
+                          value={formData.training_by_vessel[selectedTrainingVessel]?.date_signed_off || ''}
+                          onChange={(e) => updateVesselTrainingSignoff(selectedTrainingVessel, 'date_signed_off', e.target.value)}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Vessel Owner</Label>
+                        <Input
+                          value={formData.training_by_vessel[selectedTrainingVessel]?.vessel_owner || ''}
+                          onChange={(e) => updateVesselTrainingSignoff(selectedTrainingVessel, 'vessel_owner', e.target.value)}
+                          placeholder="Vessel owner name"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Date Signed (Owner)</Label>
+                        <Input
+                          type="date"
+                          value={formData.training_by_vessel[selectedTrainingVessel]?.date_signed_owner || ''}
+                          onChange={(e) => updateVesselTrainingSignoff(selectedTrainingVessel, 'date_signed_owner', e.target.value)}
+                        />
+                      </div>
                     </div>
                   </div>
-                ))}
-              </div>
+                </>
+              ) : (
+                <div className="text-center py-8 text-gray-500">
+                  <p>Please select a vessel above to manage training records</p>
+                </div>
+              )}
             </TabsContent>
 
             {/* TAB 4: SIGN-OFF */}
