@@ -29,6 +29,7 @@ const Compliance = () => {
   const [requirements, setRequirements] = useState([]);
   const [vessels, setVessels] = useState([]);
   const [crew, setCrew] = useState([]);
+  const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [certDialogOpen, setCertDialogOpen] = useState(false);
   const [reqDialogOpen, setReqDialogOpen] = useState(false);
@@ -38,6 +39,8 @@ const Compliance = () => {
   const [editingReqId, setEditingReqId] = useState(null);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+  const [viewDocumentDialogOpen, setViewDocumentDialogOpen] = useState(false);
+  const [viewingDocument, setViewingDocument] = useState(null);
   const [importCertDialogOpen, setImportCertDialogOpen] = useState(false);
   const [importReqDialogOpen, setImportReqDialogOpen] = useState(false);
 
