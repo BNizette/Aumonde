@@ -140,6 +140,7 @@ const Emergency = () => {
   const [procedureForm, setProcedureForm] = useState({
     emergency_type: 'Fire',
     title: '',
+    purpose: '',
     procedure_steps: '',
     equipment_required: '',
     muster_station: '',
