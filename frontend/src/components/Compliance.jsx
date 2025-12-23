@@ -478,6 +478,8 @@ const Compliance = () => {
       category: req.category || 'Safety',
       description: req.description || '',
       regulatory_reference: req.regulatory_reference || '',
+      linked_document_id: req.linked_document_id || '',
+      linked_document_name: req.linked_document_name || '',
       compliance_status: req.compliance_status || 'Under Review',
       responsible_person: req.responsible_person || '',
       notes: req.notes || ''
