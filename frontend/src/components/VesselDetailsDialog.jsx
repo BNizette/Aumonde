@@ -540,7 +540,14 @@ const VesselDetailsDialog = ({ open, onClose, vessel, onMessage }) => {
               ))}
             </TableBody>
           </Table>
-        ) : <p className="text-gray-500 text-center py-8">No drill logs recorded for this vessel.</p>;
+            ) : (
+              <div className="text-center py-8 text-gray-500">
+                <p>No drill logs recorded for this vessel.</p>
+                <p className="text-xs mt-1">Add drills from the Emergency module</p>
+              </div>
+            )}
+          </div>
+        );
       case 'risks':
         return risks.length > 0 ? (
           <Table>
