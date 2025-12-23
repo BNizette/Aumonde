@@ -1105,7 +1105,7 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
                     <Button 
                       variant="outline" 
                       size="sm"
-                      onClick={() => window.location.href = '/incidents'}
+                      onClick={() => window.location.href = `/incidents?trip_name=${encodeURIComponent(trip?.trip_name || '')}`}
                     >
                       <ExternalLink className="h-4 w-4 mr-2" />
                       Manage in Incidents
