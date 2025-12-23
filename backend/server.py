@@ -2590,6 +2590,8 @@ class EmergencyProcedure(BaseModel):
     title: str
     purpose: Optional[str] = None
     procedure_steps: str
+    vessel_ids: Optional[List[str]] = None
+    vessel_names: Optional[List[str]] = None
     equipment_required: Optional[str] = None
     muster_station: Optional[str] = None
     key_contacts: Optional[str] = None
@@ -2606,6 +2608,8 @@ class EmergencyProcedureCreate(BaseModel):
     title: str
     purpose: Optional[str] = None
     procedure_steps: str
+    vessel_ids: Optional[List[str]] = None
+    vessel_names: Optional[List[str]] = None
     equipment_required: Optional[str] = None
     muster_station: Optional[str] = None
     key_contacts: Optional[str] = None
