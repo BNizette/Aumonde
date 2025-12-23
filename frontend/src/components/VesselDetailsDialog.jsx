@@ -705,6 +705,120 @@ const VesselDetailsDialog = ({ open, onClose, vessel, onMessage }) => {
             )}
           </div>
         );
+      case 'certificates':
+        return (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <p className="text-sm text-gray-500">
+                {certificates.length} compliance certificate{certificates.length !== 1 ? 's' : ''} for this vessel
+              </p>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => window.location.href = '/compliance'}
+              >
+                <ExternalLink className="h-4 w-4 mr-2" />
+                Manage in Compliance
+              </Button>
+            </div>
+            {certificates.length > 0 ? (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Certificate Type</TableHead>
+                    <TableHead>Certificate Number</TableHead>
+                    <TableHead>Issuing Authority</TableHead>
+                    <TableHead>Issue Date</TableHead>
+                    <TableHead>Expiry Date</TableHead>
+                    <TableHead>Status</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {certificates.map((cert) => {
+                    const now = new Date();
+                    const expiry = cert.expiry_date ? new Date(cert.expiry_date) : null;
+                    const daysToExpiry = expiry ? Math.ceil((expiry - now) / (1000 * 60 * 60 * 24)) : null;
+                    const status = !expiry ? 'Unknown' : daysToExpiry < 0 ? 'Expired' : daysToExpiry <= 30 ? 'Expiring Soon' : 'Valid';
+                    return (
+                      <TableRow key={cert.id}>
+                        <TableCell className="font-medium">{cert.certificate_type || '-'}</TableCell>
+                        <TableCell>{cert.certificate_number || '-'}</TableCell>
+                        <TableCell>{cert.issuing_authority || '-'}</TableCell>
+                        <TableCell>{cert.issue_date ? new Date(cert.issue_date).toLocaleDateString() : '-'}</TableCell>
+                        <TableCell>{cert.expiry_date ? new Date(cert.expiry_date).toLocaleDateString() : '-'}</TableCell>
+                        <TableCell>
+                          <Badge variant={status === 'Valid' ? 'default' : status === 'Expired' ? 'destructive' : 'secondary'}>
+                            {status}
+                          </Badge>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            ) : (
+              <div className="text-center py-8 text-gray-500">
+                <p>No compliance certificates for this vessel.</p>
+                <p className="text-xs mt-1">Add certificates from the Compliance module</p>
+              </div>
+            )}
+          </div>
+        );
+      case 'requirements':
+        return (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <p className="text-sm text-gray-500">
+                {requirements.length} compliance requirement{requirements.length !== 1 ? 's' : ''} applicable to this vessel
+              </p>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => window.location.href = '/compliance'}
+              >
+                <ExternalLink className="h-4 w-4 mr-2" />
+                Manage in Compliance
+              </Button>
+            </div>
+            {requirements.length > 0 ? (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Requirement</TableHead>
+                    <TableHead>Category</TableHead>
+                    <TableHead>Regulatory Reference</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Responsible Person</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {requirements.map((req) => (
+                    <TableRow key={req.id}>
+                      <TableCell className="font-medium">{req.requirement_name || '-'}</TableCell>
+                      <TableCell><Badge variant="outline">{req.category || '-'}</Badge></TableCell>
+                      <TableCell className="max-w-xs truncate">{req.regulatory_reference || '-'}</TableCell>
+                      <TableCell>
+                        <Badge variant={
+                          req.compliance_status === 'Compliant' ? 'default' : 
+                          req.compliance_status === 'Non-Compliant' ? 'destructive' : 
+                          'secondary'
+                        }>
+                          {req.compliance_status || '-'}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>{req.responsible_person || '-'}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            ) : (
+              <div className="text-center py-8 text-gray-500">
+                <p>No compliance requirements for this vessel.</p>
+                <p className="text-xs mt-1">Add requirements from the Compliance module</p>
+              </div>
+            )}
+          </div>
+        );
       default:
         return null;
     }
