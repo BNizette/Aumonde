@@ -911,6 +911,7 @@ class CrewCreate(BaseModel):
     briefings_observed: Optional[List[TrainingItem]] = []
     briefings_delivered: Optional[List[TrainingItem]] = []
     practical_experience: Optional[List[TrainingItem]] = []
+    training_by_vessel: Optional[dict] = {}
     owner_name: Optional[str] = None
     owner_signature: Optional[str] = None
     owner_date: Optional[str] = None
