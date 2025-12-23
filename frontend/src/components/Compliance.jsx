@@ -43,6 +43,7 @@ const Compliance = () => {
   const [viewingDocument, setViewingDocument] = useState(null);
   const [importCertDialogOpen, setImportCertDialogOpen] = useState(false);
   const [importReqDialogOpen, setImportReqDialogOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState('certificates');
 
   // Filter states for Certificates
   const [certSearch, setCertSearch] = useState('');
