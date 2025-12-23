@@ -305,7 +305,22 @@ const VesselDetailsDialog = ({ open, onClose, vessel, onMessage }) => {
           </div>
         );
       case 'passengers':
-        return passengers.length > 0 ? (
+        return (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <p className="text-sm text-gray-500">
+                {passengers.length} passenger{passengers.length !== 1 ? 's' : ''} on this vessel's trips
+              </p>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => window.location.href = '/trips'}
+              >
+                <ExternalLink className="h-4 w-4 mr-2" />
+                Manage in Trips
+              </Button>
+            </div>
+            {passengers.length > 0 ? (
           <Table>
             <TableHeader>
               <TableRow>
