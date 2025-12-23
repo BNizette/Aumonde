@@ -2251,6 +2251,14 @@ const Emergency = () => {
               <Label>Equipment Required</Label>
               <Textarea rows={6} value={procedureForm.equipment_required} onChange={(e) => setProcedureForm({...procedureForm, equipment_required: e.target.value})} placeholder="List required equipment..." />
             </div>
+            <div>
+              <Label>Master's Guidance Notes</Label>
+              <Textarea rows={6} value={procedureForm.masters_guidance_notes} onChange={(e) => setProcedureForm({...procedureForm, masters_guidance_notes: e.target.value})} placeholder="Guidance notes from the Master..." />
+            </div>
+            <div>
+              <Label>Reference Documents</Label>
+              <Textarea rows={6} value={procedureForm.reference_documents} onChange={(e) => setProcedureForm({...procedureForm, reference_documents: e.target.value})} placeholder="List reference documents, manuals, regulations..." />
+            </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setProcedureDialogOpen(false)}>Cancel</Button>
