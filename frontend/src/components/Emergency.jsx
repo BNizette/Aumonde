@@ -555,7 +555,7 @@ const Emergency = () => {
       }
       setMessage(`Import complete: ${successCount} procedures added${errorCount > 0 ? `, ${errorCount} failed` : ''}`);
       setTimeout(() => setMessage(''), 5000);
-      fetchProcedures();
+      fetchData();
     } catch (err) { setError('Error importing: ' + err.message); setTimeout(() => setError(''), 5000); }
   };
 
@@ -678,7 +678,7 @@ const Emergency = () => {
       setMessage(`Import complete: ${totalSuccess} records added${totalError > 0 ? `, ${totalError} failed` : ''}`);
       setTimeout(() => setMessage(''), 5000);
       fetchData();
-      fetchProcedures();
+      fetchData();
       fetchDrills();
     } catch (err) { 
       setError('Error importing: ' + err.message); 
