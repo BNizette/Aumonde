@@ -28,6 +28,10 @@ const CrewForm = ({ open, onClose, onSave, crew, mode = 'create', prefilledData 
   // Induction tab selected vessel
   const [selectedInductionVessel, setSelectedInductionVessel] = useState('');
   
+  // Induction records from API (keyed by vessel_id)
+  const [inductionRecords, setInductionRecords] = useState({});
+  const [savingInduction, setSavingInduction] = useState(false);
+  
   const [formData, setFormData] = useState({
     // Tab 1: Crew Details
     staff_name: '',
