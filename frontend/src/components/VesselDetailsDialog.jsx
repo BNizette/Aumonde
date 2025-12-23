@@ -40,10 +40,17 @@ const VesselDetailsDialog = ({ open, onClose, vessel, onMessage }) => {
       const headers = { Authorization: `Bearer ${token}` };
       const vesselId = vessel.id;
 
-      const [tripsRes, logsRes, staffRes, risksRes, maintenanceRes, incidentsRes, engineRes, drillsRes] = await Promise.all([
-        axios.get(`${API}/trips?vessel_id=${vesselId}`, { headers }).catch(() => ({ data: [] })),
-        axios.get(`${API}/vessels/${vesselId}/running-logs`, { headers }).catch(() => ({ data: [] })),
-        axios.get(`${API}/vessels/${vesselId}/staff-logs`, { headers }).catch(() => ({ data: [] })),
+      // First get trips for this vessel to fetch shift logs
+      const tripsRes = await axios.get(`${API}/trips?vessel_id=${vesselId}`, { headers }).catch(() => ({ data: [] }));
+      const tripsData = tripsRes.data || [];
+      setTrips(tripsData);
+
+      // Get trip IDs for fetching related logs
+      const tripIds = tripsData.map(t => t.id);
+
+      const [logsRes, shiftLogsRes, risksRes, maintenanceRes, incidentsRes, engineRes, drillsRes] = await Promise.all([
+        axios.get(`${API}/running-logs?vessel_id=${vesselId}`, { headers }).catch(() => ({ data: [] })),
+        axios.get(`${API}/trip-logs`, { headers }).catch(() => ({ data: [] })),
         axios.get(`${API}/risk-assessments`, { headers }).catch(() => ({ data: [] })),
         axios.get(`${API}/maintenance`, { headers }).catch(() => ({ data: [] })),
         axios.get(`${API}/incidents`, { headers }).catch(() => ({ data: [] })),
@@ -51,10 +58,13 @@ const VesselDetailsDialog = ({ open, onClose, vessel, onMessage }) => {
         axios.get(`${API}/emergency/drills?vessel_id=${vesselId}`, { headers }).catch(() => ({ data: [] }))
       ]);
 
-      const tripsData = tripsRes.data || [];
-      setTrips(tripsData);
       setRunningLogs(logsRes.data || []);
-      setStaffLogs(staffRes.data || []);
+      
+      // Filter shift logs to only those for trips on this vessel
+      const allShiftLogs = shiftLogsRes.data || [];
+      const vesselShiftLogs = allShiftLogs.filter(log => tripIds.includes(log.trip_id));
+      setStaffLogs(vesselShiftLogs);
+      
       setRisks((risksRes.data || []).filter(r => r.vessel_id === vesselId));
       setMaintenance((maintenanceRes.data || []).filter(m => m.vessel_id === vesselId));
       setIncidents((incidentsRes.data || []).filter(i => i.vessel_id === vesselId));
@@ -62,7 +72,6 @@ const VesselDetailsDialog = ({ open, onClose, vessel, onMessage }) => {
       setDrills(drillsRes.data || []);
 
       // Fetch passengers for all trips
-      const tripIds = tripsData.map(t => t.id);
       if (tripIds.length > 0) {
         const passengersRes = await axios.get(`${API}/trip-passengers`, { headers }).catch(() => ({ data: [] }));
         const allPassengers = passengersRes.data || [];
