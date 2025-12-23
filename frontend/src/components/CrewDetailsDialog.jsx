@@ -273,7 +273,22 @@ const CrewDetailsDialog = ({ open, onClose, crew, onMessage }) => {
           </div>
         );
       case 'shifts':
-        return shifts.length > 0 ? (
+        return (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <p className="text-sm text-gray-500">
+                {shifts.length} shift log{shifts.length !== 1 ? 's' : ''} for this crew member
+              </p>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => window.location.href = '/trips'}
+              >
+                <ExternalLink className="h-4 w-4 mr-2" />
+                Manage in Trips
+              </Button>
+            </div>
+            {shifts.length > 0 ? (
           <Table>
             <TableHeader>
               <TableRow>
@@ -296,7 +311,14 @@ const CrewDetailsDialog = ({ open, onClose, crew, onMessage }) => {
               ))}
             </TableBody>
           </Table>
-        ) : <p className="text-gray-500 text-center py-8">No shift logs for this crew member.</p>;
+            ) : (
+              <div className="text-center py-8 text-gray-500">
+                <p>No shift logs for this crew member.</p>
+                <p className="text-xs mt-1">Add shift logs from the Trips module</p>
+              </div>
+            )}
+          </div>
+        );
       case 'drills':
         return drillRecords.length > 0 ? (
           <Table>
