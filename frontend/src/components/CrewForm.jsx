@@ -1151,15 +1151,18 @@ const CrewForm = ({ open, onClose, onSave, crew, mode = 'create', prefilledData 
                     ))}
                   </SelectContent>
                 </Select>
-                {Object.keys(formData.induction_by_vessel || {}).length > 0 && (
+                {Object.keys(inductionRecords || {}).length > 0 && (
                   <div className="flex flex-wrap gap-2 mt-2">
                     <span className="text-sm text-green-600">Vessels with induction:</span>
-                    {Object.entries(formData.induction_by_vessel || {}).map(([vId, vData]) => (
+                    {Object.entries(inductionRecords || {}).map(([vId, vData]) => (
                       <Badge key={vId} variant="secondary" className="bg-green-100 text-green-800">
-                        {vData.vessel_name} ({(vData.completed_tasks || []).length}/{inductionTasks.length} tasks)
+                        {vData.vessel_name || vessels.find(v => v.id === vId)?.vessel_name} ({(vData.completed_tasks || []).length}/{inductionTasks.length} tasks)
                       </Badge>
                     ))}
                   </div>
+                )}
+                {mode === 'create' && (
+                  <p className="text-sm text-amber-600 mt-2">Note: Induction records will be saved after creating the crew member.</p>
                 )}
               </div>
 
@@ -1167,7 +1170,10 @@ const CrewForm = ({ open, onClose, onSave, crew, mode = 'create', prefilledData 
                 <>
                   {/* Safety Induction Checklist */}
                   <div className="space-y-3">
-                    <Label className="text-base font-semibold">Safety Induction Tasks</Label>
+                    <div className="flex items-center justify-between">
+                      <Label className="text-base font-semibold">Safety Induction Tasks</Label>
+                      {savingInduction && <span className="text-sm text-blue-600">Saving...</span>}
+                    </div>
                     {inductionTasks.length === 0 ? (
                       <div className="text-center py-4 text-gray-500 border rounded-lg">
                         <p>No induction tasks configured.</p>
@@ -1176,16 +1182,17 @@ const CrewForm = ({ open, onClose, onSave, crew, mode = 'create', prefilledData 
                     ) : (
                       <div className="border rounded-lg divide-y">
                         {inductionTasks.map((task, index) => {
-                          const isCompleted = (formData.induction_by_vessel[selectedInductionVessel]?.completed_tasks || []).includes(task);
+                          const isCompleted = (inductionRecords[selectedInductionVessel]?.completed_tasks || []).includes(task);
                           return (
                             <div
                               key={index}
-                              className={`flex items-center space-x-3 p-3 cursor-pointer hover:bg-gray-50 ${isCompleted ? 'bg-green-50' : ''}`}
-                              onClick={() => toggleInductionTask(selectedInductionVessel, task)}
+                              className={`flex items-center space-x-3 p-3 cursor-pointer hover:bg-gray-50 ${isCompleted ? 'bg-green-50' : ''} ${mode === 'create' ? 'opacity-50 pointer-events-none' : ''}`}
+                              onClick={() => mode !== 'create' && toggleInductionTask(selectedInductionVessel, task)}
                             >
                               <Checkbox
                                 checked={isCompleted}
-                                onCheckedChange={() => toggleInductionTask(selectedInductionVessel, task)}
+                                disabled={mode === 'create'}
+                                onCheckedChange={() => mode !== 'create' && toggleInductionTask(selectedInductionVessel, task)}
                               />
                               <label className={`flex-1 cursor-pointer ${isCompleted ? 'text-green-700 line-through' : ''}`}>
                                 {task}
@@ -1199,7 +1206,7 @@ const CrewForm = ({ open, onClose, onSave, crew, mode = 'create', prefilledData 
                       </div>
                     )}
                     <div className="text-sm text-gray-500">
-                      {(formData.induction_by_vessel[selectedInductionVessel]?.completed_tasks || []).length} of {inductionTasks.length} tasks completed
+                      {(inductionRecords[selectedInductionVessel]?.completed_tasks || []).length} of {inductionTasks.length} tasks completed
                     </div>
                   </div>
 
@@ -1210,8 +1217,9 @@ const CrewForm = ({ open, onClose, onSave, crew, mode = 'create', prefilledData 
                       <div className="space-y-2">
                         <Label>Authorising Staff Member</Label>
                         <Select
-                          value={formData.induction_by_vessel[selectedInductionVessel]?.authorising_staff || ''}
+                          value={inductionRecords[selectedInductionVessel]?.authorising_staff || ''}
                           onValueChange={(value) => updateInductionSignoff(selectedInductionVessel, 'authorising_staff', value)}
+                          disabled={mode === 'create'}
                         >
                           <SelectTrigger>
                             <SelectValue placeholder="Select staff member" />
@@ -1227,24 +1235,27 @@ const CrewForm = ({ open, onClose, onSave, crew, mode = 'create', prefilledData 
                         <Label>Date Signed</Label>
                         <Input
                           type="date"
-                          value={formData.induction_by_vessel[selectedInductionVessel]?.date_signed || ''}
+                          value={inductionRecords[selectedInductionVessel]?.date_signed || ''}
                           onChange={(e) => updateInductionSignoff(selectedInductionVessel, 'date_signed', e.target.value)}
+                          disabled={mode === 'create'}
                         />
                       </div>
                       <div className="space-y-2">
                         <Label>Vessel Owner</Label>
                         <Input
-                          value={formData.induction_by_vessel[selectedInductionVessel]?.vessel_owner || ''}
+                          value={inductionRecords[selectedInductionVessel]?.vessel_owner || ''}
                           onChange={(e) => updateInductionSignoff(selectedInductionVessel, 'vessel_owner', e.target.value)}
                           placeholder="Vessel owner name"
+                          disabled={mode === 'create'}
                         />
                       </div>
                       <div className="space-y-2">
                         <Label>Date Signed (Owner)</Label>
                         <Input
                           type="date"
-                          value={formData.induction_by_vessel[selectedInductionVessel]?.date_signed_owner || ''}
+                          value={inductionRecords[selectedInductionVessel]?.date_signed_owner || ''}
                           onChange={(e) => updateInductionSignoff(selectedInductionVessel, 'date_signed_owner', e.target.value)}
+                          disabled={mode === 'create'}
                         />
                       </div>
                     </div>
