@@ -1339,7 +1339,7 @@ const Emergency = () => {
         </Alert>
       )}
 
-      <Tabs defaultValue="contacts" className="space-y-4">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <TabsList>
           <TabsTrigger value="contacts">Contacts ({contacts.length})</TabsTrigger>
           <TabsTrigger value="procedures">Procedures ({procedures.length})</TabsTrigger>
