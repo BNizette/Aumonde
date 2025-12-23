@@ -1567,6 +1567,104 @@ const Compliance = () => {
               </div>
             </div>
             <div>
+              <Label>Applicable Vessels (Optional)</Label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" className="w-full justify-between">
+                    <span className="truncate">
+                      {reqForm.vessel_ids.length === 0 
+                        ? 'All vessels / Not specified' 
+                        : `${reqForm.vessel_ids.length} vessel${reqForm.vessel_ids.length !== 1 ? 's' : ''} selected`}
+                    </span>
+                    <ChevronDown className="h-4 w-4 ml-2 shrink-0" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-72 p-0" align="start">
+                  <div className="p-2 max-h-64 overflow-y-auto">
+                    <div className="flex items-center justify-between px-2 py-1.5 mb-1">
+                      <span className="text-sm font-medium">Select Vessels</span>
+                      {reqForm.vessel_ids.length > 0 && (
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          onClick={() => setReqForm({...reqForm, vessel_ids: [], vessel_names: []})} 
+                          className="h-auto p-1 text-xs"
+                        >
+                          Clear
+                        </Button>
+                      )}
+                    </div>
+                    {vessels.map(vessel => (
+                      <div 
+                        key={vessel.id} 
+                        className="flex items-center space-x-2 px-2 py-1.5 hover:bg-gray-100 rounded cursor-pointer"
+                        onClick={() => {
+                          const isSelected = reqForm.vessel_ids.includes(vessel.id);
+                          if (isSelected) {
+                            setReqForm({
+                              ...reqForm, 
+                              vessel_ids: reqForm.vessel_ids.filter(id => id !== vessel.id),
+                              vessel_names: reqForm.vessel_names.filter(name => name !== vessel.vessel_name)
+                            });
+                          } else {
+                            setReqForm({
+                              ...reqForm, 
+                              vessel_ids: [...reqForm.vessel_ids, vessel.id],
+                              vessel_names: [...reqForm.vessel_names, vessel.vessel_name]
+                            });
+                          }
+                        }}
+                      >
+                        <Checkbox 
+                          checked={reqForm.vessel_ids.includes(vessel.id)} 
+                          onCheckedChange={() => {
+                            const isSelected = reqForm.vessel_ids.includes(vessel.id);
+                            if (isSelected) {
+                              setReqForm({
+                                ...reqForm, 
+                                vessel_ids: reqForm.vessel_ids.filter(id => id !== vessel.id),
+                                vessel_names: reqForm.vessel_names.filter(name => name !== vessel.vessel_name)
+                              });
+                            } else {
+                              setReqForm({
+                                ...reqForm, 
+                                vessel_ids: [...reqForm.vessel_ids, vessel.id],
+                                vessel_names: [...reqForm.vessel_names, vessel.vessel_name]
+                              });
+                            }
+                          }}
+                        />
+                        <label className="text-sm flex-1 cursor-pointer">
+                          {vessel.vessel_name} {vessel.vessel_type ? `(${vessel.vessel_type})` : ''}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </PopoverContent>
+              </Popover>
+              {reqForm.vessel_ids.length > 0 && (
+                <div className="flex flex-wrap gap-1 mt-2">
+                  {reqForm.vessel_names.map((name, index) => (
+                    <Badge 
+                      key={index} 
+                      variant="secondary" 
+                      className="text-xs cursor-pointer hover:bg-destructive hover:text-destructive-foreground"
+                      onClick={() => {
+                        const vesselId = reqForm.vessel_ids[index];
+                        setReqForm({
+                          ...reqForm,
+                          vessel_ids: reqForm.vessel_ids.filter(id => id !== vesselId),
+                          vessel_names: reqForm.vessel_names.filter(n => n !== name)
+                        });
+                      }}
+                    >
+                      🚢 {name} ×
+                    </Badge>
+                  ))}
+                </div>
+              )}
+            </div>
+            <div>
               <Label>Responsible Person</Label>
               <Input value={reqForm.responsible_person} onChange={(e) => setReqForm({...reqForm, responsible_person: e.target.value})} />
             </div>
