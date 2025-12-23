@@ -50,14 +50,16 @@ const VesselDetailsDialog = ({ open, onClose, vessel, onMessage }) => {
       // Get trip IDs for fetching related logs
       const tripIds = tripsData.map(t => t.id);
 
-      const [logsRes, shiftLogsRes, risksRes, maintenanceRes, incidentsRes, engineRes, drillsRes] = await Promise.all([
+      const [logsRes, shiftLogsRes, risksRes, maintenanceRes, incidentsRes, engineRes, drillsRes, certsRes, reqsRes] = await Promise.all([
         axios.get(`${API}/running-logs?vessel_id=${vesselId}`, { headers }).catch(() => ({ data: [] })),
         axios.get(`${API}/trip-logs`, { headers }).catch(() => ({ data: [] })),
         axios.get(`${API}/risk-assessments`, { headers }).catch(() => ({ data: [] })),
         axios.get(`${API}/maintenance`, { headers }).catch(() => ({ data: [] })),
         axios.get(`${API}/incidents`, { headers }).catch(() => ({ data: [] })),
         axios.get(`${API}/engine-running-logs?vessel_id=${vesselId}`, { headers }).catch(() => ({ data: [] })),
-        axios.get(`${API}/emergency/drills?vessel_id=${vesselId}`, { headers }).catch(() => ({ data: [] }))
+        axios.get(`${API}/emergency/drills?vessel_id=${vesselId}`, { headers }).catch(() => ({ data: [] })),
+        axios.get(`${API}/compliance/certificates`, { headers }).catch(() => ({ data: [] })),
+        axios.get(`${API}/compliance/requirements`, { headers }).catch(() => ({ data: [] }))
       ]);
 
       setRunningLogs(logsRes.data || []);
@@ -72,6 +74,10 @@ const VesselDetailsDialog = ({ open, onClose, vessel, onMessage }) => {
       setIncidents((incidentsRes.data || []).filter(i => i.vessel_id === vesselId));
       setEngineLogs(engineRes.data || []);
       setDrills(drillsRes.data || []);
+      
+      // Filter certificates and requirements for this vessel
+      setCertificates((certsRes.data || []).filter(c => c.vessel_id === vesselId));
+      setRequirements((reqsRes.data || []).filter(r => r.vessel_ids?.includes(vesselId) || !r.vessel_ids || r.vessel_ids.length === 0));
 
       // Fetch passengers for all trips
       if (tripIds.length > 0) {
