@@ -1907,6 +1907,56 @@ const Emergency = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
+                    <Label>Vessel</Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button variant="outline" className="w-full justify-between">
+                          <span className="truncate">
+                            {procedureFilters.vessels.length === 0
+                              ? 'All Vessels'
+                              : procedureFilters.vessels.length === 1
+                              ? vessels.find(v => v.id === procedureFilters.vessels[0])?.vessel_name || 'Selected'
+                              : `${procedureFilters.vessels.length} selected`}
+                          </span>
+                          <ChevronDown className="h-4 w-4 ml-2 shrink-0" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-64 p-0" align="start">
+                        <div className="p-2">
+                          <div className="flex items-center justify-between px-2 py-1.5 mb-1">
+                            <span className="text-sm font-medium">Select Vessels</span>
+                            {procedureFilters.vessels.length > 0 && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => clearProcedureFilterType('vessels')}
+                                className="h-auto p-1 text-xs"
+                              >
+                                Clear
+                              </Button>
+                            )}
+                          </div>
+                          {vessels.map(vessel => (
+                            <div
+                              key={vessel.id}
+                              className="flex items-center space-x-2 px-2 py-2 hover:bg-gray-100 rounded cursor-pointer"
+                              onClick={() => toggleProcedureFilter('vessels', vessel.id)}
+                            >
+                              <Checkbox
+                                checked={procedureFilters.vessels.includes(vessel.id)}
+                                onCheckedChange={() => toggleProcedureFilter('vessels', vessel.id)}
+                              />
+                              <span className="text-sm">{vessel.vessel_name}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
                     <Label>Created Date From</Label>
                     <Input
                       type="date"
