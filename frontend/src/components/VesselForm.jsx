@@ -1349,8 +1349,8 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create' }) => {
                             <div className="space-y-2 pr-3">
                               {vesselEmergency.procedures.map(proc => (
                                 <div key={proc.id} className="text-sm p-2 bg-gray-50 rounded">
-                                  <span className="font-medium">{proc.procedure_name}</span>
-                                  {proc.category && <Badge variant="outline" className="ml-2 text-xs">{proc.category}</Badge>}
+                                  <span className="font-medium">{proc.title || proc.procedure_name}</span>
+                                  {proc.emergency_type && <Badge variant="outline" className="ml-2 text-xs">{proc.emergency_type}</Badge>}
                                 </div>
                               ))}
                             </div>
