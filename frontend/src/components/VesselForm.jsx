@@ -493,13 +493,10 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create' }) => {
         </DialogHeader>
 
         <Tabs defaultValue="basic" className="w-full">
-          <TabsList className="grid w-full grid-cols-7">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="basic">Basic & Specs</TabsTrigger>
-            <TabsTrigger value="incidents">Incidents</TabsTrigger>
-            <TabsTrigger value="maintenance">Maintenance</TabsTrigger>
             <TabsTrigger value="certificates">Certificates</TabsTrigger>
             <TabsTrigger value="emergency">Emergency</TabsTrigger>
-            <TabsTrigger value="induction">Induction</TabsTrigger>
             <TabsTrigger value="photo">Photo</TabsTrigger>
           </TabsList>
 
