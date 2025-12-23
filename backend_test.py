@@ -2100,10 +2100,11 @@ class AMSAComprehensiveTester:
         
         # Run NEW FIELDS TESTS (Review Request Focus)
         new_fields_tests = [
-            self.test_risk_assessment_new_fields,      # Test 1: Risk Assessment New Fields
-            self.test_maintenance_quote_pdf_field,     # Test 2: Maintenance Quote PDF Field
-            self.test_compliance_certificate_pdf_field, # Test 3: Compliance Certificate PDF Field
-            self.test_file_upload_api,                 # Test 4: File Upload API
+            self.test_induction_functionality,         # Test 1: Induction Functionality (Review Request)
+            self.test_risk_assessment_new_fields,      # Test 2: Risk Assessment New Fields
+            self.test_maintenance_quote_pdf_field,     # Test 3: Maintenance Quote PDF Field
+            self.test_compliance_certificate_pdf_field, # Test 4: Compliance Certificate PDF Field
+            self.test_file_upload_api,                 # Test 5: File Upload API
         ]
         
         print("\n🎯 PRIORITY TESTS - NEW FIELDS IMPLEMENTATION")
