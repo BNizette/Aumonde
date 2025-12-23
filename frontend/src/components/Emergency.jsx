@@ -152,6 +152,7 @@ const Emergency = () => {
     vessel_name: '',
     linked_trip_id: '',
     linked_trip_name: '',
+    crew_participants: [],
     participants: '',
     duration_minutes: '',
     observations: '',
