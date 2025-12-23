@@ -1110,7 +1110,7 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create' }) => {
               </div>
             </TabsContent>
 
-            {/* TAB 3: INCIDENTS */}
+            {/* TAB 2: INCIDENTS */}
             <TabsContent value="incidents" className="space-y-4">
               <div className="flex items-center justify-between mb-4">
                 <div>
