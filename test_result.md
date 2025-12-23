@@ -551,6 +551,18 @@ frontend:
           agent: "testing"
           comment: "TRIP PASSENGERS EXCEL EXPORT BUTTON SUCCESSFULLY VERIFIED: Comprehensive testing completed with excellent results. IMPLEMENTATION VERIFICATION: Export to Excel button found in Passengers tab with correct green styling (bg-green-50 hover:bg-green-100 text-green-700 border-green-200). FileSpreadsheet icon present and properly positioned. Button appears in tab header area as specified. Button only shows when there are passengers (conditional rendering working). FUNCTIONALITY TESTING: Successfully logged in with admin@test.com credentials. Navigated to /trips and found trip with passengers ('Cairns to Port Douglas Transfer' showing '5 crew, 35 passengers'). Clicked view button (FileText icon) and opened Trip Details dialog. Found and clicked Passengers tab successfully. Export button found with correct styling and icon. Button click functionality working (export triggered). TECHNICAL VERIFICATION: Button classes include all required green styling: bg-green-50 hover:bg-green-100 text-green-700 border-green-200. FileSpreadsheet icon from Lucide React properly rendered. Button positioned correctly in tab header area. Conditional rendering working - button only appears when passengers exist. Export function (exportPassengersToExcel) implemented and functional. The Excel Export button implementation in the Trip Passengers tab is working perfectly as specified in the review request."
 
+  - task: "Manage in Module Buttons Testing"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/VesselDetailsDialog.jsx, /app/frontend/src/components/CrewDetailsDialog.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: "NA"
+          agent: "testing"
+          comment: "🚨 MANAGE IN BUTTONS TESTING ENCOUNTERED TECHNICAL DIFFICULTIES: Comprehensive code review and automated testing attempted for Manage in [Module] buttons across Vessel Details and Crew Details dialogs. CODE REVIEW VERIFICATION: ✅ VesselDetailsDialog.jsx contains all 9 expected Manage in buttons with correct implementation: Trips view → 'Manage in Trips' (lines 249-256), Incidents view → 'Manage in Incidents' (lines 654-661), Maintenance view → 'Manage in Maintenance' (lines 605-612), Risk Assessments view → 'Manage in Risk Assessment' (lines 558-565), Drills view → 'Manage in Emergency' (lines 509-516), Shift Logs/Running Logs/Engine Logs/Passengers views → 'Manage in Trips' (multiple locations). ✅ CrewDetailsDialog.jsx contains all 4 expected Manage in buttons: Trip Allocations/Crew Shifts → 'Manage in Trips' (lines 235-242, 282-289), Drills/Training → 'Manage in Emergency' (lines 329-336, 376-383). ✅ All buttons have proper ExternalLink icons, outline styling (variant='outline' size='sm'), and correct navigation URLs. AUTOMATED TESTING CHALLENGES: Successfully logged in (admin@test.com/Admin123!) and navigated to both modules. Vessel Details dialog opened successfully for MV Coral Queen showing proper structure. However, encountered Radix UI Select component overlay interception preventing dropdown interaction in headless browser testing - a known limitation with modern React component libraries. RECOMMENDATION: Manual verification required to confirm full functionality, as implementation code shows all buttons are properly implemented with correct styling and navigation logic."
+
 metadata:
   created_by: "testing_agent"
   version: "1.0"
