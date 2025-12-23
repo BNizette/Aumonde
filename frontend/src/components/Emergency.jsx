@@ -256,7 +256,7 @@ const Emergency = () => {
 
   useEffect(() => {
     applyDrillFilters();
-  }, [drillSearch, drillFilters, drills]);
+  }, [drillSearch, drillFilters, drills, vesselFilter]);
 
   const fetchData = async () => {
     try {
