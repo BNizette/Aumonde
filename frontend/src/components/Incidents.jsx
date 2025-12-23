@@ -598,7 +598,7 @@ const Incidents = () => {
         <CardContent>
           <div className="space-y-4">
             {/* Clear All Filters Button */}
-            {(filters.incident_types.length > 0 || filters.severities.length > 0 || filters.statuses.length > 0 || filters.start_date || filters.end_date) && (
+            {(filters.incident_types.length > 0 || filters.severities.length > 0 || filters.statuses.length > 0 || filters.vessels.length > 0 || filters.start_date || filters.end_date) && (
               <div className="flex justify-end">
                 <Button variant="ghost" size="sm" onClick={clearAllFilters}>
                   <X className="h-4 w-4 mr-2" />
@@ -607,8 +607,8 @@ const Incidents = () => {
               </div>
             )}
 
-            {/* First Row: Type, Severity, Status - Multi-Select */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* First Row: Type, Severity, Status, Vessel - Multi-Select */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               {/* Incident Type Multi-Select */}
               <div>
                 <Label>Incident Type</Label>
