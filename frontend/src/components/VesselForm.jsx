@@ -493,8 +493,7 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create' }) => {
         <Tabs defaultValue="basic" className="w-full">
           <TabsList className="grid w-full grid-cols-7">
             <TabsTrigger value="basic">Basic</TabsTrigger>
-            <TabsTrigger value="specs">Specs & Safety</TabsTrigger>
-            <TabsTrigger value="equipment">Equipment</TabsTrigger>
+            <TabsTrigger value="specs">Specifications</TabsTrigger>
             <TabsTrigger value="incidents">Incidents</TabsTrigger>
             <TabsTrigger value="maintenance">Maintenance</TabsTrigger>
             <TabsTrigger value="certificates">Certificates</TabsTrigger>
