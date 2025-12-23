@@ -549,7 +549,22 @@ const VesselDetailsDialog = ({ open, onClose, vessel, onMessage }) => {
           </div>
         );
       case 'risks':
-        return risks.length > 0 ? (
+        return (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <p className="text-sm text-gray-500">
+                {risks.length} risk assessment{risks.length !== 1 ? 's' : ''} for this vessel
+              </p>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => window.location.href = '/risk-assessment'}
+              >
+                <ExternalLink className="h-4 w-4 mr-2" />
+                Manage in Risk Assessment
+              </Button>
+            </div>
+            {risks.length > 0 ? (
           <Table>
             <TableHeader>
               <TableRow>
