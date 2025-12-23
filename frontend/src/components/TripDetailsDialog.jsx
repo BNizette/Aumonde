@@ -1153,7 +1153,7 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
                     <Button 
                       variant="outline" 
                       size="sm"
-                      onClick={() => window.location.href = '/emergency'}
+                      onClick={() => window.location.href = `/emergency?tab=drills&vessel_name=${encodeURIComponent(trip?.vessel_name || '')}`}
                     >
                       <ExternalLink className="h-4 w-4 mr-2" />
                       Manage in Drills
