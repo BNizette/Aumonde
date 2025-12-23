@@ -309,7 +309,7 @@ const VesselDetailsDialog = ({ open, onClose, vessel, onMessage }) => {
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <p className="text-sm text-gray-500">
-                {passengers.length} passenger{passengers.length !== 1 ? 's' : ''} on this vessel's trips
+                {passengers.length} passenger{passengers.length !== 1 ? 's' : ''} on this vessel&apos;s trips
               </p>
               <Button 
                 variant="outline" 
