@@ -519,7 +519,7 @@ const VesselDetailsDialog = ({ open, onClose, vessel, onMessage }) => {
               <Button 
                 variant="outline" 
                 size="sm"
-                onClick={() => window.location.href = '/emergency'}
+                onClick={() => window.location.href = `/emergency?tab=drills&vessel_id=${vessel.id}&vessel_name=${encodeURIComponent(vessel.vessel_name)}`}
               >
                 <ExternalLink className="h-4 w-4 mr-2" />
                 Manage in Emergency
