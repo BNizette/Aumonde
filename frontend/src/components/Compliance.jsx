@@ -1593,6 +1593,59 @@ const Compliance = () => {
         onImport={handleImportRequirements}
         templateFileName="compliance_requirements_import_template.xlsx"
       />
+
+      {/* View Document Dialog */}
+      <Dialog open={viewDocumentDialogOpen} onOpenChange={setViewDocumentDialogOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>{viewingDocument?.document_name}</DialogTitle>
+            <DialogDescription>Document Details</DialogDescription>
+          </DialogHeader>
+          {viewingDocument && (
+            <div className="space-y-4">
+              <div className="flex items-center gap-2">
+                <Badge>{viewingDocument.category}</Badge>
+                {viewingDocument.vessel_name && (
+                  <Badge variant="outline">🚢 {viewingDocument.vessel_name}</Badge>
+                )}
+              </div>
+              {viewingDocument.description && (
+                <div>
+                  <Label className="text-sm font-medium">Description</Label>
+                  <p className="text-sm text-gray-700 whitespace-pre-wrap mt-1">{viewingDocument.description}</p>
+                </div>
+              )}
+              {viewingDocument.upload_date && (
+                <div>
+                  <Label className="text-sm font-medium">Upload Date</Label>
+                  <p className="text-sm mt-1">{new Date(viewingDocument.upload_date).toLocaleDateString()}</p>
+                </div>
+              )}
+              {viewingDocument.file_url && (
+                <div className="flex gap-2 pt-4 border-t">
+                  <Button 
+                    variant="outline"
+                    onClick={() => window.open(viewingDocument.file_url, '_blank')}
+                  >
+                    <ExternalLink className="h-4 w-4 mr-2" />
+                    Open Document
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setViewDocumentDialogOpen(false);
+                      window.location.href = '/documents';
+                    }}
+                  >
+                    <FileText className="h-4 w-4 mr-2" />
+                    Go to Document Management
+                  </Button>
+                </div>
+              )}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
