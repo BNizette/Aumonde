@@ -2254,6 +2254,10 @@ const Emergency = () => {
               <Input value={procedureForm.title} onChange={(e) => setProcedureForm({...procedureForm, title: e.target.value})} />
             </div>
             <div>
+              <Label>Purpose</Label>
+              <Textarea rows={2} value={procedureForm.purpose} onChange={(e) => setProcedureForm({...procedureForm, purpose: e.target.value})} placeholder="Brief description of the procedure's purpose..." />
+            </div>
+            <div>
               <Label>Procedure Steps *</Label>
               <Textarea rows={6} value={procedureForm.procedure_steps} onChange={(e) => setProcedureForm({...procedureForm, procedure_steps: e.target.value})} placeholder="Step 1: ...\nStep 2: ..." />
             </div>
