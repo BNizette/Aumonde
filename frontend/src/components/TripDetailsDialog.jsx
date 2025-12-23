@@ -917,10 +917,12 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
                       ))}
                     </div>
                   )}
-                </TabsContent>
+                </div>
+                )}
 
-                {/* Running Logs Tab */}
-                <TabsContent value="running" className="space-y-4 mt-4">
+                {/* Running Logs View */}
+                {selectedLogView === 'running' && (
+                  <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <p className="text-sm text-gray-500">
                       {runningLogs.length} {runningLogs.length === 1 ? 'entry' : 'entries'}
