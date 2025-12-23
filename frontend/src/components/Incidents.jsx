@@ -198,6 +198,13 @@ const Incidents = () => {
         );
       }
 
+      // Apply vessel filter
+      if (filters.vessels && filters.vessels.length > 0) {
+        filteredIncidents = filteredIncidents.filter(incident => 
+          filters.vessels.includes(incident.vessel_name)
+        );
+      }
+
       // Apply date range filter
       if (filters.start_date || filters.end_date) {
         filteredIncidents = filteredIncidents.filter(incident => {
