@@ -2298,37 +2298,68 @@ const Emergency = () => {
             </div>
             <div>
               <Label>Crew Participants</Label>
-              <Select 
-                value="" 
-                onValueChange={(value) => {
-                  if (value && !drillForm.crew_participants.includes(value)) {
-                    setDrillForm({...drillForm, crew_participants: [...drillForm.crew_participants, value]});
-                  }
-                }}
-              >
-                <SelectTrigger><SelectValue placeholder="Select crew members..." /></SelectTrigger>
-                <SelectContent>
-                  {crewList.filter(c => !drillForm.crew_participants.includes(c.staff_name)).map(crew => (
-                    <SelectItem key={crew.id} value={crew.staff_name}>{crew.staff_name} - {crew.default_position || 'Crew'}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {drillForm.crew_participants.length > 0 && (
-                <div className="flex flex-wrap gap-2 mt-2">
-                  {drillForm.crew_participants.map((name, idx) => (
-                    <Badge key={idx} variant="secondary" className="flex items-center gap-1">
-                      {name}
-                      <button 
-                        type="button" 
-                        onClick={() => setDrillForm({...drillForm, crew_participants: drillForm.crew_participants.filter((_, i) => i !== idx)})}
-                        className="ml-1 hover:text-red-500"
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" className="w-full justify-between">
+                    <span className="truncate">
+                      {drillForm.crew_participants.length === 0 
+                        ? 'Select crew members...' 
+                        : drillForm.crew_participants.length === 1 
+                          ? drillForm.crew_participants[0] 
+                          : `${drillForm.crew_participants.length} crew selected`}
+                    </span>
+                    <ChevronDown className="h-4 w-4 ml-2 shrink-0" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-72 p-0" align="start">
+                  <div className="p-2 max-h-64 overflow-y-auto">
+                    <div className="flex items-center justify-between px-2 py-1.5 mb-1">
+                      <span className="text-sm font-medium">Select Crew</span>
+                      {drillForm.crew_participants.length > 0 && (
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          onClick={() => setDrillForm({...drillForm, crew_participants: []})} 
+                          className="h-auto p-1 text-xs"
+                        >
+                          Clear
+                        </Button>
+                      )}
+                    </div>
+                    {crewList.map(crew => (
+                      <div 
+                        key={crew.id} 
+                        className="flex items-center space-x-2 px-2 py-1.5 hover:bg-gray-100 rounded cursor-pointer"
+                        onClick={() => {
+                          const isSelected = drillForm.crew_participants.includes(crew.staff_name);
+                          setDrillForm({
+                            ...drillForm, 
+                            crew_participants: isSelected 
+                              ? drillForm.crew_participants.filter(n => n !== crew.staff_name)
+                              : [...drillForm.crew_participants, crew.staff_name]
+                          });
+                        }}
                       >
-                        ×
-                      </button>
-                    </Badge>
-                  ))}
-                </div>
-              )}
+                        <Checkbox 
+                          checked={drillForm.crew_participants.includes(crew.staff_name)} 
+                          onCheckedChange={() => {
+                            const isSelected = drillForm.crew_participants.includes(crew.staff_name);
+                            setDrillForm({
+                              ...drillForm, 
+                              crew_participants: isSelected 
+                                ? drillForm.crew_participants.filter(n => n !== crew.staff_name)
+                                : [...drillForm.crew_participants, crew.staff_name]
+                            });
+                          }}
+                        />
+                        <label className="text-sm flex-1 cursor-pointer">
+                          {crew.staff_name} - {crew.default_position || 'Crew'}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </PopoverContent>
+              </Popover>
             </div>
             <div>
               <Label>Other Participants</Label>
