@@ -250,7 +250,7 @@ const Emergency = () => {
 
   useEffect(() => {
     applyContactFilters();
-  }, [contactSearch, contactFilters, contacts]);
+  }, [contactSearch, contactFilters, contacts, vesselFilter, vessels]);
 
   useEffect(() => {
     applyProcedureFilters();
