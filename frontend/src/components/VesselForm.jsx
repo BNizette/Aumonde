@@ -1321,7 +1321,7 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create' }) => {
                               {vesselEmergency.contacts.map(contact => (
                                 <div key={contact.id} className="flex justify-between items-center text-sm p-2 bg-gray-50 rounded">
                                   <span className="font-medium">{contact.name}</span>
-                                  <span className="text-gray-600">{contact.phone || contact.contact_number || '-'}</span>
+                                  <span className="text-gray-600">{contact.phone_primary || contact.phone || '-'}</span>
                                 </div>
                               ))}
                             </div>
