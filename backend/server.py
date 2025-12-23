@@ -2595,6 +2595,8 @@ class EmergencyProcedure(BaseModel):
     key_contacts: Optional[str] = None
     masters_guidance_notes: Optional[str] = None
     reference_documents: Optional[str] = None
+    authorised_by: Optional[str] = None
+    date_authorised: Optional[str] = None
     vessel_id: Optional[str] = None
     last_reviewed: Optional[datetime] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
@@ -2609,6 +2611,8 @@ class EmergencyProcedureCreate(BaseModel):
     key_contacts: Optional[str] = None
     masters_guidance_notes: Optional[str] = None
     reference_documents: Optional[str] = None
+    authorised_by: Optional[str] = None
+    date_authorised: Optional[str] = None
     vessel_id: Optional[str] = None
 
 class EmergencyDrill(BaseModel):
