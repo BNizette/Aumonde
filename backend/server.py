@@ -2588,6 +2588,7 @@ class EmergencyProcedure(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     emergency_type: str  # Fire, Medical, Man Overboard, Grounding, Collision, Flooding, etc.
     title: str
+    purpose: Optional[str] = None
     procedure_steps: str
     equipment_required: Optional[str] = None
     muster_station: Optional[str] = None
@@ -2601,6 +2602,7 @@ class EmergencyProcedure(BaseModel):
 class EmergencyProcedureCreate(BaseModel):
     emergency_type: str
     title: str
+    purpose: Optional[str] = None
     procedure_steps: str
     equipment_required: Optional[str] = None
     muster_station: Optional[str] = None
