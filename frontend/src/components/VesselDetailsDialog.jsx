@@ -26,6 +26,10 @@ const VesselDetailsDialog = ({ open, onClose, vessel, onMessage }) => {
   const [incidents, setIncidents] = useState([]);
   const [certificates, setCertificates] = useState([]);
   const [requirements, setRequirements] = useState([]);
+  const [inductionRecords, setInductionRecords] = useState([]);
+  const [inductionTasks, setInductionTasks] = useState([]);
+  const [emergencyContacts, setEmergencyContacts] = useState([]);
+  const [emergencyProcedures, setEmergencyProcedures] = useState([]);
 
   useEffect(() => {
     if (open && vessel) {
