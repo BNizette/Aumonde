@@ -254,7 +254,7 @@ const Emergency = () => {
 
   useEffect(() => {
     applyProcedureFilters();
-  }, [procedureSearch, procedureFilters, procedures]);
+  }, [procedureSearch, procedureFilters, procedures, vesselFilter, vessels]);
 
   useEffect(() => {
     applyDrillFilters();
