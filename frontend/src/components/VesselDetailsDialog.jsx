@@ -296,7 +296,14 @@ const VesselDetailsDialog = ({ open, onClose, vessel, onMessage }) => {
               })}
             </TableBody>
           </Table>
-        ) : <p className="text-gray-500 text-center py-8">No trips recorded for this vessel.</p>;
+            ) : (
+              <div className="text-center py-8 text-gray-500">
+                <p>No trips recorded for this vessel.</p>
+                <p className="text-xs mt-1">Create trips from the Trips module</p>
+              </div>
+            )}
+          </div>
+        );
       case 'passengers':
         return passengers.length > 0 ? (
           <Table>
