@@ -30,6 +30,16 @@ Test the following new features:
 - Verify sign-off fields at bottom: Authorising Staff, Date Signed, Vessel Owner, Date Signed Owner ✅
 - **Status**: Green box with "Select Vessel for Induction Checklist" found, induction tasks section appears (note: no tasks configured in admin settings)
 
+### 4. Induction Tab Checkbox Functionality ❌ CANNOT TEST
+- Login to application ✅
+- Navigate to Crew Management ✅
+- Click "Add Crew Member" button ✅
+- Click "Induction" tab ✅
+- Select vessel from dropdown ✅ (5 vessels available: MV Coral Queen, MV Pacific Explorer, MV Whitsunday Spirit)
+- **CRITICAL ISSUE**: No induction tasks configured in system ❌
+- **Status**: Shows "No induction tasks configured. Add tasks in Admin Panel → Settings → Vessel Management → Safety Induction Tasks"
+- **Cannot test checkbox functionality**: No checkboxes available to test due to missing configuration
+
 ## Test Results Summary
 **Overall Result: 3/3 tests PASSED** 🎉
 
