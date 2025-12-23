@@ -23,6 +23,7 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
 const Incidents = () => {
+  const location = useLocation();
   const [incidents, setIncidents] = useState([]);
   const [vessels, setVessels] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -37,6 +38,7 @@ const Incidents = () => {
   // Use custom hook for advanced filtering
   const {
     filters,
+    setFilters,
     toggleFilter,
     clearFilter,
     clearDateFilters,
@@ -47,6 +49,7 @@ const Incidents = () => {
     incident_types: [],
     severities: [],
     statuses: [],
+    vessels: [],
     start_date: '',
     end_date: ''
   });
