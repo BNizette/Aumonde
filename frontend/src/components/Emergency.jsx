@@ -938,6 +938,8 @@ const Emergency = () => {
       title: procedure.title || '',
       purpose: procedure.purpose || '',
       procedure_steps: procedure.procedure_steps || '',
+      vessel_ids: procedure.vessel_ids || [],
+      vessel_names: procedure.vessel_names || [],
       equipment_required: procedure.equipment_required || '',
       muster_station: procedure.muster_station || '',
       key_contacts: procedure.key_contacts || '',
