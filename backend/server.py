@@ -2923,6 +2923,8 @@ class ComplianceRequirement(BaseModel):
     regulatory_reference: Optional[str] = None
     linked_document_id: Optional[str] = None
     linked_document_name: Optional[str] = None
+    vessel_ids: Optional[List[str]] = None
+    vessel_names: Optional[List[str]] = None
     compliance_status: str  # Compliant, Non-Compliant, Partial, Under Review
     last_audit_date: Optional[datetime] = None
     next_audit_date: Optional[datetime] = None
@@ -2937,6 +2939,8 @@ class ComplianceRequirementCreate(BaseModel):
     regulatory_reference: Optional[str] = None
     linked_document_id: Optional[str] = None
     linked_document_name: Optional[str] = None
+    vessel_ids: Optional[List[str]] = None
+    vessel_names: Optional[List[str]] = None
     compliance_status: str = "Under Review"
     last_audit_date: Optional[str] = None
     next_audit_date: Optional[str] = None
