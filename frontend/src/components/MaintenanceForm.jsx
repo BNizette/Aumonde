@@ -565,17 +565,6 @@ const MaintenanceForm = ({ open, onClose, onSave, record, mode = 'create' }) => 
                   />
                 </div>
 
-                <div className="space-y-2 col-span-2">
-                  <Label htmlFor="completion_notes">Completion Notes</Label>
-                  <Textarea
-                    id="completion_notes"
-                    value={formData.completion_notes}
-                    onChange={(e) => handleChange('completion_notes', e.target.value)}
-                    placeholder="Notes about work completed and findings"
-                    rows={3}
-                  />
-                </div>
-
                 <div className="space-y-2">
                   <Label>Crew Sign Off</Label>
                   <Select 
