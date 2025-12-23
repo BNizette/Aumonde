@@ -2816,6 +2816,7 @@ const Emergency = () => {
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div><strong>Title:</strong> {viewingProcedure.title}</div>
                   <div><strong>Emergency Type:</strong> <Badge>{viewingProcedure.emergency_type}</Badge></div>
+                  {viewingProcedure.purpose && <div className="col-span-2"><strong>Purpose:</strong> {viewingProcedure.purpose}</div>}
                   {viewingProcedure.equipment_required && <div className="col-span-2"><strong>Equipment Required:</strong> <span className="whitespace-pre-wrap">{viewingProcedure.equipment_required}</span></div>}
                   {viewingProcedure.muster_station && <div className="col-span-2"><strong>Muster Station:</strong> {viewingProcedure.muster_station}</div>}
                   {viewingProcedure.key_contacts && <div className="col-span-2"><strong>Key Contacts:</strong> {viewingProcedure.key_contacts}</div>}
