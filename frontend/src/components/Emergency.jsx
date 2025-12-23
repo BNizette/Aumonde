@@ -443,7 +443,7 @@ const Emergency = () => {
   const contactImportColumns = ['Name', 'Type', 'Organization', 'Role', 'Primary Phone', 'Secondary Phone', 'Email', 'Address', '24/7 Available', 'Priority', 'Notes'];
   const contactImportSample = [['Emergency Services', 'External', 'Police', 'Emergency Response', '000', '', 'police@example.com', '123 Main St', 'Yes', '1', 'Primary emergency contact']];
 
-  const procedureImportColumns = ['Title', 'Emergency Type', 'Procedure Steps', 'Equipment Required', 'Muster Station', 'Key Contacts', "Master's Guidance Notes", 'Reference Documents'];
+  const procedureImportColumns = ['Title', 'Emergency Type', 'Purpose', 'Procedure Steps', 'Equipment Required', 'Muster Station', 'Key Contacts', "Master's Guidance Notes", 'Reference Documents'];
   const procedureImportSample = [['Fire Emergency', 'Fire', '1. Sound alarm\n2. Evacuate\n3. Call 000', 'Fire extinguisher, Life jackets', 'Deck A Forward', 'Fire Warden, Captain']];
 
   const drillImportColumns = ['Drill Type', 'Vessel', 'Scheduled Date', 'Completed Date', 'Status', 'Participants', 'Notes'];
