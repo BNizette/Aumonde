@@ -189,14 +189,30 @@ const Emergency = () => {
   const [contactTypes, setContactTypes] = useState(['Crew', 'Shore', 'Authority', 'Medical', 'Supplier']);
   const [emergencyTypes, setEmergencyTypes] = useState(['Fire', 'Medical Emergency', 'Man Overboard', 'Grounding', 'Collision', 'Flooding', 'Abandon Ship', 'Search and Rescue']);
   const [drillTypes, setDrillTypes] = useState(['Fire Drill', 'Abandon Ship Drill', 'Man Overboard Drill', 'Medical Emergency Drill', 'Collision Drill']);
+  const [vesselFilter, setVesselFilter] = useState('');
 
   useEffect(() => {
     fetchData();
     fetchSettings();
+    // Handle URL parameters for deep linking and filtering
+    const params = new URLSearchParams(window.location.search);
+    const tab = params.get('tab');
+    const vesselId = params.get('vessel_id');
+    const vesselName = params.get('vessel_name');
+    
     // Handle hash navigation for deep linking to tabs
     const hash = window.location.hash.replace('#', '');
     if (hash === 'drills' || hash === 'procedures' || hash === 'contacts') {
       setActiveTab(hash);
+    } else if (tab === 'drills' || tab === 'procedures' || tab === 'contacts') {
+      setActiveTab(tab);
+    }
+    
+    // Set vessel filter if specified
+    if (vesselName) {
+      setVesselFilter(decodeURIComponent(vesselName));
+    } else if (vesselId) {
+      setVesselFilter(vesselId);
     }
   }, []);
 
