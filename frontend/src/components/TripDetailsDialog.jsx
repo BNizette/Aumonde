@@ -1185,8 +1185,9 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
                       ))}
                     </div>
                   )}
-                </TabsContent>
-              </Tabs>
+                </div>
+                )}
+              </div>
             </div>
           </ScrollArea>
         </DialogContent>
