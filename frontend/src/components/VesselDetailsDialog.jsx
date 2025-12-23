@@ -841,6 +841,108 @@ const VesselDetailsDialog = ({ open, onClose, vessel, onMessage }) => {
             )}
           </div>
         );
+
+      case 'induction':
+        return (
+          <div className="p-4">
+            {inductionRecords.length > 0 ? (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Crew Name</TableHead>
+                    <TableHead>Date of Induction</TableHead>
+                    <TableHead>Tasks Completed</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {inductionRecords.map(record => (
+                    <TableRow key={record.id}>
+                      <TableCell className="font-medium">{record.crew_name}</TableCell>
+                      <TableCell>{record.date_signed ? formatDate(record.date_signed) : (record.updated_at ? formatDate(record.updated_at) : '-')}</TableCell>
+                      <TableCell>
+                        <Badge variant="outline">
+                          {(record.completed_tasks || []).length} / {inductionTasks.length}
+                        </Badge>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            ) : (
+              <div className="text-center py-8 text-gray-500">
+                <p>No induction records for this vessel.</p>
+                <p className="text-xs mt-1">Complete crew induction from the Crew Management module</p>
+              </div>
+            )}
+          </div>
+        );
+
+      case 'emergency_contacts':
+        return (
+          <div className="p-4">
+            {emergencyContacts.length > 0 ? (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Phone</TableHead>
+                    <TableHead>Type</TableHead>
+                    <TableHead>Email</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {emergencyContacts.map(contact => (
+                    <TableRow key={contact.id}>
+                      <TableCell className="font-medium">{contact.name}</TableCell>
+                      <TableCell>{contact.phone || contact.contact_number || '-'}</TableCell>
+                      <TableCell><Badge variant="outline">{contact.contact_type || contact.type || '-'}</Badge></TableCell>
+                      <TableCell>{contact.email || '-'}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            ) : (
+              <div className="text-center py-8 text-gray-500">
+                <p>No emergency contacts for this vessel.</p>
+                <p className="text-xs mt-1">Add contacts from the Emergency module</p>
+              </div>
+            )}
+          </div>
+        );
+
+      case 'emergency_procedures':
+        return (
+          <div className="p-4">
+            {emergencyProcedures.length > 0 ? (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Procedure Name</TableHead>
+                    <TableHead>Category</TableHead>
+                    <TableHead>Authorised By</TableHead>
+                    <TableHead>Date Authorised</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {emergencyProcedures.map(proc => (
+                    <TableRow key={proc.id}>
+                      <TableCell className="font-medium">{proc.procedure_name}</TableCell>
+                      <TableCell><Badge variant="outline">{proc.category || '-'}</Badge></TableCell>
+                      <TableCell>{proc.authorised_by || '-'}</TableCell>
+                      <TableCell>{proc.date_authorised ? formatDate(proc.date_authorised) : '-'}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            ) : (
+              <div className="text-center py-8 text-gray-500">
+                <p>No emergency procedures for this vessel.</p>
+                <p className="text-xs mt-1">Add procedures from the Emergency module</p>
+              </div>
+            )}
+          </div>
+        );
+
       default:
         return null;
     }
