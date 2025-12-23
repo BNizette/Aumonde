@@ -1182,7 +1182,7 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create' }) => {
                   <Button
                     type="button"
                     onClick={() => {
-                      window.location.href = `/compliance?vessel=${vessel.id}`;
+                      window.location.href = `/compliance?tab=certificates&vessel_name=${encodeURIComponent(vessel?.vessel_name || '')}`;
                     }}
                   >
                     <Shield className="h-4 w-4 mr-2" />
