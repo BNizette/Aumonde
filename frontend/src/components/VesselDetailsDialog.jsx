@@ -24,6 +24,8 @@ const VesselDetailsDialog = ({ open, onClose, vessel, onMessage }) => {
   const [risks, setRisks] = useState([]);
   const [maintenance, setMaintenance] = useState([]);
   const [incidents, setIncidents] = useState([]);
+  const [certificates, setCertificates] = useState([]);
+  const [requirements, setRequirements] = useState([]);
 
   useEffect(() => {
     if (open && vessel) {
