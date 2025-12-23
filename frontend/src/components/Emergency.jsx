@@ -2012,43 +2012,42 @@ const Emergency = () => {
                     {procedures.length === 0 ? 'No emergency procedures added yet' : 'No procedures match your filters'}
                   </p>
                 ) : (
-                  filteredProcedures.map((proc) => (
-                    <div key={proc.id} className="border rounded-lg p-4 hover:bg-gray-50">
-                      <div className="flex justify-between items-start mb-3">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-2">
-                            <AlertTriangle className="h-5 w-5 text-orange-600" />
-                            <h3 className="font-semibold text-lg">{proc.title}</h3>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Emergency Type</TableHead>
+                        <TableHead>Procedure Title</TableHead>
+                        <TableHead>Purpose</TableHead>
+                        <TableHead>Date Authorised</TableHead>
+                        <TableHead className="text-right">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {filteredProcedures.map((proc) => (
+                        <TableRow key={proc.id} className="hover:bg-gray-50">
+                          <TableCell>
                             <Badge>{proc.emergency_type}</Badge>
-                          </div>
-                          <div className="text-sm text-gray-700 whitespace-pre-wrap">{proc.procedure_steps}</div>
-                          {proc.equipment_required && (
-                            <p className="mt-2 text-sm"><strong>Equipment:</strong> {proc.equipment_required}</p>
-                          )}
-                        </div>
-                        <div className="flex gap-2">
-                          <Button variant="outline" size="sm" onClick={() => handleViewProcedure(proc)} title="View details & records">
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                          <Button variant="outline" size="sm" onClick={() => handleEditProcedure(proc)}>
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          <Button variant="destructive" size="sm" onClick={() => handleDeleteProcedure(proc.id, proc.title)}>
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </div>
-
-                      {/* Training record count indicator */}
-                      {trainingRecords[proc.id] && trainingRecords[proc.id].length > 0 && (
-                        <div className="mt-2">
-                          <Badge variant="secondary" className="text-xs">
-                            {trainingRecords[proc.id].length} training record{trainingRecords[proc.id].length !== 1 ? 's' : ''}
-                          </Badge>
-                        </div>
-                      )}
-                    </div>
-                  ))
+                          </TableCell>
+                          <TableCell className="font-medium">{proc.title}</TableCell>
+                          <TableCell className="max-w-xs truncate">{proc.purpose || '-'}</TableCell>
+                          <TableCell>{proc.date_authorised ? new Date(proc.date_authorised).toLocaleDateString() : '-'}</TableCell>
+                          <TableCell className="text-right">
+                            <div className="flex justify-end gap-2">
+                              <Button variant="outline" size="sm" onClick={() => handleViewProcedure(proc)} title="View details & records">
+                                <Eye className="h-4 w-4" />
+                              </Button>
+                              <Button variant="outline" size="sm" onClick={() => handleEditProcedure(proc)}>
+                                <Edit className="h-4 w-4" />
+                              </Button>
+                              <Button variant="destructive" size="sm" onClick={() => handleDeleteProcedure(proc.id, proc.title)}>
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
                 )}
               </div>
             </CardContent>
