@@ -1242,7 +1242,7 @@ const Emergency = () => {
     XLSX.utils.book_append_sheet(wb, wsContacts, 'Contacts');
 
     // Sheet 2: Procedures
-    const proceduresHeaders = ['Title', 'Emergency Type', 'Procedure Steps', 'Equipment Required', 'Muster Station', 'Key Contacts'];
+    const proceduresHeaders = ['Title', 'Emergency Type', 'Procedure Steps', 'Equipment Required', 'Muster Station', 'Key Contacts', "Master's Guidance Notes", 'Reference Documents'];
     const proceduresData = [proceduresHeaders];
     procedures.forEach(p => {
       proceduresData.push([
@@ -1251,12 +1251,14 @@ const Emergency = () => {
         p.procedure_steps || '-',
         p.equipment_required || '-',
         p.muster_station || '-',
-        p.key_contacts || '-'
+        p.key_contacts || '-',
+        p.masters_guidance_notes || '-',
+        p.reference_documents || '-'
       ]);
     });
-    if (procedures.length === 0) proceduresData.push(['No procedures recorded', '', '', '', '', '']);
+    if (procedures.length === 0) proceduresData.push(['No procedures recorded', '', '', '', '', '', '', '']);
     const wsProcedures = XLSX.utils.aoa_to_sheet(proceduresData);
-    wsProcedures['!cols'] = [{ wch: 25 }, { wch: 18 }, { wch: 50 }, { wch: 25 }, { wch: 20 }, { wch: 25 }];
+    wsProcedures['!cols'] = [{ wch: 25 }, { wch: 18 }, { wch: 50 }, { wch: 25 }, { wch: 20 }, { wch: 25 }, { wch: 30 }, { wch: 30 }];
     XLSX.utils.book_append_sheet(wb, wsProcedures, 'Procedures');
 
     // Sheet 3: Drills
