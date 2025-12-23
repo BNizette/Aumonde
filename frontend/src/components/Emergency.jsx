@@ -541,8 +541,8 @@ const Emergency = () => {
     },
     {
       name: 'Procedures',
-      columns: ['Title', 'Emergency Type', 'Procedure Steps', 'Equipment Required', 'Muster Station', 'Key Contacts'],
-      sampleData: [['Fire Emergency', 'Fire', '1. Sound alarm\n2. Evacuate', 'Fire extinguisher', 'Deck A', 'Fire Warden']]
+      columns: ['Title', 'Emergency Type', 'Procedure Steps', 'Equipment Required', 'Muster Station', 'Key Contacts', "Master's Guidance Notes", 'Reference Documents'],
+      sampleData: [['Fire Emergency', 'Fire', '1. Sound alarm\n2. Evacuate', 'Fire extinguisher', 'Deck A', 'Fire Warden', 'Ensure all crew accounted for', 'SOLAS Ch III, SMS Manual Section 5']]
     },
     {
       name: 'Drills',
