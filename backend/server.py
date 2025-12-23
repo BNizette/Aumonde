@@ -2614,7 +2614,8 @@ class EmergencyDrill(BaseModel):
     vessel_name: Optional[str] = None
     linked_trip_id: Optional[str] = None  # Link to trip
     linked_trip_name: Optional[str] = None
-    participants: Optional[str] = None
+    crew_participants: Optional[List[str]] = None  # List of crew member names
+    participants: Optional[str] = None  # Other/non-crew participants
     duration_minutes: Optional[int] = None
     observations: Optional[str] = None
     areas_for_improvement: Optional[str] = None
@@ -2629,6 +2630,7 @@ class EmergencyDrillCreate(BaseModel):
     vessel_name: Optional[str] = None
     linked_trip_id: Optional[str] = None
     linked_trip_name: Optional[str] = None
+    crew_participants: Optional[List[str]] = None
     participants: Optional[str] = None
     duration_minutes: Optional[int] = None
     observations: Optional[str] = None
