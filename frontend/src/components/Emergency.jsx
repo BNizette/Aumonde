@@ -2602,7 +2602,10 @@ const Emergency = () => {
                   <div><strong>Duration:</strong> {viewingDrill.duration_minutes ? `${viewingDrill.duration_minutes} min` : 'N/A'}</div>
                   <div className="col-span-2"><strong>Date:</strong> {new Date(viewingDrill.drill_date).toLocaleString()}</div>
                   {viewingDrill.vessel_name && <div className="col-span-2"><strong>Vessel:</strong> {viewingDrill.vessel_name}</div>}
-                  {viewingDrill.participants && <div className="col-span-2"><strong>Participants:</strong> {viewingDrill.participants}</div>}
+                  {viewingDrill.crew_participants && viewingDrill.crew_participants.length > 0 && (
+                    <div className="col-span-2"><strong>Crew Participants:</strong> {viewingDrill.crew_participants.join(', ')}</div>
+                  )}
+                  {viewingDrill.participants && <div className="col-span-2"><strong>Other Participants:</strong> {viewingDrill.participants}</div>}
                 </div>
                 {viewingDrill.observations && (
                   <div>
