@@ -119,6 +119,27 @@ const CrewForm = ({ open, onClose, onSave, crew, mode = 'create', prefilledData 
     }
   };
 
+  // Fetch induction records for this crew member
+  const fetchInductionRecords = async (crewId) => {
+    if (!crewId) return;
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API}/vessel-induction?crew_id=${crewId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const records = await response.json();
+      
+      // Convert array to object keyed by vessel_id
+      const recordsByVessel = {};
+      for (const record of records) {
+        recordsByVessel[record.vessel_id] = record;
+      }
+      setInductionRecords(recordsByVessel);
+    } catch (err) {
+      console.error('Error fetching induction records:', err);
+    }
+  };
+
   useEffect(() => {
     if (crew && mode === 'edit') {
       setFormData({
@@ -133,6 +154,8 @@ const CrewForm = ({ open, onClose, onSave, crew, mode = 'create', prefilledData 
       });
       setSelectedTrainingVessel('');
       setSelectedInductionVessel('');
+      // Fetch induction records for this crew
+      fetchInductionRecords(crew.id);
     } else if (mode === 'create' && prefilledData) {
       setFormData({
         staff_name: prefilledData.staff_name || '',
