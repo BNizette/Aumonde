@@ -101,11 +101,17 @@ const CrewForm = ({ open, onClose, onSave, crew, mode = 'create', prefilledData 
       const vesselsRes = await fetch(`${API}/vessels`, { headers });
       const vesselsData = await vesselsRes.json();
       setVessels(vesselsData || []);
+      
+      // Fetch induction tasks from vessel settings
+      const inductionRes = await fetch(`${API}/settings/vessel/induction_tasks`, { headers });
+      const inductionData = await inductionRes.json();
+      setInductionTasks((inductionData.options || []).filter(t => t.is_active !== false).map(t => t.value));
     } catch (err) {
       console.error('Error fetching settings:', err);
       // Fallback to defaults if settings not available
       setPositions([]);
       setRoles([{ value: 'Crew' }, { value: 'Host' }, { value: 'Both' }]);
+      setInductionTasks([]);
     }
   };
 
