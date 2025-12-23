@@ -96,7 +96,7 @@ const TripLogForm = ({ open, onClose, onSave, log, tripId, mode = 'create' }) =>
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const getGPSLocation = (field) => {
+  const getGPSLocation = async (field) => {
     if (!navigator.geolocation) {
       setError('Geolocation is not supported by your browser');
       setTimeout(() => setError(''), 3000);
@@ -105,6 +105,23 @@ const TripLogForm = ({ open, onClose, onSave, log, tripId, mode = 'create' }) =>
 
     const loadingKey = field === 'gps_location_start' ? 'start' : 'end';
     setGpsLoading(prev => ({ ...prev, [loadingKey]: true }));
+
+    // Check permission status first if available
+    if (navigator.permissions) {
+      try {
+        const permissionStatus = await navigator.permissions.query({ name: 'geolocation' });
+        
+        if (permissionStatus.state === 'denied') {
+          setGpsLoading(prev => ({ ...prev, [loadingKey]: false }));
+          setError('Location access is blocked. Please click the lock/site settings icon in your browser\'s address bar and allow location access, then try again.');
+          setTimeout(() => setError(''), 6000);
+          return;
+        }
+      } catch (e) {
+        // Permissions API not fully supported, continue with geolocation request
+        console.log('Permissions API check failed, proceeding with geolocation request');
+      }
+    }
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -118,16 +135,28 @@ const TripLogForm = ({ open, onClose, onSave, log, tripId, mode = 'create' }) =>
         setGpsLoading(prev => ({ ...prev, [loadingKey]: false }));
         let errorMessage = 'Unable to retrieve location';
         switch (err.code) {
-          case err.PERMISSION_DENIED:
-            errorMessage = 'Location permission denied. Please enable location access in your browser.';
+          case 1: // PERMISSION_DENIED
+            errorMessage = 'Location access denied. Click the lock/site settings icon in your browser\'s address bar, set Location to "Allow", then refresh and try again.';
             break;
-          case err.POSITION_UNAVAILABLE:
-            errorMessage = 'Location information unavailable.';
+          case 2: // POSITION_UNAVAILABLE
+            errorMessage = 'Location information unavailable. Please check your device\'s location services are enabled.';
             break;
-          case err.TIMEOUT:
-            errorMessage = 'Location request timed out.';
+          case 3: // TIMEOUT
+            errorMessage = 'Location request timed out. Please try again.';
             break;
           default:
+            errorMessage = `Location error: ${err.message || 'Unknown error'}`;
+        }
+        setError(errorMessage);
+        setTimeout(() => setError(''), 6000);
+      },
+      { 
+        enableHighAccuracy: true, 
+        timeout: 15000, 
+        maximumAge: 0 
+      }
+    );
+  };
             errorMessage = 'An unknown error occurred.';
         }
         setError(errorMessage);
