@@ -80,6 +80,7 @@ const Emergency = () => {
   } = useAdvancedFilters({
     types: [],
     priorities: [],
+    vessels: [],
     start_date: '',
     end_date: ''
   });
@@ -99,6 +100,7 @@ const Emergency = () => {
     updateFilters: updateProcedureFilters
   } = useAdvancedFilters({
     types: [],
+    vessels: [],
     start_date: '',
     end_date: ''
   });
