@@ -21,6 +21,12 @@ const CrewForm = ({ open, onClose, onSave, crew, mode = 'create', prefilledData 
   const [dragActive, setDragActive] = useState(false);
   const [crewList, setCrewList] = useState([]);
   const [vessels, setVessels] = useState([]);
+  const [inductionTasks, setInductionTasks] = useState([]);
+  
+  // Training tab selected vessel
+  const [selectedTrainingVessel, setSelectedTrainingVessel] = useState('');
+  // Induction tab selected vessel
+  const [selectedInductionVessel, setSelectedInductionVessel] = useState('');
   
   const [formData, setFormData] = useState({
     // Tab 1: Crew Details
@@ -48,17 +54,18 @@ const CrewForm = ({ open, onClose, onSave, crew, mode = 'create', prefilledData 
     license_expiry: '',
     medical_cert_expiry: '',
     
-    // Tab 3: Training Record
+    // Tab 3: Training Record (per vessel)
+    // Structure: { vessel_id: { vessel_name, records: [...], authorising_staff, date_signed_off, vessel_owner, date_signed_owner } }
+    training_by_vessel: {},
+    
+    // Legacy training arrays (keep for backwards compatibility)
     briefings_observed: [],
     briefings_delivered: [],
     practical_experience: [],
     
-    // Tab 4: Sign-off
-    owner_name: '',
-    owner_signature: '',
-    owner_date: '',
-    staff_signature: '',
-    staff_date: '',
+    // Tab 4: Induction (per vessel)
+    // Structure: { vessel_id: { vessel_name, completed_tasks: [...], authorising_staff, date_signed, vessel_owner, date_signed_owner } }
+    induction_by_vessel: {},
     
     // Tab 5: Photo
     crew_photo_url: '',
