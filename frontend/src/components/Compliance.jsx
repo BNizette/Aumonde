@@ -689,7 +689,7 @@ const Compliance = () => {
         </Alert>
       )}
 
-      <Tabs defaultValue="certificates" className="space-y-4">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <TabsList>
           <TabsTrigger value="certificates">Certificates ({certificates.length})</TabsTrigger>
           <TabsTrigger value="requirements">Requirements ({requirements.length})</TabsTrigger>
