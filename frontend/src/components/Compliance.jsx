@@ -553,6 +553,8 @@ const Compliance = () => {
       regulatory_reference: '',
       linked_document_id: '',
       linked_document_name: '',
+      vessel_ids: [],
+      vessel_names: [],
       compliance_status: 'Under Review',
       responsible_person: '',
       notes: ''
