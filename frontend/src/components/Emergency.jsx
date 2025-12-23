@@ -922,7 +922,9 @@ const Emergency = () => {
       procedure_steps: procedure.procedure_steps || '',
       equipment_required: procedure.equipment_required || '',
       muster_station: procedure.muster_station || '',
-      key_contacts: procedure.key_contacts || ''
+      key_contacts: procedure.key_contacts || '',
+      masters_guidance_notes: procedure.masters_guidance_notes || '',
+      reference_documents: procedure.reference_documents || ''
     });
     setEditingProcedureId(procedure.id);
     setProcedureEditMode(true);
