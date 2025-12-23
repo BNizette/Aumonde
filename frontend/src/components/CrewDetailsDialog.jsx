@@ -235,7 +235,7 @@ const CrewDetailsDialog = ({ open, onClose, crew, onMessage }) => {
               <Button 
                 variant="outline" 
                 size="sm"
-                onClick={() => window.location.href = '/trips'}
+                onClick={() => window.location.href = `/trips?crew_name=${encodeURIComponent(crew?.staff_name || '')}`}
               >
                 <ExternalLink className="h-4 w-4 mr-2" />
                 Manage in Trips
