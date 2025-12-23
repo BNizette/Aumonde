@@ -1140,10 +1140,12 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
                       ))}
                     </div>
                   )}
-                </TabsContent>
+                </div>
+                )}
 
-                {/* Drills Tab */}
-                <TabsContent value="drills" className="space-y-4 mt-4">
+                {/* Drills View */}
+                {selectedLogView === 'drills' && (
+                  <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <p className="text-sm text-gray-500">
                       {tripDrills.length} drill{tripDrills.length !== 1 ? 's' : ''} linked to this trip
