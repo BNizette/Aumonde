@@ -864,12 +864,15 @@ class Crew(BaseModel):
     license_expiry: Optional[str] = None
     medical_cert_expiry: Optional[str] = None
     
-    # Tab 3: Training Record
+    # Tab 3: Training Record (legacy - keep for backwards compatibility)
     briefings_observed: Optional[List[TrainingItem]] = []
     briefings_delivered: Optional[List[TrainingItem]] = []
     practical_experience: Optional[List[TrainingItem]] = []
     
-    # Tab 4: Sign-off
+    # Tab 3: Training Record (per vessel - new structure)
+    training_by_vessel: Optional[dict] = {}  # { vessel_id: { vessel_name, records: [...], authorising_staff, date_signed_off, vessel_owner, date_signed_owner } }
+    
+    # Tab 4: Sign-off (legacy - keeping for backwards compatibility)
     owner_name: Optional[str] = None
     owner_signature: Optional[str] = None
     owner_date: Optional[str] = None
