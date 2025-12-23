@@ -1616,37 +1616,12 @@ class AMSAComprehensiveTester:
                 # Store tasks for later use
                 self.induction_tasks = response['options']
                 
-                # If no tasks exist, create some test tasks
-                if tasks_count == 0:
-                    print("      No induction tasks found, creating test tasks...")
-                    
-                    # Create test induction tasks
-                    test_tasks = [
-                        "Safety Equipment Familiarization",
-                        "Lifesaving Equipment Training", 
-                        "Emergency Procedures Briefing",
-                        "Fire Safety Training",
-                        "Personal Protective Equipment"
-                    ]
-                    
-                    # Update settings with test tasks
-                    update_data = {
-                        "module": "vessel",
-                        "category": "induction_tasks",
-                        "options": [{"name": task, "id": f"task_{i+1}"} for i, task in enumerate(test_tasks)]
-                    }
-                    
-                    success, update_response, _ = self.make_request('PUT', 'settings/vessel/induction_tasks', data=update_data)
-                    if success:
-                        self.log_test("Create Test Induction Tasks", True, f"Created {len(test_tasks)} test tasks")
-                        self.induction_tasks = update_data['options']
-                    else:
-                        self.log_test("Create Test Induction Tasks", False, error="Failed to create test tasks")
-                        self.induction_tasks = []
-                else:
-                    # Show existing tasks
-                    task_names = [task.get('name', 'Unknown') for task in response['options'][:3]]
+                # Show existing tasks
+                if tasks_count > 0:
+                    task_names = [task.get('value', 'Unknown') for task in response['options'][:3]]
                     print(f"      Existing tasks: {', '.join(task_names)}{'...' if tasks_count > 3 else ''}")
+                else:
+                    print("      No induction tasks configured")
                     
             else:
                 self.log_test("GET /api/settings/vessel/induction_tasks - Options Array", False, 
@@ -1669,8 +1644,19 @@ class AMSAComprehensiveTester:
             self.log_test("GET /api/crew - Get Crew Member ID", True, 
                          f"Found crew member: {crew_name} (ID: {crew_id})")
             
-            # Test 3: Update crew with induction data - PUT /api/crew/{id}
-            print("\n   Test 3: PUT /api/crew/{id} with induction_by_vessel data...")
+            # Test 3: Test vessel induction endpoint - GET /api/vessel-induction
+            print("\n   Test 3: GET /api/vessel-induction...")
+            
+            success, induction_records, status = self.make_request('GET', 'vessel-induction')
+            if success and isinstance(induction_records, list):
+                self.log_test("GET /api/vessel-induction", True, 
+                             f"Retrieved {len(induction_records)} existing induction records")
+            else:
+                self.log_test("GET /api/vessel-induction", False, 
+                             error=f"Status: {status}")
+            
+            # Test 4: Create/Update vessel induction record - POST /api/vessel-induction
+            print("\n   Test 4: POST /api/vessel-induction with induction data...")
             
             # Get a vessel ID for testing
             success, vessels_response, _ = self.make_request('GET', 'vessels')
@@ -1679,241 +1665,212 @@ class AMSAComprehensiveTester:
                 vessel_id = vessel['id']
                 vessel_name = vessel.get('vessel_name', 'Unknown')
                 
-                # Prepare induction data as per review request example
+                # Prepare induction data using the correct endpoint structure
                 induction_data = {
-                    "induction_by_vessel": {
-                        vessel_id: {
-                            "vessel_name": vessel_name,
-                            "completed_tasks": ["Safety Equipment", "Lifesaving Equipment"] if self.induction_tasks else [],
-                            "authorising_staff": "Test Staff",
-                            "date_signed": "2024-01-15",
-                            "vessel_owner": "Test Owner", 
-                            "date_signed_owner": "2024-01-16"
-                        }
-                    }
+                    "vessel_id": vessel_id,
+                    "crew_id": crew_id,
+                    "crew_name": crew_name,
+                    "completed_tasks": ["Safety Equipment", "Lifesaving Equipment"]
                 }
                 
-                # Get current crew data first
-                success, current_crew, _ = self.make_request('GET', f'crew/{crew_id}')
-                if success:
-                    # Merge induction data with existing crew data
-                    update_data = current_crew.copy()
-                    update_data.update(induction_data)
+                success, create_response, status = self.make_request('POST', 'vessel-induction', data=induction_data)
+                if success and 'id' in create_response:
+                    induction_record_id = create_response['id']
+                    self.log_test("POST /api/vessel-induction - Create Induction Record", True, 
+                                 f"Created induction record: {induction_record_id}")
                     
-                    # Remove fields that shouldn't be in update
-                    update_data.pop('id', None)
-                    update_data.pop('created_by', None)
-                    update_data.pop('created_at', None)
-                    update_data.pop('updated_at', None)
+                    # Test 5: Verify the induction record was created
+                    print("\n   Test 5: Verify induction record persistence...")
                     
-                    success, update_response, status = self.make_request('PUT', f'crew/{crew_id}', data=update_data)
-                    if success:
-                        self.log_test("PUT /api/crew/{id} - Update with Induction Data", True, 
-                                     f"Successfully updated crew with induction data for vessel: {vessel_name}")
-                        
-                        # Test 4: Verify the induction data was saved
-                        print("\n   Test 4: Verify induction data persistence...")
-                        
-                        success, verify_response, _ = self.make_request('GET', f'crew/{crew_id}')
-                        if success:
-                            saved_induction = verify_response.get('induction_by_vessel', {})
-                            if vessel_id in saved_induction:
-                                saved_vessel_data = saved_induction[vessel_id]
-                                expected_tasks = ["Safety Equipment", "Lifesaving Equipment"]
-                                saved_tasks = saved_vessel_data.get('completed_tasks', [])
+                    success, verify_records, _ = self.make_request('GET', f'vessel-induction?vessel_id={vessel_id}')
+                    if success and isinstance(verify_records, list):
+                        # Find our record
+                        our_record = next((r for r in verify_records if r['id'] == induction_record_id), None)
+                        if our_record:
+                            saved_tasks = our_record.get('completed_tasks', [])
+                            expected_tasks = ["Safety Equipment", "Lifesaving Equipment"]
+                            
+                            if (our_record.get('vessel_id') == vessel_id and
+                                our_record.get('crew_id') == crew_id and
+                                saved_tasks == expected_tasks):
                                 
-                                if (saved_vessel_data.get('vessel_name') == vessel_name and
-                                    saved_vessel_data.get('authorising_staff') == "Test Staff" and
-                                    saved_tasks == expected_tasks):
-                                    
-                                    self.log_test("Verify Induction Data Persistence", True, 
-                                                 f"Induction data correctly saved and retrieved")
-                                else:
-                                    self.log_test("Verify Induction Data Persistence", False, 
-                                                 error=f"Induction data mismatch: {saved_vessel_data}")
+                                self.log_test("Verify Induction Record Persistence", True, 
+                                             f"Induction record correctly saved with {len(saved_tasks)} completed tasks")
                             else:
-                                self.log_test("Verify Induction Data Persistence", False, 
-                                             error=f"Vessel {vessel_id} not found in induction_by_vessel")
+                                self.log_test("Verify Induction Record Persistence", False, 
+                                             error=f"Induction record data mismatch: {our_record}")
                         else:
-                            self.log_test("Verify Induction Data Persistence", False, 
-                                         error="Failed to retrieve updated crew data")
+                            self.log_test("Verify Induction Record Persistence", False, 
+                                         error=f"Induction record {induction_record_id} not found")
+                    else:
+                        self.log_test("Verify Induction Record Persistence", False, 
+                                     error="Failed to retrieve induction records")
+                    
+                    # Test 6: Update existing induction record (upsert functionality)
+                    print("\n   Test 6: Update existing induction record...")
+                    
+                    # Add more completed tasks
+                    updated_induction_data = {
+                        "vessel_id": vessel_id,
+                        "crew_id": crew_id,
+                        "crew_name": crew_name,
+                        "completed_tasks": ["Safety Equipment", "Lifesaving Equipment", "Fire safety equpment"]
+                    }
+                    
+                    success, update_response, _ = self.make_request('POST', 'vessel-induction', data=updated_induction_data)
+                    if success:
+                        self.log_test("Update Existing Induction Record (Upsert)", True, 
+                                     "Successfully updated existing induction record")
                         
-                        # Test 5: Test updating existing induction data
-                        print("\n   Test 5: Update existing induction data...")
+                        # Verify the update
+                        success, verify_updated, _ = self.make_request('GET', f'vessel-induction?vessel_id={vessel_id}')
+                        if success:
+                            updated_record = next((r for r in verify_updated if r['crew_id'] == crew_id), None)
+                            if updated_record:
+                                updated_tasks = updated_record.get('completed_tasks', [])
+                                
+                                if len(updated_tasks) == 3 and "Fire safety equpment" in updated_tasks:
+                                    self.log_test("Verify Updated Induction Record", True, 
+                                                 f"Updated tasks: {updated_tasks}")
+                                else:
+                                    self.log_test("Verify Updated Induction Record", False, 
+                                                 error=f"Tasks not updated correctly: {updated_tasks}")
+                            else:
+                                self.log_test("Verify Updated Induction Record", False, 
+                                             error="Updated record not found")
+                        else:
+                            self.log_test("Verify Updated Induction Record", False, 
+                                         error="Failed to verify updated data")
+                    else:
+                        self.log_test("Update Existing Induction Record (Upsert)", False, 
+                                     error="Failed to update induction record")
+                    
+                    # Test 7: Test multiple crew members for same vessel
+                    print("\n   Test 7: Test multiple crew members for same vessel...")
+                    
+                    if len(crew_response) > 1:
+                        crew_2 = crew_response[1]
+                        crew_2_id = crew_2['id']
+                        crew_2_name = crew_2.get('staff_name', 'Unknown')
                         
-                        # Add more completed tasks
-                        updated_induction_data = {
-                            "induction_by_vessel": {
-                                vessel_id: {
-                                    "vessel_name": vessel_name,
-                                    "completed_tasks": ["Safety Equipment", "Lifesaving Equipment", "Emergency Procedures"],
-                                    "authorising_staff": "Updated Test Staff",
-                                    "date_signed": "2024-01-20",
-                                    "vessel_owner": "Updated Test Owner",
-                                    "date_signed_owner": "2024-01-21"
-                                }
-                            }
+                        # Add induction record for second crew member
+                        crew_2_induction = {
+                            "vessel_id": vessel_id,
+                            "crew_id": crew_2_id,
+                            "crew_name": crew_2_name,
+                            "completed_tasks": ["Vessel Operating Controls"]
                         }
                         
-                        # Get current crew data and update
-                        success, current_crew_2, _ = self.make_request('GET', f'crew/{crew_id}')
+                        success, crew_2_response, _ = self.make_request('POST', 'vessel-induction', data=crew_2_induction)
                         if success:
-                            update_data_2 = current_crew_2.copy()
-                            update_data_2.update(updated_induction_data)
+                            self.log_test("Multiple Crew Induction Records", True, 
+                                         f"Successfully added induction record for second crew member")
                             
-                            # Remove fields that shouldn't be in update
-                            update_data_2.pop('id', None)
-                            update_data_2.pop('created_by', None)
-                            update_data_2.pop('created_at', None)
-                            update_data_2.pop('updated_at', None)
-                            
-                            success, update_response_2, _ = self.make_request('PUT', f'crew/{crew_id}', data=update_data_2)
+                            # Verify both crew records exist for the vessel
+                            success, all_vessel_records, _ = self.make_request('GET', f'vessel-induction?vessel_id={vessel_id}')
                             if success:
-                                self.log_test("Update Existing Induction Data", True, 
-                                             "Successfully updated existing induction data")
+                                crew_1_record = next((r for r in all_vessel_records if r['crew_id'] == crew_id), None)
+                                crew_2_record = next((r for r in all_vessel_records if r['crew_id'] == crew_2_id), None)
                                 
-                                # Verify the update
-                                success, verify_response_2, _ = self.make_request('GET', f'crew/{crew_id}')
-                                if success:
-                                    updated_induction = verify_response_2.get('induction_by_vessel', {}).get(vessel_id, {})
-                                    updated_tasks = updated_induction.get('completed_tasks', [])
+                                if crew_1_record and crew_2_record:
+                                    crew_1_tasks = len(crew_1_record.get('completed_tasks', []))
+                                    crew_2_tasks = len(crew_2_record.get('completed_tasks', []))
                                     
-                                    if len(updated_tasks) == 3 and "Emergency Procedures" in updated_tasks:
-                                        self.log_test("Verify Updated Induction Data", True, 
-                                                     f"Updated tasks: {updated_tasks}")
-                                    else:
-                                        self.log_test("Verify Updated Induction Data", False, 
-                                                     error=f"Tasks not updated correctly: {updated_tasks}")
+                                    self.log_test("Verify Multiple Crew Induction Records", True, 
+                                                 f"Crew 1: {crew_1_tasks} tasks, Crew 2: {crew_2_tasks} tasks")
                                 else:
-                                    self.log_test("Verify Updated Induction Data", False, 
-                                                 error="Failed to verify updated data")
+                                    self.log_test("Verify Multiple Crew Induction Records", False, 
+                                                 error="Not all crew records found")
                             else:
-                                self.log_test("Update Existing Induction Data", False, 
-                                             error="Failed to update induction data")
-                        
-                        # Test 6: Test multiple vessels induction data
-                        print("\n   Test 6: Test multiple vessels induction data...")
-                        
-                        if len(vessels_response) > 1:
-                            vessel_2 = vessels_response[1]
-                            vessel_2_id = vessel_2['id']
-                            vessel_2_name = vessel_2.get('vessel_name', 'Unknown')
-                            
-                            # Add induction data for second vessel
-                            multi_vessel_induction = {
-                                "induction_by_vessel": {
-                                    vessel_id: {
-                                        "vessel_name": vessel_name,
-                                        "completed_tasks": ["Safety Equipment", "Lifesaving Equipment", "Emergency Procedures"],
-                                        "authorising_staff": "Updated Test Staff",
-                                        "date_signed": "2024-01-20",
-                                        "vessel_owner": "Updated Test Owner",
-                                        "date_signed_owner": "2024-01-21"
-                                    },
-                                    vessel_2_id: {
-                                        "vessel_name": vessel_2_name,
-                                        "completed_tasks": ["Fire Safety Training"],
-                                        "authorising_staff": "Second Vessel Staff",
-                                        "date_signed": "2024-01-25",
-                                        "vessel_owner": "Second Vessel Owner",
-                                        "date_signed_owner": "2024-01-26"
-                                    }
-                                }
-                            }
-                            
-                            # Get current crew data and update with multi-vessel data
-                            success, current_crew_3, _ = self.make_request('GET', f'crew/{crew_id}')
-                            if success:
-                                update_data_3 = current_crew_3.copy()
-                                update_data_3.update(multi_vessel_induction)
-                                
-                                # Remove fields that shouldn't be in update
-                                update_data_3.pop('id', None)
-                                update_data_3.pop('created_by', None)
-                                update_data_3.pop('created_at', None)
-                                update_data_3.pop('updated_at', None)
-                                
-                                success, update_response_3, _ = self.make_request('PUT', f'crew/{crew_id}', data=update_data_3)
-                                if success:
-                                    self.log_test("Multi-Vessel Induction Data", True, 
-                                                 f"Successfully added induction data for 2 vessels")
-                                    
-                                    # Verify both vessels' data
-                                    success, verify_response_3, _ = self.make_request('GET', f'crew/{crew_id}')
-                                    if success:
-                                        multi_induction = verify_response_3.get('induction_by_vessel', {})
-                                        
-                                        if (vessel_id in multi_induction and vessel_2_id in multi_induction):
-                                            vessel_1_tasks = len(multi_induction[vessel_id].get('completed_tasks', []))
-                                            vessel_2_tasks = len(multi_induction[vessel_2_id].get('completed_tasks', []))
-                                            
-                                            self.log_test("Verify Multi-Vessel Induction Data", True, 
-                                                         f"Vessel 1: {vessel_1_tasks} tasks, Vessel 2: {vessel_2_tasks} tasks")
-                                        else:
-                                            self.log_test("Verify Multi-Vessel Induction Data", False, 
-                                                         error="Not all vessels found in induction data")
-                                    else:
-                                        self.log_test("Verify Multi-Vessel Induction Data", False, 
-                                                     error="Failed to verify multi-vessel data")
-                                else:
-                                    self.log_test("Multi-Vessel Induction Data", False, 
-                                                 error="Failed to update with multi-vessel data")
+                                self.log_test("Verify Multiple Crew Induction Records", False, 
+                                             error="Failed to verify multiple crew records")
                         else:
-                            self.log_test("Multi-Vessel Induction Data", False, 
-                                         error="Only one vessel available, cannot test multi-vessel functionality")
-                        
+                            self.log_test("Multiple Crew Induction Records", False, 
+                                         error="Failed to create second crew induction record")
                     else:
-                        self.log_test("PUT /api/crew/{id} - Update with Induction Data", False, 
-                                     error=f"Status: {status}, Response: {update_response}")
+                        self.log_test("Multiple Crew Induction Records", False, 
+                                     error="Only one crew member available, cannot test multiple crew functionality")
+                    
+                    # Test 8: Test filtering by vessel_id
+                    print("\n   Test 8: Test vessel-specific filtering...")
+                    
+                    if len(vessels_response) > 1:
+                        vessel_2 = vessels_response[1]
+                        vessel_2_id = vessel_2['id']
+                        
+                        # Create record for different vessel
+                        different_vessel_data = {
+                            "vessel_id": vessel_2_id,
+                            "crew_id": crew_id,
+                            "crew_name": crew_name,
+                            "completed_tasks": ["Misc equipment"]
+                        }
+                        
+                        success, _, _ = self.make_request('POST', 'vessel-induction', data=different_vessel_data)
+                        if success:
+                            # Test filtering by vessel_id
+                            success, vessel_1_records, _ = self.make_request('GET', f'vessel-induction?vessel_id={vessel_id}')
+                            success2, vessel_2_records, _ = self.make_request('GET', f'vessel-induction?vessel_id={vessel_2_id}')
+                            
+                            if success and success2:
+                                vessel_1_count = len(vessel_1_records)
+                                vessel_2_count = len(vessel_2_records)
+                                
+                                self.log_test("Vessel-Specific Filtering", True, 
+                                             f"Vessel 1: {vessel_1_count} records, Vessel 2: {vessel_2_count} records")
+                            else:
+                                self.log_test("Vessel-Specific Filtering", False, 
+                                             error="Failed to test vessel filtering")
+                        else:
+                            self.log_test("Vessel-Specific Filtering", False, 
+                                         error="Failed to create record for second vessel")
+                    else:
+                        self.log_test("Vessel-Specific Filtering", False, 
+                                     error="Only one vessel available, cannot test vessel filtering")
+                        
                 else:
-                    self.log_test("PUT /api/crew/{id} - Update with Induction Data", False, 
-                                 error="Failed to get current crew data")
+                    self.log_test("POST /api/vessel-induction - Create Induction Record", False, 
+                                 error=f"Status: {status}, Response: {create_response}")
             else:
-                self.log_test("PUT /api/crew/{id} - Update with Induction Data", False, 
+                self.log_test("POST /api/vessel-induction - Create Induction Record", False, 
                              error="No vessels available for testing")
         else:
             self.log_test("GET /api/crew - Get Crew Member ID", False, 
                          error=f"Status: {status} or no crew members found")
         
-        # Test 7: Test induction data validation
-        print("\n   Test 7: Test induction data validation...")
+        # Test 9: Test induction data validation
+        print("\n   Test 9: Test induction data validation...")
         
-        if hasattr(self, 'existing_crew') and self.existing_crew:
+        if hasattr(self, 'existing_crew') and self.existing_crew and hasattr(self, 'existing_vessels') and self.existing_vessels:
             test_crew = self.existing_crew[0]
-            test_crew_id = test_crew['id']
+            test_vessel = self.existing_vessels[0]
             
-            # Test with invalid induction data structure
+            # Test with missing required fields
             invalid_induction_data = {
-                "induction_by_vessel": "invalid_string_instead_of_object"
+                "vessel_id": test_vessel['id'],
+                # Missing crew_id and crew_name
+                "completed_tasks": ["Safety Equipment"]
             }
             
-            success, current_crew_4, _ = self.make_request('GET', f'crew/{test_crew_id}')
-            if success:
-                update_data_4 = current_crew_4.copy()
-                update_data_4.update(invalid_induction_data)
-                
-                # Remove fields that shouldn't be in update
-                update_data_4.pop('id', None)
-                update_data_4.pop('created_by', None)
-                update_data_4.pop('created_at', None)
-                update_data_4.pop('updated_at', None)
-                
-                success, response, status = self.make_request('PUT', f'crew/{test_crew_id}', 
-                                                            data=update_data_4, expected_status=422)
-                if status == 422:
-                    self.log_test("Induction Data Validation - Invalid Structure", True, 
-                                 "Correctly rejected invalid induction data structure")
-                else:
-                    # If it doesn't validate, that's also acceptable - the field might be flexible
-                    self.log_test("Induction Data Validation - Invalid Structure", True, 
-                                 f"Field accepts flexible data (status: {status})")
+            success, response, status = self.make_request('POST', 'vessel-induction', 
+                                                        data=invalid_induction_data, expected_status=422)
+            if status == 422:
+                self.log_test("Induction Data Validation - Missing Required Fields", True, 
+                             "Correctly rejected invalid induction data")
+            else:
+                self.log_test("Induction Data Validation - Missing Required Fields", False, 
+                             error=f"Expected 422, got {status}")
         
         print("\n   📊 Induction Functionality Test Summary:")
-        print("      - Tested GET /api/settings/vessel/induction_tasks")
-        print("      - Tested GET /api/crew to retrieve crew member ID")
-        print("      - Tested PUT /api/crew/{id} with induction_by_vessel data")
-        print("      - Verified induction data persistence and updates")
-        print("      - Tested multi-vessel induction data support")
+        print("      - ✅ Tested GET /api/settings/vessel/induction_tasks")
+        print("      - ✅ Tested GET /api/crew to retrieve crew member ID") 
+        print("      - ✅ Tested GET /api/vessel-induction for existing records")
+        print("      - ✅ Tested POST /api/vessel-induction for creating/updating records")
+        print("      - ✅ Verified induction record persistence and updates")
+        print("      - ✅ Tested multiple crew members per vessel")
+        print("      - ✅ Tested vessel-specific filtering")
+        print("      - ✅ Tested data validation")
+        print("      - ℹ️  Note: Uses /api/vessel-induction endpoint, not crew.induction_by_vessel field")
 
     # ============================================================================
     # CLEANUP AND MAIN EXECUTION
