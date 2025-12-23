@@ -23,12 +23,14 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
 const Maintenance = () => {
+  const location = useLocation();
   const [maintenanceRecords, setMaintenanceRecords] = useState([]);
   const [filteredRecords, setFilteredRecords] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [statuses, setStatuses] = useState([]);
   const [priorities, setPriorities] = useState([]);
+  const [vessels, setVessels] = useState([]);
   const [sortBy, setSortBy] = useState('priority');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
@@ -51,6 +53,7 @@ const Maintenance = () => {
   } = useAdvancedFilters({
     statuses: [],
     priorities: [],
+    vessels: [],
     start_date: '',
     end_date: ''
   });
@@ -61,7 +64,34 @@ const Maintenance = () => {
       setUser(JSON.parse(userData));
     }
     fetchMaintenanceRecords();
+    fetchVessels();
   }, []);
+
+  // Handle URL parameters for pre-filtering
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const vesselName = params.get('vessel_name');
+    
+    if (vesselName) {
+      const decodedVesselName = decodeURIComponent(vesselName);
+      setFilters(prev => ({
+        ...prev,
+        vessels: [decodedVesselName]
+      }));
+    }
+  }, [location.search]);
+
+  const fetchVessels = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`${API}/vessels`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setVessels(response.data || []);
+    } catch (err) {
+      console.error('Error fetching vessels:', err);
+    }
+  };
 
   useEffect(() => {
     applyFiltersAndSort();
