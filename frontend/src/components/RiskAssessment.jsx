@@ -113,6 +113,9 @@ const RiskAssessment = () => {
     if (filters.statuses.length > 0) {
       filtered = filtered.filter(risk => filters.statuses.includes(risk.status));
     }
+    if (filters.vessels && filters.vessels.length > 0) {
+      filtered = filtered.filter(risk => filters.vessels.includes(risk.vessel_name));
+    }
     // Filter overdue risks
     if (filters.overdue) {
       const today = new Date();
