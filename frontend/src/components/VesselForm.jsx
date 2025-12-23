@@ -708,6 +708,116 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create' }) => {
                   </Button>
                 </div>
               </div>
+
+              {/* Safety Equipment Section */}
+              <div className="mt-6">
+                <h3 className="text-lg font-semibold mb-4 text-gray-900 border-b pb-2">Safety Equipment</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="life_rafts">Life Rafts (Quantity)</Label>
+                    <Input
+                      id="life_rafts"
+                      type="number"
+                      value={formData.life_rafts}
+                      onChange={(e) => handleChange('life_rafts', e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="life_jackets">Life Jackets (Quantity)</Label>
+                    <Input
+                      id="life_jackets"
+                      type="number"
+                      value={formData.life_jackets}
+                      onChange={(e) => handleChange('life_jackets', e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="fire_extinguishers">Fire Extinguishers (Quantity)</Label>
+                    <Input
+                      id="fire_extinguishers"
+                      type="number"
+                      value={formData.fire_extinguishers}
+                      onChange={(e) => handleChange('fire_extinguishers', e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="flares">Flares (Quantity)</Label>
+                    <Input
+                      id="flares"
+                      type="number"
+                      value={formData.flares}
+                      onChange={(e) => handleChange('flares', e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-2 col-span-2">
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="epirb_basic"
+                        checked={formData.epirb}
+                        onCheckedChange={(checked) => handleChange('epirb', checked)}
+                      />
+                      <Label htmlFor="epirb_basic">EPIRB (Emergency Position Indicating Radio Beacon)</Label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Equipment Section */}
+              <div className="mt-6">
+                <h3 className="text-lg font-semibold mb-4 text-gray-900 border-b pb-2">Equipment</h3>
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="navigation_equipment_basic">Navigation Equipment</Label>
+                    <Textarea
+                      id="navigation_equipment_basic"
+                      value={formData.navigation_equipment}
+                      onChange={(e) => handleChange('navigation_equipment', e.target.value)}
+                      placeholder="GPS, radar, compass, charts, etc."
+                      rows={3}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="communication_equipment_basic">Communication Equipment</Label>
+                    <Textarea
+                      id="communication_equipment_basic"
+                      value={formData.communication_equipment}
+                      onChange={(e) => handleChange('communication_equipment', e.target.value)}
+                      placeholder="VHF radio, satellite phone, etc."
+                      rows={3}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="safety_equipment_basic">Safety Equipment</Label>
+                    <Textarea
+                      id="safety_equipment_basic"
+                      value={formData.safety_equipment}
+                      onChange={(e) => handleChange('safety_equipment', e.target.value)}
+                      placeholder="First aid kits, distress signals, etc."
+                      rows={3}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="inside_equipment_basic">Inside Equipment</Label>
+                    <Textarea
+                      id="inside_equipment_basic"
+                      value={formData.inside_equipment}
+                      onChange={(e) => handleChange('inside_equipment', e.target.value)}
+                      placeholder="Interior equipment and fixtures"
+                      rows={3}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="outside_equipment_basic">Outside Equipment</Label>
+                    <Textarea
+                      id="outside_equipment_basic"
+                      value={formData.outside_equipment}
+                      onChange={(e) => handleChange('outside_equipment', e.target.value)}
+                      placeholder="Exterior equipment and fixtures"
+                      rows={3}
+                    />
+                  </div>
+                </div>
+              </div>
             </TabsContent>
 
             {/* TAB 2: SPECIFICATIONS & SAFETY */}
