@@ -2017,7 +2017,6 @@ const Emergency = () => {
                       <TableRow>
                         <TableHead>Emergency Type</TableHead>
                         <TableHead>Procedure Title</TableHead>
-                        <TableHead>Purpose</TableHead>
                         <TableHead>Date Authorised</TableHead>
                         <TableHead className="text-right">Actions</TableHead>
                       </TableRow>
@@ -2029,7 +2028,6 @@ const Emergency = () => {
                             <Badge>{proc.emergency_type}</Badge>
                           </TableCell>
                           <TableCell className="font-medium">{proc.title}</TableCell>
-                          <TableCell className="max-w-xs truncate">{proc.purpose || '-'}</TableCell>
                           <TableCell>{proc.date_authorised ? new Date(proc.date_authorised).toLocaleDateString() : '-'}</TableCell>
                           <TableCell className="text-right">
                             <div className="flex justify-end gap-2">
