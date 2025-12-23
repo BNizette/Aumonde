@@ -108,6 +108,8 @@ const Compliance = () => {
     category: 'Safety',
     description: '',
     regulatory_reference: '',
+    linked_document_id: '',
+    linked_document_name: '',
     compliance_status: 'Under Review',
     responsible_person: '',
     notes: ''
