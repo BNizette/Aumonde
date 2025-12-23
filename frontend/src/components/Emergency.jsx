@@ -2292,8 +2292,42 @@ const Emergency = () => {
               </Select>
             </div>
             <div>
-              <Label>Participants</Label>
-              <Textarea rows={2} value={drillForm.participants} onChange={(e) => setDrillForm({...drillForm, participants: e.target.value})} placeholder="List participants..." />
+              <Label>Crew Participants</Label>
+              <Select 
+                value="" 
+                onValueChange={(value) => {
+                  if (value && !drillForm.crew_participants.includes(value)) {
+                    setDrillForm({...drillForm, crew_participants: [...drillForm.crew_participants, value]});
+                  }
+                }}
+              >
+                <SelectTrigger><SelectValue placeholder="Select crew members..." /></SelectTrigger>
+                <SelectContent>
+                  {crewList.filter(c => !drillForm.crew_participants.includes(c.staff_name)).map(crew => (
+                    <SelectItem key={crew.id} value={crew.staff_name}>{crew.staff_name} - {crew.default_position || 'Crew'}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {drillForm.crew_participants.length > 0 && (
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {drillForm.crew_participants.map((name, idx) => (
+                    <Badge key={idx} variant="secondary" className="flex items-center gap-1">
+                      {name}
+                      <button 
+                        type="button" 
+                        onClick={() => setDrillForm({...drillForm, crew_participants: drillForm.crew_participants.filter((_, i) => i !== idx)})}
+                        className="ml-1 hover:text-red-500"
+                      >
+                        ×
+                      </button>
+                    </Badge>
+                  ))}
+                </div>
+              )}
+            </div>
+            <div>
+              <Label>Other Participants</Label>
+              <Textarea rows={2} value={drillForm.participants} onChange={(e) => setDrillForm({...drillForm, participants: e.target.value})} placeholder="List any non-crew participants (visitors, inspectors, etc.)..." />
             </div>
             <div>
               <Label>Observations</Label>
