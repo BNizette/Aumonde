@@ -250,20 +250,37 @@ const Emergency = () => {
       setCrewList(crewRes.data);
       setTrips(tripsRes.data || []);
       
-      // Fetch drill records for all drills
+      // Fetch drill records for all drills IN PARALLEL
+      const drillRecordPromises = drillsRes.data.map(drill => 
+        axios.get(`${API}/emergency/drill-records/${drill.id}`, { headers })
+          .then(res => ({ drillId: drill.id, records: res.data }))
+          .catch(() => ({ drillId: drill.id, records: [] }))
+      );
+      
+      // Fetch training records for all procedures IN PARALLEL
+      const trainingRecordPromises = proceduresRes.data.map(procedure => 
+        axios.get(`${API}/emergency/training-records/${procedure.id}`, { headers })
+          .then(res => ({ procedureId: procedure.id, records: res.data }))
+          .catch(() => ({ procedureId: procedure.id, records: [] }))
+      );
+
+      // Wait for all parallel requests to complete
+      const [drillRecordResults, trainingRecordResults] = await Promise.all([
+        Promise.all(drillRecordPromises),
+        Promise.all(trainingRecordPromises)
+      ]);
+
+      // Build the maps from results
       const recordsMap = {};
-      for (const drill of drillsRes.data) {
-        const recordsRes = await axios.get(`${API}/emergency/drill-records/${drill.id}`, { headers });
-        recordsMap[drill.id] = recordsRes.data;
-      }
+      drillRecordResults.forEach(({ drillId, records }) => {
+        recordsMap[drillId] = records;
+      });
       setDrillRecords(recordsMap);
 
-      // Fetch training records for all procedures
       const trainingMap = {};
-      for (const procedure of proceduresRes.data) {
-        const trainingRes = await axios.get(`${API}/emergency/training-records/${procedure.id}`, { headers });
-        trainingMap[procedure.id] = trainingRes.data;
-      }
+      trainingRecordResults.forEach(({ procedureId, records }) => {
+        trainingMap[procedureId] = records;
+      });
       setTrainingRecords(trainingMap);
     } catch (err) {
       setError('Error fetching emergency data');
