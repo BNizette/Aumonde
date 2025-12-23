@@ -2077,7 +2077,10 @@ const Emergency = () => {
                             <strong>Date:</strong> {new Date(drill.drill_date).toLocaleString()}
                           </p>
                           {drill.vessel_name && <p className="text-sm"><strong>Vessel:</strong> {drill.vessel_name}</p>}
-                          {drill.participants && <p className="text-sm"><strong>Participants:</strong> {drill.participants}</p>}
+                          {drill.crew_participants && drill.crew_participants.length > 0 && (
+                            <p className="text-sm"><strong>Crew:</strong> {drill.crew_participants.join(', ')}</p>
+                          )}
+                          {drill.participants && <p className="text-sm"><strong>Other Participants:</strong> {drill.participants}</p>}
                           {drill.observations && (
                             <div className="mt-2 text-sm">
                               <strong>Observations:</strong>
