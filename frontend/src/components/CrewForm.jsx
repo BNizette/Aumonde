@@ -123,8 +123,12 @@ const CrewForm = ({ open, onClose, onSave, crew, mode = 'create', prefilledData 
         briefings_observed: crew.briefings_observed || [],
         briefings_delivered: crew.briefings_delivered || [],
         practical_experience: crew.practical_experience || [],
+        training_by_vessel: crew.training_by_vessel || {},
+        induction_by_vessel: crew.induction_by_vessel || {},
         crew_photo_url: crew.crew_photo_url || '',
       });
+      setSelectedTrainingVessel('');
+      setSelectedInductionVessel('');
     } else if (mode === 'create' && prefilledData) {
       setFormData({
         staff_name: prefilledData.staff_name || '',
@@ -151,13 +155,12 @@ const CrewForm = ({ open, onClose, onSave, crew, mode = 'create', prefilledData 
         briefings_observed: [],
         briefings_delivered: [],
         practical_experience: [],
-        owner_name: '',
-        owner_signature: '',
-        owner_date: '',
-        staff_signature: '',
-        staff_date: '',
+        training_by_vessel: {},
+        induction_by_vessel: {},
         crew_photo_url: '',
       });
+      setSelectedTrainingVessel('');
+      setSelectedInductionVessel('');
     } else if (mode === 'create') {
       setFormData({
         staff_name: '',
@@ -184,13 +187,12 @@ const CrewForm = ({ open, onClose, onSave, crew, mode = 'create', prefilledData 
         briefings_observed: [],
         briefings_delivered: [],
         practical_experience: [],
-        owner_name: '',
-        owner_signature: '',
-        owner_date: '',
-        staff_signature: '',
-        staff_date: '',
+        training_by_vessel: {},
+        induction_by_vessel: {},
         crew_photo_url: '',
       });
+      setSelectedTrainingVessel('');
+      setSelectedInductionVessel('');
     }
   }, [crew, mode, open, prefilledData]);
 
