@@ -391,6 +391,15 @@ const Emergency = () => {
       filtered = filtered.filter(proc => procedureFilters.types.includes(proc.emergency_type));
     }
 
+    // Apply multi-select vessel filter
+    if (procedureFilters.vessels.length > 0) {
+      filtered = filtered.filter(proc => {
+        // Include global procedures (no vessels assigned) and procedures for selected vessels
+        if (!proc.vessel_ids || proc.vessel_ids.length === 0) return true; // Global procedure
+        return proc.vessel_ids.some(vid => procedureFilters.vessels.includes(vid));
+      });
+    }
+
     // Apply date range filter (created_at)
     if (procedureFilters.start_date || procedureFilters.end_date) {
       filtered = filtered.filter(proc => {
