@@ -475,66 +475,107 @@ const CrewForm = ({ open, onClose, onSave, crew, mode = 'create', prefilledData 
     });
   };
 
-  // Induction by vessel functions
+  // Induction by vessel functions - using API
   const initializeInductionForVessel = (vesselId) => {
     if (!vesselId) return;
     const vessel = vessels.find(v => v.id === vesselId);
     if (!vessel) return;
     
-    setFormData(prev => {
-      if (prev.induction_by_vessel[vesselId]) return prev; // Already exists
-      return {
+    // Initialize local state if not already exists
+    if (!inductionRecords[vesselId]) {
+      setInductionRecords(prev => ({
         ...prev,
-        induction_by_vessel: {
-          ...prev.induction_by_vessel,
-          [vesselId]: {
-            vessel_name: vessel.vessel_name,
-            completed_tasks: [],
-            authorising_staff: '',
-            date_signed: '',
-            vessel_owner: vessel.owner_name || '',
-            date_signed_owner: ''
-          }
+        [vesselId]: {
+          vessel_id: vesselId,
+          vessel_name: vessel.vessel_name,
+          crew_id: crew?.id || '',
+          crew_name: formData.staff_name || crew?.staff_name || '',
+          completed_tasks: [],
+          authorising_staff: '',
+          date_signed: '',
+          vessel_owner: vessel.owner_name || '',
+          date_signed_owner: ''
         }
-      };
-    });
+      }));
+    }
   };
 
-  const toggleInductionTask = (vesselId, taskName) => {
-    setFormData(prev => {
-      const vesselData = prev.induction_by_vessel[vesselId] || { completed_tasks: [] };
-      const completed = vesselData.completed_tasks || [];
-      const isCompleted = completed.includes(taskName);
+  // Save induction record to API
+  const saveInductionRecord = async (vesselId, recordData) => {
+    if (!crew?.id || mode === 'create') return; // Can only save for existing crew
+    
+    setSavingInduction(true);
+    try {
+      const token = localStorage.getItem('token');
+      const vessel = vessels.find(v => v.id === vesselId);
       
-      return {
-        ...prev,
-        induction_by_vessel: {
-          ...prev.induction_by_vessel,
-          [vesselId]: {
-            ...vesselData,
-            completed_tasks: isCompleted 
-              ? completed.filter(t => t !== taskName)
-              : [...completed, taskName]
-          }
-        }
+      const payload = {
+        vessel_id: vesselId,
+        vessel_name: vessel?.vessel_name || recordData.vessel_name || '',
+        crew_id: crew.id,
+        crew_name: formData.staff_name || crew.staff_name,
+        completed_tasks: recordData.completed_tasks || [],
+        authorising_staff: recordData.authorising_staff || '',
+        date_signed: recordData.date_signed || '',
+        vessel_owner: recordData.vessel_owner || '',
+        date_signed_owner: recordData.date_signed_owner || ''
       };
-    });
+      
+      await fetch(`${API}/vessel-induction`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(payload)
+      });
+    } catch (err) {
+      console.error('Error saving induction record:', err);
+    } finally {
+      setSavingInduction(false);
+    }
   };
 
-  const updateInductionSignoff = (vesselId, field, value) => {
-    setFormData(prev => {
-      const vesselData = prev.induction_by_vessel[vesselId] || {};
-      return {
-        ...prev,
-        induction_by_vessel: {
-          ...prev.induction_by_vessel,
-          [vesselId]: {
-            ...vesselData,
-            [field]: value
-          }
-        }
-      };
-    });
+  const toggleInductionTask = async (vesselId, taskName) => {
+    const currentRecord = inductionRecords[vesselId] || { completed_tasks: [] };
+    const completed = currentRecord.completed_tasks || [];
+    const isCompleted = completed.includes(taskName);
+    
+    const newCompletedTasks = isCompleted 
+      ? completed.filter(t => t !== taskName)
+      : [...completed, taskName];
+    
+    const updatedRecord = {
+      ...currentRecord,
+      completed_tasks: newCompletedTasks
+    };
+    
+    // Update local state immediately
+    setInductionRecords(prev => ({
+      ...prev,
+      [vesselId]: updatedRecord
+    }));
+    
+    // Save to API
+    await saveInductionRecord(vesselId, updatedRecord);
+  };
+
+  const updateInductionSignoff = async (vesselId, field, value) => {
+    const currentRecord = inductionRecords[vesselId] || {};
+    
+    const updatedRecord = {
+      ...currentRecord,
+      [field]: value
+    };
+    
+    // Update local state immediately
+    setInductionRecords(prev => ({
+      ...prev,
+      [vesselId]: updatedRecord
+    }));
+    
+    // Save to API
+    await saveInductionRecord(vesselId, updatedRecord);
   };
 
   // Handle vessel selection for training tab
