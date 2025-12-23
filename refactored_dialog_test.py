@@ -9,7 +9,7 @@ import json
 import sys
 
 class RefactoredDialogTester:
-    def __init__(self, base_url="https://crew-navigation.preview.emergentagent.com"):
+    def __init__(self, base_url="https://maritime-ops-3.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.token = None
