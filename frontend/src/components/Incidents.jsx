@@ -132,6 +132,20 @@ const Incidents = () => {
     fetchSettings();
   }, [filters]);
 
+  // Handle URL parameters for pre-filtering
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const vesselName = params.get('vessel_name');
+    
+    if (vesselName) {
+      const decodedVesselName = decodeURIComponent(vesselName);
+      setFilters(prev => ({
+        ...prev,
+        vessels: [decodedVesselName]
+      }));
+    }
+  }, [location.search]);
+
   const fetchSettings = async () => {
     try {
       const token = localStorage.getItem('token');
