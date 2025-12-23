@@ -28,6 +28,7 @@ const Emergency = () => {
   const [drills, setDrills] = useState([]);
   const [vessels, setVessels] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('contacts');
   const [contactDialogOpen, setContactDialogOpen] = useState(false);
   const [procedureDialogOpen, setProcedureDialogOpen] = useState(false);
   const [drillDialogOpen, setDrillDialogOpen] = useState(false);
