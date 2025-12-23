@@ -492,8 +492,7 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create' }) => {
 
         <Tabs defaultValue="basic" className="w-full">
           <TabsList className="grid w-full grid-cols-7">
-            <TabsTrigger value="basic">Basic</TabsTrigger>
-            <TabsTrigger value="specs">Specifications</TabsTrigger>
+            <TabsTrigger value="basic">Basic & Specs</TabsTrigger>
             <TabsTrigger value="incidents">Incidents</TabsTrigger>
             <TabsTrigger value="maintenance">Maintenance</TabsTrigger>
             <TabsTrigger value="certificates">Certificates</TabsTrigger>
@@ -503,7 +502,7 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create' }) => {
           </TabsList>
 
           <ScrollArea className="h-[400px] w-full pr-4">
-            {/* TAB 1: BASIC DETAILS */}
+            {/* TAB 1: BASIC DETAILS & SPECIFICATIONS */}
             <TabsContent value="basic" className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
