@@ -392,6 +392,17 @@ const Emergency = () => {
   const applyProcedureFilters = () => {
     let filtered = [...procedures];
 
+    // Apply URL-based vessel filter first
+    if (vesselFilter) {
+      filtered = filtered.filter(proc => {
+        // Include global procedures (no vessels assigned) and procedures for the specified vessel
+        if (!proc.vessel_ids || proc.vessel_ids.length === 0) return true; // Global procedure
+        const vessel = vessels.find(v => v.vessel_name === vesselFilter || v.id === vesselFilter);
+        if (vessel && proc.vessel_ids.includes(vessel.id)) return true;
+        return false;
+      });
+    }
+
     if (procedureSearch) {
       filtered = filtered.filter(proc =>
         proc.title?.toLowerCase().includes(procedureSearch.toLowerCase()) ||
