@@ -756,7 +756,8 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
                       </table>
                     </div>
                   )}
-                </TabsContent>
+                </div>
+                )}
 
                 {/* Passengers View */}
                 {selectedLogView === 'passengers' && (
