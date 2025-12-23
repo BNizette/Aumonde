@@ -86,6 +86,17 @@ const VesselDetailsDialog = ({ open, onClose, vessel, onMessage }) => {
       // Filter certificates and requirements for this vessel
       setCertificates((certsRes.data || []).filter(c => c.vessel_id === vesselId));
       setRequirements((reqsRes.data || []).filter(r => r.vessel_ids?.includes(vesselId) || !r.vessel_ids || r.vessel_ids.length === 0));
+      
+      // Set induction data
+      setInductionRecords(inductionRes.data || []);
+      const taskOptions = (tasksRes.options || [])
+        .filter(opt => opt.is_active !== false)
+        .map(opt => typeof opt === 'string' ? opt : opt.value);
+      setInductionTasks(taskOptions);
+      
+      // Filter emergency contacts and procedures by vessel
+      setEmergencyContacts((contactsRes.data || []).filter(c => c.vessel_ids?.includes(vesselId) || c.vessel_id === vesselId));
+      setEmergencyProcedures((proceduresRes.data || []).filter(p => p.vessel_ids?.includes(vesselId) || !p.vessel_ids || p.vessel_ids.length === 0));
 
       // Fetch passengers for all trips
       if (tripIds.length > 0) {
