@@ -757,8 +757,9 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
                   )}
                 </TabsContent>
 
-                {/* Passengers Tab */}
-                <TabsContent value="passengers" className="space-y-4 mt-4">
+                {/* Passengers View */}
+                {selectedLogView === 'passengers' && (
+                  <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <p className="text-sm text-gray-500">
                       {tripPassengers.length} passenger{tripPassengers.length !== 1 ? 's' : ''} on this trip
