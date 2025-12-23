@@ -492,6 +492,8 @@ const Emergency = () => {
             equipment_required: row['Equipment Required'] || '',
             muster_station: row['Muster Station'] || '',
             key_contacts: row['Key Contacts'] || '',
+            masters_guidance_notes: row["Master's Guidance Notes"] || '',
+            reference_documents: row['Reference Documents'] || '',
           };
           if (!procedureData.title) continue;
           await axios.post(`${API}/emergency/procedures`, procedureData, { headers: { Authorization: `Bearer ${token}` } });
