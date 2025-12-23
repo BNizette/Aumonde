@@ -324,6 +324,20 @@ const Emergency = () => {
   const applyContactFilters = () => {
     let filtered = [...contacts];
 
+    // Apply URL-based vessel filter first
+    if (vesselFilter) {
+      filtered = filtered.filter(contact => {
+        // Include global contacts (no vessel assigned) and contacts for the specified vessel
+        if (!contact.vessel_id && !contact.vessel_ids) return true; // Global contact
+        if (contact.vessel_id && (contact.vessel_id === vesselFilter || contact.vessel_name === vesselFilter)) return true;
+        if (contact.vessel_ids) {
+          const vessel = vessels.find(v => v.vessel_name === vesselFilter || v.id === vesselFilter);
+          if (vessel && contact.vessel_ids.includes(vessel.id)) return true;
+        }
+        return false;
+      });
+    }
+
     if (contactSearch) {
       filtered = filtered.filter(contact =>
         contact.name?.toLowerCase().includes(contactSearch.toLowerCase()) ||
