@@ -600,6 +600,8 @@ const Emergency = () => {
             key_contacts: row['Key Contacts'] || '',
             masters_guidance_notes: row["Master's Guidance Notes"] || '',
             reference_documents: row['Reference Documents'] || '',
+            authorised_by: row['Authorised By'] || '',
+            date_authorised: row['Date Authorised'] || '',
           };
           if (!data.title) continue;
           await axios.post(`${API}/emergency/procedures`, data, { headers: { Authorization: `Bearer ${token}` } });
