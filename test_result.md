@@ -23,3 +23,42 @@ Testing consistent "Manage in [Module]" button behavior - all should navigate wi
 ## Credentials
 - Email: admin@test.com
 - Password: Admin123!
+
+## Testing Results
+
+### Code Analysis Findings:
+1. **VesselDetailsDialog.jsx Analysis:**
+   - ✅ Certificates section has "Manage in Compliance" button (line 743)
+   - ✅ Requirements section has "Manage in Compliance" button (line 802)
+   - ✅ Drills section has "Manage in Emergency" button (line 547)
+   - ❌ Emergency Contacts section was MISSING "Manage in Emergency" button
+   - ❌ Emergency Procedures section was MISSING "Manage in Emergency" button
+
+2. **Issues Found:**
+   - Missing "Manage in Emergency" buttons for Emergency Contacts and Emergency Procedures sections
+   - This would prevent users from navigating directly to the Emergency module with proper context filtering
+
+3. **Fixes Applied:**
+   - ✅ Added "Manage in Emergency" button to Emergency Contacts section
+   - ✅ Added "Manage in Emergency" button to Emergency Procedures section
+   - Both buttons now navigate to `/emergency?tab=contacts&vessel_id=...` and `/emergency?tab=procedures&vessel_id=...` respectively
+
+### URL Navigation Patterns:
+- **Compliance Module:**
+  - Certificates: `/compliance?tab=certificates&vessel_id=${vessel.id}&vessel_name=${encodeURIComponent(vessel.vessel_name)}`
+  - Requirements: `/compliance?tab=requirements&vessel_id=${vessel.id}&vessel_name=${encodeURIComponent(vessel.vessel_name)}`
+
+- **Emergency Module:**
+  - Contacts: `/emergency?tab=contacts&vessel_id=${vessel.id}&vessel_name=${encodeURIComponent(vessel.vessel_name)}`
+  - Procedures: `/emergency?tab=procedures&vessel_id=${vessel.id}&vessel_name=${encodeURIComponent(vessel.vessel_name)}`
+  - Drills: `/emergency?tab=drills&vessel_id=${vessel.id}&vessel_name=${encodeURIComponent(vessel.vessel_name)}`
+
+### Browser Testing Limitations:
+- Encountered technical issues with Playwright automation due to login session management
+- Backend API is functioning correctly (verified via curl)
+- Frontend services are running properly
+
+### Status:
+- **FIXED**: Missing "Manage in Emergency" buttons have been added
+- **READY**: All "Manage in" buttons should now work consistently
+- **RECOMMENDATION**: Manual testing recommended to verify the complete user flow
