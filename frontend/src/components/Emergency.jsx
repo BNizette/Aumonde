@@ -912,6 +912,7 @@ const Emergency = () => {
       vessel_name: drill.vessel_name || '',
       linked_trip_id: drill.linked_trip_id || '',
       linked_trip_name: drill.linked_trip_name || '',
+      crew_participants: drill.crew_participants || [],
       participants: drill.participants || '',
       duration_minutes: drill.duration_minutes || '',
       observations: drill.observations || '',
