@@ -343,6 +343,17 @@ const Emergency = () => {
       filtered = filtered.filter(contact => contactFilters.priorities.includes(contact.priority));
     }
 
+    // Apply multi-select vessel filter
+    if (contactFilters.vessels.length > 0) {
+      filtered = filtered.filter(contact => {
+        // Include global contacts (no vessel assigned) and contacts for selected vessels
+        if (!contact.vessel_id && !contact.vessel_ids) return true; // Global contact
+        if (contact.vessel_id && contactFilters.vessels.includes(contact.vessel_id)) return true;
+        if (contact.vessel_ids && contact.vessel_ids.some(vid => contactFilters.vessels.includes(vid))) return true;
+        return false;
+      });
+    }
+
     // Apply date range filter (created_at)
     if (contactFilters.start_date || contactFilters.end_date) {
       filtered = filtered.filter(contact => {
