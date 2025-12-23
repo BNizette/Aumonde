@@ -1522,6 +1522,45 @@ const Compliance = () => {
               <Input value={reqForm.regulatory_reference} onChange={(e) => setReqForm({...reqForm, regulatory_reference: e.target.value})} placeholder="e.g., SOLAS Chapter III" />
             </div>
             <div>
+              <Label>Linked Document</Label>
+              <div className="flex gap-2">
+                <Select 
+                  value={reqForm.linked_document_id || "none"} 
+                  onValueChange={(value) => {
+                    if (value === 'none') {
+                      setReqForm({...reqForm, linked_document_id: '', linked_document_name: ''});
+                    } else {
+                      const doc = documents.find(d => d.id === value);
+                      setReqForm({...reqForm, linked_document_id: value, linked_document_name: doc?.document_name || ''});
+                    }
+                  }}
+                >
+                  <SelectTrigger className="flex-1">
+                    <SelectValue placeholder="Select a document" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">-- No document linked --</SelectItem>
+                    {documents.map(doc => (
+                      <SelectItem key={doc.id} value={doc.id}>
+                        {doc.document_name} {doc.category ? `(${doc.category})` : ''}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {reqForm.linked_document_id && (
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    size="icon"
+                    onClick={() => handleViewDocument(reqForm.linked_document_id)}
+                    title="View Document"
+                  >
+                    <Eye className="h-4 w-4" />
+                  </Button>
+                )}
+              </div>
+            </div>
+            <div>
               <Label>Responsible Person</Label>
               <Input value={reqForm.responsible_person} onChange={(e) => setReqForm({...reqForm, responsible_person: e.target.value})} />
             </div>
