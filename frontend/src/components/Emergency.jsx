@@ -1202,6 +1202,8 @@ const Emergency = () => {
       title: '',
       purpose: '',
       procedure_steps: '',
+      vessel_ids: [],
+      vessel_names: [],
       equipment_required: '',
       muster_station: '',
       key_contacts: '',
