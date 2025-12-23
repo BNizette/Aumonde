@@ -54,7 +54,7 @@ const VesselDetailsDialog = ({ open, onClose, vessel, onMessage }) => {
       // Get trip IDs for fetching related logs
       const tripIds = tripsData.map(t => t.id);
 
-      const [logsRes, shiftLogsRes, risksRes, maintenanceRes, incidentsRes, engineRes, drillsRes, certsRes, reqsRes] = await Promise.all([
+      const [logsRes, shiftLogsRes, risksRes, maintenanceRes, incidentsRes, engineRes, drillsRes, certsRes, reqsRes, inductionRes, tasksRes, contactsRes, proceduresRes] = await Promise.all([
         axios.get(`${API}/running-logs?vessel_id=${vesselId}`, { headers }).catch(() => ({ data: [] })),
         axios.get(`${API}/trip-logs`, { headers }).catch(() => ({ data: [] })),
         axios.get(`${API}/risk-assessments`, { headers }).catch(() => ({ data: [] })),
@@ -63,7 +63,11 @@ const VesselDetailsDialog = ({ open, onClose, vessel, onMessage }) => {
         axios.get(`${API}/engine-running-logs?vessel_id=${vesselId}`, { headers }).catch(() => ({ data: [] })),
         axios.get(`${API}/emergency/drills?vessel_id=${vesselId}`, { headers }).catch(() => ({ data: [] })),
         axios.get(`${API}/compliance/certificates`, { headers }).catch(() => ({ data: [] })),
-        axios.get(`${API}/compliance/requirements`, { headers }).catch(() => ({ data: [] }))
+        axios.get(`${API}/compliance/requirements`, { headers }).catch(() => ({ data: [] })),
+        axios.get(`${API}/vessel-induction?vessel_id=${vesselId}`, { headers }).catch(() => ({ data: [] })),
+        fetch(`${API}/settings/vessel/induction_tasks`, { headers }).then(r => r.json()).catch(() => ({ options: [] })),
+        axios.get(`${API}/emergency/contacts`, { headers }).catch(() => ({ data: [] })),
+        axios.get(`${API}/emergency/procedures`, { headers }).catch(() => ({ data: [] }))
       ]);
 
       setRunningLogs(logsRes.data || []);
