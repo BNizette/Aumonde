@@ -54,7 +54,6 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
   const [error, setError] = useState('');
   const [user, setUser] = useState(null);
   const [selectedLogView, setSelectedLogView] = useState('allocated');
-  const [selectedLogView, setSelectedLogView] = useState('allocated');
 
   useEffect(() => {
     const userData = localStorage.getItem('user');
