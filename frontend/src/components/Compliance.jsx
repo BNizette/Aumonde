@@ -482,6 +482,8 @@ const Compliance = () => {
       regulatory_reference: req.regulatory_reference || '',
       linked_document_id: req.linked_document_id || '',
       linked_document_name: req.linked_document_name || '',
+      vessel_ids: req.vessel_ids || [],
+      vessel_names: req.vessel_names || [],
       compliance_status: req.compliance_status || 'Under Review',
       responsible_person: req.responsible_person || '',
       notes: req.notes || ''
