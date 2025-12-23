@@ -485,7 +485,7 @@ const Emergency = () => {
   };
 
   const hasActiveContactFilters = contactSearch || contactFilters.types.length > 0 || contactFilters.priorities.length > 0 || contactFilters.vessels.length > 0 || contactFilters.start_date || contactFilters.end_date;
-  const hasActiveProcedureFilters = procedureSearch || procedureFilters.types.length > 0 || procedureFilters.start_date || procedureFilters.end_date;
+  const hasActiveProcedureFilters = procedureSearch || procedureFilters.types.length > 0 || procedureFilters.vessels.length > 0 || procedureFilters.start_date || procedureFilters.end_date;
   const hasActiveDrillFilters = drillSearch || drillFilters.types.length > 0 || drillFilters.vessels.length > 0 || drillFilters.start_date || drillFilters.end_date;
 
   // Import template columns matching export formats
