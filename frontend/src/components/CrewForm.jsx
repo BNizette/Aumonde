@@ -324,6 +324,208 @@ const CrewForm = ({ open, onClose, onSave, crew, mode = 'create', prefilledData 
     });
   };
 
+  // Get vessel owner name from selected vessel
+  const getVesselOwnerName = (vesselId) => {
+    const vessel = vessels.find(v => v.id === vesselId);
+    return vessel?.owner_name || '';
+  };
+
+  // Training by vessel functions
+  const initializeTrainingForVessel = (vesselId) => {
+    if (!vesselId) return;
+    const vessel = vessels.find(v => v.id === vesselId);
+    if (!vessel) return;
+    
+    setFormData(prev => {
+      if (prev.training_by_vessel[vesselId]) return prev; // Already exists
+      return {
+        ...prev,
+        training_by_vessel: {
+          ...prev.training_by_vessel,
+          [vesselId]: {
+            vessel_name: vessel.vessel_name,
+            records: [],
+            authorising_staff: '',
+            date_signed_off: '',
+            vessel_owner: vessel.owner_name || '',
+            date_signed_owner: ''
+          }
+        }
+      };
+    });
+  };
+
+  const addVesselTrainingRecord = (vesselId, type) => {
+    if (!vesselId) return;
+    setFormData(prev => {
+      const vesselData = prev.training_by_vessel[vesselId] || { records: [] };
+      const currentRecords = vesselData.records || [];
+      const typeRecords = currentRecords.filter(r => r.type === type);
+      const nextNumber = typeRecords.length + 1;
+      
+      return {
+        ...prev,
+        training_by_vessel: {
+          ...prev.training_by_vessel,
+          [vesselId]: {
+            ...vesselData,
+            records: [...currentRecords, { 
+              id: Date.now().toString(),
+              type,
+              number: nextNumber.toString(), 
+              date: '', 
+              supervisor: '', 
+              comments: '' 
+            }]
+          }
+        }
+      };
+    });
+  };
+
+  const updateVesselTrainingRecord = (vesselId, recordId, field, value) => {
+    setFormData(prev => {
+      const vesselData = prev.training_by_vessel[vesselId];
+      if (!vesselData) return prev;
+      
+      const updatedRecords = vesselData.records.map(r => 
+        r.id === recordId ? { ...r, [field]: value } : r
+      );
+      
+      return {
+        ...prev,
+        training_by_vessel: {
+          ...prev.training_by_vessel,
+          [vesselId]: {
+            ...vesselData,
+            records: updatedRecords
+          }
+        }
+      };
+    });
+  };
+
+  const removeVesselTrainingRecord = (vesselId, recordId) => {
+    setFormData(prev => {
+      const vesselData = prev.training_by_vessel[vesselId];
+      if (!vesselData) return prev;
+      
+      const filtered = vesselData.records.filter(r => r.id !== recordId);
+      // Re-number by type
+      const types = [...new Set(filtered.map(r => r.type))];
+      const renumbered = filtered.map(r => {
+        const typeRecords = filtered.filter(fr => fr.type === r.type);
+        const idx = typeRecords.findIndex(tr => tr.id === r.id);
+        return { ...r, number: (idx + 1).toString() };
+      });
+      
+      return {
+        ...prev,
+        training_by_vessel: {
+          ...prev.training_by_vessel,
+          [vesselId]: {
+            ...vesselData,
+            records: renumbered
+          }
+        }
+      };
+    });
+  };
+
+  const updateVesselTrainingSignoff = (vesselId, field, value) => {
+    setFormData(prev => {
+      const vesselData = prev.training_by_vessel[vesselId] || {};
+      return {
+        ...prev,
+        training_by_vessel: {
+          ...prev.training_by_vessel,
+          [vesselId]: {
+            ...vesselData,
+            [field]: value
+          }
+        }
+      };
+    });
+  };
+
+  // Induction by vessel functions
+  const initializeInductionForVessel = (vesselId) => {
+    if (!vesselId) return;
+    const vessel = vessels.find(v => v.id === vesselId);
+    if (!vessel) return;
+    
+    setFormData(prev => {
+      if (prev.induction_by_vessel[vesselId]) return prev; // Already exists
+      return {
+        ...prev,
+        induction_by_vessel: {
+          ...prev.induction_by_vessel,
+          [vesselId]: {
+            vessel_name: vessel.vessel_name,
+            completed_tasks: [],
+            authorising_staff: '',
+            date_signed: '',
+            vessel_owner: vessel.owner_name || '',
+            date_signed_owner: ''
+          }
+        }
+      };
+    });
+  };
+
+  const toggleInductionTask = (vesselId, taskName) => {
+    setFormData(prev => {
+      const vesselData = prev.induction_by_vessel[vesselId] || { completed_tasks: [] };
+      const completed = vesselData.completed_tasks || [];
+      const isCompleted = completed.includes(taskName);
+      
+      return {
+        ...prev,
+        induction_by_vessel: {
+          ...prev.induction_by_vessel,
+          [vesselId]: {
+            ...vesselData,
+            completed_tasks: isCompleted 
+              ? completed.filter(t => t !== taskName)
+              : [...completed, taskName]
+          }
+        }
+      };
+    });
+  };
+
+  const updateInductionSignoff = (vesselId, field, value) => {
+    setFormData(prev => {
+      const vesselData = prev.induction_by_vessel[vesselId] || {};
+      return {
+        ...prev,
+        induction_by_vessel: {
+          ...prev.induction_by_vessel,
+          [vesselId]: {
+            ...vesselData,
+            [field]: value
+          }
+        }
+      };
+    });
+  };
+
+  // Handle vessel selection for training tab
+  const handleTrainingVesselChange = (vesselId) => {
+    setSelectedTrainingVessel(vesselId);
+    if (vesselId) {
+      initializeTrainingForVessel(vesselId);
+    }
+  };
+
+  // Handle vessel selection for induction tab
+  const handleInductionVesselChange = (vesselId) => {
+    setSelectedInductionVessel(vesselId);
+    if (vesselId) {
+      initializeInductionForVessel(vesselId);
+    }
+  };
+
   const handleSubmit = () => {
     onSave(formData);
   };
