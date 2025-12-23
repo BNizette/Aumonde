@@ -402,6 +402,13 @@ const Emergency = () => {
   const applyDrillFilters = () => {
     let filtered = [...drills];
 
+    // Apply URL-based vessel filter first
+    if (vesselFilter) {
+      filtered = filtered.filter(drill => 
+        drill.vessel_name === vesselFilter || drill.vessel_id === vesselFilter
+      );
+    }
+
     if (drillSearch) {
       filtered = filtered.filter(drill =>
         drill.drill_type?.toLowerCase().includes(drillSearch.toLowerCase()) ||
