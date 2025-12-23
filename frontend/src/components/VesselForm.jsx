@@ -1150,8 +1150,8 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create' }) => {
                     variant="outline"
                     size="sm"
                     onClick={() => {
-                      // Navigate to Compliance module with vessel filter
-                      window.location.href = `/compliance?vessel=${vessel.id}`;
+                      // Navigate to Compliance module with vessel filter and certificates tab
+                      window.location.href = `/compliance?tab=certificates&vessel_name=${encodeURIComponent(vessel?.vessel_name || '')}`;
                     }}
                   >
                     <Shield className="h-4 w-4 mr-2" />
