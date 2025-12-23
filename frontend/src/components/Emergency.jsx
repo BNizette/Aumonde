@@ -186,6 +186,11 @@ const Emergency = () => {
   useEffect(() => {
     fetchData();
     fetchSettings();
+    // Handle hash navigation for deep linking to tabs
+    const hash = window.location.hash.replace('#', '');
+    if (hash === 'drills' || hash === 'procedures' || hash === 'contacts') {
+      setActiveTab(hash);
+    }
   }, []);
 
   const fetchSettings = async () => {
