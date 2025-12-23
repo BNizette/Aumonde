@@ -199,9 +199,11 @@ const VesselDetailsDialog = ({ open, onClose, vessel, onMessage }) => {
     { value: 'running', label: `Running Logs (${runningLogs.length})` },
     { value: 'engine', label: `Engine Logs (${engineLogs.length})` },
     { value: 'drills', label: `Drill Logs (${drills.length})` },
-    { value: 'risks', label: `Risk Assessments (${risks.length})` },
     { value: 'maintenance', label: `Maintenance (${maintenance.length})` },
+    { value: 'risks', label: `Risk Assessments (${risks.length})` },
     { value: 'incidents', label: `Incidents (${incidents.length})` },
+    { value: 'certificates', label: `Compliance Certificates (${certificates.length})` },
+    { value: 'requirements', label: `Compliance Requirements (${requirements.length})` },
   ];
 
   const renderContent = () => {
