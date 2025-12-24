@@ -157,11 +157,20 @@ const TripForm = ({ open, onClose, onSave, trip, mode = 'create' }) => {
     onSave(updatedFormData);
   };
 
+  // Format date for display in header
+  const formatDateForHeader = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-AU', { day: '2-digit', month: 'short', year: 'numeric' });
+  };
+
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>{mode === 'create' ? 'Create New Trip' : 'Edit Trip'}</DialogTitle>
+          <DialogTitle>
+            {mode === 'create' ? 'Create New Trip' : `Edit Trip${trip?.trip_name ? ` - ${trip.trip_name}` : ''}${trip?.planned_depart_datetime ? ` - ${formatDateForHeader(trip.planned_depart_datetime)}` : ''}`}
+          </DialogTitle>
           <DialogDescription>
             {mode === 'create' ? 'Add a new trip to the system' : 'Update trip details'}
           </DialogDescription>
