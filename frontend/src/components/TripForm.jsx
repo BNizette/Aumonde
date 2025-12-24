@@ -10,9 +10,9 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { UserPlus, Users, Search, Trash2, Edit, Check, ChevronsUpDown, Download } from 'lucide-react';
+import { UserPlus, Users, Search, Trash2, Download } from 'lucide-react';
 import PassengerForm from './PassengerForm';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
