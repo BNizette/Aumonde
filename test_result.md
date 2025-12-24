@@ -222,8 +222,8 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Trip Details - Running Logs Open in New Tab Button"
-    - "Trip Details - Engine Logs Open in New Tab Button"
+    - "Vessel Edit - Induction Tab"
+    - "Vessel Details - Induction View with Manage in Vessel Button"
   stuck_tasks: 
     - "Trip Details - Running Logs Open in New Tab Button"
     - "Trip Details - Engine Logs Open in New Tab Button"
