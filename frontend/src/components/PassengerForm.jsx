@@ -7,7 +7,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
-import { User, Upload, X, Camera } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { User, Upload, X, Camera, ChevronDown } from 'lucide-react';
 import axios from 'axios';
 
 const PassengerForm = ({ open, onClose, onSave, passenger, mode = 'create' }) => {
