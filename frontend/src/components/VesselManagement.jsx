@@ -38,6 +38,7 @@ const VesselManagement = () => {
   const [formOpen, setFormOpen] = useState(false);
   const [formMode, setFormMode] = useState('create');
   const [selectedVessel, setSelectedVessel] = useState(null);
+  const [defaultEditTab, setDefaultEditTab] = useState('basic');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [duplicateWarning, setDuplicateWarning] = useState(null);
