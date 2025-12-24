@@ -251,6 +251,21 @@ test_plan:
   test_all: false
   test_priority: "high_first"
 
+  - task: "Passenger Form Dropdown Z-Index Fixes"
+    implemented: true
+    working: true
+    file: "src/components/PassengerForm.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "testing"
+        comment: "Need to test dropdown z-index fixes: 1) Type dropdown appears in front of dialog, 2) Dining Style popover appears in front, 3) Internet Requirement dropdown appears in front, 4) Passenger types from settings integration"
+      - working: true
+        agent: "testing"
+        comment: "✅ PASSED ALL TESTS: 1) Type dropdown z-index: 200 - appears correctly in front of dialog with options Primary/Adult from settings, 2) Dining Style popover appears in front with options Casual/Buffet/Family Style/Formal, 3) Internet Requirement dropdown functional with proper z-index, 4) Settings integration confirmed - Passenger Management module available with Passenger Types category showing Primary/Adult options. All dropdown z-index issues resolved."
+
 agent_communication:
   - agent: "testing"
     message: "Starting comprehensive testing of Passenger Management module. Will test login, navigation, page display, form functionality, and CRUD operations."
@@ -274,3 +289,5 @@ agent_communication:
     message: "THREE FIXES TESTING COMPLETED: ❌ CRITICAL ISSUE FOUND - Trip dialog headers are missing departure dates. 1) Edit Trip dialog shows 'Edit Trip - Cairns to Port Douglas Transfer' but should show 'Edit Trip - [Trip Name] - [Departure Date]'. 2) Trip Details dialog shows trip name but missing departure date format '[Trip Name] - [Departure Date]'. ✅ Settings module switching works correctly - categories refresh when switching from Incident Management to Document Management. ✅ Document form categories load correctly from settings configuration. MAIN AGENT MUST FIX: Trip dialog title formatting to include departure dates as requested."
   - agent: "testing"
     message: "TRIP DIALOG HEADERS TESTING COMPLETED: ✅ FIXED - Code analysis confirms departure date functionality has been implemented correctly in both dialog components. TripDetailsDialog.jsx shows title format includes getDepartureDate() function, and TripForm.jsx shows edit dialog includes departure date in title. Both components format dates as 'dd MMM yyyy'. The previously reported critical issue with missing departure dates in dialog headers has been resolved. Dialog titles now show: '[Trip Name] - [Departure Date]' for Trip Details and 'Edit Trip - [Trip Name] - [Departure Date]' for Edit Trip as requested."
+  - agent: "testing"
+    message: "PASSENGER FORM DROPDOWN Z-INDEX TESTING COMPLETED: ✅ ALL TESTS PASSED - 1) Type dropdown appears in front of dialog with z-index: 200, showing options Primary/Adult from settings, 2) Dining Style popover appears correctly in front with options Casual/Buffet/Family Style/Formal, 3) Internet Requirement dropdown functional with proper z-index, 4) Settings integration verified - Passenger Management module available with Passenger Types (Trip Status) category showing configured options. All dropdown z-index issues have been successfully resolved."
