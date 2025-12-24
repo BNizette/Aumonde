@@ -76,7 +76,7 @@ const PassengerForm = ({ open, onClose, onSave, passenger, mode = 'create' }) =>
         dietary_preference: passenger.dietary_preference || '',
         beverage_preference: passenger.beverage_preference || '',
         alcohol_allowed: passenger.alcohol_allowed !== false,
-        dining_style: passenger.dining_style || '',
+        dining_styles: passenger.dining_styles || (passenger.dining_style ? [passenger.dining_style] : []),
         music_genre: passenger.music_genre || '',
         movie_preferences: passenger.movie_preferences || '',
         internet_requirement: passenger.internet_requirement || '',
