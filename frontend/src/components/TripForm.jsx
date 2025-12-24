@@ -15,6 +15,7 @@ const TripForm = ({ open, onClose, onSave, trip, mode = 'create' }) => {
   const [vessels, setVessels] = useState([]);
   const [tripTypes, setTripTypes] = useState([]);
   const [tripPassengers, setTripPassengers] = useState([]);
+  const [allocatedCrew, setAllocatedCrew] = useState([]);
   const [error, setError] = useState('');
 
   const [formData, setFormData] = useState({
