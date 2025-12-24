@@ -557,7 +557,7 @@ const PassengerForm = ({ open, onClose, onSave, passenger, mode = 'create' }) =>
                 <SelectTrigger>
                   <SelectValue placeholder="Select internet requirement" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="z-[200]">
                   <SelectItem value="none">None / Minimal</SelectItem>
                   <SelectItem value="basic">Basic (Email/Messaging)</SelectItem>
                   <SelectItem value="moderate">Moderate (Web Browsing)</SelectItem>
