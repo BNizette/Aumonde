@@ -146,6 +146,8 @@ function App() {
                     <Route path="/documents" element={<DocumentManagement />} />
                     <Route path="/trips" element={<TripManagement />} />
                     <Route path="/trips/:tripId/shifts" element={<TripShiftsPage />} />
+                    <Route path="/trips/:tripId/running-logs" element={<TripRunningLogsPage />} />
+                    <Route path="/trips/:tripId/engine-logs" element={<TripEngineLogsPage />} />
                     <Route path="/risk-assessment" element={<RiskAssessment />} />
                     <Route path="/maintenance" element={<Maintenance />} />
                     <Route path="/incidents" element={<Incidents />} />
