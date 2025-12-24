@@ -176,6 +176,21 @@ frontend:
         agent: "testing"
         comment: "❌ FAILED: View dropdown in Trip Details dialog opens date picker instead of log view options. Cannot access Engine Logs view to test 'Open in New Tab' button. Same dropdown implementation issue as Running Logs."
 
+  - task: "Trip Edit - Crew Field Read-Only Format"
+    implemented: true
+    working: true
+    file: "src/components/TripForm.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "testing"
+        comment: "Need to verify Crew field is now read-only and matches Passengers field format in Trip Edit dialog"
+      - working: true
+        agent: "testing"
+        comment: "✅ PASSED: Trip Edit Crew field format test successful. Both Crew and Passengers fields are displayed as read-only with bold colored numbers (green for Crew: 5, blue for Passengers: 1) and 'Manage in Trip Details view' text. No editable input fields found. Format change implemented correctly as requested."
+
 metadata:
   created_by: "testing_agent"
   version: "1.5"
