@@ -111,11 +111,155 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
     }
   }, [trip]);
 
+  // Fetch all passengers from Passenger module for allocation
+  const fetchAllPassengers = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`${API}/passengers`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setAllPassengers(response.data || []);
+    } catch (err) {
+      console.error('Error fetching passengers:', err);
+    }
+  };
+
+  // Fetch passenger types from settings
+  const fetchPassengerTypes = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`${API}/settings/passenger/passenger_types`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const types = (response.data?.options || [])
+        .filter(o => o.is_active !== false)
+        .map(o => typeof o === 'string' ? o : o.value);
+      if (types.length > 0) {
+        setPassengerTypes(types);
+      }
+    } catch (err) {
+      console.error('Error fetching passenger types:', err);
+    }
+  };
+
   useEffect(() => {
     if (open && trip) {
       fetchAllLogs();
+      fetchAllPassengers();
+      fetchPassengerTypes();
     }
   }, [open, trip, fetchAllLogs]);
+
+  // Toggle passenger selection for allocation
+  const togglePassengerForAllocation = (passengerId) => {
+    setSelectedPassengerIds(prev => 
+      prev.includes(passengerId) 
+        ? prev.filter(id => id !== passengerId)
+        : [...prev, passengerId]
+    );
+  };
+
+  // Allocate selected passengers to trip
+  const handleAllocatePassengers = async () => {
+    if (selectedPassengerIds.length === 0 || !selectedAllocateStatus) {
+      return;
+    }
+    
+    // Filter out already allocated passengers
+    const alreadyAllocatedIds = tripPassengers.map(tp => tp.passenger_id);
+    const newPassengerIds = selectedPassengerIds.filter(id => !alreadyAllocatedIds.includes(id));
+    
+    if (newPassengerIds.length === 0) {
+      setMessage('Selected passengers are already allocated to this trip');
+      setTimeout(() => setMessage(''), 3000);
+      return;
+    }
+    
+    const passengersToAllocate = allPassengers.filter(p => newPassengerIds.includes(p.id));
+    
+    try {
+      const token = localStorage.getItem('token');
+      
+      for (const passenger of passengersToAllocate) {
+        await axios.post(`${API}/trip-passengers`, {
+          trip_id: trip.id,
+          passenger_id: passenger.id,
+          name: passenger.name,
+          status: selectedAllocateStatus
+        }, {
+          headers: { 
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}` 
+          }
+        });
+      }
+      
+      setMessage(`${passengersToAllocate.length} passenger(s) allocated successfully`);
+      setTimeout(() => setMessage(''), 3000);
+      
+      // Reset and close
+      setAllocatePopoverOpen(false);
+      setSelectedPassengerIds([]);
+      setSelectedAllocateStatus('');
+      setPassengerSearchQuery('');
+      
+      // Refresh passengers list
+      fetchAllLogs();
+    } catch (err) {
+      console.error('Error allocating passengers:', err);
+      setMessage('Error allocating passengers');
+      setTimeout(() => setMessage(''), 3000);
+    }
+  };
+
+  // Handle saving a new passenger from PassengerForm and allocate to trip
+  const handleSaveNewPassengerAndAllocate = async (passengerData) => {
+    try {
+      const token = localStorage.getItem('token');
+      
+      // Create the passenger in the Passenger collection
+      const response = await axios.post(`${API}/passengers`, passengerData, {
+        headers: { 
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}` 
+        }
+      });
+      
+      const newPassenger = response.data;
+      
+      // Allocate the new passenger to this trip
+      await axios.post(`${API}/trip-passengers`, {
+        trip_id: trip.id,
+        passenger_id: newPassenger.id,
+        name: newPassenger.name,
+        status: passengerData.passenger_type || passengerTypes[0] || 'Primary'
+      }, {
+        headers: { 
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}` 
+        }
+      });
+      
+      setMessage('Passenger created and allocated to trip');
+      setTimeout(() => setMessage(''), 3000);
+      
+      // Close form and refresh
+      setNewPassengerFormOpen(false);
+      fetchAllLogs();
+      fetchAllPassengers();
+    } catch (err) {
+      console.error('Error saving passenger:', err);
+      setMessage('Error creating passenger');
+      setTimeout(() => setMessage(''), 3000);
+    }
+  };
+
+  // Filter passengers for search
+  const filteredPassengersForAllocation = allPassengers.filter(p => {
+    const searchLower = passengerSearchQuery.toLowerCase();
+    return p.name?.toLowerCase().includes(searchLower) ||
+           p.contact_email?.toLowerCase().includes(searchLower);
+  });
 
   // Shift Log handlers
   const handleAddShiftLog = () => {
