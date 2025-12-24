@@ -1221,7 +1221,7 @@ class PassengerCreate(BaseModel):
     dietary_preference: Optional[str] = None
     beverage_preference: Optional[str] = None
     alcohol_allowed: Optional[bool] = True
-    dining_style: Optional[str] = None
+    dining_styles: Optional[List[str]] = []
     music_genre: Optional[str] = None
     movie_preferences: Optional[str] = None
     internet_requirement: Optional[str] = None
