@@ -27,6 +27,8 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create' }) => {
   const [inductionRecords, setInductionRecords] = useState([]);
   const [crewList, setCrewList] = useState([]);
   const [loadingInduction, setLoadingInduction] = useState(false);
+  const [selectedCrewForInduction, setSelectedCrewForInduction] = useState([]);
+  const [savingInduction, setSavingInduction] = useState(false);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [dragActive, setDragActive] = useState(false);
   const [formData, setFormData] = useState({
