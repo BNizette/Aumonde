@@ -111,6 +111,7 @@ const TripForm = ({ open, onClose, onSave, trip, mode = 'create' }) => {
         number_of_crew: trip.number_of_crew || 0
       });
       fetchTripPassengers(trip.id);
+      fetchAllocatedCrew(trip.id);
     } else if (mode === 'create') {
       setFormData({
         trip_name: '',
