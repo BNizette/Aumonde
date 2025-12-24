@@ -2687,7 +2687,7 @@ async def update_incident(incident_id: str, incident_data: IncidentCreate, curre
     update_dict['updated_at'] = datetime.now(timezone.utc)
     
     await db.incidents.update_one({"id": incident_id}, {"$set": update_dict})
-    await log_audit(current_user["id"], current_user["full_name"], "update", "incident", incident_id, f"Updated incident")
+    await log_audit(current_user["id"], current_user["full_name"], "update", "incident", incident_id, "Updated incident")
     
     return await db.incidents.find_one({"id": incident_id}, {"_id": 0})
 
