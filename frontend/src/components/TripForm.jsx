@@ -32,7 +32,7 @@ const TripForm = ({ open, onClose, onSave, trip, mode = 'create' }) => {
   
   // Allocate passenger state
   const [allocateOpen, setAllocateOpen] = useState(false);
-  const [selectedPassengerId, setSelectedPassengerId] = useState('');
+  const [selectedPassengerIds, setSelectedPassengerIds] = useState([]);  // Changed to array for multi-select
   const [selectedStatus, setSelectedStatus] = useState('');
   const [allocateSearch, setAllocateSearch] = useState('');
 
