@@ -7,13 +7,6 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { UserPlus, Users, Search, Trash2, Download } from 'lucide-react';
-import PassengerForm from './PassengerForm';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -21,8 +14,6 @@ const API = `${BACKEND_URL}/api`;
 const TripForm = ({ open, onClose, onSave, trip, mode = 'create' }) => {
   const [vessels, setVessels] = useState([]);
   const [tripTypes, setTripTypes] = useState([]);
-  const [passengerTypes, setPassengerTypes] = useState([]);
-  const [allPassengers, setAllPassengers] = useState([]);
   const [tripPassengers, setTripPassengers] = useState([]);
   const [error, setError] = useState('');
   
