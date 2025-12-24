@@ -461,7 +461,7 @@ const PassengerForm = ({ open, onClose, onSave, passenger, mode = 'create' }) =>
                     <ChevronDown className="h-4 w-4 ml-2 shrink-0" />
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-64 p-0" align="start">
+                <PopoverContent className="w-64 p-0 z-[200]" align="start">
                   <div className="p-2">
                     <div className="flex items-center justify-between px-2 py-1.5 mb-1">
                       <span className="text-sm font-medium">Select Dining Styles</span>
