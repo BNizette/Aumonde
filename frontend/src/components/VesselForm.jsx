@@ -492,6 +492,73 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create' }) => {
     return record?.completed_tasks || [];
   };
 
+  // Toggle crew selection for induction
+  const toggleCrewSelection = (crewId) => {
+    setSelectedCrewForInduction(prev => 
+      prev.includes(crewId) 
+        ? prev.filter(id => id !== crewId)
+        : [...prev, crewId]
+    );
+  };
+
+  // Toggle induction task for selected crew members
+  const toggleInductionTaskForSelectedCrew = async (taskName) => {
+    if (selectedCrewForInduction.length === 0) return;
+    
+    setSavingInduction(true);
+    try {
+      const token = localStorage.getItem('token');
+      
+      for (const crewId of selectedCrewForInduction) {
+        const crew = crewList.find(c => c.id === crewId);
+        if (!crew) continue;
+        
+        const currentTasks = getCrewCompletedTasks(crewId);
+        const isCompleted = currentTasks.includes(taskName);
+        const newTasks = isCompleted 
+          ? currentTasks.filter(t => t !== taskName)
+          : [...currentTasks, taskName];
+        
+        await axios.post(`${API}/api/vessel-induction`, {
+          vessel_id: vessel.id,
+          crew_id: crewId,
+          crew_name: crew.staff_name,
+          completed_tasks: newTasks
+        }, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+      }
+      
+      // Refresh records
+      const recordsRes = await axios.get(`${API}/api/vessel-induction?vessel_id=${vessel.id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setInductionRecords(recordsRes.data || []);
+    } catch (err) {
+      console.error('Error updating induction tasks:', err);
+    } finally {
+      setSavingInduction(false);
+    }
+  };
+
+  // Check if a task is completed by ALL selected crew
+  const isTaskCompletedByAllSelected = (taskName) => {
+    if (selectedCrewForInduction.length === 0) return false;
+    return selectedCrewForInduction.every(crewId => {
+      const tasks = getCrewCompletedTasks(crewId);
+      return tasks.includes(taskName);
+    });
+  };
+
+  // Check if a task is completed by SOME selected crew
+  const isTaskCompletedBySomeSelected = (taskName) => {
+    if (selectedCrewForInduction.length === 0) return false;
+    return selectedCrewForInduction.some(crewId => {
+      const tasks = getCrewCompletedTasks(crewId);
+      return tasks.includes(taskName);
+    });
+  };
+
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
