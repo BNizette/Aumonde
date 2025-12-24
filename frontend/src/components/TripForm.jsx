@@ -352,7 +352,7 @@ const TripForm = ({ open, onClose, onSave, trip, mode = 'create' }) => {
           <DialogHeader>
             <DialogTitle>{mode === 'create' ? 'Create New Trip' : 'Edit Trip'}</DialogTitle>
             <DialogDescription>
-              {mode === 'create' ? 'Add a new trip to the system' : 'Update trip details and manage passengers'}
+              {mode === 'create' ? 'Add a new trip to the system' : 'Update trip details'}
             </DialogDescription>
           </DialogHeader>
 
@@ -362,16 +362,9 @@ const TripForm = ({ open, onClose, onSave, trip, mode = 'create' }) => {
             </Alert>
           )}
 
-          <Tabs defaultValue="details" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="details">Trip Details</TabsTrigger>
-              <TabsTrigger value="passengers">
-                Passengers ({tripPassengers.length})
-              </TabsTrigger>
-            </TabsList>
-
-            {/* Trip Details Tab */}
-            <TabsContent value="details" className="space-y-4">
+          <div className="space-y-4">
+            {/* Trip Details */}
+            <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="trip_name">Trip Name *</Label>
