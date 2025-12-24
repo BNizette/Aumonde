@@ -41,7 +41,7 @@ const PassengerForm = ({ open, onClose, onSave, passenger, mode = 'create' }) =>
     dietary_preference: '',
     beverage_preference: '',
     alcohol_allowed: true,
-    dining_style: '',
+    dining_styles: [],  // Changed to array for multi-select
     
     // Tab 4: Entertainment & Activity Planning
     music_genre: '',
