@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Menu, X, LayoutDashboard, Ship, Users, FileText, MapPin, AlertTriangle, Wrench, AlertCircle, ShieldAlert, CheckSquare, Bot, UserCog, LogOut } from 'lucide-react';
+import { Menu, X, LayoutDashboard, Ship, Users, UserPlus, FileText, MapPin, AlertTriangle, Wrench, AlertCircle, ShieldAlert, CheckSquare, Bot, UserCog, LogOut } from 'lucide-react';
 
 const Layout = ({ children, user, onLogout }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
