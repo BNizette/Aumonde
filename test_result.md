@@ -266,6 +266,21 @@ test_plan:
         agent: "testing"
         comment: "✅ PASSED ALL TESTS: 1) Type dropdown z-index: 200 - appears correctly in front of dialog with options Primary/Adult from settings, 2) Dining Style popover appears in front with options Casual/Buffet/Family Style/Formal, 3) Internet Requirement dropdown functional with proper z-index, 4) Settings integration confirmed - Passenger Management module available with Passenger Types category showing Primary/Adult options. All dropdown z-index issues resolved."
 
+  - task: "Updated Passenger Management Page Features"
+    implemented: true
+    working: true
+    file: "src/components/PassengerManagement.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "testing"
+        comment: "Need to test updated Passenger Management page: 1) Summary Cards (3 clickable tabs), 2) Table Columns (removal of Contact Details), 3) Filters and Sort functionality, 4) Logs Dialog (Eye Icon) with Trip History"
+      - working: true
+        agent: "testing"
+        comment: "✅ ALL TESTS PASSED: 1) Summary Cards - All 3 clickable cards found (Total Passengers, Current Primary Guests, Current Additional Guests) with proper filtering functionality, 2) Table Columns - All required columns present (Name, Type, Departure Date, Arrival Date, Dietary, Medical Notes, Actions) and Contact Details column successfully removed, 3) Filters and Sort - Search bar, Filter by Type dropdown, and Sort by dropdown all found and functional, 4) Logs Dialog - Eye icons found, Trip History dialog opens correctly showing passenger trip associations with proper departure/arrival date display. All requested features working correctly."
+
 agent_communication:
   - agent: "testing"
     message: "Starting comprehensive testing of Passenger Management module. Will test login, navigation, page display, form functionality, and CRUD operations."
