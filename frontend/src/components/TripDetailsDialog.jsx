@@ -952,14 +952,116 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
                           Export to Excel
                         </Button>
                       )}
+                      
+                      {/* Allocate Existing Passenger */}
                       {canEdit && (
-                        <Button size="sm" onClick={() => {
-                          setPassengerForm({ name: '', status: 'Adult', comment: '' });
-                          setEditingPassenger(null);
-                          setPassengerDialogOpen(true);
+                        <Popover open={allocatePopoverOpen} onOpenChange={(open) => {
+                          setAllocatePopoverOpen(open);
+                          if (!open) {
+                            setSelectedPassengerIds([]);
+                            setSelectedAllocateStatus('');
+                            setPassengerSearchQuery('');
+                          }
                         }}>
-                          <Plus className="h-4 w-4 mr-1" />
-                          Add Passenger
+                          <PopoverTrigger asChild>
+                            <Button variant="outline" size="sm">
+                              <Search className="h-4 w-4 mr-1" />
+                              Allocate Passenger
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-96 p-4 z-[200]" align="end">
+                            <div className="space-y-4">
+                              <div className="flex items-center justify-between">
+                                <h4 className="font-medium">Select Existing Passengers</h4>
+                                {selectedPassengerIds.length > 0 && (
+                                  <Badge variant="secondary">{selectedPassengerIds.length} selected</Badge>
+                                )}
+                              </div>
+                              
+                              {/* Search Input */}
+                              <div className="space-y-2">
+                                <Input
+                                  placeholder="Search by name or email..."
+                                  value={passengerSearchQuery}
+                                  onChange={(e) => setPassengerSearchQuery(e.target.value)}
+                                />
+                                <div className="border rounded-md max-h-48 overflow-y-auto">
+                                  {filteredPassengersForAllocation.length === 0 ? (
+                                    <div className="p-3 text-center text-gray-500 text-sm">
+                                      {passengerSearchQuery ? 'No passengers found' : 'No passengers in system'}
+                                    </div>
+                                  ) : (
+                                    filteredPassengersForAllocation.map(passenger => {
+                                      const isAlreadyAllocated = tripPassengers.some(tp => tp.passenger_id === passenger.id);
+                                      const isSelected = selectedPassengerIds.includes(passenger.id);
+                                      return (
+                                        <div
+                                          key={passenger.id}
+                                          className={`flex items-center gap-2 p-2 hover:bg-gray-50 cursor-pointer border-b last:border-b-0 ${
+                                            isAlreadyAllocated ? 'opacity-50 cursor-not-allowed bg-gray-100' : ''
+                                          } ${isSelected ? 'bg-blue-50' : ''}`}
+                                          onClick={() => !isAlreadyAllocated && togglePassengerForAllocation(passenger.id)}
+                                        >
+                                          <Checkbox
+                                            checked={isSelected}
+                                            disabled={isAlreadyAllocated}
+                                            onCheckedChange={() => !isAlreadyAllocated && togglePassengerForAllocation(passenger.id)}
+                                          />
+                                          <div className="flex-1">
+                                            <div className="font-medium text-sm">{passenger.name}</div>
+                                            <div className="text-xs text-gray-500">
+                                              {passenger.passenger_type || 'Guest'}
+                                              {passenger.contact_email && ` • ${passenger.contact_email}`}
+                                            </div>
+                                          </div>
+                                          {isAlreadyAllocated && (
+                                            <Badge variant="outline" className="text-xs">Already added</Badge>
+                                          )}
+                                        </div>
+                                      );
+                                    })
+                                  )}
+                                </div>
+                              </div>
+                              
+                              {/* Status Selection */}
+                              <div className="space-y-2">
+                                <Label>Status for selected passengers</Label>
+                                <Select value={selectedAllocateStatus} onValueChange={setSelectedAllocateStatus}>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="Select status" />
+                                  </SelectTrigger>
+                                  <SelectContent className="z-[300]">
+                                    {passengerTypes.map((type, idx) => (
+                                      <SelectItem key={idx} value={type}>{type}</SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                              
+                              <div className="flex gap-2">
+                                <Button variant="outline" size="sm" onClick={() => setAllocatePopoverOpen(false)} className="flex-1">
+                                  Cancel
+                                </Button>
+                                <Button 
+                                  size="sm" 
+                                  onClick={handleAllocatePassengers} 
+                                  className="flex-1"
+                                  disabled={selectedPassengerIds.length === 0 || !selectedAllocateStatus}
+                                >
+                                  Allocate {selectedPassengerIds.length > 0 ? `(${selectedPassengerIds.length})` : ''}
+                                </Button>
+                              </div>
+                            </div>
+                          </PopoverContent>
+                        </Popover>
+                      )}
+                      
+                      {/* Add New Passenger */}
+                      {canEdit && (
+                        <Button size="sm" onClick={() => setNewPassengerFormOpen(true)}>
+                          <UserPlus className="h-4 w-4 mr-1" />
+                          Add New
                         </Button>
                       )}
                     </div>
@@ -968,6 +1070,7 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
                     <div className="text-center py-8 text-gray-500">
                       <Users className="h-12 w-12 mx-auto mb-2 opacity-30" />
                       <p>No passengers recorded for this trip</p>
+                      <p className="text-sm mt-1">Use "Allocate Passenger" to select existing or "Add New" to create</p>
                     </div>
                   ) : (
                     <div className="space-y-2">
