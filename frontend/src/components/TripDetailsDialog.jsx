@@ -512,6 +512,12 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
     });
   };
 
+  // Get the departure date from trip (handle both field names)
+  const getDepartureDate = () => {
+    const dateStr = trip?.planned_depart_datetime || trip?.depart_datetime;
+    return dateStr ? formatDateOnly(dateStr) : '';
+  };
+
   const getTotalShiftHours = () => {
     return shiftLogs.reduce((sum, log) => sum + (log.total_hours || 0), 0).toFixed(2);
   };
