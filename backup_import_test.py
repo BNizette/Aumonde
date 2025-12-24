@@ -11,7 +11,7 @@ from datetime import datetime
 
 class BackupImportTester:
     def __init__(self):
-        self.base_url = "https://maritime-ops-3.preview.emergentagent.com"
+        self.base_url = "https://marine-safety-1.preview.emergentagent.com"
         self.api_url = f"{self.base_url}/api"
         self.token = None
         

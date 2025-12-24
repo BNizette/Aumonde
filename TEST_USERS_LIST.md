@@ -235,4 +235,4 @@ With 12 users now available:
 - ✅ Diverse email domains
 - ✅ Ready for comprehensive filter testing
 
-**Login and start testing:** https://maritime-ops-3.preview.emergentagent.com
+**Login and start testing:** https://marine-safety-1.preview.emergentagent.com

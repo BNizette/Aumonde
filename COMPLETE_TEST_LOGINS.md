@@ -308,7 +308,7 @@ Login as admin, go to Admin Panel → Users
 
 ## 🚀 LOGIN URL
 
-**Preview:** https://maritime-ops-3.preview.emergentagent.com
+**Preview:** https://marine-safety-1.preview.emergentagent.com
 
 ---
 
