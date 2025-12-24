@@ -598,7 +598,7 @@ const PassengerForm = ({ open, onClose, onSave, passenger, mode = 'create' }) =>
                 <SelectTrigger>
                   <SelectValue placeholder="Select privacy level" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="z-[200]">
                   <SelectItem value="formal">Formal - Minimal interaction</SelectItem>
                   <SelectItem value="balanced">Balanced - Professional but friendly</SelectItem>
                   <SelectItem value="social">Social - Enjoy crew interaction</SelectItem>
