@@ -1185,7 +1185,7 @@ class Passenger(BaseModel):
     dietary_preference: Optional[str] = None
     beverage_preference: Optional[str] = None
     alcohol_allowed: Optional[bool] = True
-    dining_style: Optional[str] = None  # formal, buffet, family
+    dining_styles: Optional[List[str]] = []  # casual, buffet, family, formal
     
     # Tab 4: Entertainment & Activity Planning
     music_genre: Optional[str] = None
