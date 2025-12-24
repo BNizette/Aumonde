@@ -503,6 +503,15 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
     });
   };
 
+  const formatDateOnly = (dateString) => {
+    if (!dateString) return '';
+    return new Date(dateString).toLocaleDateString('en-AU', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric'
+    });
+  };
+
   const getTotalShiftHours = () => {
     return shiftLogs.reduce((sum, log) => sum + (log.total_hours || 0), 0).toFixed(2);
   };
