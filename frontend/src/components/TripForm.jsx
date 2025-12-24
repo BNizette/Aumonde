@@ -150,6 +150,7 @@ const TripForm = ({ open, onClose, onSave, trip, mode = 'create' }) => {
           </DialogDescription>
         </DialogHeader>
 
+        <div className="space-y-6">
           {error && (
             <Alert variant="destructive">
               <AlertDescription>{error}</AlertDescription>
