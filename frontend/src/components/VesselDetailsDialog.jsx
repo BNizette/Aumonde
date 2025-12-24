@@ -96,7 +96,11 @@ const VesselDetailsDialog = ({ open, onClose, vessel, onMessage }) => {
       
       // Filter emergency contacts and procedures by vessel
       setEmergencyContacts((contactsRes.data || []).filter(c => c.vessel_ids?.includes(vesselId) || c.vessel_id === vesselId));
-      setEmergencyProcedures((proceduresRes.data || []).filter(p => p.vessel_ids?.includes(vesselId) || !p.vessel_ids || p.vessel_ids.length === 0));
+      setEmergencyProcedures((proceduresRes.data || []).filter(p => 
+        p.vessel_ids?.includes(vesselId) || 
+        p.vessel_id === vesselId || 
+        ((!p.vessel_ids || p.vessel_ids.length === 0) && !p.vessel_id)
+      ));
 
       // Fetch passengers for all trips
       if (tripIds.length > 0) {
