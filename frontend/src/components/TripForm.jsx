@@ -164,12 +164,18 @@ const TripForm = ({ open, onClose, onSave, trip, mode = 'create' }) => {
     return date.toLocaleDateString('en-AU', { day: '2-digit', month: 'short', year: 'numeric' });
   };
 
+  // Get the departure date from trip (handle both field names)
+  const getDepartureDate = () => {
+    const dateStr = trip?.planned_depart_datetime || trip?.depart_datetime;
+    return dateStr ? formatDateForHeader(dateStr) : '';
+  };
+
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
-            {mode === 'create' ? 'Create New Trip' : `Edit Trip${trip?.trip_name ? ` - ${trip.trip_name}` : ''}${trip?.planned_depart_datetime ? ` - ${formatDateForHeader(trip.planned_depart_datetime)}` : ''}`}
+            {mode === 'create' ? 'Create New Trip' : `Edit Trip${trip?.trip_name ? ` - ${trip.trip_name}` : ''}${getDepartureDate() ? ` - ${getDepartureDate()}` : ''}`}
           </DialogTitle>
           <DialogDescription>
             {mode === 'create' ? 'Add a new trip to the system' : 'Update trip details'}
