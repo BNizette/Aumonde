@@ -4250,6 +4250,17 @@ async def populate_setting_from_existing(
             drills = await db.emergency_drills.find({}, {"_id": 0, "drill_type": 1}).to_list(10000)
             unique_values = list(set([d.get("drill_type") for d in drills if d.get("drill_type")]))
         
+        # Passenger module
+        elif module == "passenger" and category == "passenger_types":
+            # Get from trip_passengers status and passengers passenger_type
+            trip_passengers = await db.trip_passengers.find({}, {"_id": 0, "status": 1}).to_list(10000)
+            passengers = await db.passengers.find({}, {"_id": 0, "passenger_type": 1}).to_list(10000)
+            
+            statuses = [tp.get("status") for tp in trip_passengers if tp.get("status")]
+            types = [p.get("passenger_type") for p in passengers if p.get("passenger_type")]
+            
+            unique_values = list(set(statuses + types))
+        
         else:
             # If no matching category, return empty
             unique_values = []
