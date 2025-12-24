@@ -948,7 +948,7 @@ const VesselDetailsDialog = ({ open, onClose, vessel, onMessage }) => {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Procedure Name</TableHead>
-                    <TableHead>Category</TableHead>
+                    <TableHead>Emergency Type</TableHead>
                     <TableHead>Authorised By</TableHead>
                     <TableHead>Date Authorised</TableHead>
                   </TableRow>
@@ -956,8 +956,8 @@ const VesselDetailsDialog = ({ open, onClose, vessel, onMessage }) => {
                 <TableBody>
                   {emergencyProcedures.map(proc => (
                     <TableRow key={proc.id}>
-                      <TableCell className="font-medium">{proc.procedure_name}</TableCell>
-                      <TableCell><Badge variant="outline">{proc.category || '-'}</Badge></TableCell>
+                      <TableCell className="font-medium">{proc.title || proc.procedure_name || '-'}</TableCell>
+                      <TableCell><Badge variant="outline">{proc.emergency_type || proc.category || '-'}</Badge></TableCell>
                       <TableCell>{proc.authorised_by || '-'}</TableCell>
                       <TableCell>{proc.date_authorised ? formatDate(proc.date_authorised) : '-'}</TableCell>
                     </TableRow>
