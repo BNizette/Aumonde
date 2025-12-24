@@ -147,10 +147,11 @@ const TripForm = ({ open, onClose, onSave, trip, mode = 'create' }) => {
     }
     setError('');
     
-    // Update passenger count based on trip passengers
+    // Update passenger and crew counts based on allocated data
     const updatedFormData = {
       ...formData,
-      number_of_passengers: tripPassengers.length
+      number_of_passengers: tripPassengers.length,
+      number_of_crew: allocatedCrew.length
     };
     
     onSave(updatedFormData);
