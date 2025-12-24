@@ -312,17 +312,9 @@ const TripForm = ({ open, onClose, onSave, trip, mode = 'create' }) => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
-      {/* Passenger Form Dialog */}
-      <PassengerForm
-        open={passengerFormOpen}
-        onClose={() => setPassengerFormOpen(false)}
-        onSave={handleSaveNewPassenger}
-        passenger={editingPassenger}
-        mode="create"
-      />
     </>
   );
+};
 };
 
 export default TripForm;
