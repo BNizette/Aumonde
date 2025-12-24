@@ -128,6 +128,7 @@ const TripForm = ({ open, onClose, onSave, trip, mode = 'create' }) => {
         number_of_crew: 0
       });
       setTripPassengers([]);
+      setAllocatedCrew([]);
     }
   }, [trip, mode, open]);
 
