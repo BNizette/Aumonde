@@ -14,8 +14,10 @@ import axios from 'axios';
 
 const PassengerForm = ({ open, onClose, onSave, passenger, mode = 'create' }) => {
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+  const API = `${BACKEND_URL}/api`;
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [dragActive, setDragActive] = useState(false);
+  const [passengerTypes, setPassengerTypes] = useState(['Primary', 'Guest']);
 
   const [formData, setFormData] = useState({
     // Tab 1: Details
