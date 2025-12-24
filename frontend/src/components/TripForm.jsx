@@ -637,7 +637,7 @@ const TripForm = ({ open, onClose, onSave, trip, mode = 'create' }) => {
                 <div className="text-center py-8 text-gray-500 border-2 border-dashed rounded-lg">
                   <Users className="h-12 w-12 mx-auto mb-2 text-gray-300" />
                   <p>No passengers added to this trip yet</p>
-                  <p className="text-sm mt-1">Use "Add Passenger" to create new or "Allocate Passenger" to assign existing</p>
+                  <p className="text-sm mt-1">Use &quot;Add Passenger&quot; to create new or &quot;Allocate Passengers&quot; to assign existing</p>
                 </div>
               ) : (
                 <Table>
