@@ -14,6 +14,7 @@ const Layout = ({ children, user, onLogout }) => {
     { path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
     { path: '/vessels', icon: Ship, label: 'Vessels' },
     { path: '/crew', icon: Users, label: 'Crew' },
+    { path: '/passengers', icon: UserPlus, label: 'Passengers' },
     { path: '/trips', icon: MapPin, label: 'Trips' },
     { path: '/maintenance', icon: Wrench, label: 'Maintenance' },
     { path: '/risk-assessment', icon: AlertTriangle, label: 'Risk Assessment' },
