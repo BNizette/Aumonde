@@ -191,6 +191,30 @@ frontend:
         agent: "testing"
         comment: "✅ PASSED: Trip Edit Crew field format test successful. Both Crew and Passengers fields are displayed as read-only with bold colored numbers (green for Crew: 5, blue for Passengers: 1) and 'Manage in Trip Details view' text. No editable input fields found. Format change implemented correctly as requested."
 
+  - task: "Vessel Edit - Induction Tab"
+    implemented: true
+    working: "NA"
+    file: "src/components/VesselForm.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "testing"
+        comment: "Need to test: 1) Vessel edit form opens with 5 tabs including Induction tab, 2) Induction tab shows crew selection area with checkboxes, 3) When crew selected, induction tasks checklist appears, 4) Summary table shows induction progress for crew"
+
+  - task: "Vessel Details - Induction View with Manage in Vessel Button"
+    implemented: true
+    working: "NA"
+    file: "src/components/VesselDetailsDialog.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "testing"
+        comment: "Need to test: 1) Vessel Details dialog has Induction option in View dropdown, 2) Induction view shows 'Manage in Vessel' button with ExternalLink icon, 3) Button opens Vessel Edit form and switches to Induction tab"
+
 metadata:
   created_by: "testing_agent"
   version: "1.5"
