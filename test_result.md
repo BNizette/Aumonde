@@ -89,6 +89,17 @@ frontend:
         agent: "main"
         comment: "Need to test: 1) Trip edit form opens with Passengers tab, 2) Add Passenger button opens PassengerForm dialog, 3) Allocate Passengers button allows multi-select of existing passengers with status"
       - working: true
+  - task: "Trip Edit - Passenger Creation from Trip Form"
+    implemented: true
+    working: "NA"
+    file: "src/components/TripForm.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "testing"
+        comment: "Need to test passenger creation from Trip Edit form. Trip form should have Passengers tab with Add Passenger functionality that opens PassengerForm dialog."
         agent: "testing"
         comment: "✅ Trip Edit Passenger Management working correctly. Verified: 1) Trip form opens with Passengers tab, 2) Add Passenger button exists and functional, 3) Allocate Passengers button exists with multi-select popover functionality including search input and status dropdown. All core functionality implemented as requested."
 
