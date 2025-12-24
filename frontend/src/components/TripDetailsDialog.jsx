@@ -10,12 +10,15 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Plus, Edit, Trash2, Calendar, Clock, User, Users, FileText, Activity, Gauge, Download, FileSpreadsheet, AlertTriangle, Shield, ExternalLink } from 'lucide-react';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Plus, Edit, Trash2, Calendar, Clock, User, Users, FileText, Activity, Gauge, Download, FileSpreadsheet, AlertTriangle, Shield, ExternalLink, Search, UserPlus } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import TripLogForm from './TripLogForm';
 import RunningLogForm from './RunningLogForm';
 import EngineRunningLogForm from './EngineRunningLogForm';
 import AllocatedCrewForm from './AllocatedCrewForm';
+import PassengerForm from './PassengerForm';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -30,10 +33,21 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
   const [tripPassengers, setTripPassengers] = useState([]);
   const [loading, setLoading] = useState(false);
   
-  // Passenger form state
+  // Passenger form state (for simple trip passenger entry)
   const [passengerDialogOpen, setPassengerDialogOpen] = useState(false);
   const [passengerForm, setPassengerForm] = useState({ name: '', status: 'Adult', comment: '' });
   const [editingPassenger, setEditingPassenger] = useState(null);
+  
+  // Passenger allocation state (for selecting from Passenger module)
+  const [allPassengers, setAllPassengers] = useState([]);
+  const [passengerTypes, setPassengerTypes] = useState(['Primary', 'Guest']);
+  const [allocatePopoverOpen, setAllocatePopoverOpen] = useState(false);
+  const [passengerSearchQuery, setPassengerSearchQuery] = useState('');
+  const [selectedPassengerIds, setSelectedPassengerIds] = useState([]);
+  const [selectedAllocateStatus, setSelectedAllocateStatus] = useState('');
+  
+  // PassengerForm dialog state (for creating new passengers)
+  const [newPassengerFormOpen, setNewPassengerFormOpen] = useState(false);
   
   const [shiftFormOpen, setShiftFormOpen] = useState(false);
   const [runningFormOpen, setRunningFormOpen] = useState(false);
