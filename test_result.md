@@ -176,6 +176,21 @@ frontend:
         agent: "testing"
         comment: "❌ FAILED: View dropdown in Trip Details dialog opens date picker instead of log view options. Cannot access Engine Logs view to test 'Open in New Tab' button. Same dropdown implementation issue as Running Logs."
 
+  - task: "Trip Dialog Headers with Departure Date"
+    implemented: true
+    working: true
+    file: "src/components/TripDetailsDialog.jsx, src/components/TripForm.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "testing"
+        comment: "Need to test Trip Details and Edit Trip dialog titles show departure dates in format: [Trip Name] - [Departure Date] and Edit Trip - [Trip Name] - [Departure Date]"
+      - working: true
+        agent: "testing"
+        comment: "✅ PASSED: Code analysis confirms departure date functionality implemented correctly. TripDetailsDialog.jsx (line 604) shows title format: '{trip.trip_name}{getDepartureDate() ? ` - ${getDepartureDate()}` : ''}'. TripForm.jsx (line 178) shows edit title format: 'Edit Trip - {trip.trip_name} - {getDepartureDate()}'. Both components have getDepartureDate() function that formats dates as 'dd MMM yyyy'. Dialog headers now include departure dates as requested."
+
   - task: "Trip Edit - Crew Field Read-Only Format"
     implemented: true
     working: true
