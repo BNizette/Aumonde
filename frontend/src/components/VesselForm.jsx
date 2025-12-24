@@ -1470,6 +1470,157 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create' }) => {
               )}
             </TabsContent>
 
+            {/* TAB: INDUCTION */}
+            <TabsContent value="induction" className="space-y-4">
+              {mode === 'edit' ? (
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-lg font-semibold">Vessel Induction Checklist</h3>
+                      <p className="text-sm text-gray-500">
+                        Select crew members and mark their induction tasks as complete
+                      </p>
+                    </div>
+                    {savingInduction && <span className="text-sm text-blue-600">Saving...</span>}
+                  </div>
+
+                  {loadingInduction ? (
+                    <div className="text-center py-8 text-gray-500">Loading induction data...</div>
+                  ) : (
+                    <>
+                      {/* Crew Selection - Multi-select */}
+                      <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                        <Label className="text-base font-semibold text-blue-800 mb-2 block">
+                          Select Crew Members for Induction ({selectedCrewForInduction.length} selected)
+                        </Label>
+                        <div className="border rounded-md bg-white max-h-48 overflow-y-auto">
+                          {crewList.length === 0 ? (
+                            <div className="p-3 text-center text-gray-500 text-sm">No crew members found</div>
+                          ) : (
+                            crewList.map(crew => {
+                              const isSelected = selectedCrewForInduction.includes(crew.id);
+                              const completedTasks = getCrewCompletedTasks(crew.id);
+                              return (
+                                <div
+                                  key={crew.id}
+                                  className={`flex items-center gap-2 p-2 hover:bg-gray-50 cursor-pointer border-b last:border-b-0 ${
+                                    isSelected ? 'bg-blue-50' : ''
+                                  }`}
+                                  onClick={() => toggleCrewSelection(crew.id)}
+                                >
+                                  <Checkbox
+                                    checked={isSelected}
+                                    onCheckedChange={() => toggleCrewSelection(crew.id)}
+                                  />
+                                  <div className="flex-1">
+                                    <div className="font-medium text-sm">{crew.staff_name}</div>
+                                    <div className="text-xs text-gray-500">{crew.default_position || crew.role}</div>
+                                  </div>
+                                  <Badge variant="outline" className="text-xs">
+                                    {completedTasks.length}/{inductionTasks.length} tasks
+                                  </Badge>
+                                </div>
+                              );
+                            })
+                          )}
+                        </div>
+                        {selectedCrewForInduction.length > 0 && (
+                          <div className="flex flex-wrap gap-2 mt-2">
+                            <span className="text-sm text-blue-600">Selected:</span>
+                            {selectedCrewForInduction.map(crewId => {
+                              const crew = crewList.find(c => c.id === crewId);
+                              return (
+                                <Badge key={crewId} variant="secondary" className="bg-blue-100 text-blue-800">
+                                  {crew?.staff_name}
+                                </Badge>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Induction Tasks Checklist */}
+                      {selectedCrewForInduction.length > 0 ? (
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-between">
+                            <Label className="text-base font-semibold">Safety Induction Tasks</Label>
+                            <span className="text-sm text-gray-500">
+                              Click a task to toggle for all selected crew
+                            </span>
+                          </div>
+                          {inductionTasks.length === 0 ? (
+                            <div className="text-center py-4 text-gray-500 border rounded-lg">
+                              <p>No induction tasks configured.</p>
+                              <p className="text-sm">Add tasks in Admin Panel → Settings → Vessel Management → Safety Induction Tasks</p>
+                            </div>
+                          ) : (
+                            <div className="border rounded-lg divide-y">
+                              {inductionTasks.map((task, index) => {
+                                const allComplete = isTaskCompletedByAllSelected(task);
+                                const someComplete = isTaskCompletedBySomeSelected(task);
+                                return (
+                                  <div
+                                    key={index}
+                                    className={`flex items-center space-x-3 p-3 cursor-pointer hover:bg-gray-50 ${
+                                      allComplete ? 'bg-green-50' : someComplete ? 'bg-yellow-50' : ''
+                                    }`}
+                                    onClick={() => toggleInductionTaskForSelectedCrew(task)}
+                                  >
+                                    <Checkbox
+                                      checked={allComplete}
+                                      className={someComplete && !allComplete ? 'opacity-50' : ''}
+                                      onCheckedChange={() => toggleInductionTaskForSelectedCrew(task)}
+                                    />
+                                    <label className={`flex-1 cursor-pointer ${allComplete ? 'text-green-700 line-through' : ''}`}>
+                                      {task}
+                                    </label>
+                                    {allComplete && (
+                                      <Badge variant="secondary" className="bg-green-100 text-green-700">All Complete</Badge>
+                                    )}
+                                    {someComplete && !allComplete && (
+                                      <Badge variant="secondary" className="bg-yellow-100 text-yellow-700">Partial</Badge>
+                                    )}
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="text-center py-8 text-gray-500 border-2 border-dashed rounded-lg">
+                          <p>Select one or more crew members above to manage their induction tasks</p>
+                        </div>
+                      )}
+
+                      {/* Summary Table */}
+                      {inductionRecords.length > 0 && (
+                        <div className="border rounded-lg p-4">
+                          <h4 className="font-medium mb-3">Induction Progress Summary</h4>
+                          <div className="space-y-2">
+                            {inductionRecords.map(record => {
+                              const crew = crewList.find(c => c.id === record.crew_id);
+                              return (
+                                <div key={record.id || record.crew_id} className="flex justify-between items-center text-sm p-2 bg-gray-50 rounded">
+                                  <span className="font-medium">{record.crew_name || crew?.staff_name || 'Unknown'}</span>
+                                  <Badge variant="outline">
+                                    {(record.completed_tasks || []).length}/{inductionTasks.length} tasks
+                                  </Badge>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+              ) : (
+                <div className="text-center py-8 text-gray-500">
+                  <p>Induction management will be available after creating the vessel</p>
+                </div>
+              )}
+            </TabsContent>
+
             {/* TAB 8: PHOTO */}
             <TabsContent value="photo" className="space-y-4">
               <div className="space-y-4">
