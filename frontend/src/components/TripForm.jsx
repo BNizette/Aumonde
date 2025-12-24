@@ -74,6 +74,19 @@ const TripForm = ({ open, onClose, onSave, trip, mode = 'create' }) => {
     }
   };
 
+  const fetchAllocatedCrew = async (tripId) => {
+    if (!tripId) return;
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`${API}/allocated-crew?trip_id=${tripId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setAllocatedCrew(response.data || []);
+    } catch (err) {
+      console.error('Error fetching allocated crew:', err);
+    }
+  };
+
   useEffect(() => {
     if (open) {
       fetchVessels();
