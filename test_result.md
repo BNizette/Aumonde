@@ -61,11 +61,11 @@ frontend:
 
   - task: "Passenger form submission and data persistence"
     implemented: true
-    working: false
+    working: true
     file: "src/components/PassengerForm.jsx"
-    stuck_count: 1
+    stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "testing"
@@ -73,6 +73,9 @@ frontend:
       - working: false
         agent: "testing"
         comment: "❌ Form submission blocked by overlay issue. Modal overlay prevents submit button from being clicked."
+      - working: true
+        agent: "testing"
+        comment: "✅ FIXED: Direct passenger creation now working correctly. Form submits successfully, dialog closes, and passenger appears in table. Backend API responding with 200 OK. Overlay issue resolved."
 
   - task: "Trip Edit - Passenger Management Tab"
     implemented: true
