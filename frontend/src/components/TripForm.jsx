@@ -16,16 +16,6 @@ const TripForm = ({ open, onClose, onSave, trip, mode = 'create' }) => {
   const [tripTypes, setTripTypes] = useState([]);
   const [tripPassengers, setTripPassengers] = useState([]);
   const [error, setError] = useState('');
-  
-  // Passenger form state
-  const [passengerFormOpen, setPassengerFormOpen] = useState(false);
-  const [editingPassenger, setEditingPassenger] = useState(null);
-  
-  // Allocate passenger state
-  const [allocateOpen, setAllocateOpen] = useState(false);
-  const [selectedPassengerIds, setSelectedPassengerIds] = useState([]);  // Changed to array for multi-select
-  const [selectedStatus, setSelectedStatus] = useState('');
-  const [allocateSearch, setAllocateSearch] = useState('');
 
   const [formData, setFormData] = useState({
     trip_name: '',
