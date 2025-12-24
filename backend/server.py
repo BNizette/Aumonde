@@ -1155,6 +1155,156 @@ class DocumentCreate(BaseModel):
     vessel_id: Optional[str] = None
 
 # ============================================================================
+# PASSENGER MODELS
+# ============================================================================
+
+class Passenger(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    
+    # Tab 1: Details
+    name: str
+    passenger_type: str = "Primary"  # Primary or Guest
+    relationship_to_primary: Optional[str] = None  # Only for Guest type
+    address: Optional[str] = None
+    date_of_birth: Optional[str] = None
+    contact_phone: Optional[str] = None
+    contact_email: Optional[str] = None
+    emergency_contact_name: Optional[str] = None
+    emergency_contact_phone: Optional[str] = None
+    
+    # Tab 2: Medical and Dietary
+    allergies: Optional[str] = None
+    dislikes: Optional[str] = None
+    dietary_restrictions: Optional[str] = None
+    medications: Optional[str] = None
+    medical_conditions: Optional[str] = None
+    special_equipment: Optional[str] = None  # cpap, baby items etc
+    
+    # Tab 3: Preference and Provisioning
+    dietary_preference: Optional[str] = None
+    beverage_preference: Optional[str] = None
+    alcohol_allowed: Optional[bool] = True
+    dining_style: Optional[str] = None  # formal, buffet, family
+    
+    # Tab 4: Entertainment & Activity Planning
+    music_genre: Optional[str] = None
+    movie_preferences: Optional[str] = None
+    internet_requirement: Optional[str] = None
+    desired_experiences: Optional[str] = None  # theme night, water activities etc
+    special_requests: Optional[str] = None  # occasions, wellness etc
+    privacy_level: Optional[str] = None  # formal or social crew interaction
+    
+    # Tab 5: Photo
+    photo_url: Optional[str] = None
+    
+    created_by: str
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: Optional[datetime] = None
+
+class PassengerCreate(BaseModel):
+    name: str
+    passenger_type: str = "Primary"
+    relationship_to_primary: Optional[str] = None
+    address: Optional[str] = None
+    date_of_birth: Optional[str] = None
+    contact_phone: Optional[str] = None
+    contact_email: Optional[str] = None
+    emergency_contact_name: Optional[str] = None
+    emergency_contact_phone: Optional[str] = None
+    allergies: Optional[str] = None
+    dislikes: Optional[str] = None
+    dietary_restrictions: Optional[str] = None
+    medications: Optional[str] = None
+    medical_conditions: Optional[str] = None
+    special_equipment: Optional[str] = None
+    dietary_preference: Optional[str] = None
+    beverage_preference: Optional[str] = None
+    alcohol_allowed: Optional[bool] = True
+    dining_style: Optional[str] = None
+    music_genre: Optional[str] = None
+    movie_preferences: Optional[str] = None
+    internet_requirement: Optional[str] = None
+    desired_experiences: Optional[str] = None
+    special_requests: Optional[str] = None
+    privacy_level: Optional[str] = None
+    photo_url: Optional[str] = None
+
+# ============================================================================
+# PASSENGER ENDPOINTS
+# ============================================================================
+
+@api_router.post("/passengers")
+async def create_passenger(passenger_data: PassengerCreate, current_user: dict = Depends(require_access_level(AccessLevel.EDIT))):
+    passenger = Passenger(**passenger_data.model_dump(), created_by=current_user["id"])
+    await db.passengers.insert_one(passenger.model_dump())
+    
+    await log_audit(
+        current_user["id"],
+        current_user["full_name"],
+        "create",
+        "passenger",
+        passenger.id,
+        passenger.name
+    )
+    
+    return passenger
+
+@api_router.get("/passengers")
+async def get_passengers(current_user: dict = Depends(require_access_level(AccessLevel.VIEW))):
+    passengers = await db.passengers.find({}, {"_id": 0}).sort("name", 1).to_list(1000)
+    return passengers
+
+@api_router.get("/passengers/{passenger_id}")
+async def get_passenger(passenger_id: str, current_user: dict = Depends(require_access_level(AccessLevel.VIEW))):
+    passenger = await db.passengers.find_one({"id": passenger_id}, {"_id": 0})
+    if not passenger:
+        raise HTTPException(status_code=404, detail="Passenger not found")
+    return passenger
+
+@api_router.put("/passengers/{passenger_id}")
+async def update_passenger(passenger_id: str, passenger_data: PassengerCreate, current_user: dict = Depends(require_access_level(AccessLevel.EDIT))):
+    existing = await db.passengers.find_one({"id": passenger_id})
+    if not existing:
+        raise HTTPException(status_code=404, detail="Passenger not found")
+    
+    update_data = passenger_data.model_dump()
+    update_data["updated_at"] = datetime.now(timezone.utc)
+    
+    await db.passengers.update_one({"id": passenger_id}, {"$set": update_data})
+    
+    await log_audit(
+        current_user["id"],
+        current_user["full_name"],
+        "update",
+        "passenger",
+        passenger_id,
+        passenger_data.name
+    )
+    
+    updated = await db.passengers.find_one({"id": passenger_id}, {"_id": 0})
+    return updated
+
+@api_router.delete("/passengers/{passenger_id}")
+async def delete_passenger(passenger_id: str, current_user: dict = Depends(require_access_level(AccessLevel.FULL))):
+    passenger = await db.passengers.find_one({"id": passenger_id}, {"_id": 0})
+    if not passenger:
+        raise HTTPException(status_code=404, detail="Passenger not found")
+    
+    await db.passengers.delete_one({"id": passenger_id})
+    
+    await log_audit(
+        current_user["id"],
+        current_user["full_name"],
+        "delete",
+        "passenger",
+        passenger_id,
+        passenger["name"]
+    )
+    
+    return {"message": "Passenger deleted successfully"}
+
+# ============================================================================
 # TRIP MODELS
 # ============================================================================
 
