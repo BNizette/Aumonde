@@ -836,6 +836,18 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
                       {shiftLogs.length} {shiftLogs.length === 1 ? 'entry' : 'entries'} • Total: {getTotalShiftHours()} hours
                     </p>
                     <div className="flex gap-2">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => {
+                          const url = `/trips/${trip.id}/shifts`;
+                          window.open(url, '_blank');
+                        }}
+                        title="Open shifts in new tab"
+                      >
+                        <ExternalLink className="h-4 w-4 mr-2" />
+                        Open in New Tab
+                      </Button>
                       {shiftLogs.length > 0 && (
                         <Button 
                           variant="outline" 
