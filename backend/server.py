@@ -4396,13 +4396,15 @@ class TripPassenger(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     trip_id: str
+    passenger_id: Optional[str] = None  # Link to Passenger collection (optional for manual entry)
     name: str
-    status: str  # Adult, Child, Baby, Senior, Special Needs
+    status: str  # From admin settings: passenger_types (e.g., Primary, Guest, VIP, Charter)
     comment: Optional[str] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class TripPassengerCreate(BaseModel):
     trip_id: str
+    passenger_id: Optional[str] = None
     name: str
     status: str
     comment: Optional[str] = None
