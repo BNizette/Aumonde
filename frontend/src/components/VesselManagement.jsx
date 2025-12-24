@@ -899,6 +899,13 @@ const VesselManagement = () => {
         onClose={() => setLogsDialogOpen(false)}
         vessel={selectedVesselForLogs}
         onMessage={(msg) => { setMessage(msg); setTimeout(() => setMessage(""), 3000); }}
+        onEdit={(vessel, tab) => {
+          setLogsDialogOpen(false);
+          setSelectedVessel(vessel);
+          setFormMode('edit');
+          setDefaultEditTab(tab || 'basic');
+          setFormOpen(true);
+        }}
       />
 
       {/* Import Excel Dialog */}
