@@ -54,27 +54,9 @@ const TripForm = ({ open, onClose, onSave, trip, mode = 'create' }) => {
       const tripTypesData = await tripTypesRes.json();
       setTripTypes(tripTypesData.options || []);
       
-      // Fetch passenger types
-      const passengerTypesRes = await fetch(`${API}/settings/passenger/passenger_types`, { headers });
-      const passengerTypesData = await passengerTypesRes.json();
-      const types = (passengerTypesData.options || []).filter(o => o.is_active !== false).map(o => typeof o === 'string' ? o : o.value);
-      setPassengerTypes(types.length > 0 ? types : ['Primary', 'Guest']);
     } catch (err) {
       console.error('Error fetching settings:', err);
       setTripTypes([]);
-      setPassengerTypes(['Primary', 'Guest']);
-    }
-  };
-
-  const fetchAllPassengers = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get(`${API}/passengers`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setAllPassengers(response.data || []);
-    } catch (err) {
-      console.error('Error fetching passengers:', err);
     }
   };
 
@@ -95,7 +77,6 @@ const TripForm = ({ open, onClose, onSave, trip, mode = 'create' }) => {
     if (open) {
       fetchVessels();
       fetchSettings();
-      fetchAllPassengers();
     }
   }, [open]);
 
