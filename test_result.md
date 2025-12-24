@@ -153,7 +153,9 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Trip Edit - Passenger Creation from Trip Form"
+    - "Trip Edit - Passengers Tab Removal"
+    - "Vessel Details - Emergency Procedures Display"
+    - "Trip Details - Shifts Open in New Tab Button"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
