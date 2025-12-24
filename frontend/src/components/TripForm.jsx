@@ -233,56 +233,71 @@ const TripForm = ({ open, onClose, onSave, trip, mode = 'create' }) => {
     }
   };
 
-  // Allocate existing passenger to trip
-  const handleAllocatePassenger = async () => {
-    if (!selectedPassengerId || !selectedStatus) {
-      alert('Please select a passenger and status');
+  // Allocate existing passengers to trip (supports multiple)
+  const handleAllocatePassengers = async () => {
+    if (selectedPassengerIds.length === 0 || !selectedStatus) {
+      alert('Please select at least one passenger and a status');
       return;
     }
     
-    const passenger = allPassengers.find(p => p.id === selectedPassengerId);
-    if (!passenger) return;
+    // Filter out already allocated passengers
+    const alreadyAllocatedIds = tripPassengers.map(tp => tp.passenger_id);
+    const newPassengerIds = selectedPassengerIds.filter(id => !alreadyAllocatedIds.includes(id));
     
-    // Check if already allocated
-    if (tripPassengers.some(tp => tp.passenger_id === selectedPassengerId)) {
-      alert('This passenger is already allocated to this trip');
+    if (newPassengerIds.length === 0) {
+      alert('All selected passengers are already allocated to this trip');
       return;
     }
+    
+    const passengersToAllocate = allPassengers.filter(p => newPassengerIds.includes(p.id));
     
     try {
       const token = localStorage.getItem('token');
       
       if (trip?.id) {
-        await axios.post(`${API}/trip-passengers`, {
-          trip_id: trip.id,
-          passenger_id: passenger.id,
-          name: passenger.name,
-          status: selectedStatus
-        }, {
-          headers: { 
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}` 
-          }
-        });
-        
+        // Save to backend for edit mode
+        for (const passenger of passengersToAllocate) {
+          await axios.post(`${API}/trip-passengers`, {
+            trip_id: trip.id,
+            passenger_id: passenger.id,
+            name: passenger.name,
+            status: selectedStatus
+          }, {
+            headers: { 
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}` 
+            }
+          });
+        }
         fetchTripPassengers(trip.id);
       } else {
-        setTripPassengers(prev => [...prev, {
-          id: `temp-${Date.now()}`,
+        // Add to local state for create mode
+        const newTripPassengers = passengersToAllocate.map(passenger => ({
+          id: `temp-${Date.now()}-${passenger.id}`,
           passenger_id: passenger.id,
           name: passenger.name,
           status: selectedStatus
-        }]);
+        }));
+        setTripPassengers(prev => [...prev, ...newTripPassengers]);
       }
       
       setAllocateOpen(false);
-      setSelectedPassengerId('');
+      setSelectedPassengerIds([]);
       setSelectedStatus('');
       setAllocateSearch('');
     } catch (err) {
-      console.error('Error allocating passenger:', err);
-      alert('Failed to allocate passenger');
+      console.error('Error allocating passengers:', err);
+      alert('Failed to allocate passengers');
     }
+  };
+
+  // Toggle passenger selection in multi-select
+  const togglePassengerSelection = (passengerId) => {
+    setSelectedPassengerIds(prev => 
+      prev.includes(passengerId) 
+        ? prev.filter(id => id !== passengerId)
+        : [...prev, passengerId]
+    );
   };
 
   // Remove passenger from trip
