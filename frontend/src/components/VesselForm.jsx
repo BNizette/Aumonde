@@ -570,7 +570,7 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create', defaultTab
           </DialogDescription>
         </DialogHeader>
 
-        <Tabs defaultValue="basic" className="w-full">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="basic">Basic & Specs</TabsTrigger>
             <TabsTrigger value="certificates">Certificates</TabsTrigger>
