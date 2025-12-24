@@ -11,6 +11,8 @@ import PassengerManagement from '@/components/PassengerManagement';
 import DocumentManagement from '@/components/DocumentManagement';
 import TripManagement from '@/components/TripManagement';
 import TripShiftsPage from '@/components/TripShiftsPage';
+import TripRunningLogsPage from '@/components/TripRunningLogsPage';
+import TripEngineLogsPage from '@/components/TripEngineLogsPage';
 import RiskAssessment from '@/components/RiskAssessment';
 import Maintenance from '@/components/Maintenance';
 import Incidents from '@/components/Incidents';
