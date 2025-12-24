@@ -261,11 +261,9 @@ const DocumentForm = ({ open, onClose, onSave, document, mode = 'create' }) => {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="Regulations">Regulations</SelectItem>
-                <SelectItem value="Navigation">Navigation</SelectItem>
-                <SelectItem value="Safety">Safety</SelectItem>
-                <SelectItem value="Compliance">Compliance</SelectItem>
-                <SelectItem value="Other">Other</SelectItem>
+                {documentCategories.map((category) => (
+                  <SelectItem key={category} value={category}>{category}</SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
