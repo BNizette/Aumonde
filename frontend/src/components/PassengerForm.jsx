@@ -57,6 +57,31 @@ const PassengerForm = ({ open, onClose, onSave, passenger, mode = 'create' }) =>
     photo_url: ''
   });
 
+  // Fetch passenger types from settings
+  useEffect(() => {
+    if (open) {
+      fetchPassengerTypes();
+    }
+  }, [open]);
+
+  const fetchPassengerTypes = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`${API}/settings/passenger/passenger_types`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const types = (response.data?.options || [])
+        .filter(o => o.is_active !== false)
+        .map(o => typeof o === 'string' ? o : o.value);
+      if (types.length > 0) {
+        setPassengerTypes(types);
+      }
+    } catch (err) {
+      console.error('Error fetching passenger types:', err);
+      // Keep default types on error
+    }
+  };
+
   useEffect(() => {
     if (passenger && mode === 'edit') {
       setFormData({
