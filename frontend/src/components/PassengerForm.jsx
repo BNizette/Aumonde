@@ -634,8 +634,8 @@ const PassengerForm = ({ open, onClose, onSave, passenger, mode = 'create' }) =>
         </Tabs>
 
         <DialogFooter>
-          <Button variant="outline" onClick={onClose}>Cancel</Button>
-          <Button onClick={handleSubmit}>
+          <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>
+          <Button type="button" onClick={handleSubmit}>
             {mode === 'edit' ? 'Save Changes' : 'Add Passenger'}
           </Button>
         </DialogFooter>
