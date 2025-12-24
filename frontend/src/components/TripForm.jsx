@@ -526,54 +526,76 @@ const TripForm = ({ open, onClose, onSave, trip, mode = 'create' }) => {
                     Export
                   </Button>
                   
-                  {/* Allocate Passenger Button */}
-                  <Popover open={allocateOpen} onOpenChange={setAllocateOpen}>
+                  {/* Allocate Passengers Button (Multi-select) */}
+                  <Popover open={allocateOpen} onOpenChange={(open) => {
+                    setAllocateOpen(open);
+                    if (!open) {
+                      setSelectedPassengerIds([]);
+                      setSelectedStatus('');
+                      setAllocateSearch('');
+                    }
+                  }}>
                     <PopoverTrigger asChild>
                       <Button variant="outline" size="sm">
                         <Search className="h-4 w-4 mr-2" />
-                        Allocate Passenger
+                        Allocate Passengers
                       </Button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-80 p-4" align="end">
+                    <PopoverContent className="w-96 p-4" align="end">
                       <div className="space-y-4">
-                        <h4 className="font-medium">Allocate Existing Passenger</h4>
+                        <div className="flex items-center justify-between">
+                          <h4 className="font-medium">Allocate Existing Passengers</h4>
+                          {selectedPassengerIds.length > 0 && (
+                            <Badge variant="secondary">{selectedPassengerIds.length} selected</Badge>
+                          )}
+                        </div>
                         
                         <div className="space-y-2">
-                          <Label>Search Passenger</Label>
-                          <Command className="border rounded-md">
-                            <CommandInput 
-                              placeholder="Search by name or email..." 
-                              value={allocateSearch}
-                              onValueChange={setAllocateSearch}
-                            />
-                            <CommandList>
-                              <CommandEmpty>No passengers found</CommandEmpty>
-                              <CommandGroup className="max-h-48 overflow-y-auto">
-                                {filteredPassengers.map(passenger => (
-                                  <CommandItem
+                          <Label>Search & Select Passengers</Label>
+                          <Input
+                            placeholder="Search by name or email..."
+                            value={allocateSearch}
+                            onChange={(e) => setAllocateSearch(e.target.value)}
+                            className="mb-2"
+                          />
+                          <div className="border rounded-md max-h-48 overflow-y-auto">
+                            {filteredPassengers.length === 0 ? (
+                              <div className="p-3 text-center text-gray-500 text-sm">No passengers found</div>
+                            ) : (
+                              filteredPassengers.map(passenger => {
+                                const isAlreadyAllocated = tripPassengers.some(tp => tp.passenger_id === passenger.id);
+                                const isSelected = selectedPassengerIds.includes(passenger.id);
+                                return (
+                                  <div
                                     key={passenger.id}
-                                    value={passenger.id}
-                                    onSelect={() => setSelectedPassengerId(passenger.id)}
-                                    className="cursor-pointer"
+                                    className={`flex items-center gap-2 p-2 hover:bg-gray-50 cursor-pointer border-b last:border-b-0 ${
+                                      isAlreadyAllocated ? 'opacity-50 cursor-not-allowed bg-gray-100' : ''
+                                    } ${isSelected ? 'bg-blue-50' : ''}`}
+                                    onClick={() => !isAlreadyAllocated && togglePassengerSelection(passenger.id)}
                                   >
-                                    <Check
-                                      className={`mr-2 h-4 w-4 ${selectedPassengerId === passenger.id ? 'opacity-100' : 'opacity-0'}`}
+                                    <Checkbox
+                                      checked={isSelected}
+                                      disabled={isAlreadyAllocated}
+                                      onCheckedChange={() => !isAlreadyAllocated && togglePassengerSelection(passenger.id)}
                                     />
-                                    <div>
-                                      <div className="font-medium">{passenger.name}</div>
+                                    <div className="flex-1">
+                                      <div className="font-medium text-sm">{passenger.name}</div>
                                       {passenger.contact_email && (
                                         <div className="text-xs text-gray-500">{passenger.contact_email}</div>
                                       )}
                                     </div>
-                                  </CommandItem>
-                                ))}
-                              </CommandGroup>
-                            </CommandList>
-                          </Command>
+                                    {isAlreadyAllocated && (
+                                      <Badge variant="outline" className="text-xs">Already added</Badge>
+                                    )}
+                                  </div>
+                                );
+                              })
+                            )}
+                          </div>
                         </div>
                         
                         <div className="space-y-2">
-                          <Label>Status</Label>
+                          <Label>Status for all selected</Label>
                           <Select value={selectedStatus} onValueChange={setSelectedStatus}>
                             <SelectTrigger>
                               <SelectValue placeholder="Select status" />
@@ -590,8 +612,13 @@ const TripForm = ({ open, onClose, onSave, trip, mode = 'create' }) => {
                           <Button variant="outline" size="sm" onClick={() => setAllocateOpen(false)} className="flex-1">
                             Cancel
                           </Button>
-                          <Button size="sm" onClick={handleAllocatePassenger} className="flex-1">
-                            Allocate
+                          <Button 
+                            size="sm" 
+                            onClick={handleAllocatePassengers} 
+                            className="flex-1"
+                            disabled={selectedPassengerIds.length === 0 || !selectedStatus}
+                          >
+                            Allocate {selectedPassengerIds.length > 0 ? `(${selectedPassengerIds.length})` : ''}
                           </Button>
                         </div>
                       </div>
