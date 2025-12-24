@@ -360,7 +360,7 @@ const PassengerManagement = () => {
                   <div><span className="text-gray-500">Dietary Preference:</span> {viewingPassenger.dietary_preference || '-'}</div>
                   <div><span className="text-gray-500">Beverage Preference:</span> {viewingPassenger.beverage_preference || '-'}</div>
                   <div><span className="text-gray-500">Alcohol Allowed:</span> {viewingPassenger.alcohol_allowed ? 'Yes' : 'No'}</div>
-                  <div><span className="text-gray-500">Dining Style:</span> {viewingPassenger.dining_style || '-'}</div>
+                  <div><span className="text-gray-500">Dining Style:</span> {viewingPassenger.dining_styles?.length > 0 ? viewingPassenger.dining_styles.map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(', ') : (viewingPassenger.dining_style || '-')}</div>
                 </div>
               </div>
 
