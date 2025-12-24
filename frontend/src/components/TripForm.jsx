@@ -301,8 +301,9 @@ const TripForm = ({ open, onClose, onSave, trip, mode = 'create' }) => {
               </div>
             </div>
           </div>
+        </div>
 
-          <DialogFooter>
+        <DialogFooter>
             <Button variant="outline" onClick={onClose}>
               Cancel
             </Button>
