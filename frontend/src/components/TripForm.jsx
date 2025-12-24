@@ -141,15 +141,14 @@ const TripForm = ({ open, onClose, onSave, trip, mode = 'create' }) => {
   };
 
   return (
-    <>
-      <Dialog open={open} onOpenChange={onClose}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>{mode === 'create' ? 'Create New Trip' : 'Edit Trip'}</DialogTitle>
-            <DialogDescription>
-              {mode === 'create' ? 'Add a new trip to the system' : 'Update trip details'}
-            </DialogDescription>
-          </DialogHeader>
+    <Dialog open={open} onOpenChange={onClose}>
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>{mode === 'create' ? 'Create New Trip' : 'Edit Trip'}</DialogTitle>
+          <DialogDescription>
+            {mode === 'create' ? 'Add a new trip to the system' : 'Update trip details'}
+          </DialogDescription>
+        </DialogHeader>
 
           {error && (
             <Alert variant="destructive">
