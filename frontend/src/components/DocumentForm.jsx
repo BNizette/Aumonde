@@ -21,6 +21,7 @@ const DocumentForm = ({ open, onClose, onSave, document, mode = 'create' }) => {
   const [error, setError] = useState('');
   const [vessels, setVessels] = useState([]);
   const [loadingVessels, setLoadingVessels] = useState(false);
+  const [documentCategories, setDocumentCategories] = useState(['Regulations', 'Navigation', 'Safety', 'Compliance', 'Other']);
   const fileInputRef = useRef(null);
 
   const [formData, setFormData] = useState({
