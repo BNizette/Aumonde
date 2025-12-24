@@ -116,6 +116,10 @@ const Settings = () => {
   const fetchSetting = async () => {
     try {
       setEditMode(false);
+      // Clear current data before fetching to prevent showing stale data
+      setCurrentSetting(null);
+      setNewOptions([]);
+      
       const token = localStorage.getItem('token');
       const response = await axios.get(
         `${API}/settings/${selectedModule}/${selectedCategory}`,
@@ -126,6 +130,9 @@ const Settings = () => {
     } catch (err) {
       setError('Error fetching setting');
       console.error('Error:', err);
+      // Reset on error too
+      setCurrentSetting(null);
+      setNewOptions([]);
     }
   };
 
