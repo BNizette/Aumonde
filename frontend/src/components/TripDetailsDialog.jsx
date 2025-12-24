@@ -1543,7 +1543,7 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
         mode={crewFormMode}
       />
 
-      {/* Passenger Dialog */}
+      {/* Quick Passenger Dialog (for simple trip passenger entry/edit) */}
       <Dialog open={passengerDialogOpen} onOpenChange={setPassengerDialogOpen}>
         <DialogContent>
           <DialogHeader>
@@ -1567,12 +1567,10 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Adult">Adult</SelectItem>
-                  <SelectItem value="Child">Child</SelectItem>
-                  <SelectItem value="Baby">Baby</SelectItem>
-                  <SelectItem value="Senior">Senior</SelectItem>
-                  <SelectItem value="Special Needs">Special Needs</SelectItem>
+                <SelectContent className="z-[200]">
+                  {passengerTypes.map((type, idx) => (
+                    <SelectItem key={idx} value={type}>{type}</SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
@@ -1594,6 +1592,15 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Full PassengerForm (for creating new passengers in Passenger module) */}
+      <PassengerForm
+        open={newPassengerFormOpen}
+        onClose={() => setNewPassengerFormOpen(false)}
+        onSave={handleSaveNewPassengerAndAllocate}
+        passenger={null}
+        mode="create"
+      />
     </>
   );
 };
