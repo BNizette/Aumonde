@@ -72,38 +72,50 @@ frontend:
         comment: "Need to test form submission and verify passenger appears in table"
       - working: false
         agent: "testing"
-        comment: "❌ Form submission blocked by overlay issue. Modal overlay prevents submit button from being clicked. Form fields can be filled correctly (tested with John Smith, john.smith@example.com, +1 555 123 4567, allergies: Shellfish, dietary restrictions: Gluten-free, dining style: Formal, alcohol allowed: checked), but submission fails due to UI overlay interception."
+        comment: "❌ Form submission blocked by overlay issue. Modal overlay prevents submit button from being clicked."
 
-  - task: "View and Edit passenger functionality"
+  - task: "Trip Edit - Passenger Management Tab"
     implemented: true
     working: "NA"
-    file: "src/components/PassengerManagement.jsx"
+    file: "src/components/TripForm.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Need to test: 1) Trip edit form opens with Passengers tab, 2) Add Passenger button opens PassengerForm dialog, 3) Allocate Passengers button allows multi-select of existing passengers with status"
+
+  - task: "Settings - Passenger Types Configuration"
+    implemented: true
+    working: "NA"
+    file: "src/components/Settings.jsx"
     stuck_count: 0
     priority: "medium"
     needs_retesting: true
     status_history:
       - working: "NA"
-        agent: "testing"
-        comment: "Need to test View and Edit buttons functionality"
-      - working: "NA"
-        agent: "testing"
-        comment: "Cannot test View and Edit functionality because no passengers can be added due to form submission issue. Buttons are not visible in empty table state."
+        agent: "main"
+        comment: "Need to test: Passenger Management module added to Settings with 'Passenger Types (Trip Status)' category"
 
 metadata:
   created_by: "testing_agent"
-  version: "1.1"
-  test_sequence: 2
+  version: "1.2"
+  test_sequence: 3
 
 test_plan:
   current_focus:
-    - "Passenger form submission and data persistence"
+    - "Trip Edit - Passenger Management Tab"
+    - "Settings - Passenger Types Configuration"
   stuck_tasks:
     - "Passenger form submission and data persistence"
   test_all: false
-  test_priority: "stuck_first"
+  test_priority: "new_features_first"
 
 agent_communication:
   - agent: "testing"
     message: "Starting comprehensive testing of Passenger Management module. Will test login, navigation, page display, form functionality, and CRUD operations."
   - agent: "testing"
-    message: "TESTING COMPLETED: Most functionality working correctly. CRITICAL ISSUE: Form submission blocked by modal overlay preventing submit button clicks. This prevents adding passengers and testing CRUD operations. Main agent needs to fix overlay z-index or click handling in PassengerForm.jsx dialog component."
+    message: "TESTING COMPLETED: Most functionality working correctly. CRITICAL ISSUE: Form submission blocked by modal overlay preventing submit button clicks."
+  - agent: "main"
+    message: "NEW FEATURES ADDED: 1) Trip Edit form now has a Passengers tab with multi-select allocation, 2) Settings now includes Passenger Management module with Passenger Types category. Please test: a) Navigate to Trips, edit a trip, check Passengers tab, b) Navigate to Settings, select Passenger Management module, verify passenger_types category is available."
