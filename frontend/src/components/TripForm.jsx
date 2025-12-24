@@ -310,8 +310,7 @@ const TripForm = ({ open, onClose, onSave, trip, mode = 'create' }) => {
             </Button>
           </DialogFooter>
         </DialogContent>
-      </Dialog>
-    </>
+    </Dialog>
   );
 };
 
