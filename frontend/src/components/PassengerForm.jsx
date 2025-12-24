@@ -189,7 +189,7 @@ const PassengerForm = ({ open, onClose, onSave, passenger, mode = 'create' }) =>
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto z-[100]">
         <DialogHeader>
           <DialogTitle>
             {mode === 'edit' ? 'Edit Passenger' : 'Add Passenger'}
