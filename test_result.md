@@ -89,19 +89,47 @@ frontend:
         agent: "main"
         comment: "Need to test: 1) Trip edit form opens with Passengers tab, 2) Add Passenger button opens PassengerForm dialog, 3) Allocate Passengers button allows multi-select of existing passengers with status"
       - working: true
-  - task: "Trip Edit - Passenger Creation from Trip Form"
+  - task: "Trip Edit - Passengers Tab Removal"
     implemented: true
-    working: "NA"
+    working: true
     file: "src/components/TripForm.jsx"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "testing"
         comment: "Need to test passenger creation from Trip Edit form. Trip form should have Passengers tab with Add Passenger functionality that opens PassengerForm dialog."
+      - working: true
         agent: "testing"
         comment: "✅ Trip Edit Passenger Management working correctly. Verified: 1) Trip form opens with Passengers tab, 2) Add Passenger button exists and functional, 3) Allocate Passengers button exists with multi-select popover functionality including search input and status dropdown. All core functionality implemented as requested."
+      - working: true
+        agent: "testing"
+        comment: "✅ PASSED TEST 1: Passengers tab successfully removed from Trip Edit form. Code analysis shows TripForm.jsx now contains only trip details fields without any tabs. Passenger count is displayed as read-only with note 'Manage in Trip Details view'. UI change implemented correctly."
+
+  - task: "Vessel Details - Emergency Procedures Display"
+    implemented: true
+    working: true
+    file: "src/components/VesselDetailsDialog.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ PASSED TEST 2: Emergency Procedures in Vessel Details working correctly. Code analysis shows VesselDetailsDialog.jsx has proper 'emergency_procedures' view with table displaying: Procedure Name, Emergency Type, Authorised By, Date Authorised. Both populated data and empty states are handled properly."
+
+  - task: "Trip Details - Shifts Open in New Tab Button"
+    implemented: true
+    working: true
+    file: "src/components/TripDetailsDialog.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ PASSED TEST 3: Open in New Tab button for Shifts implemented correctly. Code analysis shows TripDetailsDialog.jsx has 'Open in New Tab' button with ExternalLink icon in shifts view (lines 840-850) that opens shifts in new tab using window.open(url, '_blank'). UI change implemented as requested."
 
   - task: "Settings - Passenger Types Configuration"
     implemented: true
