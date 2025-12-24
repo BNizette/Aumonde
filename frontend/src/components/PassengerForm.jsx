@@ -105,7 +105,7 @@ const PassengerForm = ({ open, onClose, onSave, passenger, mode = 'create' }) =>
         dietary_preference: '',
         beverage_preference: '',
         alcohol_allowed: true,
-        dining_style: '',
+        dining_styles: [],
         music_genre: '',
         movie_preferences: '',
         internet_requirement: '',
