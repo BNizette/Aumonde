@@ -299,14 +299,9 @@ const TripForm = ({ open, onClose, onSave, trip, mode = 'create' }) => {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="number_of_crew">Number of Crew</Label>
-                  <Input
-                    id="number_of_crew"
-                    type="number"
-                    min="0"
-                    value={formData.number_of_crew}
-                    onChange={(e) => handleChange('number_of_crew', e.target.value)}
-                  />
+                  <Label>Crew</Label>
+                  <div className="text-2xl font-bold text-green-600">{allocatedCrew.length}</div>
+                  <p className="text-xs text-gray-500">Manage in Trip Details view</p>
                 </div>
                 <div className="space-y-2">
                   <Label>Passengers</Label>
