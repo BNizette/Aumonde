@@ -40,6 +40,12 @@ const Settings = () => {
         induction_tasks: 'Safety Induction Tasks'
       }
     },
+    passenger: {
+      label: 'Passenger Management',
+      categories: {
+        passenger_types: 'Passenger Types (Trip Status)'
+      }
+    },
     maintenance: {
       label: 'Maintenance Management',
       categories: {
