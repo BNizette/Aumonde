@@ -1028,6 +1028,18 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
                       {engineLogs.length} {engineLogs.length === 1 ? 'entry' : 'entries'}
                     </p>
                     <div className="flex gap-2">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => {
+                          const url = `/trips/${trip.id}/engine-logs`;
+                          window.open(url, '_blank');
+                        }}
+                        title="Open engine logs in new tab"
+                      >
+                        <ExternalLink className="h-4 w-4 mr-2" />
+                        Open in New Tab
+                      </Button>
                       {engineLogs.length > 0 && (
                         <Button 
                           variant="outline" 
