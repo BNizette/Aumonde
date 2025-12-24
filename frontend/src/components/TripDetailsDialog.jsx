@@ -601,7 +601,7 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
             <div className="flex items-center justify-between pr-8">
               <div>
                 <DialogTitle>
-                  {trip.trip_name}{trip.planned_depart_datetime ? ` - ${formatDateOnly(trip.planned_depart_datetime)}` : ''}
+                  {trip.trip_name}{getDepartureDate() ? ` - ${getDepartureDate()}` : ''}
                 </DialogTitle>
                 <DialogDescription>Trip details and logs</DialogDescription>
               </div>
