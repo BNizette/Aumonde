@@ -10,6 +10,7 @@ import CrewManagement from '@/components/CrewManagement';
 import PassengerManagement from '@/components/PassengerManagement';
 import DocumentManagement from '@/components/DocumentManagement';
 import TripManagement from '@/components/TripManagement';
+import TripShiftsPage from '@/components/TripShiftsPage';
 import RiskAssessment from '@/components/RiskAssessment';
 import Maintenance from '@/components/Maintenance';
 import Incidents from '@/components/Incidents';
