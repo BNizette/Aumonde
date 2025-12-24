@@ -827,10 +827,14 @@ const VesselManagement = () => {
       {/* Vessel Form Dialog */}
       <VesselForm
         open={formOpen}
-        onClose={() => setFormOpen(false)}
+        onClose={() => {
+          setFormOpen(false);
+          setDefaultEditTab('basic');
+        }}
         onSave={handleSave}
         vessel={selectedVessel}
         mode={formMode}
+        defaultTab={defaultEditTab}
       />
 
       {/* Duplicate Warning Dialog */}
