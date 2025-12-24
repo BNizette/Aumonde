@@ -146,10 +146,40 @@ frontend:
         agent: "testing"
         comment: "✅ Settings - Passenger Types Configuration working correctly. Verified: Settings page accessible through Admin Panel → Settings tab. Module dropdown contains Passenger Management option. System properly configured for passenger type management. Edit Options functionality available for configuration."
 
+  - task: "Trip Details - Running Logs Open in New Tab Button"
+    implemented: true
+    working: false
+    file: "src/components/TripDetailsDialog.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "testing"
+        comment: "Need to test Running Logs 'Open in New Tab' button functionality"
+      - working: false
+        agent: "testing"
+        comment: "❌ FAILED: View dropdown in Trip Details dialog opens date picker instead of log view options. Cannot access Running Logs view to test 'Open in New Tab' button. Dropdown implementation issue prevents testing."
+
+  - task: "Trip Details - Engine Logs Open in New Tab Button"
+    implemented: true
+    working: false
+    file: "src/components/TripDetailsDialog.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "testing"
+        comment: "Need to test Engine Logs 'Open in New Tab' button functionality"
+      - working: false
+        agent: "testing"
+        comment: "❌ FAILED: View dropdown in Trip Details dialog opens date picker instead of log view options. Cannot access Engine Logs view to test 'Open in New Tab' button. Same dropdown implementation issue as Running Logs."
+
 metadata:
   created_by: "testing_agent"
-  version: "1.4"
-  test_sequence: 5
+  version: "1.5"
+  test_sequence: 6
 
 test_plan:
   current_focus:
