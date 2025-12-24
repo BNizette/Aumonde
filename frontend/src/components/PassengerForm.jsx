@@ -419,21 +419,81 @@ const PassengerForm = ({ open, onClose, onSave, passenger, mode = 'create' }) =>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="dining_style">Dining Style</Label>
-              <Select
-                value={formData.dining_style}
-                onValueChange={(value) => handleChange('dining_style', value)}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select dining style" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="formal">Formal</SelectItem>
-                  <SelectItem value="buffet">Buffet</SelectItem>
-                  <SelectItem value="family">Family Style</SelectItem>
-                  <SelectItem value="casual">Casual</SelectItem>
-                </SelectContent>
-              </Select>
+              <Label>Dining Style</Label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" className="w-full justify-between">
+                    <span className="truncate">
+                      {formData.dining_styles.length === 0
+                        ? 'Select dining styles'
+                        : formData.dining_styles.length === 1
+                        ? formData.dining_styles[0].charAt(0).toUpperCase() + formData.dining_styles[0].slice(1)
+                        : `${formData.dining_styles.length} selected`}
+                    </span>
+                    <ChevronDown className="h-4 w-4 ml-2 shrink-0" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-64 p-0" align="start">
+                  <div className="p-2">
+                    <div className="flex items-center justify-between px-2 py-1.5 mb-1">
+                      <span className="text-sm font-medium">Select Dining Styles</span>
+                      {formData.dining_styles.length > 0 && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleChange('dining_styles', [])}
+                          className="h-auto p-1 text-xs"
+                        >
+                          Clear
+                        </Button>
+                      )}
+                    </div>
+                    {[
+                      { value: 'casual', label: 'Casual' },
+                      { value: 'buffet', label: 'Buffet' },
+                      { value: 'family', label: 'Family Style' },
+                      { value: 'formal', label: 'Formal' }
+                    ].map(style => (
+                      <div
+                        key={style.value}
+                        className="flex items-center space-x-2 px-2 py-2 hover:bg-gray-100 rounded cursor-pointer"
+                        onClick={() => {
+                          const current = formData.dining_styles || [];
+                          const newStyles = current.includes(style.value)
+                            ? current.filter(s => s !== style.value)
+                            : [...current, style.value];
+                          handleChange('dining_styles', newStyles);
+                        }}
+                      >
+                        <Checkbox
+                          checked={formData.dining_styles.includes(style.value)}
+                          onCheckedChange={() => {
+                            const current = formData.dining_styles || [];
+                            const newStyles = current.includes(style.value)
+                              ? current.filter(s => s !== style.value)
+                              : [...current, style.value];
+                            handleChange('dining_styles', newStyles);
+                          }}
+                        />
+                        <span className="text-sm">{style.label}</span>
+                      </div>
+                    ))}
+                  </div>
+                </PopoverContent>
+              </Popover>
+              {formData.dining_styles.length > 0 && (
+                <div className="flex flex-wrap gap-1 mt-2">
+                  {formData.dining_styles.map(style => (
+                    <Badge key={style} variant="secondary" className="text-xs">
+                      {style.charAt(0).toUpperCase() + style.slice(1)}
+                      <X
+                        className="h-3 w-3 ml-1 cursor-pointer"
+                        onClick={() => handleChange('dining_styles', formData.dining_styles.filter(s => s !== style))}
+                      />
+                    </Badge>
+                  ))}
+                </div>
+              )}
             </div>
           </TabsContent>
 
