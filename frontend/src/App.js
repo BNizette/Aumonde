@@ -139,6 +139,7 @@ function App() {
                     <Route path="/admin" element={<AdminPanel />} />
                     <Route path="/vessels" element={<VesselManagement />} />
                     <Route path="/crew" element={<CrewManagement />} />
+                    <Route path="/passengers" element={<PassengerManagement />} />
                     <Route path="/documents" element={<DocumentManagement />} />
                     <Route path="/trips" element={<TripManagement />} />
                     <Route path="/risk-assessment" element={<RiskAssessment />} />
