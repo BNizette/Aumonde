@@ -253,9 +253,10 @@ const PassengerForm = ({ open, onClose, onSave, passenger, mode = 'create' }) =>
                   <SelectTrigger>
                     <SelectValue placeholder="Select type" />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Primary">Primary</SelectItem>
-                    <SelectItem value="Guest">Guest</SelectItem>
+                  <SelectContent className="z-[200]">
+                    {passengerTypes.map((type) => (
+                      <SelectItem key={type} value={type}>{type}</SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
