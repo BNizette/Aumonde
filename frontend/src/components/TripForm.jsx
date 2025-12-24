@@ -315,6 +315,5 @@ const TripForm = ({ open, onClose, onSave, trip, mode = 'create' }) => {
     </>
   );
 };
-};
 
 export default TripForm;
