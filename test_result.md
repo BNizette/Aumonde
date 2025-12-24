@@ -111,12 +111,11 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Trip Edit - Passenger Management Tab"
-    - "Settings - Passenger Types Configuration"
+    - "Passenger form submission and data persistence"
   stuck_tasks:
     - "Passenger form submission and data persistence"
   test_all: false
-  test_priority: "new_features_first"
+  test_priority: "stuck_first"
 
 agent_communication:
   - agent: "testing"
@@ -125,3 +124,5 @@ agent_communication:
     message: "TESTING COMPLETED: Most functionality working correctly. CRITICAL ISSUE: Form submission blocked by modal overlay preventing submit button clicks."
   - agent: "main"
     message: "NEW FEATURES ADDED: 1) Trip Edit form now has a Passengers tab with multi-select allocation, 2) Settings now includes Passenger Management module with Passenger Types category. Please test: a) Navigate to Trips, edit a trip, check Passengers tab, b) Navigate to Settings, select Passenger Management module, verify passenger_types category is available."
+  - agent: "testing"
+    message: "TESTING COMPLETED: ✅ Trip Edit Passenger Management Tab: WORKING - Trip form opens with Passengers tab, Add Passenger button functional, Allocate Passengers button with multi-select popover working correctly. ✅ Settings - Passenger Types Configuration: WORKING - Settings accessible via Admin Panel, Module dropdown contains Passenger Management, Edit Options functionality available. Both requested features are implemented and functional."
