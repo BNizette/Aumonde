@@ -3978,7 +3978,7 @@ async def load_backup_schedules():
         for schedule in schedules:
             try:
                 backup_scheduler.add_job(
-                    scheduled_backup_job,
+                    run_async_backup_job,
                     CronTrigger.from_crontab(schedule["cron_expression"]),
                     args=[schedule["id"]],
                     id=schedule["id"],
