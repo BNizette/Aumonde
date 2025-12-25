@@ -178,7 +178,8 @@ const RunningLogForm = ({ open, onClose, onSave, log, tripId, mode = 'create' })
       crew_name: formData.crew_name,
       log_datetime: new Date(formData.log_datetime).toISOString(),
       activity: formData.activity,
-      activity_details: formData.activity_details || null
+      activity_details: formData.activity_details || null,
+      gps_location: formData.gps_location || null
     };
 
     onSave(submitData);
@@ -197,6 +198,12 @@ const RunningLogForm = ({ open, onClose, onSave, log, tripId, mode = 'create' })
         {error && (
           <Alert variant="destructive">
             <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
+
+        {message && (
+          <Alert className="bg-green-50 border-green-200">
+            <AlertDescription className="text-green-800">{message}</AlertDescription>
           </Alert>
         )}
 
