@@ -92,6 +92,68 @@ const RunningLogForm = ({ open, onClose, onSave, log, tripId, mode = 'create' })
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
+  // GPS Location lookup function
+  const getGPSLocation = async () => {
+    if (!navigator.geolocation) {
+      setError('Geolocation is not supported by your browser');
+      setTimeout(() => setError(''), 3000);
+      return;
+    }
+
+    setGpsLoading(true);
+
+    // Check permission status first if available
+    if (navigator.permissions) {
+      try {
+        const permissionStatus = await navigator.permissions.query({ name: 'geolocation' });
+        
+        if (permissionStatus.state === 'denied') {
+          setGpsLoading(false);
+          setError('Location access is blocked. Please click the lock/site settings icon in your browser\'s address bar and allow location access, then try again.');
+          setTimeout(() => setError(''), 6000);
+          return;
+        }
+      } catch (e) {
+        // Permissions API not fully supported, continue with geolocation request
+        console.log('Permissions API check failed, proceeding with geolocation request');
+      }
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const coords = `${position.coords.latitude.toFixed(6)}, ${position.coords.longitude.toFixed(6)}`;
+        setFormData(prev => ({ ...prev, gps_location: coords }));
+        setGpsLoading(false);
+        setMessage(`GPS location captured: ${coords}`);
+        setTimeout(() => setMessage(''), 3000);
+      },
+      (err) => {
+        setGpsLoading(false);
+        let errorMessage = 'Unable to retrieve location';
+        switch (err.code) {
+          case 1: // PERMISSION_DENIED
+            errorMessage = 'Location access denied. Click the lock/site settings icon in your browser\'s address bar, set Location to "Allow", then refresh and try again.';
+            break;
+          case 2: // POSITION_UNAVAILABLE
+            errorMessage = 'Location information unavailable. Please check your device\'s location services are enabled.';
+            break;
+          case 3: // TIMEOUT
+            errorMessage = 'Location request timed out. Please try again.';
+            break;
+          default:
+            errorMessage = `Location error: ${err.message || 'Unknown error'}`;
+        }
+        setError(errorMessage);
+        setTimeout(() => setError(''), 6000);
+      },
+      { 
+        enableHighAccuracy: true, 
+        timeout: 15000, 
+        maximumAge: 0 
+      }
+    );
+  };
+
   const handleSubmit = () => {
     setError('');
 
