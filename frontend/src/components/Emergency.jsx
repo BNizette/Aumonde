@@ -3169,7 +3169,7 @@ const Emergency = () => {
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <div className="flex items-center justify-between pr-8">
-              <DialogTitle>Procedure Details & Training Records</DialogTitle>
+              <DialogTitle>Procedure Details & Drills</DialogTitle>
               <Button 
                 variant="outline" 
                 size="sm" 
