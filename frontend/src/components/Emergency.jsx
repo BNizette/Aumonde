@@ -2298,7 +2298,7 @@ const Emergency = () => {
                 </div>
               </div>
 
-              <div className="space-y-4">
+                <div className="space-y-4">
                 {filteredDrills.length === 0 ? (
                   <p className="text-center text-gray-500 py-8">
                     {drills.length === 0 ? 'No emergency drills recorded yet' : 'No drills match your filters'}
@@ -2309,9 +2309,14 @@ const Emergency = () => {
                       <div className="flex justify-between items-start mb-3">
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-2">
-                            <h3 className="font-semibold text-lg">{drill.drill_type}</h3>
+                            <h3 className="font-semibold text-lg">{drill.emergency_type || drill.drill_type}</h3>
                             <Badge variant="outline">{drill.duration_minutes ? `${drill.duration_minutes} min` : 'N/A'}</Badge>
                           </div>
+                          {drill.linked_procedure_title && (
+                            <p className="text-sm text-blue-600 mb-1">
+                              <strong>Procedure:</strong> {drill.linked_procedure_title}
+                            </p>
+                          )}
                           <p className="text-sm text-gray-600">
                             <strong>Date:</strong> {new Date(drill.drill_date).toLocaleString()}
                           </p>
@@ -2334,7 +2339,7 @@ const Emergency = () => {
                           <Button variant="outline" size="sm" onClick={() => handleEditDrill(drill)}>
                             <Edit className="h-4 w-4" />
                           </Button>
-                          <Button variant="destructive" size="sm" onClick={() => handleDeleteDrill(drill.id, drill.drill_type)}>
+                          <Button variant="destructive" size="sm" onClick={() => handleDeleteDrill(drill.id, drill.emergency_type || drill.drill_type)}>
                             <Trash2 className="h-4 w-4" />
                           </Button>
                         </div>
