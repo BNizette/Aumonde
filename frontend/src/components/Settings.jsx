@@ -371,7 +371,7 @@ const Settings = () => {
                   ))
                 ) : (
                   <div className="text-center py-8 text-gray-500">
-                    No options configured yet. Click "Edit Options" to add some.
+                    No options configured yet. Click &quot;Edit Options&quot; to add some.
                   </div>
                 )}
               </div>
