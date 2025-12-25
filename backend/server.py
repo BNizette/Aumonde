@@ -3512,6 +3512,7 @@ async def get_backup_info(current_user: dict = Depends(get_current_user)):
 
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
+import asyncio
 
 # Create backups directory
 BACKUPS_DIR = Path("/app/backend/backups")
@@ -3520,6 +3521,19 @@ BACKUPS_DIR.mkdir(exist_ok=True)
 # Initialize scheduler
 backup_scheduler = BackgroundScheduler()
 backup_scheduler.start()
+
+# Helper function to run async jobs in sync context
+def run_async_backup_job(schedule_id: str):
+    """Wrapper to run async scheduled_backup_job in a sync context"""
+    try:
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        try:
+            loop.run_until_complete(_async_scheduled_backup_job(schedule_id))
+        finally:
+            loop.close()
+    except Exception as e:
+        logger.error(f"Error running async backup job: {str(e)}")
 
 class BackupSchedule(BaseModel):
     model_config = ConfigDict(extra="ignore")
