@@ -34,6 +34,7 @@ const Incidents = () => {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [importDialogOpen, setImportDialogOpen] = useState(false);
+  const [gpsLoading, setGpsLoading] = useState(false);
 
   // Use custom hook for advanced filtering
   const {
