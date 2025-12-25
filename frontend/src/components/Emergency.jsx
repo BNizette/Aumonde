@@ -925,20 +925,25 @@ const Emergency = () => {
   };
 
   const handleSaveDrill = async () => {
-    if (!drillForm.drill_type || !drillForm.drill_date) {
+    if (!drillForm.emergency_type || !drillForm.drill_date) {
       setError('Please fill in required fields');
       return;
     }
 
     try {
       const token = localStorage.getItem('token');
+      // Include both emergency_type and drill_type for backward compatibility
+      const submitData = {
+        ...drillForm,
+        drill_type: drillForm.emergency_type // Keep drill_type field for backward compatibility
+      };
       if (drillEditMode) {
-        await axios.put(`${API}/emergency/drills/${editingDrillId}`, drillForm, {
+        await axios.put(`${API}/emergency/drills/${editingDrillId}`, submitData, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setMessage('Drill updated successfully');
       } else {
-        await axios.post(`${API}/emergency/drills`, drillForm, {
+        await axios.post(`${API}/emergency/drills`, submitData, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setMessage('Drill created successfully');
