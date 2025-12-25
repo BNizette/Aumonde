@@ -226,9 +226,9 @@ const PassengerForm = ({ open, onClose, onSave, passenger, mode = 'create' }) =>
         <Tabs defaultValue="details" className="w-full">
           <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="details">Details</TabsTrigger>
-            <TabsTrigger value="medical">Medical & Dietary</TabsTrigger>
-            <TabsTrigger value="preferences">Preferences</TabsTrigger>
-            <TabsTrigger value="entertainment">Entertainment</TabsTrigger>
+            <TabsTrigger value="medical">Med & Diet</TabsTrigger>
+            <TabsTrigger value="preferences">Prefs</TabsTrigger>
+            <TabsTrigger value="entertainment">Entertain</TabsTrigger>
             <TabsTrigger value="photo">Photo</TabsTrigger>
           </TabsList>
 
