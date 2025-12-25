@@ -364,15 +364,63 @@ agent_communication:
 
   - task: "Edit Trip - GPS Location Fields"
     implemented: true
-    working: true
+    working: "NA"
     file: "src/components/TripForm.jsx"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Need to test: 1) GPS Departure Location field with Get GPS button, 2) GPS Arrival Location field with Get GPS button, 3) Loading states and success messages"
-      - working: true
-        agent: "testing"
-        comment: "✅ PASSED: GPS Location fields in Trip form working correctly. Verified: 1) GPS Departure Location field with Navigation icon and 'Get GPS' button, 2) GPS Arrival Location field with Navigation icon and 'Get GPS' button, 3) Both location fields (Departure/Arrival) have MapPin icons, 4) All GPS fields have 'Lat, Long' placeholder text, 5) Found 2 'Get GPS' buttons as expected, 6) Proper field positioning and labeling. Screenshot evidence confirms full functionality."
+
+  - agent: "main"
+    message: "NEW FEATURES ADDED - Drills & Passenger Management: 1) Drills now use Emergency Type instead of Drill Type, 2) Drills can be linked to Procedures, 3) Procedure View dialog has 'Drills' tab instead of 'Training Records', 4) Drill Types removed from Settings, 5) Passenger View Logs shows passenger details before trip list, 6) Running Log form has GPS Location field with Get GPS button"
+
+  - task: "Drills - Use Emergency Type"
+    implemented: true
+    working: "NA"
+    file: "src/components/Emergency.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Need to test: 1) Create drill shows Emergency Type dropdown (not Drill Type), 2) Linked Procedure dropdown filters by emergency type, 3) Drill cards show emergency type"
+
+  - task: "Procedure View - Drills Tab"
+    implemented: true
+    working: "NA"
+    file: "src/components/Emergency.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Need to test: 1) Procedure View has 'Drills' tab instead of 'Training Records', 2) Lists drills matching the procedure's emergency type"
+
+  - task: "Edit Running Log - GPS Location"
+    implemented: true
+    working: "NA"
+    file: "src/components/RunningLogForm.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Need to test: 1) GPS Location field present, 2) Get GPS button works"
+
+  - task: "Passenger View Logs - Details First"
+    implemented: true
+    working: "NA"
+    file: "src/components/PassengerManagement.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Need to test: Passenger details card shown before trip history"
