@@ -46,7 +46,8 @@ const RunningLogForm = ({ open, onClose, onSave, log, tripId, mode = 'create' })
         log_datetime: log.log_datetime ? new Date(log.log_datetime).toISOString().slice(0, 16) : '',
         category: log.category || '',
         activity: log.activity || '',
-        activity_details: log.activity_details || ''
+        activity_details: log.activity_details || '',
+        gps_location: log.gps_location || ''
       });
     } else if (mode === 'create') {
       setFormData({
@@ -56,10 +57,12 @@ const RunningLogForm = ({ open, onClose, onSave, log, tripId, mode = 'create' })
         log_datetime: '',
         category: '',
         activity: '',
-        activity_details: ''
+        activity_details: '',
+        gps_location: ''
       });
     }
     setError('');
+    setMessage('');
   }, [log, mode, open, tripId]);
 
   const fetchCrew = async () => {
