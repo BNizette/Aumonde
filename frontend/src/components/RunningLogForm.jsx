@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Navigation, MapPin } from 'lucide-react';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -14,6 +15,8 @@ const API = `${BACKEND_URL}/api`;
 const RunningLogForm = ({ open, onClose, onSave, log, tripId, mode = 'create' }) => {
   const [crew, setCrew] = useState([]);
   const [error, setError] = useState('');
+  const [message, setMessage] = useState('');
+  const [gpsLoading, setGpsLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     trip_id: tripId || '',
@@ -22,7 +25,8 @@ const RunningLogForm = ({ open, onClose, onSave, log, tripId, mode = 'create' })
     log_datetime: '',
     category: '',
     activity: '',
-    activity_details: ''
+    activity_details: '',
+    gps_location: ''
   });
 
   const categories = ['Radio', 'Conditions', 'Safety', 'Vessel Operation'];
