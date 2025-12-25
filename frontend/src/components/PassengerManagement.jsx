@@ -532,6 +532,33 @@ const PassengerManagement = () => {
             </div>
           ) : (
             <div className="space-y-4">
+              {/* Passenger Details Card */}
+              {logsPassenger && (
+                <Card className="border-l-4 border-l-green-500">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm text-gray-500">Passenger Details</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-2 gap-4 text-sm">
+                      <div><strong>Name:</strong> {logsPassenger.name}</div>
+                      <div><strong>Type:</strong> <Badge variant="outline">{logsPassenger.passenger_type || 'N/A'}</Badge></div>
+                      {logsPassenger.contact_details?.email && (
+                        <div><strong>Email:</strong> {logsPassenger.contact_details.email}</div>
+                      )}
+                      {logsPassenger.contact_details?.phone && (
+                        <div><strong>Phone:</strong> {logsPassenger.contact_details.phone}</div>
+                      )}
+                      {logsPassenger.medical_info?.conditions && (
+                        <div className="col-span-2"><strong>Medical:</strong> {logsPassenger.medical_info.conditions}</div>
+                      )}
+                      {logsPassenger.preferences?.dietary_requirements && (
+                        <div className="col-span-2"><strong>Dietary:</strong> {logsPassenger.preferences.dietary_requirements}</div>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
               {/* Last Trip Summary */}
               {passengerTripLogs.length > 0 && (
                 <Card className="border-l-4 border-l-blue-500">
