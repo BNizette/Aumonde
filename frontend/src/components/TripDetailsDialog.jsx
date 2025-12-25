@@ -486,6 +486,60 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
     wsEngine['!cols'] = [{ wch: 20 }, { wch: 12 }, { wch: 8 }, { wch: 12 }, { wch: 12 }, { wch: 15 }, { wch: 10 }, { wch: 20 }, { wch: 15 }];
     XLSX.utils.book_append_sheet(wb, wsEngine, 'Engine Logs');
 
+    // Sheet 6: Passengers
+    const passengersHeaders = ['Name', 'Status', 'Comment'];
+    const passengersData = [passengersHeaders];
+    tripPassengers.forEach(passenger => {
+      passengersData.push([
+        passenger.name || 'N/A',
+        passenger.status || 'N/A',
+        passenger.comment || '-'
+      ]);
+    });
+    if (tripPassengers.length === 0) passengersData.push(['No passengers recorded', '', '']);
+    const wsPassengers = XLSX.utils.aoa_to_sheet(passengersData);
+    wsPassengers['!cols'] = [{ wch: 25 }, { wch: 15 }, { wch: 30 }];
+    XLSX.utils.book_append_sheet(wb, wsPassengers, 'Passengers');
+
+    // Sheet 7: Incidents
+    const incidentsHeaders = ['Date', 'Type', 'Severity', 'Title', 'Description', 'Location', 'Status', 'Reported By'];
+    const incidentsData = [incidentsHeaders];
+    tripIncidents.forEach(incident => {
+      incidentsData.push([
+        incident.incident_date ? new Date(incident.incident_date).toLocaleDateString() : 'N/A',
+        incident.incident_type || '-',
+        incident.severity || '-',
+        incident.title || '-',
+        incident.description || '-',
+        incident.location || '-',
+        incident.status || '-',
+        incident.reported_by || 'N/A'
+      ]);
+    });
+    if (tripIncidents.length === 0) incidentsData.push(['No incidents recorded', '', '', '', '', '', '', '']);
+    const wsIncidents = XLSX.utils.aoa_to_sheet(incidentsData);
+    wsIncidents['!cols'] = [{ wch: 12 }, { wch: 15 }, { wch: 10 }, { wch: 25 }, { wch: 35 }, { wch: 15 }, { wch: 12 }, { wch: 15 }];
+    XLSX.utils.book_append_sheet(wb, wsIncidents, 'Incidents');
+
+    // Sheet 8: Drills
+    const drillsHeaders = ['Date', 'Drill Type', 'Duration (mins)', 'Participants', 'Effectiveness', 'Notes', 'Conducted By'];
+    const drillsData = [drillsHeaders];
+    tripDrills.forEach(drill => {
+      drillsData.push([
+        drill.drill_date ? new Date(drill.drill_date).toLocaleDateString() : 'N/A',
+        drill.drill_type || '-',
+        drill.duration_minutes || '-',
+        drill.participants_count || drill.participants?.length || '-',
+        drill.effectiveness_rating || '-',
+        drill.notes || '-',
+        drill.conducted_by || 'N/A'
+      ]);
+    });
+    if (tripDrills.length === 0) drillsData.push(['No drills recorded', '', '', '', '', '', '']);
+    const wsDrills = XLSX.utils.aoa_to_sheet(drillsData);
+    wsDrills['!cols'] = [{ wch: 12 }, { wch: 20 }, { wch: 15 }, { wch: 12 }, { wch: 15 }, { wch: 30 }, { wch: 15 }];
+    XLSX.utils.book_append_sheet(wb, wsDrills, 'Drills');
+
     // Generate and download file
     const fileName = `${trip.trip_name?.replace(/\s+/g, '_')}_details_${new Date().toISOString().slice(0, 10)}.xlsx`;
     XLSX.writeFile(wb, fileName);
