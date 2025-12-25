@@ -75,8 +75,7 @@ const Settings = () => {
       label: 'Emergency Response',
       categories: {
         contact_types: 'Contact Types',
-        emergency_types: 'Emergency Types',
-        drill_types: 'Drill Types'
+        emergency_types: 'Emergency Types'
       }
     }
   };
