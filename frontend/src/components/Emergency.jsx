@@ -1027,7 +1027,9 @@ const Emergency = () => {
 
   const handleEditDrill = (drill) => {
     setDrillForm({
-      drill_type: drill.drill_type || 'Fire Drill',
+      emergency_type: drill.emergency_type || drill.drill_type || 'Fire',
+      linked_procedure_id: drill.linked_procedure_id || '',
+      linked_procedure_title: drill.linked_procedure_title || '',
       drill_date: drill.drill_date ? new Date(drill.drill_date).toISOString().slice(0, 16) : new Date().toISOString().slice(0, 16),
       vessel_id: drill.vessel_id || '',
       vessel_name: drill.vessel_name || '',
