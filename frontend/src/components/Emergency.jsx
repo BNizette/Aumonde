@@ -2176,13 +2176,13 @@ const Emergency = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label>Drill Type</Label>
+                    <Label>Emergency Type</Label>
                     <Popover>
                       <PopoverTrigger asChild>
                         <Button variant="outline" className="w-full justify-between">
                           <span className="truncate">
                             {drillFilters.types.length === 0
-                              ? 'All Drill Types'
+                              ? 'All Emergency Types'
                               : drillFilters.types.length === 1
                               ? drillFilters.types[0]
                               : `${drillFilters.types.length} selected`}
@@ -2193,7 +2193,7 @@ const Emergency = () => {
                       <PopoverContent className="w-80 p-0" align="start">
                         <div className="p-2">
                           <div className="flex items-center justify-between px-2 py-1.5 mb-1">
-                            <span className="text-sm font-medium">Select Drill Types</span>
+                            <span className="text-sm font-medium">Select Emergency Types</span>
                             {drillFilters.types.length > 0 && (
                               <Button
                                 variant="ghost"
@@ -2205,7 +2205,7 @@ const Emergency = () => {
                               </Button>
                             )}
                           </div>
-                          {drillTypes.map(type => (
+                          {emergencyTypes.map(type => (
                             <div
                               key={type}
                               className="flex items-center space-x-2 px-2 py-2 hover:bg-gray-100 rounded cursor-pointer"
