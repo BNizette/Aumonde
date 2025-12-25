@@ -388,13 +388,6 @@ const DocumentManagement = () => {
                     )}
                   </div>
 
-                  {/* File Type */}
-                  <div className="hidden lg:block w-24 flex-shrink-0 text-center">
-                    <span className="text-sm text-gray-600">
-                      {doc.file_type || '-'}
-                    </span>
-                  </div>
-
                   {/* Upload Date */}
                   <div className="hidden xl:block w-28 flex-shrink-0 text-center">
                     <span className="text-sm text-gray-600">
