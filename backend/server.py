@@ -3273,29 +3273,76 @@ class AIQuery(BaseModel):
 @api_router.post("/ai/chat")
 async def ai_chat(query: AIQuery, current_user: dict = Depends(get_current_user)):
     """AI-powered safety assistant - provides recommendations and answers"""
+    from emergentintegrations.llm.chat import LlmChat, UserMessage
     
-    # For now, return a structured response indicating AI integration needed
-    # This will be updated with actual AI integration
-    
-    response = {
-        "message": "AI Assistant is being configured. This feature will provide:\n\n"
-                  "• Safety recommendations based on your vessel operations\n"
-                  "• Risk assessment analysis\n"
-                  "• Compliance guidance\n"
-                  "• Predictive maintenance suggestions\n"
-                  "• Incident pattern analysis\n\n"
-                  "Integration with AI services (OpenAI/Anthropic) coming soon.",
-        "suggestions": [
-            "Review expiring certificates",
-            "Check overdue maintenance items",
-            "Update risk assessments",
-            "Schedule emergency drills"
-        ],
-        "conversation_id": str(uuid.uuid4()),
-        "requires_setup": True
-    }
-    
-    return response
+    try:
+        # Get API key from environment
+        api_key = os.environ.get("EMERGENT_LLM_KEY")
+        if not api_key:
+            return {
+                "message": "AI Assistant is not configured. Please add EMERGENT_LLM_KEY to environment.",
+                "suggestions": [],
+                "conversation_id": str(uuid.uuid4()),
+                "requires_setup": True
+            }
+        
+        # Create a unique session ID for this user
+        session_id = f"safety-assistant-{current_user['id']}"
+        
+        # System message for the safety assistant
+        system_message = """You are an AI Safety Assistant for a maritime vessel management system. 
+Your role is to help users with:
+- Safety recommendations and best practices
+- Compliance guidance (AMSA regulations, maritime law)
+- Risk assessment advice
+- Incident analysis and prevention
+- Maintenance scheduling recommendations
+- Emergency procedure guidance
+- Crew training requirements
+- Certificate and documentation requirements
+
+Be helpful, professional, and safety-focused. Provide actionable advice.
+If you don't know something specific, recommend consulting official AMSA guidelines or a qualified maritime safety officer."""
+
+        # Initialize chat with OpenAI GPT-4o
+        chat = LlmChat(
+            api_key=api_key,
+            session_id=session_id,
+            system_message=system_message
+        ).with_model("openai", "gpt-4o")
+        
+        # Create user message
+        user_message = UserMessage(text=query.message)
+        
+        # Get response from AI
+        response_text = await chat.send_message(user_message)
+        
+        # Log the interaction
+        await db.ai_chat_history.insert_one({
+            "id": str(uuid.uuid4()),
+            "user_id": current_user["id"],
+            "user_name": current_user["full_name"],
+            "message": query.message,
+            "response": response_text,
+            "context_type": query.context_type,
+            "created_at": datetime.now(timezone.utc)
+        })
+        
+        return {
+            "message": response_text,
+            "suggestions": [],
+            "conversation_id": session_id,
+            "requires_setup": False
+        }
+        
+    except Exception as e:
+        logger.error(f"AI Chat error: {str(e)}")
+        return {
+            "message": f"I apologize, but I encountered an error processing your request. Please try again. Error: {str(e)}",
+            "suggestions": [],
+            "conversation_id": str(uuid.uuid4()),
+            "requires_setup": False
+        }
 
 @api_router.get("/ai/suggestions")
 async def get_ai_suggestions(current_user: dict = Depends(get_current_user)):
