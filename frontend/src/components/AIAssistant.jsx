@@ -240,11 +240,11 @@ const AIAssistant = () => {
             </Button>
           </div>
           
-          <Alert className="mt-4 bg-purple-50 border-purple-200">
-            <Sparkles className="h-4 w-4 text-purple-600" />
-            <AlertDescription className="text-purple-900 text-sm">
-              <strong>Note:</strong> AI Assistant is currently in preview mode. 
-              Full AI integration with OpenAI/Claude coming soon for advanced safety recommendations.
+          <Alert className="mt-4 bg-green-50 border-green-200">
+            <Sparkles className="h-4 w-4 text-green-600" />
+            <AlertDescription className="text-green-900 text-sm">
+              <strong>AI Assistant is Live!</strong> Powered by OpenAI GPT-4o. 
+              Ask questions about safety, compliance, risk assessments, and more.
             </AlertDescription>
           </Alert>
         </CardContent>
