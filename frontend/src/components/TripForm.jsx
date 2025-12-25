@@ -112,6 +112,8 @@ const TripForm = ({ open, onClose, onSave, trip, mode = 'create' }) => {
         actual_arrival_datetime: trip.actual_arrival_datetime || '',
         depart_location: trip.depart_location || '',
         arrival_location: trip.arrival_location || '',
+        gps_depart_location: trip.gps_depart_location || '',
+        gps_arrival_location: trip.gps_arrival_location || '',
         number_of_passengers: trip.number_of_passengers || 0,
         number_of_crew: trip.number_of_crew || 0
       });
@@ -129,16 +131,77 @@ const TripForm = ({ open, onClose, onSave, trip, mode = 'create' }) => {
         actual_arrival_datetime: '',
         depart_location: '',
         arrival_location: '',
+        gps_depart_location: '',
+        gps_arrival_location: '',
         number_of_passengers: 0,
         number_of_crew: 0
       });
       setTripPassengers([]);
       setAllocatedCrew([]);
     }
+    setError('');
+    setMessage('');
   }, [trip, mode, open]);
 
   const handleChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  // GPS Location lookup function
+  const getGPSLocation = async (field) => {
+    if (!navigator.geolocation) {
+      setError('Geolocation is not supported by your browser');
+      return;
+    }
+
+    const loadingKey = field === 'gps_depart_location' ? 'depart' : 'arrival';
+    setGpsLoading(prev => ({ ...prev, [loadingKey]: true }));
+    setError('');
+
+    try {
+      const permissionStatus = await navigator.permissions.query({ name: 'geolocation' });
+      if (permissionStatus.state === 'denied') {
+        setError('Location access is blocked. Please allow location access in your browser settings.');
+        setGpsLoading(prev => ({ ...prev, [loadingKey]: false }));
+        return;
+      }
+    } catch (e) {
+      console.log('Permissions API not supported, proceeding with geolocation request');
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const coords = `${position.coords.latitude.toFixed(6)}, ${position.coords.longitude.toFixed(6)}`;
+        setFormData(prev => ({ ...prev, [field]: coords }));
+        setMessage(`GPS location captured: ${coords}`);
+        setTimeout(() => setMessage(''), 3000);
+        setGpsLoading(prev => ({ ...prev, [loadingKey]: false }));
+      },
+      (err) => {
+        let errorMessage = 'Unable to retrieve location';
+        switch (err.code) {
+          case err.PERMISSION_DENIED:
+            errorMessage = 'Location access denied. Please allow location access and try again.';
+            break;
+          case err.POSITION_UNAVAILABLE:
+            errorMessage = 'Location information unavailable. Please check your device location services.';
+            break;
+          case err.TIMEOUT:
+            errorMessage = 'Location request timed out. Please try again.';
+            break;
+          default:
+            errorMessage = `Location error: ${err.message || 'Unknown error'}`;
+        }
+        setError(errorMessage);
+        setTimeout(() => setError(''), 5000);
+        setGpsLoading(prev => ({ ...prev, [loadingKey]: false }));
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 15000,
+        maximumAge: 0
+      }
+    );
   };
 
   const handleSubmit = () => {
