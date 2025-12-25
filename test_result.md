@@ -342,3 +342,29 @@ agent_communication:
     message: "TRIP DETAILS PASSENGERS VIEW TESTING: ✅ CODE ANALYSIS COMPLETED - Verified Trip Details Passengers view implementation in TripDetailsDialog.jsx (lines 936-1107). Found: 1) 'Allocate Passenger' button with Search icon (lines 967-970), 2) 'Add New' button with UserPlus icon (lines 1062-1065), 3) Allocate popover with search input, passenger list, status dropdown, Cancel/Allocate buttons (lines 958-1057), 4) PassengerForm dialog integration for new passenger creation (lines 215-255). ❌ BROWSER TESTING INCOMPLETE - Authentication session timeouts prevented full UI testing, but code review confirms all requested features are properly implemented with correct icons, functionality, and integration."
   - agent: "testing"
     message: "AI ASSISTANT LIVE STATUS TESTING COMPLETED: ✅ FULLY FUNCTIONAL - Successfully verified AI Assistant is live and working: 1) Login successful with admin@test.com credentials, 2) AI Assistant accessible via sidebar navigation, 3) 'AI Assistant is Live!' alert message displayed correctly, 4) 'Powered by OpenAI GPT-4o' message confirmed in status alert, 5) Chat functionality working - submitted AMSA compliance question and received comprehensive AI-generated response covering Vessel Certification, Crew Certification, and Safety Management Systems. AI Assistant is fully operational and responding with real AI answers, not placeholder messages."
+  - agent: "main"
+    message: "NEW FEATURES ADDED - GPS Location Lookup: 1) Incidents.jsx - Added GPS Location button next to Location field with auto-populate functionality using browser geolocation API, 2) TripForm.jsx - Added GPS Departure Location and GPS Arrival Location fields with Get GPS buttons. Please test GPS functionality in both Edit Incident and Edit Trip forms."
+
+  - task: "Edit Incident - GPS Location with Auto-Populate"
+    implemented: true
+    working: "NA"
+    file: "src/components/Incidents.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Need to test: 1) GPS Location field is now positioned next to Location field, 2) 'Get GPS' button auto-populates GPS coordinates, 3) Loading state while getting GPS"
+
+  - task: "Edit Trip - GPS Location Fields"
+    implemented: true
+    working: "NA"
+    file: "src/components/TripForm.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Need to test: 1) GPS Departure Location field with Get GPS button, 2) GPS Arrival Location field with Get GPS button, 3) Loading states and success messages"
