@@ -2637,13 +2637,42 @@ const Emergency = () => {
           </DialogHeader>
           <div className="space-y-4">
             <div>
-              <Label>Drill Type *</Label>
-              <Select value={drillForm.drill_type} onValueChange={(value) => setDrillForm({...drillForm, drill_type: value})}>
+              <Label>Emergency Type *</Label>
+              <Select value={drillForm.emergency_type} onValueChange={(value) => {
+                // Auto-clear procedure if emergency type changes
+                setDrillForm({...drillForm, emergency_type: value, linked_procedure_id: '', linked_procedure_title: ''});
+              }}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  {drillTypes.map(type => <SelectItem key={type} value={type}>{type}</SelectItem>)}
+                  {emergencyTypes.map(type => <SelectItem key={type} value={type}>{type}</SelectItem>)}
                 </SelectContent>
               </Select>
+            </div>
+            <div>
+              <Label>Linked Procedure (Optional)</Label>
+              <Select value={drillForm.linked_procedure_id || 'none'} onValueChange={(value) => {
+                if (value === 'none') {
+                  setDrillForm({...drillForm, linked_procedure_id: '', linked_procedure_title: ''});
+                } else {
+                  const procedure = procedures.find(p => p.id === value);
+                  setDrillForm({
+                    ...drillForm, 
+                    linked_procedure_id: value, 
+                    linked_procedure_title: procedure?.title || ''
+                  });
+                }
+              }}>
+                <SelectTrigger><SelectValue placeholder="Select procedure" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">No linked procedure</SelectItem>
+                  {procedures.filter(p => p.emergency_type === drillForm.emergency_type).map(p => (
+                    <SelectItem key={p.id} value={p.id}>{p.title}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {drillForm.emergency_type && procedures.filter(p => p.emergency_type === drillForm.emergency_type).length === 0 && (
+                <p className="text-xs text-gray-500 mt-1">No procedures found for {drillForm.emergency_type}</p>
+              )}
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
