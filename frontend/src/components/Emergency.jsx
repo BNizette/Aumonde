@@ -460,15 +460,15 @@ const Emergency = () => {
 
     if (drillSearch) {
       filtered = filtered.filter(drill =>
-        drill.drill_type?.toLowerCase().includes(drillSearch.toLowerCase()) ||
+        (drill.emergency_type || drill.drill_type)?.toLowerCase().includes(drillSearch.toLowerCase()) ||
         drill.vessel_name?.toLowerCase().includes(drillSearch.toLowerCase()) ||
         drill.observations?.toLowerCase().includes(drillSearch.toLowerCase())
       );
     }
 
-    // Apply multi-select type filter
+    // Apply multi-select type filter (use emergency_type or fallback to drill_type)
     if (drillFilters.types.length > 0) {
-      filtered = filtered.filter(drill => drillFilters.types.includes(drill.drill_type));
+      filtered = filtered.filter(drill => drillFilters.types.includes(drill.emergency_type || drill.drill_type));
     }
 
     // Apply multi-select vessel filter
