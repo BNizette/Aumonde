@@ -3843,9 +3843,9 @@ async def create_backup_schedule(
         # Add to database
         await db.backup_schedules.insert_one(schedule.model_dump())
         
-        # Add to scheduler
+        # Add to scheduler (use sync wrapper for async job)
         backup_scheduler.add_job(
-            scheduled_backup_job,
+            run_async_backup_job,
             CronTrigger.from_crontab(cron_expr),
             args=[schedule.id],
             id=schedule.id,
