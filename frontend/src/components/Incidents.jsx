@@ -1150,12 +1150,47 @@ const Incidents = () => {
                 )}
               </div>
               <div>
-                <Label>Location *</Label>
+                <Label className="flex items-center gap-1">
+                  <MapPin className="h-4 w-4" />
+                  Location *
+                </Label>
                 <Input
                   value={formData.location}
                   onChange={(e) => setFormData({...formData, location: e.target.value})}
                   placeholder="Where did this occur?"
                 />
+              </div>
+            </div>
+
+            {/* GPS Location - next to Location */}
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label className="flex items-center gap-1">
+                  <Navigation className="h-4 w-4" />
+                  GPS Location
+                </Label>
+                <div className="flex gap-2">
+                  <Input
+                    value={formData.gps_location}
+                    onChange={(e) => setFormData({...formData, gps_location: e.target.value})}
+                    placeholder="Lat, Long"
+                    className="flex-1"
+                  />
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    size="sm"
+                    onClick={getGPSLocation}
+                    disabled={gpsLoading}
+                    className="whitespace-nowrap"
+                  >
+                    {gpsLoading ? (
+                      <span className="animate-pulse">Getting...</span>
+                    ) : (
+                      <>📍 Get GPS</>
+                    )}
+                  </Button>
+                </div>
               </div>
             </div>
 
@@ -1191,7 +1226,7 @@ const Incidents = () => {
               </Select>
             </div>
 
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label>Trip From</Label>
                 <Input
@@ -1206,14 +1241,6 @@ const Incidents = () => {
                   value={formData.trip_to}
                   onChange={(e) => setFormData({...formData, trip_to: e.target.value})}
                   placeholder="Destination"
-                />
-              </div>
-              <div>
-                <Label>GPS Location</Label>
-                <Input
-                  value={formData.gps_location}
-                  onChange={(e) => setFormData({...formData, gps_location: e.target.value})}
-                  placeholder="Lat, Long"
                 />
               </div>
             </div>
