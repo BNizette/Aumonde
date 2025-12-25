@@ -2111,42 +2111,42 @@ const Emergency = () => {
                 </Card>
                 <Card 
                   className="cursor-pointer hover:shadow-lg transition-shadow"
-                  onClick={() => updateDrillFilters({ types: ['Fire Drill']})}
+                  onClick={() => updateDrillFilters({ types: ['Fire']})}
                 >
                   <CardHeader className="pb-2">
                     <CardTitle className="text-xs font-medium text-gray-500">Fire Drills</CardTitle>
                   </CardHeader>
                   <CardContent className="pt-0">
                     <div className="text-lg font-bold text-red-600">
-                      {drills.filter(d => d.drill_type === 'Fire Drill').length}
+                      {drills.filter(d => (d.emergency_type || d.drill_type) === 'Fire' || d.drill_type === 'Fire Drill').length}
                     </div>
                     <p className="text-[10px] text-gray-500 mt-0.5">Click to filter</p>
                   </CardContent>
                 </Card>
                 <Card 
                   className="cursor-pointer hover:shadow-lg transition-shadow"
-                  onClick={() => updateDrillFilters({ types: ['Abandon Ship Drill']})}
+                  onClick={() => updateDrillFilters({ types: ['Abandon Ship']})}
                 >
                   <CardHeader className="pb-2">
                     <CardTitle className="text-xs font-medium text-gray-500">Abandon Ship</CardTitle>
                   </CardHeader>
                   <CardContent className="pt-0">
                     <div className="text-lg font-bold text-orange-600">
-                      {drills.filter(d => d.drill_type === 'Abandon Ship Drill').length}
+                      {drills.filter(d => (d.emergency_type || d.drill_type) === 'Abandon Ship' || d.drill_type === 'Abandon Ship Drill').length}
                     </div>
                     <p className="text-[10px] text-gray-500 mt-0.5">Click to filter</p>
                   </CardContent>
                 </Card>
                 <Card 
                   className="cursor-pointer hover:shadow-lg transition-shadow"
-                  onClick={() => updateDrillFilters({ types: ['Man Overboard Drill']})}
+                  onClick={() => updateDrillFilters({ types: ['Man Overboard']})}
                 >
                   <CardHeader className="pb-2">
                     <CardTitle className="text-xs font-medium text-gray-500">Man Overboard</CardTitle>
                   </CardHeader>
                   <CardContent className="pt-0">
                     <div className="text-lg font-bold text-blue-600">
-                      {drills.filter(d => d.drill_type === 'Man Overboard Drill').length}
+                      {drills.filter(d => (d.emergency_type || d.drill_type) === 'Man Overboard' || d.drill_type === 'Man Overboard Drill').length}
                     </div>
                     <p className="text-[10px] text-gray-500 mt-0.5">Click to filter</p>
                   </CardContent>
