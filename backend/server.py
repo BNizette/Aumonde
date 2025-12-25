@@ -3678,8 +3678,8 @@ def get_cron_expression(frequency: str, custom_cron: str = None):
     else:
         return "0 2 * * *"  # Default to daily
 
-async def scheduled_backup_job(schedule_id: str):
-    """Background job to create scheduled backups"""
+async def _async_scheduled_backup_job(schedule_id: str):
+    """Background job to create scheduled backups (async implementation)"""
     try:
         schedule = await db.backup_schedules.find_one({"id": schedule_id}, {"_id": 0})
         if not schedule or not schedule.get("enabled"):
