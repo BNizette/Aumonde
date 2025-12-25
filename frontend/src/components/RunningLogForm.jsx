@@ -31,6 +31,18 @@ const RunningLogForm = ({ open, onClose, onSave, log, tripId, mode = 'create' })
 
   const categories = ['Radio', 'Conditions', 'Safety', 'Vessel Operation'];
 
+  const fetchCrew = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`${API}/crew`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setCrew(response.data);
+    } catch (err) {
+      console.error('Error fetching crew:', err);
+    }
+  };
+
   useEffect(() => {
     if (open) {
       fetchCrew();
@@ -64,18 +76,6 @@ const RunningLogForm = ({ open, onClose, onSave, log, tripId, mode = 'create' })
     setError('');
     setMessage('');
   }, [log, mode, open, tripId]);
-
-  const fetchCrew = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get(`${API}/crew`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setCrew(response.data);
-    } catch (err) {
-      console.error('Error fetching crew:', err);
-    }
-  };
 
   const handleCrewSelect = (crewId) => {
     const selectedCrew = crew.find(c => c.id === crewId);
