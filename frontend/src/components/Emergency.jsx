@@ -3185,7 +3185,7 @@ const Emergency = () => {
             <Tabs defaultValue="details">
               <TabsList>
                 <TabsTrigger value="details">Procedure Details</TabsTrigger>
-                <TabsTrigger value="records">Training Records ({trainingRecords[viewingProcedure.id]?.length || 0})</TabsTrigger>
+                <TabsTrigger value="drills">Drills ({drills.filter(d => d.linked_procedure_id === viewingProcedure.id || (d.emergency_type || d.drill_type) === viewingProcedure.emergency_type).length})</TabsTrigger>
               </TabsList>
 
               <TabsContent value="details" className="space-y-4">
@@ -3214,52 +3214,57 @@ const Emergency = () => {
                 )}
               </TabsContent>
 
-              <TabsContent value="records">
+              <TabsContent value="drills">
                 <div className="space-y-4">
                   <div className="flex justify-between items-center">
-                    <h3 className="font-semibold">Training Records</h3>
+                    <h3 className="font-semibold">Drills for this Procedure</h3>
                     <Button size="sm" onClick={() => {
                       setProcedureViewDialogOpen(false);
-                      handleAddTraining(viewingProcedure.id);
+                      setDrillForm({
+                        ...drillForm,
+                        emergency_type: viewingProcedure.emergency_type,
+                        linked_procedure_id: viewingProcedure.id,
+                        linked_procedure_title: viewingProcedure.title
+                      });
+                      setDrillDialogOpen(true);
                     }}>
                       <Plus className="h-4 w-4 mr-2" />
-                      Add Training Record
+                      Add Drill
                     </Button>
                   </div>
-                  {trainingRecords[viewingProcedure.id] && trainingRecords[viewingProcedure.id].length > 0 ? (
+                  {drills.filter(d => d.linked_procedure_id === viewingProcedure.id || (d.emergency_type || d.drill_type) === viewingProcedure.emergency_type).length > 0 ? (
                     <Table>
                       <TableHeader>
                         <TableRow>
                           <TableHead>Date</TableHead>
+                          <TableHead>Vessel</TableHead>
+                          <TableHead>Duration</TableHead>
                           <TableHead>Crew</TableHead>
-                          <TableHead>Status</TableHead>
-                          <TableHead>Authorized By</TableHead>
-                          <TableHead>Notes</TableHead>
+                          <TableHead>Observations</TableHead>
                           <TableHead>Actions</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {trainingRecords[viewingProcedure.id].map((record) => (
-                          <TableRow key={record.id}>
-                            <TableCell>{new Date(record.training_date).toLocaleString()}</TableCell>
-                            <TableCell>{record.crew_members.join(', ')}</TableCell>
-                            <TableCell>
-                              <Badge variant={record.status === 'Pass' ? 'default' : 'destructive'}>
-                                {record.status}
-                              </Badge>
-                            </TableCell>
-                            <TableCell>{record.authorized_by}</TableCell>
-                            <TableCell className="max-w-xs truncate">{record.notes || '-'}</TableCell>
+                        {drills.filter(d => d.linked_procedure_id === viewingProcedure.id || (d.emergency_type || d.drill_type) === viewingProcedure.emergency_type).map((drill) => (
+                          <TableRow key={drill.id}>
+                            <TableCell>{new Date(drill.drill_date).toLocaleString()}</TableCell>
+                            <TableCell>{drill.vessel_name || '-'}</TableCell>
+                            <TableCell>{drill.duration_minutes ? `${drill.duration_minutes} min` : '-'}</TableCell>
+                            <TableCell className="max-w-xs truncate">{drill.crew_participants?.join(', ') || drill.participants || '-'}</TableCell>
+                            <TableCell className="max-w-xs truncate">{drill.observations || '-'}</TableCell>
                             <TableCell>
                               <div className="flex gap-1">
                                 <Button variant="ghost" size="sm" onClick={() => {
                                   setProcedureViewDialogOpen(false);
-                                  handleEditTraining(record);
+                                  handleViewDrill(drill);
+                                }}>
+                                  <Eye className="h-3 w-3" />
+                                </Button>
+                                <Button variant="ghost" size="sm" onClick={() => {
+                                  setProcedureViewDialogOpen(false);
+                                  handleEditDrill(drill);
                                 }}>
                                   <Edit className="h-3 w-3" />
-                                </Button>
-                                <Button variant="ghost" size="sm" onClick={() => handleDeleteTraining(record.id)}>
-                                  <Trash2 className="h-3 w-3 text-red-500" />
                                 </Button>
                               </div>
                             </TableCell>
@@ -3269,7 +3274,7 @@ const Emergency = () => {
                     </Table>
                   ) : (
                     <div className="text-center py-8 text-gray-500">
-                      No training records for this procedure yet
+                      No drills recorded for this procedure yet
                     </div>
                   )}
                 </div>
