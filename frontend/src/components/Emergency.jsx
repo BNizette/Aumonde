@@ -1292,7 +1292,9 @@ const Emergency = () => {
 
   const resetDrillForm = () => {
     setDrillForm({
-      drill_type: 'Fire Drill',
+      emergency_type: 'Fire',
+      linked_procedure_id: '',
+      linked_procedure_title: '',
       drill_date: new Date().toISOString().slice(0, 16),
       vessel_id: '',
       vessel_name: '',
