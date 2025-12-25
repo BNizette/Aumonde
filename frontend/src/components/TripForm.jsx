@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { MapPin, Navigation } from 'lucide-react';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -17,6 +18,8 @@ const TripForm = ({ open, onClose, onSave, trip, mode = 'create' }) => {
   const [tripPassengers, setTripPassengers] = useState([]);
   const [allocatedCrew, setAllocatedCrew] = useState([]);
   const [error, setError] = useState('');
+  const [message, setMessage] = useState('');
+  const [gpsLoading, setGpsLoading] = useState({ depart: false, arrival: false });
 
   const [formData, setFormData] = useState({
     trip_name: '',
@@ -29,6 +32,8 @@ const TripForm = ({ open, onClose, onSave, trip, mode = 'create' }) => {
     actual_arrival_datetime: '',
     depart_location: '',
     arrival_location: '',
+    gps_depart_location: '',
+    gps_arrival_location: '',
     number_of_passengers: 0,
     number_of_crew: 0
   });
