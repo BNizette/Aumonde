@@ -271,6 +271,37 @@ const RunningLogForm = ({ open, onClose, onSave, log, tripId, mode = 'create' })
               rows={4}
             />
           </div>
+
+          {/* GPS Location Field */}
+          <div className="space-y-2">
+            <Label htmlFor="gps_location" className="flex items-center gap-1">
+              <Navigation className="h-4 w-4" />
+              GPS Location
+            </Label>
+            <div className="flex gap-2">
+              <Input
+                id="gps_location"
+                value={formData.gps_location}
+                onChange={(e) => handleChange('gps_location', e.target.value)}
+                placeholder="Lat, Long"
+                className="flex-1"
+              />
+              <Button 
+                type="button" 
+                variant="outline" 
+                size="sm"
+                onClick={getGPSLocation}
+                disabled={gpsLoading}
+                className="whitespace-nowrap"
+              >
+                {gpsLoading ? (
+                  <span className="animate-pulse">Getting...</span>
+                ) : (
+                  <>📍 Get GPS</>
+                )}
+              </Button>
+            </div>
+          </div>
         </div>
 
         <DialogFooter>
