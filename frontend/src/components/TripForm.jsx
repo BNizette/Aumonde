@@ -257,6 +257,12 @@ const TripForm = ({ open, onClose, onSave, trip, mode = 'create' }) => {
             </Alert>
           )}
 
+          {message && (
+            <Alert className="bg-green-50 border-green-200">
+              <AlertDescription className="text-green-800">{message}</AlertDescription>
+            </Alert>
+          )}
+
           <div className="space-y-4">
             {/* Trip Details */}
             <div className="space-y-4">
