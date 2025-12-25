@@ -13,7 +13,7 @@ import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Checkbox } from '@/components/ui/checkbox';
-import { AlertCircle, Plus, Edit, Trash2, Eye, Download, X, ChevronDown, Info, FileSpreadsheet } from 'lucide-react';
+import { AlertCircle, Plus, Edit, Trash2, Eye, Download, X, ChevronDown, Info, FileSpreadsheet, Navigation, MapPin } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
