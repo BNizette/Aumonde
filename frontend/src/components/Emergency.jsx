@@ -2567,7 +2567,7 @@ const Emergency = () => {
               <Textarea rows={6} value={procedureForm.equipment_required} onChange={(e) => setProcedureForm({...procedureForm, equipment_required: e.target.value})} placeholder="List required equipment..." />
             </div>
             <div>
-              <Label>Master's Guidance Notes</Label>
+              <Label>Master&apos;s Guidance Notes</Label>
               <Textarea rows={6} value={procedureForm.masters_guidance_notes} onChange={(e) => setProcedureForm({...procedureForm, masters_guidance_notes: e.target.value})} placeholder="Guidance notes from the Master..." />
             </div>
             <div>
