@@ -45,7 +45,7 @@
 ### Testing Instructions
 
 1. **Access the Application:**
-   - Open: https://marine-safety-1.preview.emergentagent.com
+   - Open: https://vessel-tracker-hub.preview.emergentagent.com
    - You should see the login page
 
 2. **Test Registration:**

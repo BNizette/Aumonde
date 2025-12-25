@@ -14,7 +14,7 @@ async def test_crew_logs_vessel_column():
             print("🔍 Starting Crew Logs Vessel Column Testing")
             
             # Step 1: Navigate to login page
-            await page.goto('https://marine-safety-1.preview.emergentagent.com')
+            await page.goto('https://vessel-tracker-hub.preview.emergentagent.com')
             await page.wait_for_timeout(2000)
             
             # Step 2: Login
@@ -26,7 +26,7 @@ async def test_crew_logs_vessel_column():
             
             # Step 3: Navigate to crew management
             print("Step 2: Navigating to Crew Management")
-            await page.goto('https://marine-safety-1.preview.emergentagent.com/crew')
+            await page.goto('https://vessel-tracker-hub.preview.emergentagent.com/crew')
             await page.wait_for_timeout(3000)
             
             # Step 4: Wait for crew list to load

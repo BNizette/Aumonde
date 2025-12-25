@@ -6,7 +6,7 @@
 - **Backend:** http://localhost:8001
 - **Frontend:** http://localhost:3000
 - **MongoDB:** localhost:27017
-- **Preview URL:** https://marine-safety-1.preview.emergentagent.com
+- **Preview URL:** https://vessel-tracker-hub.preview.emergentagent.com
 
 ---
 
