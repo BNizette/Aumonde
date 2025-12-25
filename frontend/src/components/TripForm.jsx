@@ -318,7 +318,10 @@ const TripForm = ({ open, onClose, onSave, trip, mode = 'create' }) => {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="depart_location">Departure Location</Label>
+                  <Label htmlFor="depart_location" className="flex items-center gap-1">
+                    <MapPin className="h-4 w-4" />
+                    Departure Location
+                  </Label>
                   <Input
                     id="depart_location"
                     value={formData.depart_location}
@@ -328,13 +331,79 @@ const TripForm = ({ open, onClose, onSave, trip, mode = 'create' }) => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="arrival_location">Arrival Location</Label>
+                  <Label htmlFor="arrival_location" className="flex items-center gap-1">
+                    <MapPin className="h-4 w-4" />
+                    Arrival Location
+                  </Label>
                   <Input
                     id="arrival_location"
                     value={formData.arrival_location}
                     onChange={(e) => handleChange('arrival_location', e.target.value)}
                     placeholder="Enter arrival location"
                   />
+                </div>
+              </div>
+
+              {/* GPS Location Fields */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="gps_depart_location" className="flex items-center gap-1">
+                    <Navigation className="h-4 w-4" />
+                    GPS Departure Location
+                  </Label>
+                  <div className="flex gap-2">
+                    <Input
+                      id="gps_depart_location"
+                      value={formData.gps_depart_location}
+                      onChange={(e) => handleChange('gps_depart_location', e.target.value)}
+                      placeholder="Lat, Long"
+                      className="flex-1"
+                    />
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => getGPSLocation('gps_depart_location')}
+                      disabled={gpsLoading.depart}
+                      className="whitespace-nowrap"
+                    >
+                      {gpsLoading.depart ? (
+                        <span className="animate-pulse">Getting...</span>
+                      ) : (
+                        <>📍 Get GPS</>
+                      )}
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="gps_arrival_location" className="flex items-center gap-1">
+                    <Navigation className="h-4 w-4" />
+                    GPS Arrival Location
+                  </Label>
+                  <div className="flex gap-2">
+                    <Input
+                      id="gps_arrival_location"
+                      value={formData.gps_arrival_location}
+                      onChange={(e) => handleChange('gps_arrival_location', e.target.value)}
+                      placeholder="Lat, Long"
+                      className="flex-1"
+                    />
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => getGPSLocation('gps_arrival_location')}
+                      disabled={gpsLoading.arrival}
+                      className="whitespace-nowrap"
+                    >
+                      {gpsLoading.arrival ? (
+                        <span className="animate-pulse">Getting...</span>
+                      ) : (
+                        <>📍 Get GPS</>
+                      )}
+                    </Button>
+                  </div>
                 </div>
               </div>
 
