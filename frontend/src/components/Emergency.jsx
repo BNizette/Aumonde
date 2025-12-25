@@ -3196,7 +3196,7 @@ const Emergency = () => {
                   {viewingProcedure.equipment_required && <div className="col-span-2"><strong>Equipment Required:</strong> <span className="whitespace-pre-wrap">{viewingProcedure.equipment_required}</span></div>}
                   {viewingProcedure.muster_station && <div className="col-span-2"><strong>Muster Station:</strong> {viewingProcedure.muster_station}</div>}
                   {viewingProcedure.key_contacts && <div className="col-span-2"><strong>Key Contacts:</strong> {viewingProcedure.key_contacts}</div>}
-                  {viewingProcedure.masters_guidance_notes && <div className="col-span-2"><strong>Master's Guidance Notes:</strong> <p className="whitespace-pre-wrap mt-1">{viewingProcedure.masters_guidance_notes}</p></div>}
+                  {viewingProcedure.masters_guidance_notes && <div className="col-span-2"><strong>Master&apos;s Guidance Notes:</strong> <p className="whitespace-pre-wrap mt-1">{viewingProcedure.masters_guidance_notes}</p></div>}
                   {viewingProcedure.reference_documents && <div className="col-span-2"><strong>Reference Documents:</strong> <p className="whitespace-pre-wrap mt-1">{viewingProcedure.reference_documents}</p></div>}
                 </div>
                 <div>
