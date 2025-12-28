@@ -158,7 +158,7 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create', defaultTab
       const token = localStorage.getItem('token');
       const headers = { Authorization: `Bearer ${token}` };
       
-      const response = await fetch(`${API}/settings/vessel/vessel_types`, { headers });
+      const response = await fetch(`${API}/api/settings/vessel/vessel_types`, { headers });
       const data = await response.json();
       setVesselTypes(data.options || []);
     } catch (err) {
