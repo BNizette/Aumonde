@@ -448,7 +448,7 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create', defaultTab
       const formDataUpload = new FormData();
       formDataUpload.append('file', file);
 
-      const response = await axios.post(`${API}/documents/upload`, formDataUpload, {
+      const response = await axios.post(`${API}/api/documents/upload`, formDataUpload, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data'
