@@ -13,7 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Shield, Calendar, AlertTriangle, CheckCircle, Clock, FileText, Wrench, Upload, X, Image, Plus, Trash2, ExternalLink } from 'lucide-react';
 
 const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create', defaultTab = 'basic' }) => {
-  const API = process.env.REACT_APP_BACKEND_URL + '/api';
+  const API = process.env.REACT_APP_BACKEND_URL;
   const [activeTab, setActiveTab] = useState(defaultTab);
   const [vesselTypes, setVesselTypes] = useState([]);
   const [vesselCertificates, setVesselCertificates] = useState([]);
