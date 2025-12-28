@@ -208,9 +208,9 @@ frontend:
 
   - task: "Vessel Edit - Induction Tab"
     implemented: true
-    working: true
+    working: false
     file: "src/components/VesselForm.jsx"
-    stuck_count: 0
+    stuck_count: 1
     priority: "high"
     needs_retesting: false
     status_history:
@@ -220,6 +220,9 @@ frontend:
       - working: true
         agent: "testing"
         comment: "✅ PASSED: Vessel Edit Induction Tab working correctly. Verified: 1) All 5 tabs present (Basic & Specs, Certificates, Emergency, Induction, Photo), 2) Induction tab functional with crew selection checkboxes, 3) Multiple crew members listed with task completion status (4/5, 1/5, 0/5 tasks), 4) Clear instruction text for managing induction tasks. Screenshot evidence confirms full functionality."
+      - working: false
+        agent: "testing"
+        comment: "❌ FAILED: Task toggle functionality not working. Verified: 1) ✅ Login successful, 2) ✅ Edit Vessel dialog opens correctly, 3) ✅ Induction tab loads with crew selection, 4) ✅ Crew members can be selected (shows 'Selected: Emma Wilson'), 5) ✅ Safety Induction Tasks section appears with 'Click a task to toggle for all selected crew' text, 6) ❌ CRITICAL ISSUE: No task checkboxes are rendered despite 5 induction tasks being configured in backend (Safety Equipment, Lifesaving Equipment, Fire safety equipment, Misc equipment, Vessel Operating Controls). API calls successful (/api/settings/vessel/induction_tasks returns 200 OK with 5 tasks). Issue appears to be in frontend rendering of task checkboxes within Safety Induction Tasks section."
 
   - task: "Vessel Details - Induction View with Manage in Vessel Button"
     implemented: true
