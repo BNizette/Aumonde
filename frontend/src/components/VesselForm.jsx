@@ -604,7 +604,7 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create', defaultTab
             <TabsTrigger value="photo">Photo</TabsTrigger>
           </TabsList>
 
-          <ScrollArea className="h-[400px] w-full pr-4">
+          <ScrollArea className="h-[500px] w-full pr-4">
             {/* TAB 1: BASIC DETAILS & SPECIFICATIONS */}
             <TabsContent value="basic" className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
