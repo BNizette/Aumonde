@@ -266,9 +266,6 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create', defaultTab
             });
             if (tasksResponse.ok) {
               tasksRes = await tasksResponse.json();
-              console.log('Induction tasks loaded:', tasksRes);
-            } else {
-              console.error('Induction tasks fetch failed with status:', tasksResponse.status);
             }
           } catch (taskErr) {
             console.error('Induction tasks fetch error:', taskErr);
@@ -284,7 +281,6 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create', defaultTab
           const taskOptions = (tasksRes.options || [])
             .filter(opt => opt.is_active !== false)
             .map(opt => typeof opt === 'string' ? opt : opt.value);
-          console.log('Setting induction tasks:', taskOptions);
           setInductionTasks(taskOptions);
           setInductionRecords(recordsRes.data || []);
           setCrewList(crewRes.data || []);
