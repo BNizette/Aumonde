@@ -258,30 +258,33 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create', defaultTab
         // Fetch induction data
         setLoadingInduction(true);
         try {
-          const [tasksRes, recordsRes, crewRes] = await Promise.all([
-            fetch(`${API}/api/settings/vessel/induction_tasks`, { headers: { Authorization: `Bearer ${token}` } })
-              .then(r => {
-                console.log('Induction tasks fetch response status:', r.status);
-                return r.json();
-              })
-              .then(data => {
-                console.log('Induction tasks data:', data);
-                return data;
-              })
-              .catch(err => {
-                console.error('Induction tasks fetch error:', err);
-                return { options: [] };
-              }),
-            axios.get(`${API}/api/vessel-induction?vessel_id=${vessel.id}`, { headers: { Authorization: `Bearer ${token}` } }),
-            axios.get(`${API}/api/crew`, { headers: { Authorization: `Bearer ${token}` } })
+          // Fetch tasks
+          let tasksRes = { options: [] };
+          try {
+            const tasksResponse = await fetch(`${API}/api/settings/vessel/induction_tasks`, { 
+              headers: { Authorization: `Bearer ${token}` } 
+            });
+            if (tasksResponse.ok) {
+              tasksRes = await tasksResponse.json();
+              console.log('Induction tasks loaded:', tasksRes);
+            } else {
+              console.error('Induction tasks fetch failed with status:', tasksResponse.status);
+            }
+          } catch (taskErr) {
+            console.error('Induction tasks fetch error:', taskErr);
+          }
+
+          // Fetch records and crew in parallel
+          const [recordsRes, crewRes] = await Promise.all([
+            axios.get(`${API}/api/vessel-induction?vessel_id=${vessel.id}`, { headers: { Authorization: `Bearer ${token}` } }).catch(e => ({ data: [] })),
+            axios.get(`${API}/api/crew`, { headers: { Authorization: `Bearer ${token}` } }).catch(e => ({ data: [] }))
           ]);
+
           // Extract just the value strings from settings options objects
-          console.log('tasksRes:', tasksRes);
-          console.log('tasksRes.options:', tasksRes.options);
           const taskOptions = (tasksRes.options || [])
             .filter(opt => opt.is_active !== false)
             .map(opt => typeof opt === 'string' ? opt : opt.value);
-          console.log('taskOptions:', taskOptions);
+          console.log('Setting induction tasks:', taskOptions);
           setInductionTasks(taskOptions);
           setInductionRecords(recordsRes.data || []);
           setCrewList(crewRes.data || []);
