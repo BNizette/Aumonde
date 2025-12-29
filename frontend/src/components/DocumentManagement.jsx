@@ -279,11 +279,11 @@ const DocumentManagement = () => {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Categories</SelectItem>
-                    <SelectItem value="regulations">Regulations</SelectItem>
-                    <SelectItem value="navigation">Navigation</SelectItem>
-                    <SelectItem value="safety">Safety</SelectItem>
-                    <SelectItem value="compliance">Compliance</SelectItem>
-                    <SelectItem value="other">Other</SelectItem>
+                    {documentCategories.map((category) => (
+                      <SelectItem key={category} value={category.toLowerCase()}>
+                        {category}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
