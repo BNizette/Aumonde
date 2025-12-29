@@ -129,6 +129,23 @@ const DocumentManagement = () => {
     }
   };
 
+  const fetchDocumentCategories = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`${API}/settings/document/categories`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const categories = (response.data?.options || [])
+        .filter(opt => opt.is_active !== false)
+        .map(opt => typeof opt === 'string' ? opt : opt.value);
+      if (categories.length > 0) {
+        setDocumentCategories(categories);
+      }
+    } catch (err) {
+      console.error('Error fetching document categories:', err);
+    }
+  };
+
   const handleCreate = () => {
     setFormMode('create');
     setSelectedDocument(null);
