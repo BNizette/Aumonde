@@ -30,6 +30,7 @@ const DocumentManagement = () => {
   const [viewingDocument, setViewingDocument] = useState(null);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+  const [documentCategories, setDocumentCategories] = useState([]);
 
   const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
   const canEdit = currentUser.access_level === 'Edit' || currentUser.access_level === 'Full';
@@ -38,6 +39,7 @@ const DocumentManagement = () => {
   useEffect(() => {
     fetchDocuments();
     fetchVessels();
+    fetchDocumentCategories();
   }, []);
 
   useEffect(() => {
