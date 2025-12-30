@@ -235,4 +235,4 @@ With 12 users now available:
 - ✅ Diverse email domains
 - ✅ Ready for comprehensive filter testing
 
-**Login and start testing:** https://vessel-tracker-hub.preview.emergentagent.com
+**Login and start testing:** https://marina-dashboard-3.preview.emergentagent.com

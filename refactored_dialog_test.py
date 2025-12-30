@@ -9,7 +9,7 @@ import json
 import sys
 
 class RefactoredDialogTester:
-    def __init__(self, base_url="https://vessel-tracker-hub.preview.emergentagent.com"):
+    def __init__(self, base_url="https://marina-dashboard-3.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.token = None

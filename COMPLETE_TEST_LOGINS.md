@@ -308,7 +308,7 @@ Login as admin, go to Admin Panel → Users
 
 ## 🚀 LOGIN URL
 
-**Preview:** https://vessel-tracker-hub.preview.emergentagent.com
+**Preview:** https://marina-dashboard-3.preview.emergentagent.com
 
 ---
 

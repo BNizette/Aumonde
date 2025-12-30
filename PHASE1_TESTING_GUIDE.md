@@ -45,7 +45,7 @@
 ### Testing Instructions
 
 1. **Access the Application:**
-   - Open: https://vessel-tracker-hub.preview.emergentagent.com
+   - Open: https://marina-dashboard-3.preview.emergentagent.com
    - You should see the login page
 
 2. **Test Registration:**
