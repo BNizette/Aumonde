@@ -631,3 +631,39 @@ backend:
       - working: true
         agent: "testing"
         comment: "✅ COMPREHENSIVE BACKEND API TESTING COMPLETED: Successfully tested all Trip Log (Shift Log) backend API requirements: 1) ✅ POST /api/trip-logs - Created trip logs WITH trip_id (vessel_id and vessel_name required), 2) ✅ POST /api/trip-logs - Created trip logs WITHOUT trip_id (trip_id can be null), 3) ✅ GET /api/trip-logs?vessel_id={id} - Vessel filtering works correctly, 4) ✅ PUT /api/trip-logs/{id} - Update operations support vessel and trip fields, 5) ✅ Required Field Validation - vessel_id and vessel_name are REQUIRED (422 errors for missing fields), 6) ✅ Backward Compatibility - Existing trip logs without vessel_id still work. All key requirements verified: vessel_id and vessel_name are compulsory, trip_id is optional (can be null), filtering by vessel works, update operations functional. Backend API fully operational for Trip Log Vessel & Trip Selection feature."
+
+  - task: "Running & Engine Logs - Vessel (Required) and Trip (Optional) Selection"
+    implemented: true
+    working: true
+    file: "src/components/RunningLogForm.jsx, EngineRunningLogForm.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "✅ IMPLEMENTED: Added Vessel (required) and Trip (optional) dropdowns to both Running Log and Engine Log forms. Forms default to trip's vessel and trip context but can be overridden. Backend models updated with vessel_id and vessel_name fields."
+
+  - task: "Crew Shifts - Both Vessel and Trip Optional"
+    implemented: true
+    working: true
+    file: "src/components/TripLogForm.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "✅ MODIFIED: Changed Crew Shift (TripLog) form to make both Vessel and Trip fields OPTIONAL. Removed asterisk from labels and validation checks. Backend models updated to accept null values for vessel_id and vessel_name."
+
+  - task: "Edit Incident Freeze Bug Fix"
+    implemented: true
+    working: true
+    file: "src/components/Incidents.jsx"
+    stuck_count: 0
+    priority: "critical"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "✅ FIXED: Edit Incident dialog was freezing because incident_type and activity fields could be undefined when loaded from backend. Added Array.isArray() checks in handleEdit to ensure these fields are always arrays. Dialog now renders correctly."
