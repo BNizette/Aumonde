@@ -4558,6 +4558,26 @@ async def create_sms_revision(revision_data: SMSRevisionCreate, current_user: di
     
     return revision
 
+@api_router.put("/sms-revisions/{revision_id}")
+async def update_sms_revision(revision_id: str, revision_data: SMSRevisionCreate, current_user: dict = Depends(require_access_level(AccessLevel.EDIT))):
+    existing = await db.sms_revisions.find_one({"id": revision_id}, {"_id": 0})
+    if not existing:
+        raise HTTPException(status_code=404, detail="SMS revision not found")
+    
+    update_data = {
+        "revision_date": datetime.fromisoformat(revision_data.revision_date.replace('Z', '+00:00')),
+        "revision_description": revision_data.revision_description,
+        "crew_member_id": revision_data.crew_member_id,
+        "crew_member_name": revision_data.crew_member_name,
+        "version_number": revision_data.version_number
+    }
+    
+    await db.sms_revisions.update_one({"id": revision_id}, {"$set": update_data})
+    await log_audit(current_user["id"], current_user["full_name"], "update", "sms_revision", revision_id, f"Updated SMS revision: {revision_data.revision_description[:50]}")
+    
+    updated = await db.sms_revisions.find_one({"id": revision_id}, {"_id": 0})
+    return updated
+
 @api_router.delete("/sms-revisions/{revision_id}")
 async def delete_sms_revision(revision_id: str, current_user: dict = Depends(require_access_level(AccessLevel.FULL))):
     result = await db.sms_revisions.delete_one({"id": revision_id})
