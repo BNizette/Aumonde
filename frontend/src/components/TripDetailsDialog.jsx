@@ -2013,6 +2013,96 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* View Expenditure Dialog */}
+      <Dialog open={viewExpenditureDialogOpen} onOpenChange={setViewExpenditureDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>View Expenditure</DialogTitle>
+            <DialogDescription>Expenditure details</DialogDescription>
+          </DialogHeader>
+          {viewingExpenditure && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-sm text-gray-500">Date</Label>
+                  <p className="font-medium">
+                    {viewingExpenditure.expense_date 
+                      ? new Date(viewingExpenditure.expense_date).toLocaleDateString() 
+                      : '-'}
+                  </p>
+                </div>
+                <div>
+                  <Label className="text-sm text-gray-500">Amount</Label>
+                  <p className={`font-semibold ${viewingExpenditure.amount >= 0 ? 'text-red-600' : 'text-green-600'}`}>
+                    {viewingExpenditure.amount >= 0 ? '-' : '+'}${Math.abs(viewingExpenditure.amount || 0).toFixed(2)}
+                  </p>
+                </div>
+              </div>
+              <div>
+                <Label className="text-sm text-gray-500">Description</Label>
+                <p className="font-medium">{viewingExpenditure.description || '-'}</p>
+              </div>
+              <div>
+                <Label className="text-sm text-gray-500">Receipt</Label>
+                {viewingExpenditure.receipt_url ? (
+                  <div className="flex items-center gap-2 mt-1">
+                    <FileText className="h-5 w-5 text-blue-600" />
+                    <a
+                      href={viewingExpenditure.receipt_url.startsWith('http') 
+                        ? viewingExpenditure.receipt_url 
+                        : `${BACKEND_URL}${viewingExpenditure.receipt_url}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline font-medium"
+                    >
+                      View Receipt PDF
+                    </a>
+                  </div>
+                ) : (
+                  <p className="text-gray-400">No receipt attached</p>
+                )}
+              </div>
+              <div className="grid grid-cols-2 gap-4 pt-2 border-t">
+                <div>
+                  <Label className="text-sm text-gray-500">Created By</Label>
+                  <p className="text-sm">{viewingExpenditure.created_by_name || '-'}</p>
+                </div>
+                <div>
+                  <Label className="text-sm text-gray-500">Created At</Label>
+                  <p className="text-sm">
+                    {viewingExpenditure.created_at 
+                      ? new Date(viewingExpenditure.created_at).toLocaleString() 
+                      : '-'}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => {
+              setViewExpenditureDialogOpen(false);
+              setViewingExpenditure(null);
+            }}>
+              Close
+            </Button>
+            <Button onClick={() => {
+              setViewExpenditureDialogOpen(false);
+              setEditingExpenditure(viewingExpenditure);
+              setExpenditureForm({
+                expense_date: viewingExpenditure?.expense_date ? viewingExpenditure.expense_date.split('T')[0] : '',
+                description: viewingExpenditure?.description || '',
+                amount: viewingExpenditure?.amount?.toString() || '',
+                receipt_url: viewingExpenditure?.receipt_url || ''
+              });
+              setExpenditureDialogOpen(true);
+              setViewingExpenditure(null);
+            }}>
+              Edit
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };
