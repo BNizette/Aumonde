@@ -4580,6 +4580,39 @@ async def upsert_vessel_induction(record_data: VesselInductionRecordUpdate, curr
         await db.vessel_induction.insert_one(record.model_dump())
         return record
 
+# ==================== HELP CONTENT API ====================
+
+@api_router.get("/help/{module_key}")
+async def get_help_content(module_key: str, current_user: dict = Depends(get_current_user)):
+    """Get help content for a specific module"""
+    help_doc = await db.help_content.find_one({"module_key": module_key}, {"_id": 0})
+    if not help_doc:
+        raise HTTPException(status_code=404, detail="Help content not found")
+    return help_doc
+
+@api_router.put("/help/{module_key}")
+async def update_help_content(module_key: str, help_data: dict, current_user: dict = Depends(get_current_user)):
+    """Update help content for a specific module - Admin only"""
+    if current_user.get("access_level") != "Admin":
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    help_doc = {
+        "module_key": module_key,
+        "title": help_data.get("title", ""),
+        "content": help_data.get("content", ""),
+        "link_url": help_data.get("link_url", ""),
+        "link_text": help_data.get("link_text", "Learn more"),
+        "updated_by": current_user.get("id"),
+        "updated_at": datetime.now(timezone.utc).isoformat()
+    }
+    
+    await db.help_content.update_one(
+        {"module_key": module_key},
+        {"$set": help_doc},
+        upsert=True
+    )
+    return help_doc
+
 # Include router
 app.include_router(api_router)
 
