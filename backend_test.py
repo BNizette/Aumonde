@@ -2093,6 +2093,14 @@ class AMSAComprehensiveTester:
                 if success:
                     self.created_vessels.remove(vessel_id)
                     print(f"   Deleted vessel: {vessel_id}")
+            
+            # Delete SMS revisions
+            if hasattr(self, 'created_sms_revisions'):
+                for revision_id in self.created_sms_revisions[:]:
+                    success, _, _ = self.make_request('DELETE', f'sms-revisions/{revision_id}')
+                    if success:
+                        self.created_sms_revisions.remove(revision_id)
+                        print(f"   Deleted SMS revision: {revision_id}")
 
     # ============================================================================
     # REFACTORED DIALOG COMPONENTS TESTS (SPECIFIC TO REVIEW REQUEST)
