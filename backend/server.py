@@ -1448,7 +1448,9 @@ class EngineRunningLog(BaseModel):
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class EngineRunningLogCreate(BaseModel):
-    trip_id: str
+    trip_id: Optional[str] = None  # Optional - can log without a trip
+    vessel_id: str  # Compulsory - must have a vessel
+    vessel_name: str  # Denormalized for display
     log_datetime: datetime
     utc_offset: Optional[str] = None  # UTC offset e.g., +10:00
     # Engine One
