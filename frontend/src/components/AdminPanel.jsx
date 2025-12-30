@@ -734,6 +734,29 @@ const AdminPanel = () => {
     }
   };
 
+  const handleUpdateSmsRevision = async () => {
+    if (!editingSmsRevision) return;
+    try {
+      const token = localStorage.getItem('token');
+      const updateData = {
+        revision_date: editingSmsRevision.revision_date?.slice(0, 10) || '',
+        revision_description: editingSmsRevision.revision_description || '',
+        crew_member_id: editingSmsRevision.crew_member_id || '',
+        crew_member_name: editingSmsRevision.crew_member_name || '',
+        version_number: editingSmsRevision.version_number || ''
+      };
+      await axios.put(`${API}/sms-revisions/${editingSmsRevision.id}`, updateData, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setSmsEditDialogOpen(false);
+      setEditingSmsRevision(null);
+      fetchData();
+      setMessage('SMS revision updated successfully');
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Error updating SMS revision');
+    }
+  };
+
   const handleDeleteSmsRevision = async (id) => {
     if (!window.confirm('Are you sure you want to delete this SMS revision?')) return;
     try {
@@ -748,11 +771,26 @@ const AdminPanel = () => {
     }
   };
 
+  // Sort SMS revisions by version number descending (newest version first)
+  const sortedSmsRevisions = [...smsRevisions].sort((a, b) => {
+    const versionA = a.version_number || '0';
+    const versionB = b.version_number || '0';
+    // Parse version numbers for proper numeric comparison (e.g., "2.1" > "1.9")
+    const partsA = versionA.split('.').map(n => parseInt(n, 10) || 0);
+    const partsB = versionB.split('.').map(n => parseInt(n, 10) || 0);
+    for (let i = 0; i < Math.max(partsA.length, partsB.length); i++) {
+      const numA = partsA[i] || 0;
+      const numB = partsB[i] || 0;
+      if (numB !== numA) return numB - numA; // Descending order
+    }
+    return 0;
+  });
+
   const exportSmsRevisionsToExcel = () => {
     const sheets = [{
       name: 'SMS Revisions',
       headers: ['Date', 'Version', 'Description', 'Crew Member', 'Created By', 'Created At'],
-      data: smsRevisions.map(rev => [
+      data: sortedSmsRevisions.map(rev => [
         formatDate(rev.revision_date),
         safeValue(rev.version_number),
         safeValue(rev.revision_description),
