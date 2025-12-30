@@ -26,9 +26,21 @@ const EngineField = ({ label, engine, field, value, onChange }) => (
 const EngineRunningLogForm = ({ open, onClose, onSave, log, tripId, mode = 'create' }) => {
   const [error, setError] = useState('');
 
+  // Helper function to calculate UTC offset from a date
+  const calculateUtcOffset = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    const offsetMinutes = date.getTimezoneOffset();
+    const offsetHours = Math.abs(Math.floor(offsetMinutes / 60));
+    const offsetMins = Math.abs(offsetMinutes % 60);
+    const offsetSign = offsetMinutes <= 0 ? '+' : '-';
+    return `${offsetSign}${String(offsetHours).padStart(2, '0')}:${String(offsetMins).padStart(2, '0')}`;
+  };
+
   const [formData, setFormData] = useState({
     trip_id: tripId || '',
     log_datetime: '',
+    utc_offset: '',
     // Engine One
     engine1_rpm: '',
     engine1_water_temp: '',
