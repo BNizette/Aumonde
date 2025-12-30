@@ -83,8 +83,8 @@ const TripShiftsPage = () => {
     return shiftLogs.reduce((sum, log) => sum + (log.total_hours || 0), 0).toFixed(2);
   };
 
-  const canEdit = user?.access_level === 'Edit' || user?.access_level === 'Full';
-  const canDelete = user?.access_level === 'Full';
+  const canEdit = user?.access_level === 'Edit' || user?.access_level === 'Full' || user?.access_level === 'Admin';
+  const canDelete = user?.access_level === 'Full' || user?.access_level === 'Admin';
 
   // Shift handlers
   const handleAddShiftLog = () => {
