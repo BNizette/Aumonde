@@ -1546,15 +1546,6 @@ const AdminPanel = () => {
           </DialogHeader>
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="create-name">Full Name *</Label>
-              <Input
-                id="create-name"
-                value={newUser.full_name}
-                onChange={(e) => setNewUser({ ...newUser, full_name: e.target.value })}
-                placeholder="John Doe"
-              />
-            </div>
-            <div className="space-y-2">
               <Label htmlFor="create-email">Email *</Label>
               <Input
                 id="create-email"
@@ -1562,6 +1553,15 @@ const AdminPanel = () => {
                 value={newUser.email}
                 onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
                 placeholder="john@example.com"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="create-name">Full Name *</Label>
+              <Input
+                id="create-name"
+                value={newUser.full_name}
+                onChange={(e) => setNewUser({ ...newUser, full_name: e.target.value })}
+                placeholder="John Doe"
               />
             </div>
             <div className="space-y-2">
