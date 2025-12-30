@@ -244,6 +244,96 @@ const DocumentForm = ({ open, onClose, onSave, document, mode = 'create' }) => {
         )}
 
         <div className="space-y-4">
+          {/* Upload Method - at the top for create mode */}
+          {mode === 'create' && (
+            <div className="space-y-2">
+              <Label>Upload Method</Label>
+              <Tabs value={uploadMethod} onValueChange={setUploadMethod}>
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="file">
+                    <Upload className="h-4 w-4 mr-2" />
+                    Upload File
+                  </TabsTrigger>
+                  <TabsTrigger value="url">
+                    <LinkIcon className="h-4 w-4 mr-2" />
+                    External URL
+                  </TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="file" className="space-y-4">
+                  <div
+                    onDrop={handleDrop}
+                    onDragOver={handleDragOver}
+                    className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-gray-400 transition-colors cursor-pointer"
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    {selectedFile ? (
+                      <div className="space-y-2">
+                        <FileText className="h-12 w-12 mx-auto text-teal-600" />
+                        <div className="font-medium">{selectedFile.name}</div>
+                        <div className="text-sm text-gray-500">{formatFileSize(selectedFile.size)}</div>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            removeFile();
+                          }}
+                        >
+                          <X className="h-4 w-4 mr-1" />
+                          Remove
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="space-y-2">
+                        <Upload className="h-12 w-12 mx-auto text-gray-400" />
+                        <div className="text-gray-600">
+                          Drag and drop a file here, or click to select
+                        </div>
+                        <div className="text-sm text-gray-400">
+                          Supported formats: PDF, DOC, DOCX, XLS, XLSX, TXT
+                        </div>
+                      </div>
+                    )}
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      className="hidden"
+                      onChange={handleFileChange}
+                      accept=".pdf,.doc,.docx,.xls,.xlsx,.txt,.png,.jpg,.jpeg"
+                    />
+                  </div>
+                  {uploading && (
+                    <div className="space-y-2">
+                      <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-teal-600 transition-all duration-300"
+                          style={{ width: `${uploadProgress}%` }}
+                        />
+                      </div>
+                      <div className="text-sm text-gray-500 text-center">
+                        Uploading... {uploadProgress}%
+                      </div>
+                    </div>
+                  )}
+                </TabsContent>
+
+                <TabsContent value="url" className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="file_url">External URL</Label>
+                    <Input
+                      id="file_url"
+                      value={formData.file_url}
+                      onChange={(e) => handleChange('file_url', e.target.value)}
+                      placeholder="https://example.com/document.pdf"
+                    />
+                  </div>
+                </TabsContent>
+              </Tabs>
+            </div>
+          )}
+
           <div className="space-y-2">
             <Label htmlFor="document_name">Document Name *</Label>
             <Input
@@ -287,27 +377,6 @@ const DocumentForm = ({ open, onClose, onSave, document, mode = 'create' }) => {
               Leave as "Global" for documents not specific to any vessel
             </p>
           </div>
-
-          {mode === 'create' && (
-            <div className="space-y-2">
-              <Label>Upload Method</Label>
-              <Tabs value={uploadMethod} onValueChange={setUploadMethod}>
-                <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="file">
-                    <Upload className="h-4 w-4 mr-2" />
-                    Upload File
-                  </TabsTrigger>
-                  <TabsTrigger value="url">
-                    <LinkIcon className="h-4 w-4 mr-2" />
-                    External URL
-                  </TabsTrigger>
-                </TabsList>
-
-                <TabsContent value="file" className="space-y-4">
-                  <div
-                    onDrop={handleDrop}
-                    onDragOver={handleDragOver}
-                    className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-gray-400 transition-colors cursor-pointer"
                     onClick={() => fileInputRef.current?.click()}
                   >
                     {selectedFile ? (
