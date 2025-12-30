@@ -337,27 +337,14 @@ const TripManagement = () => {
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-3xl font-bold text-gray-900">Trip Management</h1>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Info className="h-5 w-5 text-blue-500 cursor-help" />
-                </TooltipTrigger>
-                <TooltipContent className="max-w-sm">
-                  <p className="font-semibold mb-1">Marine Order 504 (2024)</p>
-                  <p className="text-sm mb-2">
-                    Operational procedures must align with assessed risks, including voyage planning, safety of navigation, and crew allocation per SMS requirements.
-                  </p>
-                  <a 
-                    href="https://www.amsa.gov.au/about/regulations-and-standards/marine-order-504-certificates-operation"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-500 hover:underline text-sm"
-                  >
-                    View AMSA MO504 Regulations →
-                  </a>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            <HelpDialog 
+              moduleKey="trip_management"
+              title="Marine Order 504 (2024)"
+              defaultContent="Operational procedures must align with assessed risks, including voyage planning, safety of navigation, and crew allocation per SMS requirements."
+              defaultLink="https://www.amsa.gov.au/about/regulations-and-standards/marine-order-504-certificates-operation"
+              defaultLinkText="View AMSA MO504 Regulations →"
+              isAdmin={isAdmin}
+            />
           </div>
           <p className="text-gray-500 mt-1">Manage vessel trips and crew shift logs</p>
         </div>
