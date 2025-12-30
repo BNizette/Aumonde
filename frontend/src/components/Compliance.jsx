@@ -16,6 +16,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Checkbox } from '@/components/ui/checkbox';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import HelpDialog from './HelpDialog';
 import { SummaryCard } from '@/components/ui/summary-card';
 import { ImportExcelDialog } from '@/components/ui/import-excel-dialog';
 import useAdvancedFilters from '../hooks/useAdvancedFilters';
