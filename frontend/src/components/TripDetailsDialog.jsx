@@ -54,6 +54,8 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
   const [expenditureDialogOpen, setExpenditureDialogOpen] = useState(false);
   const [expenditureForm, setExpenditureForm] = useState({ expense_date: '', description: '', amount: '', receipt_url: '' });
   const [editingExpenditure, setEditingExpenditure] = useState(null);
+  const [viewingExpenditure, setViewingExpenditure] = useState(null);
+  const [viewExpenditureDialogOpen, setViewExpenditureDialogOpen] = useState(false);
   const [uploadingReceipt, setUploadingReceipt] = useState(false);
   
   const [shiftFormOpen, setShiftFormOpen] = useState(false);
