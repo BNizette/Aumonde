@@ -1165,19 +1165,31 @@ const Incidents = () => {
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-3 gap-4">
               <div>
                 <Label>Incident Date & Time * (Local)</Label>
                 <Input
                   type="datetime-local"
                   value={formData.incident_date}
-                  onChange={(e) => setFormData({...formData, incident_date: e.target.value})}
+                  onChange={(e) => handleIncidentDateChange(e.target.value)}
                 />
                 {formData.incident_date && (
                   <p className="text-xs text-gray-500 mt-1">
                     UTC: {new Date(formData.incident_date).toISOString().replace('T', ' ').slice(0, 19)}
                   </p>
                 )}
+              </div>
+              <div>
+                <Label>UTC Offset</Label>
+                <Input
+                  value={formData.utc_offset}
+                  onChange={(e) => setFormData({...formData, utc_offset: e.target.value})}
+                  placeholder="e.g., +10:00"
+                  className="bg-gray-50"
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  Auto-calculated from date
+                </p>
               </div>
               <div>
                 <Label className="flex items-center gap-1">
