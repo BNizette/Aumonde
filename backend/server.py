@@ -5078,12 +5078,12 @@ AMSA Safety Management System
         
         msg.attach(MIMEText(body, 'plain'))
         
-        # Connect and send
+        # Connect and send with timeout
         if config.get('use_tls', True):
-            server = smtplib.SMTP(config['smtp_server'], int(config['smtp_port']))
+            server = smtplib.SMTP(config['smtp_server'], int(config['smtp_port']), timeout=10)
             server.starttls()
         else:
-            server = smtplib.SMTP(config['smtp_server'], int(config['smtp_port']))
+            server = smtplib.SMTP(config['smtp_server'], int(config['smtp_port']), timeout=10)
         
         server.login(config['smtp_username'], config['smtp_password'])
         server.send_message(msg)
