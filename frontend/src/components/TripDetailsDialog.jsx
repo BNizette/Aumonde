@@ -390,6 +390,29 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
     setTimeout(() => setMessage(''), 3000);
   };
 
+  // Export expenditures to Excel
+  const exportExpendituresToExcel = () => {
+    if (expenditures.length === 0) { setError('No expenditures data to export'); setTimeout(() => setError(''), 3000); return; }
+    const wb = XLSX.utils.book_new();
+    const headers = ['Date', 'Description', 'Amount', 'Receipt URL'];
+    let total = 0;
+    const data = [headers, ...expenditures.map(exp => {
+      total += exp.amount || 0;
+      return [
+        exp.expense_date ? new Date(exp.expense_date).toLocaleDateString() : 'N/A',
+        exp.description || '-',
+        exp.amount ? `$${exp.amount.toFixed(2)}` : '$0.00',
+        exp.receipt_url || '-'
+      ];
+    }), ['', 'TOTAL:', `$${total.toFixed(2)}`, '']];
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    ws['!cols'] = [{ wch: 12 }, { wch: 30 }, { wch: 12 }, { wch: 40 }];
+    XLSX.utils.book_append_sheet(wb, ws, 'Expenditures APA');
+    XLSX.writeFile(wb, `expenditures_apa_${trip?.trip_name?.replace(/\s+/g, '_') || 'export'}_${new Date().toISOString().slice(0, 10)}.xlsx`);
+    setMessage('Expenditures exported to Excel successfully');
+    setTimeout(() => setMessage(''), 3000);
+  };
+
   // Export all trip data to Excel with multiple worksheets
   const exportTripToExcel = () => {
     if (!trip) return;
