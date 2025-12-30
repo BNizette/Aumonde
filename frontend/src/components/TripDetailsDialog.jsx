@@ -1785,6 +1785,142 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
         passenger={null}
         mode="create"
       />
+
+      {/* Expenditure (APA) Dialog */}
+      <Dialog open={expenditureDialogOpen} onOpenChange={setExpenditureDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{editingExpenditure ? 'Edit Expenditure' : 'Add Expenditure'}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label>Date *</Label>
+              <Input
+                type="date"
+                value={expenditureForm.expense_date}
+                onChange={(e) => setExpenditureForm({...expenditureForm, expense_date: e.target.value})}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Description *</Label>
+              <Input
+                value={expenditureForm.description}
+                onChange={(e) => setExpenditureForm({...expenditureForm, description: e.target.value})}
+                placeholder="e.g., Fuel, Provisions, Repairs"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Amount * (positive = expense, negative = refund/credit)</Label>
+              <Input
+                type="number"
+                step="0.01"
+                value={expenditureForm.amount}
+                onChange={(e) => setExpenditureForm({...expenditureForm, amount: e.target.value})}
+                placeholder="0.00"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Receipt (PDF)</Label>
+              <div className="flex gap-2">
+                <Input
+                  type="file"
+                  accept=".pdf"
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    
+                    setUploadingReceipt(true);
+                    try {
+                      const formData = new FormData();
+                      formData.append('file', file);
+                      
+                      const token = localStorage.getItem('token');
+                      const response = await axios.post(`${API}/upload`, formData, {
+                        headers: {
+                          'Content-Type': 'multipart/form-data',
+                          Authorization: `Bearer ${token}`
+                        }
+                      });
+                      
+                      setExpenditureForm({...expenditureForm, receipt_url: response.data.url});
+                      setMessage('Receipt uploaded');
+                    } catch (err) {
+                      setError('Failed to upload receipt');
+                    } finally {
+                      setUploadingReceipt(false);
+                    }
+                  }}
+                  disabled={uploadingReceipt}
+                />
+                {uploadingReceipt && <span className="text-sm text-gray-500">Uploading...</span>}
+              </div>
+              {expenditureForm.receipt_url && (
+                <div className="flex items-center gap-2 text-sm">
+                  <FileText className="h-4 w-4 text-blue-600" />
+                  <a
+                    href={expenditureForm.receipt_url.startsWith('http') ? expenditureForm.receipt_url : `${BACKEND_URL}${expenditureForm.receipt_url}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:underline"
+                  >
+                    View Receipt
+                  </a>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-red-600"
+                    onClick={() => setExpenditureForm({...expenditureForm, receipt_url: ''})}
+                  >
+                    Remove
+                  </Button>
+                </div>
+              )}
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setExpenditureDialogOpen(false)}>Cancel</Button>
+            <Button 
+              onClick={async () => {
+                if (!expenditureForm.expense_date || !expenditureForm.description || !expenditureForm.amount) {
+                  setError('Please fill in all required fields');
+                  return;
+                }
+                
+                try {
+                  const token = localStorage.getItem('token');
+                  const payload = {
+                    trip_id: trip.id,
+                    expense_date: new Date(expenditureForm.expense_date).toISOString(),
+                    description: expenditureForm.description,
+                    amount: parseFloat(expenditureForm.amount),
+                    receipt_url: expenditureForm.receipt_url || null
+                  };
+                  
+                  if (editingExpenditure) {
+                    await axios.put(`${API}/expenditures/${editingExpenditure.id}`, payload, {
+                      headers: { Authorization: `Bearer ${token}` }
+                    });
+                    setMessage('Expenditure updated');
+                  } else {
+                    await axios.post(`${API}/expenditures`, payload, {
+                      headers: { Authorization: `Bearer ${token}` }
+                    });
+                    setMessage('Expenditure added');
+                  }
+                  
+                  setExpenditureDialogOpen(false);
+                  fetchAllLogs();
+                } catch (err) {
+                  setError('Failed to save expenditure');
+                }
+              }}
+              disabled={!expenditureForm.expense_date || !expenditureForm.description || !expenditureForm.amount}
+            >
+              {editingExpenditure ? 'Update' : 'Add'} Expenditure
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };
