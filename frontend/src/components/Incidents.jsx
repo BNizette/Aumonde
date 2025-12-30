@@ -573,6 +573,27 @@ const Incidents = () => {
     return colors[severity] || 'bg-gray-100 text-gray-800';
   };
 
+  // Helper function to calculate UTC offset from a date
+  const calculateUtcOffset = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    const offsetMinutes = date.getTimezoneOffset();
+    const offsetHours = Math.abs(Math.floor(offsetMinutes / 60));
+    const offsetMins = Math.abs(offsetMinutes % 60);
+    const offsetSign = offsetMinutes <= 0 ? '+' : '-';
+    return `${offsetSign}${String(offsetHours).padStart(2, '0')}:${String(offsetMins).padStart(2, '0')}`;
+  };
+
+  // Handle incident date change and auto-calculate UTC offset
+  const handleIncidentDateChange = (newDate) => {
+    const utcOffset = calculateUtcOffset(newDate);
+    setFormData({
+      ...formData,
+      incident_date: newDate,
+      utc_offset: utcOffset
+    });
+  };
+
   const getStatusColor = (status) => {
     const colors = {
       'Reported': 'bg-blue-100 text-blue-800',
