@@ -1742,6 +1742,8 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
         onSave={handleSaveShiftLog}
         log={selectedShiftLog}
         tripId={trip?.id}
+        vesselId={trip?.vessel_id}
+        vesselName={trip?.vessel_name}
         mode={shiftFormMode}
       />
 
