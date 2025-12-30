@@ -62,6 +62,20 @@ const AdminPanel = () => {
     version_number: ''
   });
 
+  // Email Configuration states
+  const [emailConfig, setEmailConfig] = useState({
+    smtp_server: '',
+    smtp_port: '587',
+    smtp_username: '',
+    smtp_password: '',
+    from_email: '',
+    from_name: 'AMSA Safety Management',
+    use_tls: true
+  });
+  const [emailConfigLoading, setEmailConfigLoading] = useState(false);
+  const [testEmailAddress, setTestEmailAddress] = useState('');
+  const [sendingTestEmail, setSendingTestEmail] = useState(false);
+
   // Filter states for Users
   const [userSearch, setUserSearch] = useState('');
   const [userRoleFilter, setUserRoleFilter] = useState('all');
