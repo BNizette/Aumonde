@@ -482,9 +482,18 @@ const Incidents = () => {
 
   const handleEdit = (incident) => {
     setEditingIncident(incident);
+    // Calculate UTC offset from incident date
+    const incidentDateObj = incident.incident_date ? new Date(incident.incident_date) : new Date();
+    const offsetMinutes = incidentDateObj.getTimezoneOffset();
+    const offsetHours = Math.abs(Math.floor(offsetMinutes / 60));
+    const offsetMins = Math.abs(offsetMinutes % 60);
+    const offsetSign = offsetMinutes <= 0 ? '+' : '-';
+    const calculatedOffset = `${offsetSign}${String(offsetHours).padStart(2, '0')}:${String(offsetMins).padStart(2, '0')}`;
+    
     setFormData({
       ...incident,
       incident_date: incident.incident_date ? new Date(incident.incident_date).toISOString().slice(0, 16) : '',
+      utc_offset: incident.utc_offset || calculatedOffset,
       target_completion_date: incident.target_completion_date ? new Date(incident.target_completion_date).toISOString().slice(0, 16) : '',
       date_closed: incident.date_closed ? new Date(incident.date_closed).toISOString().slice(0, 10) : '',
       date_risk_assessment_performed: incident.date_risk_assessment_performed ? new Date(incident.date_risk_assessment_performed).toISOString().slice(0, 10) : '',
