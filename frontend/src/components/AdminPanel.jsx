@@ -1281,10 +1281,10 @@ const AdminPanel = () => {
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
+        )}
 
-        {/* AUDIT TRAIL TAB */}
-        <TabsContent value="audit">
+        {/* AUDIT TRAIL VIEW */}
+        {activeView === 'audit' && (
           <Card>
             <CardHeader>
               <div className="flex items-center justify-between">
