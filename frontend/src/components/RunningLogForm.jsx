@@ -63,11 +63,13 @@ const RunningLogForm = ({ open, onClose, onSave, log, tripId, mode = 'create' })
 
   useEffect(() => {
     if (log && mode === 'edit') {
+      const utcOffset = log.log_datetime ? calculateUtcOffset(log.log_datetime) : '';
       setFormData({
         trip_id: log.trip_id || tripId || '',
         crew_id: log.crew_id || '',
         crew_name: log.crew_name || '',
         log_datetime: log.log_datetime ? new Date(log.log_datetime).toISOString().slice(0, 16) : '',
+        utc_offset: log.utc_offset || utcOffset,
         category: log.category || '',
         activity: log.activity || '',
         activity_details: log.activity_details || '',
@@ -79,6 +81,7 @@ const RunningLogForm = ({ open, onClose, onSave, log, tripId, mode = 'create' })
         crew_id: '',
         crew_name: '',
         log_datetime: '',
+        utc_offset: '',
         category: '',
         activity: '',
         activity_details: '',
