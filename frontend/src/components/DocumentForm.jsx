@@ -300,7 +300,7 @@ const DocumentForm = ({ open, onClose, onSave, document, mode = 'create' }) => {
                       ref={fileInputRef}
                       type="file"
                       className="hidden"
-                      onChange={handleFileChange}
+                      onChange={handleFileSelect}
                       accept=".pdf,.doc,.docx,.xls,.xlsx,.txt,.png,.jpg,.jpeg"
                     />
                   </div>
