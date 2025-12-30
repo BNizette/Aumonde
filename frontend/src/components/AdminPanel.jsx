@@ -329,6 +329,13 @@ const AdminPanel = () => {
       return;
     }
 
+    // Check if email already exists in user list
+    const emailExists = users.some(user => user.email?.toLowerCase() === newUser.email.toLowerCase());
+    if (emailExists) {
+      setError('User exists - a user with this email already exists');
+      return;
+    }
+
     try {
       const token = localStorage.getItem('token');
       // Convert 'auto' to empty string for backend processing
