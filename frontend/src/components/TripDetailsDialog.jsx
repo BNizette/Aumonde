@@ -31,6 +31,7 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
   const [tripIncidents, setTripIncidents] = useState([]);
   const [tripDrills, setTripDrills] = useState([]);
   const [tripPassengers, setTripPassengers] = useState([]);
+  const [expenditures, setExpenditures] = useState([]);
   const [loading, setLoading] = useState(false);
   
   // Passenger form state (for simple trip passenger entry)
