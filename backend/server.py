@@ -3746,15 +3746,127 @@ backup_scheduler.start()
 # Helper function to run async jobs in sync context
 def run_async_backup_job(schedule_id: str):
     """Wrapper to run async scheduled_backup_job in a sync context"""
+    import pymongo
+    from pymongo import MongoClient
+    
     try:
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        try:
-            loop.run_until_complete(_async_scheduled_backup_job(schedule_id))
-        finally:
-            loop.close()
+        # Create a fresh sync MongoDB connection for the scheduler thread
+        mongo_url = os.environ.get('MONGO_URL', 'mongodb://localhost:27017')
+        db_name = os.environ.get('DB_NAME', 'test_database')
+        
+        # Configure connection for Atlas if needed
+        if 'mongodb+srv://' in mongo_url or 'mongodb.net' in mongo_url:
+            sync_client = MongoClient(
+                mongo_url,
+                serverSelectionTimeoutMS=30000,
+                connectTimeoutMS=30000,
+                socketTimeoutMS=30000,
+                tls=True,
+                tlsAllowInvalidCertificates=False
+            )
+        else:
+            sync_client = MongoClient(mongo_url)
+        
+        sync_db = sync_client[db_name]
+        
+        # Get schedule
+        schedule = sync_db.backup_schedules.find_one({"id": schedule_id})
+        if not schedule or not schedule.get("enabled"):
+            sync_client.close()
+            return
+        
+        # Create backup data
+        backup_data = {
+            "backup_date": datetime.now(timezone.utc).isoformat(),
+            "backup_version": "1.0",
+            "backup_type": "scheduled",
+            "created_by": "System (Scheduled)",
+            "collections": {}
+        }
+        
+        collections_to_backup = [
+            "users", "vessels", "crew", "trips", "incidents", "drills",
+            "maintenance", "documents", "compliance_certificates", "help_texts",
+            "inductions", "sms_revisions", "audit_logs", "activity_logs",
+            "passengers", "expenditures", "allocated_crew", "trip_logs",
+            "running_logs", "engine_running_logs", "compliance_requirements"
+        ]
+        
+        record_count = 0
+        collections_backed_up = []
+        
+        for collection_name in collections_to_backup:
+            try:
+                documents = list(sync_db[collection_name].find({}, {"_id": 0}))
+                if documents:
+                    backup_data["collections"][collection_name] = documents
+                    record_count += len(documents)
+                    collections_backed_up.append(collection_name)
+            except Exception as col_err:
+                logger.warning(f"Error backing up collection {collection_name}: {str(col_err)}")
+        
+        # Create backup file
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        filename = f"amsa_backup_scheduled_{timestamp}.json"
+        
+        backup_dir = Path(__file__).parent / "backups"
+        backup_dir.mkdir(exist_ok=True)
+        file_path = backup_dir / filename
+        
+        # Write backup file
+        import json
+        with open(file_path, "w") as f:
+            json.dump(backup_data, f, indent=2, default=str)
+        
+        file_size = file_path.stat().st_size
+        
+        # Create backup history record
+        backup_history = {
+            "id": str(uuid.uuid4()),
+            "filename": filename,
+            "file_path": str(file_path),
+            "file_size": file_size,
+            "backup_type": "scheduled",
+            "schedule_id": schedule_id,
+            "created_by": schedule.get("created_by"),
+            "created_by_name": "System (Scheduled)",
+            "created_at": datetime.now(timezone.utc),
+            "record_count": record_count,
+            "collections_backed_up": collections_backed_up
+        }
+        
+        sync_db.backup_history.insert_one(backup_history)
+        
+        # Update last run time
+        sync_db.backup_schedules.update_one(
+            {"id": schedule_id},
+            {"$set": {"last_run": datetime.now(timezone.utc)}}
+        )
+        
+        # Cleanup old backups
+        retention_days = schedule.get("retention_days", 30)
+        cutoff_date = datetime.now(timezone.utc) - timedelta(days=retention_days)
+        old_backups = list(sync_db.backup_history.find({
+            "created_at": {"$lt": cutoff_date},
+            "backup_type": "scheduled"
+        }))
+        
+        for old_backup in old_backups:
+            try:
+                old_file = Path(old_backup.get("file_path", ""))
+                if old_file.exists():
+                    old_file.unlink()
+                sync_db.backup_history.delete_one({"id": old_backup["id"]})
+            except Exception as del_err:
+                logger.warning(f"Error deleting old backup: {str(del_err)}")
+        
+        sync_client.close()
+        logger.info(f"Scheduled backup completed successfully: {filename}")
+        
     except Exception as e:
-        logger.error(f"Error running async backup job: {str(e)}")
+        logger.error(f"Error running scheduled backup job: {str(e)}")
+        import traceback
+        traceback.print_exc()
 
 class BackupSchedule(BaseModel):
     model_config = ConfigDict(extra="ignore")
