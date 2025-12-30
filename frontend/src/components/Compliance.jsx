@@ -10,7 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { Shield, Plus, AlertTriangle, CheckCircle, Clock, Search, Filter, X, Download, ChevronDown, Edit, Trash2, Info, FileSpreadsheet, Upload, FileText, ExternalLink, Eye } from 'lucide-react';
+import { Shield, Plus, AlertTriangle, CheckCircle, Clock, Search, Filter, X, Download, ChevronDown, Edit, Trash2, Info, FileSpreadsheet, FileText, ExternalLink, Eye } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -19,6 +19,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import HelpDialog from './HelpDialog';
 import { SummaryCard } from '@/components/ui/summary-card';
 import { ImportExcelDialog } from '@/components/ui/import-excel-dialog';
+import FileUploadZone from './ui/file-upload-zone';
 import useAdvancedFilters from '../hooks/useAdvancedFilters';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
