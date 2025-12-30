@@ -142,7 +142,13 @@ const EngineRunningLogForm = ({ open, onClose, onSave, log, tripId, mode = 'crea
   }, [log, mode, open, tripId]);
 
   const handleChange = (field, value) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    // Auto-calculate UTC offset when datetime field changes
+    if (field === 'log_datetime') {
+      const utcOffset = calculateUtcOffset(value);
+      setFormData(prev => ({ ...prev, [field]: value, utc_offset: utcOffset }));
+    } else {
+      setFormData(prev => ({ ...prev, [field]: value }));
+    }
   };
 
   const handleSubmit = () => {
