@@ -4973,7 +4973,7 @@ async def save_email_config(config: EmailConfig, current_user: dict = Depends(re
     return {"message": "Email configuration saved"}
 
 @api_router.post("/email-config/test")
-async def send_test_email(data: dict, current_user: dict = Depends(require_access_level(AccessLevel.ADMIN))):
+async def send_test_email(data: dict, current_user: dict = Depends(require_access_level(AccessLevel.FULL))):
     """Send a test email to verify configuration"""
     import smtplib
     from email.mime.text import MIMEText
