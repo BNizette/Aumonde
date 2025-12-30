@@ -322,8 +322,9 @@ const TripManagement = () => {
     });
   };
 
-  const canEdit = user?.access_level === 'Edit' || user?.access_level === 'Full';
-  const canDelete = user?.access_level === 'Full';
+  const canEdit = user?.access_level === 'Edit' || user?.access_level === 'Full' || user?.access_level === 'Admin';
+  const canDelete = user?.access_level === 'Full' || user?.access_level === 'Admin';
+  const isAdmin = user?.access_level === 'Admin';
 
   if (loading) {
     return <div className="flex items-center justify-center h-96">Loading...</div>;
