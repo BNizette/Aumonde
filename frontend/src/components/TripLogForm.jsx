@@ -112,7 +112,16 @@ const TripLogForm = ({ open, onClose, onSave, log, tripId, mode = 'create' }) =>
   };
 
   const handleChange = (field, value) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    // Auto-calculate UTC offset when datetime fields change
+    if (field === 'shift_start_datetime') {
+      const utcOffset = calculateUtcOffset(value);
+      setFormData(prev => ({ ...prev, [field]: value, shift_start_utc_offset: utcOffset }));
+    } else if (field === 'shift_stop_datetime') {
+      const utcOffset = calculateUtcOffset(value);
+      setFormData(prev => ({ ...prev, [field]: value, shift_stop_utc_offset: utcOffset }));
+    } else {
+      setFormData(prev => ({ ...prev, [field]: value }));
+    }
   };
 
   const getGPSLocation = async (field) => {
