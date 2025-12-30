@@ -131,6 +131,9 @@ function App() {
               )
             }
           />
+          
+          {/* Password Reset Route (Public) */}
+          <Route path="/reset-password" element={<ResetPassword />} />
 
           {/* Protected Routes */}
           <Route
