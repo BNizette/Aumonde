@@ -73,9 +73,11 @@ const EngineRunningLogForm = ({ open, onClose, onSave, log, tripId, mode = 'crea
     if (!open) return;
     
     if (log && mode === 'edit') {
+      const utcOffset = log.log_datetime ? calculateUtcOffset(log.log_datetime) : '';
       setFormData({
         trip_id: log.trip_id || tripId || '',
         log_datetime: log.log_datetime ? new Date(log.log_datetime).toISOString().slice(0, 16) : '',
+        utc_offset: log.utc_offset || utcOffset,
         // Engine One
         engine1_rpm: log.engine1_rpm || '',
         engine1_water_temp: log.engine1_water_temp || '',
@@ -107,6 +109,7 @@ const EngineRunningLogForm = ({ open, onClose, onSave, log, tripId, mode = 'crea
       setFormData({
         trip_id: tripId || '',
         log_datetime: '',
+        utc_offset: '',
         // Engine One
         engine1_rpm: '',
         engine1_water_temp: '',
