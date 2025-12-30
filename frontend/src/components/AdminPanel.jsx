@@ -49,6 +49,10 @@ const AdminPanel = () => {
   // SMS Revision states
   const [smsRevisions, setSmsRevisions] = useState([]);
   const [smsDialogOpen, setSmsDialogOpen] = useState(false);
+  const [smsViewDialogOpen, setSmsViewDialogOpen] = useState(false);
+  const [smsEditDialogOpen, setSmsEditDialogOpen] = useState(false);
+  const [viewingSmsRevision, setViewingSmsRevision] = useState(null);
+  const [editingSmsRevision, setEditingSmsRevision] = useState(null);
   const [crewList, setCrewList] = useState([]);
   const [smsForm, setSmsForm] = useState({
     revision_date: new Date().toISOString().slice(0, 10),
