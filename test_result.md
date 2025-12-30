@@ -658,6 +658,9 @@ backend:
       - working: true
         agent: "main"
         comment: "✅ MODIFIED: Changed Crew Shift (TripLog) form to make both Vessel and Trip fields OPTIONAL. Removed asterisk from labels and validation checks. Backend models updated to accept null values for vessel_id and vessel_name."
+      - working: true
+        agent: "testing"
+        comment: "✅ CREW SHIFT API TESTING COMPLETED: Successfully tested Crew Shift (Trip Log) API as per review request: 1) ✅ POST /api/trip-logs - Create with both vessel_id and trip_id as null (both optional now) - WORKING, 2) ✅ Verify no validation error for missing vessel or trip - Both vessel_id and trip_id can be null without causing validation errors. Key requirement verified: Both vessel_id and trip_id are OPTIONAL fields for crew shifts, allowing manual shift logging without vessel or trip assignment."
 
   - task: "Edit Incident Freeze Bug Fix"
     implemented: true
