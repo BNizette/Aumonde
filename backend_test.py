@@ -3213,7 +3213,7 @@ class AMSAComprehensiveTester:
 
     def run_all_tests(self):
         """Run all AMSA system tests"""
-        print("🚀 Starting AMSA Safety Management Backend Testing - Trip Log Vessel & Trip Selection")
+        print("🚀 Starting AMSA Safety Management Backend Testing - Admin Panel Features")
         print(f"Backend URL: {self.base_url}")
         print("=" * 70)
         
@@ -3222,29 +3222,17 @@ class AMSAComprehensiveTester:
             print("\n❌ Authentication failed - cannot continue with other tests")
             return False
         
-        # Setup data for trip log tests
-        setup_tests = [
-            self.test_vessel_management,     # Create vessels for trip log testing
-            self.test_crew_management,       # Create crew for trip log testing
-            self.test_trip_management,       # Create trips for trip log testing
+        # Run ADMIN PANEL BACKEND TESTS (Review Request Focus)
+        admin_panel_tests = [
+            self.test_admin_panel_backend_apis,        # NEW TEST: Admin Panel APIs
+            self.test_email_configuration_backend_apis, # NEW TEST: Email Configuration APIs
+            self.test_forgot_password_backend_apis,     # NEW TEST: Forgot Password APIs
+            self.test_backup_management_backend_apis,   # NEW TEST: Backup Management APIs
+            self.test_settings_backend_apis,           # NEW TEST: Settings APIs
         ]
         
-        print("\n🔧 SETUP TESTS - Creating Test Data")
-        for test_method in setup_tests:
-            try:
-                test_method()
-            except Exception as e:
-                self.log_test(test_method.__name__, False, error=f"Exception: {str(e)}")
-        
-        # Run TRIP LOG TESTS (Review Request Focus)
-        trip_log_tests = [
-            self.test_log_forms_and_incident_edit,  # NEW TEST: Log Forms and Incident Edit Functionality
-            self.test_trip_logs_vessel_and_trip_selection,  # MAIN TEST: Trip Log with Vessel & Trip Selection
-            self.test_expenditure_apa_pdf_receipt_upload,  # NEW TEST: Expenditure APA PDF Receipt Upload
-        ]
-        
-        print("\n🎯 PRIORITY TESTS - TRIP LOG VESSEL & TRIP SELECTION")
-        for test_method in trip_log_tests:
+        print("\n🎯 PRIORITY TESTS - ADMIN PANEL BACKEND FEATURES")
+        for test_method in admin_panel_tests:
             try:
                 test_method()
             except Exception as e:
@@ -3264,7 +3252,7 @@ class AMSAComprehensiveTester:
                 self.log_test(test_method.__name__, False, error=f"Exception: {str(e)}")
         
         # Cleanup
-        self.cleanup()
+        self.cleanup_test_data()
         
         # Print summary
         print("\n" + "=" * 70)
