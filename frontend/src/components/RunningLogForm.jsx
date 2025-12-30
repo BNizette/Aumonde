@@ -23,11 +23,23 @@ const RunningLogForm = ({ open, onClose, onSave, log, tripId, mode = 'create' })
     crew_id: '',
     crew_name: '',
     log_datetime: '',
+    utc_offset: '',
     category: '',
     activity: '',
     activity_details: '',
     gps_location: ''
   });
+
+  // Helper function to calculate UTC offset from a date
+  const calculateUtcOffset = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    const offsetMinutes = date.getTimezoneOffset();
+    const offsetHours = Math.abs(Math.floor(offsetMinutes / 60));
+    const offsetMins = Math.abs(offsetMinutes % 60);
+    const offsetSign = offsetMinutes <= 0 ? '+' : '-';
+    return `${offsetSign}${String(offsetHours).padStart(2, '0')}:${String(offsetMins).padStart(2, '0')}`;
+  };
 
   const categories = ['Radio', 'Conditions', 'Safety', 'Vessel Operation'];
 
