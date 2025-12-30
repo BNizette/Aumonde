@@ -2389,7 +2389,7 @@ class AMSAComprehensiveTester:
 
     def run_all_tests(self):
         """Run all AMSA system tests"""
-        print("🚀 Starting AMSA Safety Management Backend Testing - New Fields Review")
+        print("🚀 Starting AMSA Safety Management Backend Testing - Trip Log Vessel & Trip Selection")
         print(f"Backend URL: {self.base_url}")
         print("=" * 70)
         
@@ -2398,18 +2398,27 @@ class AMSAComprehensiveTester:
             print("\n❌ Authentication failed - cannot continue with other tests")
             return False
         
-        # Run NEW FIELDS TESTS (Review Request Focus)
-        new_fields_tests = [
-            self.test_sms_revisions,                       # Test 1: SMS Revisions (Review Request)
-            self.test_induction_functionality,            # Test 2: Induction Functionality (Review Request)
-            self.test_risk_assessment_new_fields,         # Test 3: Risk Assessment New Fields
-            self.test_maintenance_quote_pdf_field,        # Test 4: Maintenance Quote PDF Field
-            self.test_compliance_certificate_pdf_field,   # Test 5: Compliance Certificate PDF Field
-            self.test_file_upload_api,                    # Test 6: File Upload API
+        # Setup data for trip log tests
+        setup_tests = [
+            self.test_vessel_management,     # Create vessels for trip log testing
+            self.test_crew_management,       # Create crew for trip log testing
+            self.test_trip_management,       # Create trips for trip log testing
         ]
         
-        print("\n🎯 PRIORITY TESTS - NEW FIELDS IMPLEMENTATION")
-        for test_method in new_fields_tests:
+        print("\n🔧 SETUP TESTS - Creating Test Data")
+        for test_method in setup_tests:
+            try:
+                test_method()
+            except Exception as e:
+                self.log_test(test_method.__name__, False, error=f"Exception: {str(e)}")
+        
+        # Run TRIP LOG TESTS (Review Request Focus)
+        trip_log_tests = [
+            self.test_trip_logs_vessel_and_trip_selection,  # MAIN TEST: Trip Log with Vessel & Trip Selection
+        ]
+        
+        print("\n🎯 PRIORITY TESTS - TRIP LOG VESSEL & TRIP SELECTION")
+        for test_method in trip_log_tests:
             try:
                 test_method()
             except Exception as e:
@@ -2419,7 +2428,6 @@ class AMSAComprehensiveTester:
         supporting_tests = [
             self.test_dashboard_stats,
             self.test_user_management,
-            self.test_risk_assessment,  # Existing risk assessment tests
         ]
         
         print("\n🔧 SUPPORTING TESTS - System Integrity")
