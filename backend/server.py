@@ -1350,7 +1350,9 @@ class TripLog(BaseModel):
     crew_id: str
     crew_name: str
     shift_start_datetime: datetime
+    shift_start_utc_offset: Optional[str] = None  # UTC offset e.g., +10:00
     shift_stop_datetime: Optional[datetime] = None
+    shift_stop_utc_offset: Optional[str] = None  # UTC offset e.g., +10:00
     task_performed: Optional[str] = None
     location_start: Optional[str] = None
     location_end: Optional[str] = None
@@ -1365,7 +1367,9 @@ class TripLogCreate(BaseModel):
     crew_id: str
     crew_name: str
     shift_start_datetime: datetime
+    shift_start_utc_offset: Optional[str] = None  # UTC offset e.g., +10:00
     shift_stop_datetime: Optional[datetime] = None
+    shift_stop_utc_offset: Optional[str] = None  # UTC offset e.g., +10:00
     task_performed: Optional[str] = None
     location_start: Optional[str] = None
     location_end: Optional[str] = None
@@ -1380,6 +1384,7 @@ class RunningLog(BaseModel):
     crew_id: str
     crew_name: str
     log_datetime: datetime
+    utc_offset: Optional[str] = None  # UTC offset e.g., +10:00
     category: Optional[str] = None  # Radio, Conditions, Safety, Vessel Operation
     activity: str
     activity_details: Optional[str] = None
@@ -1392,6 +1397,7 @@ class RunningLogCreate(BaseModel):
     crew_id: str
     crew_name: str
     log_datetime: datetime
+    utc_offset: Optional[str] = None  # UTC offset e.g., +10:00
     category: Optional[str] = None  # Radio, Conditions, Safety, Vessel Operation
     activity: str
     activity_details: Optional[str] = None
@@ -1401,6 +1407,7 @@ class EngineRunningLog(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     trip_id: str
     log_datetime: datetime
+    utc_offset: Optional[str] = None  # UTC offset e.g., +10:00
     # Engine One
     engine1_rpm: Optional[float] = None
     engine1_water_temp: Optional[float] = None
