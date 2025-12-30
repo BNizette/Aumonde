@@ -1753,6 +1753,8 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
         onSave={handleSaveRunningLog}
         log={selectedRunningLog}
         tripId={trip?.id}
+        vesselId={trip?.vessel_id}
+        vesselName={trip?.vessel_name}
         mode={runningFormMode}
       />
 
@@ -1762,6 +1764,8 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
         onSave={handleSaveEngineLog}
         log={selectedEngineLog}
         tripId={trip?.id}
+        vesselId={trip?.vessel_id}
+        vesselName={trip?.vessel_name}
         mode={engineFormMode}
       />
 
