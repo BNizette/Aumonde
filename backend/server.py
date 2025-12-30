@@ -66,6 +66,42 @@ async def api_health_check():
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+# Startup event to seed default admin user if no users exist
+@app.on_event("startup")
+async def seed_default_admin():
+    """Create a default admin user if no users exist in the database.
+    This ensures the first deployment has a user to log in with.
+    """
+    try:
+        # Check if any users exist
+        user_count = await db.users.count_documents({})
+        
+        if user_count == 0:
+            logger.info("No users found in database. Creating default admin user...")
+            
+            # Create default admin user
+            default_admin = {
+                "id": str(uuid.uuid4()),
+                "email": "admin@test.com",
+                "password_hash": pwd_context.hash("Admin123!"),
+                "full_name": "Admin User",
+                "role": "admin",
+                "access_level": "admin",
+                "status": "active",
+                "created_at": datetime.now(timezone.utc),
+                "updated_at": datetime.now(timezone.utc)
+            }
+            
+            await db.users.insert_one(default_admin)
+            logger.info(f"Default admin user created: admin@test.com")
+            logger.info("IMPORTANT: Please change the default password after first login!")
+        else:
+            logger.info(f"Database has {user_count} existing user(s). Skipping admin seed.")
+            
+    except Exception as e:
+        logger.error(f"Error during admin seed: {str(e)}")
+        # Don't raise - allow app to start even if seeding fails
+
 # ============================================================================
 # CONSTANTS
 # ============================================================================
