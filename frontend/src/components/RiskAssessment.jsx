@@ -324,8 +324,9 @@ const RiskAssessment = () => {
     return colors[status] || 'bg-gray-100 text-gray-800';
   };
 
-  const canEdit = user?.access_level === 'Edit' || user?.access_level === 'Full';
-  const canDelete = user?.access_level === 'Full';
+  const canEdit = user?.access_level === 'Edit' || user?.access_level === 'Full' || user?.access_level === 'Admin';
+  const canDelete = user?.access_level === 'Full' || user?.access_level === 'Admin';
+  const isAdmin = user?.access_level === 'Admin';
 
   // Get unique vessels for filter
   const uniqueVessels = [...new Set(risks.map(r => r.vessel_name).filter(Boolean))];
