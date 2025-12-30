@@ -974,19 +974,25 @@ const Compliance = () => {
                               )}
                               {cert.vessel_name && <p><strong>Vessel:</strong> {cert.vessel_name}</p>}
                               {cert.crew_name && <p><strong>Crew:</strong> {cert.crew_name}</p>}
-                              {cert.pdf_url && (
+                            </div>
+                          </div>
+                          <div className="flex gap-2 ml-4">
+                            {cert.pdf_url && (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                asChild
+                                title="View Certificate"
+                              >
                                 <a 
                                   href={cert.pdf_url.startsWith('http') ? cert.pdf_url : `${BACKEND_URL}${cert.pdf_url}`} 
                                   target="_blank" 
                                   rel="noopener noreferrer"
-                                  className="inline-flex items-center gap-1 text-blue-600 hover:underline font-medium"
                                 >
-                                  <FileText className="h-4 w-4" /> View Certificate PDF
+                                  <Eye className="h-4 w-4" />
                                 </a>
-                              )}
-                            </div>
-                          </div>
-                          <div className="flex gap-2 ml-4">
+                              </Button>
+                            )}
                             <Button variant="outline" size="sm" onClick={() => handleEditCert(cert)}>
                               <Edit className="h-4 w-4" />
                             </Button>
