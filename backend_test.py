@@ -2729,6 +2729,7 @@ class AMSAComprehensiveTester:
         
         # Run TRIP LOG TESTS (Review Request Focus)
         trip_log_tests = [
+            self.test_log_forms_and_incident_edit,  # NEW TEST: Log Forms and Incident Edit Functionality
             self.test_trip_logs_vessel_and_trip_selection,  # MAIN TEST: Trip Log with Vessel & Trip Selection
         ]
         
