@@ -643,6 +643,9 @@ backend:
       - working: true
         agent: "main"
         comment: "✅ IMPLEMENTED: Added Vessel (required) and Trip (optional) dropdowns to both Running Log and Engine Log forms. Forms default to trip's vessel and trip context but can be overridden. Backend models updated with vessel_id and vessel_name fields."
+      - working: true
+        agent: "testing"
+        comment: "✅ COMPREHENSIVE BACKEND API TESTING COMPLETED: Successfully tested updated log forms as per review request: 1) ✅ POST /api/running-logs - Create with vessel_id (required), vessel_name (required), trip_id (optional/null) - WORKING, 2) ✅ Running Log validation - Correctly returns 422 error if vessel_id or vessel_name is missing, 3) ✅ GET /api/running-logs?vessel_id={id} - Filter by vessel works correctly, 4) ✅ POST /api/engine-running-logs - Create with vessel_id (required), vessel_name (required), trip_id (optional/null) - WORKING, 5) ✅ Engine Log validation - Correctly returns 422 error if vessel_id or vessel_name is missing. All key requirements verified: vessel_id and vessel_name are REQUIRED fields, trip_id is OPTIONAL (can be null), filtering by vessel works correctly. Backend API fully operational for Running & Engine Log Vessel & Trip Selection feature."
 
   - task: "Crew Shifts - Both Vessel and Trip Optional"
     implemented: true
