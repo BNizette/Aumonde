@@ -269,11 +269,7 @@ const TripLogForm = ({ open, onClose, onSave, log, tripId, vesselId, vesselName,
   const handleSubmit = () => {
     setError('');
 
-    // Vessel is compulsory
-    if (!formData.vessel_id || !formData.vessel_name) {
-      setError('Please select a vessel (boat)');
-      return;
-    }
+    // Both vessel and trip are optional for Crew Shifts
 
     if (!formData.crew_id || !formData.crew_name) {
       setError('Please select a crew member');
@@ -297,9 +293,9 @@ const TripLogForm = ({ open, onClose, onSave, log, tripId, vesselId, vesselName,
     }
 
     const submitData = {
-      trip_id: formData.trip_id || null,  // Optional - can be null
-      vessel_id: formData.vessel_id,
-      vessel_name: formData.vessel_name,
+      trip_id: formData.trip_id || null,  // Optional
+      vessel_id: formData.vessel_id || null,  // Optional
+      vessel_name: formData.vessel_name || null,  // Optional
       crew_id: formData.crew_id,
       crew_name: formData.crew_name,
       shift_start_datetime: new Date(formData.shift_start_datetime).toISOString(),
