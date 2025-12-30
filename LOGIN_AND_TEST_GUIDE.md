@@ -6,7 +6,7 @@
 - **Backend:** http://localhost:8001
 - **Frontend:** http://localhost:3000
 - **MongoDB:** localhost:27017
-- **Preview URL:** https://ship-control.preview.emergentagent.com
+- **Preview URL:** https://nautical-ops-2.preview.emergentagent.com
 
 ---
 
