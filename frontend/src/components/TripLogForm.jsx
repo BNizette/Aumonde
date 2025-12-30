@@ -7,19 +7,23 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { MapPin, Navigation } from 'lucide-react';
+import { MapPin, Navigation, Ship, Anchor } from 'lucide-react';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-const TripLogForm = ({ open, onClose, onSave, log, tripId, mode = 'create' }) => {
+const TripLogForm = ({ open, onClose, onSave, log, tripId, vesselId, vesselName, mode = 'create' }) => {
   const [crew, setCrew] = useState([]);
+  const [vessels, setVessels] = useState([]);
+  const [trips, setTrips] = useState([]);
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
   const [gpsLoading, setGpsLoading] = useState({ start: false, end: false });
 
   const [formData, setFormData] = useState({
     trip_id: tripId || '',
+    vessel_id: vesselId || '',
+    vessel_name: vesselName || '',
     crew_id: '',
     crew_name: '',
     shift_start_datetime: '',
@@ -47,6 +51,8 @@ const TripLogForm = ({ open, onClose, onSave, log, tripId, mode = 'create' }) =>
   useEffect(() => {
     if (open) {
       fetchCrew();
+      fetchVessels();
+      fetchTrips();
     }
   }, [open]);
 
@@ -56,6 +62,8 @@ const TripLogForm = ({ open, onClose, onSave, log, tripId, mode = 'create' }) =>
       const stopOffset = log.shift_stop_datetime ? calculateUtcOffset(log.shift_stop_datetime) : '';
       setFormData({
         trip_id: log.trip_id || tripId || '',
+        vessel_id: log.vessel_id || vesselId || '',
+        vessel_name: log.vessel_name || vesselName || '',
         crew_id: log.crew_id || '',
         crew_name: log.crew_name || '',
         shift_start_datetime: log.shift_start_datetime ? new Date(log.shift_start_datetime).toISOString().slice(0, 16) : '',
@@ -69,8 +77,11 @@ const TripLogForm = ({ open, onClose, onSave, log, tripId, mode = 'create' }) =>
         gps_location_end: log.gps_location_end || ''
       });
     } else if (mode === 'create') {
+      // Default to passed props (from trip context) but allow override
       setFormData({
         trip_id: tripId || '',
+        vessel_id: vesselId || '',
+        vessel_name: vesselName || '',
         crew_id: '',
         crew_name: '',
         shift_start_datetime: '',
@@ -86,7 +97,7 @@ const TripLogForm = ({ open, onClose, onSave, log, tripId, mode = 'create' }) =>
     }
     setError('');
     setMessage('');
-  }, [log, mode, open, tripId]);
+  }, [log, mode, open, tripId, vesselId, vesselName]);
 
   const fetchCrew = async () => {
     try {
@@ -97,6 +108,75 @@ const TripLogForm = ({ open, onClose, onSave, log, tripId, mode = 'create' }) =>
       setCrew(response.data);
     } catch (err) {
       console.error('Error fetching crew:', err);
+    }
+  };
+
+  const fetchVessels = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`${API}/vessels`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setVessels(response.data);
+    } catch (err) {
+      console.error('Error fetching vessels:', err);
+    }
+  };
+
+  const fetchTrips = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`${API}/trips`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      // Sort by departure date descending to show recent trips first
+      const sortedTrips = response.data.sort((a, b) => 
+        new Date(b.departure_datetime || 0) - new Date(a.departure_datetime || 0)
+      );
+      setTrips(sortedTrips);
+    } catch (err) {
+      console.error('Error fetching trips:', err);
+    }
+  };
+
+  const handleVesselSelect = (vesselIdValue) => {
+    if (vesselIdValue === 'none') {
+      setFormData(prev => ({
+        ...prev,
+        vessel_id: '',
+        vessel_name: ''
+      }));
+    } else {
+      const selectedVessel = vessels.find(v => v.id === vesselIdValue);
+      if (selectedVessel) {
+        setFormData(prev => ({
+          ...prev,
+          vessel_id: vesselIdValue,
+          vessel_name: selectedVessel.vessel_name
+        }));
+      }
+    }
+  };
+
+  const handleTripSelect = (tripIdValue) => {
+    if (tripIdValue === 'none') {
+      setFormData(prev => ({
+        ...prev,
+        trip_id: ''
+      }));
+    } else {
+      const selectedTrip = trips.find(t => t.id === tripIdValue);
+      if (selectedTrip) {
+        setFormData(prev => ({
+          ...prev,
+          trip_id: tripIdValue,
+          // Optionally auto-fill vessel from trip if vessel not already selected
+          ...((!prev.vessel_id && selectedTrip.vessel_id) ? {
+            vessel_id: selectedTrip.vessel_id,
+            vessel_name: selectedTrip.vessel_name
+          } : {})
+        }));
+      }
     }
   };
 
@@ -189,6 +269,12 @@ const TripLogForm = ({ open, onClose, onSave, log, tripId, mode = 'create' }) =>
   const handleSubmit = () => {
     setError('');
 
+    // Vessel is compulsory
+    if (!formData.vessel_id || !formData.vessel_name) {
+      setError('Please select a vessel (boat)');
+      return;
+    }
+
     if (!formData.crew_id || !formData.crew_name) {
       setError('Please select a crew member');
       return;
@@ -211,11 +297,15 @@ const TripLogForm = ({ open, onClose, onSave, log, tripId, mode = 'create' }) =>
     }
 
     const submitData = {
-      trip_id: tripId,
+      trip_id: formData.trip_id || null,  // Optional - can be null
+      vessel_id: formData.vessel_id,
+      vessel_name: formData.vessel_name,
       crew_id: formData.crew_id,
       crew_name: formData.crew_name,
       shift_start_datetime: new Date(formData.shift_start_datetime).toISOString(),
+      shift_start_utc_offset: formData.shift_start_utc_offset || null,
       shift_stop_datetime: formData.shift_stop_datetime ? new Date(formData.shift_stop_datetime).toISOString() : null,
+      shift_stop_utc_offset: formData.shift_stop_utc_offset || null,
       task_performed: formData.task_performed || null,
       location_start: formData.location_start || null,
       location_end: formData.location_end || null,
@@ -225,6 +315,11 @@ const TripLogForm = ({ open, onClose, onSave, log, tripId, mode = 'create' }) =>
 
     onSave(submitData);
   };
+
+  // Filter trips for the selected vessel (if vessel is selected)
+  const filteredTrips = formData.vessel_id 
+    ? trips.filter(t => t.vessel_id === formData.vessel_id)
+    : trips;
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -249,6 +344,52 @@ const TripLogForm = ({ open, onClose, onSave, log, tripId, mode = 'create' }) =>
         )}
 
         <div className="space-y-4">
+          {/* Vessel and Trip Selection */}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="vessel_id" className="flex items-center gap-1">
+                <Ship className="h-4 w-4" />
+                Vessel (Boat) *
+              </Label>
+              <Select value={formData.vessel_id || 'none'} onValueChange={handleVesselSelect}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select vessel" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none" disabled>Select vessel</SelectItem>
+                  {vessels.map((vessel) => (
+                    <SelectItem key={vessel.id} value={vessel.id}>
+                      {vessel.vessel_name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="trip_id" className="flex items-center gap-1">
+                <Anchor className="h-4 w-4" />
+                Trip (Optional)
+              </Label>
+              <Select value={formData.trip_id || 'none'} onValueChange={handleTripSelect}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select trip (optional)" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">No Trip</SelectItem>
+                  {filteredTrips.map((tripItem) => (
+                    <SelectItem key={tripItem.id} value={tripItem.id}>
+                      {tripItem.trip_name || tripItem.id.slice(0, 8)} - {tripItem.departure_datetime ? new Date(tripItem.departure_datetime).toLocaleDateString() : 'No date'}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {formData.vessel_id && filteredTrips.length === 0 && (
+                <p className="text-xs text-gray-500">No trips for this vessel</p>
+              )}
+            </div>
+          </div>
+
           <div className="space-y-2">
             <Label htmlFor="crew_id">Crew Member *</Label>
             <Select value={formData.crew_id} onValueChange={handleCrewSelect}>
