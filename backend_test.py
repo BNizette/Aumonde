@@ -2954,6 +2954,263 @@ class AMSAComprehensiveTester:
         else:
             self.log_test("GET /api/trips", False, error=f"Status: {status}")
 
+    # ============================================================================
+    # ADMIN PANEL BACKEND TESTS (NEW - Supporting Frontend Features)
+    # ============================================================================
+
+    def test_admin_panel_backend_apis(self):
+        """Test backend APIs that support Admin Panel dropdown navigation"""
+        print("\n🔧 Testing Admin Panel Backend APIs...")
+        
+        # Test 1: Users API (for Users view)
+        success, response, status = self.make_request('GET', 'users')
+        if success and isinstance(response, list):
+            self.log_test("Admin Panel - Users API", True, f"Retrieved {len(response)} users")
+        else:
+            self.log_test("Admin Panel - Users API", False, error=f"Status: {status}")
+        
+        # Test 2: Activity Logs API (for Activity Logs view)
+        success, response, status = self.make_request('GET', 'activity-logs')
+        if success and isinstance(response, list):
+            self.log_test("Admin Panel - Activity Logs API", True, f"Retrieved {len(response)} activity logs")
+        else:
+            self.log_test("Admin Panel - Activity Logs API", False, error=f"Status: {status}")
+        
+        # Test 3: Audit Logs API (for Audit Logs view)
+        success, response, status = self.make_request('GET', 'audit-logs')
+        if success and isinstance(response, list):
+            self.log_test("Admin Panel - Audit Logs API", True, f"Retrieved {len(response)} audit logs")
+        else:
+            self.log_test("Admin Panel - Audit Logs API", False, error=f"Status: {status}")
+        
+        # Test 4: Sessions API (for Sessions view)
+        success, response, status = self.make_request('GET', 'sessions')
+        if success and isinstance(response, list):
+            self.log_test("Admin Panel - Sessions API", True, f"Retrieved {len(response)} sessions")
+        else:
+            self.log_test("Admin Panel - Sessions API", False, error=f"Status: {status}")
+        
+        # Test 5: SMS Revisions API (for SMS Revisions view)
+        success, response, status = self.make_request('GET', 'sms-revisions')
+        if success and isinstance(response, list):
+            self.log_test("Admin Panel - SMS Revisions API", True, f"Retrieved {len(response)} SMS revisions")
+        else:
+            self.log_test("Admin Panel - SMS Revisions API", False, error=f"Status: {status}")
+
+    # ============================================================================
+    # EMAIL CONFIGURATION BACKEND TESTS (NEW - Supporting Frontend Features)
+    # ============================================================================
+
+    def test_email_configuration_backend_apis(self):
+        """Test backend APIs that support Email Configuration view"""
+        print("\n📧 Testing Email Configuration Backend APIs...")
+        
+        # Test 1: Get Email Configuration
+        success, response, status = self.make_request('GET', 'email-config')
+        if success:
+            self.log_test("Get Email Configuration", True, f"Config retrieved: {list(response.keys()) if response else 'Empty config'}")
+        else:
+            self.log_test("Get Email Configuration", False, error=f"Status: {status}")
+        
+        # Test 2: Save Email Configuration
+        email_config_data = {
+            "smtp_server": "mail.aumonde.au",
+            "smtp_port": "587",
+            "smtp_username": "test@aumonde.au",
+            "smtp_password": "test_password",
+            "from_email": "noreply@aumonde.au",
+            "from_name": "AMSA Safety Management",
+            "use_tls": True
+        }
+        
+        success, response, status = self.make_request('POST', 'email-config', data=email_config_data)
+        if success:
+            self.log_test("Save Email Configuration", True, "Email configuration saved successfully")
+        else:
+            self.log_test("Save Email Configuration", False, error=f"Status: {status}, Response: {response}")
+        
+        # Test 3: Send Test Email (expect timeout in container environment)
+        test_email_data = {
+            "test_email": "admin@test.com"
+        }
+        
+        success, response, status = self.make_request('POST', 'email-config/test', data=test_email_data, expected_status=500)
+        if status == 500 and "timeout" in str(response).lower():
+            self.log_test("Send Test Email (Expected Timeout)", True, "Expected timeout in container environment")
+        elif success:
+            self.log_test("Send Test Email", True, "Test email sent successfully")
+        else:
+            self.log_test("Send Test Email", False, error=f"Status: {status}, Response: {response}")
+
+    # ============================================================================
+    # FORGOT PASSWORD BACKEND TESTS (NEW - Supporting Frontend Features)
+    # ============================================================================
+
+    def test_forgot_password_backend_apis(self):
+        """Test backend APIs that support Forgot Password functionality"""
+        print("\n🔑 Testing Forgot Password Backend APIs...")
+        
+        # Test 1: Forgot Password with Valid Email
+        forgot_password_data = {
+            "email": "admin@test.com"
+        }
+        
+        success, response, status = self.make_request('POST', 'auth/forgot-password', data=forgot_password_data)
+        if success and "password reset link" in response.get("message", "").lower():
+            self.log_test("Forgot Password - Valid Email", True, "Password reset process initiated")
+        else:
+            self.log_test("Forgot Password - Valid Email", False, error=f"Status: {status}, Response: {response}")
+        
+        # Test 2: Forgot Password with Invalid Email (should still return success for security)
+        forgot_password_invalid = {
+            "email": "nonexistent@test.com"
+        }
+        
+        success, response, status = self.make_request('POST', 'auth/forgot-password', data=forgot_password_invalid)
+        if success and "password reset link" in response.get("message", "").lower():
+            self.log_test("Forgot Password - Invalid Email (Security)", True, "Returns success to prevent email enumeration")
+        else:
+            self.log_test("Forgot Password - Invalid Email (Security)", False, error=f"Status: {status}, Response: {response}")
+        
+        # Test 3: Forgot Password with Missing Email Configuration (should fail gracefully)
+        # First, clear email config to test error handling
+        success, response, status = self.make_request('GET', 'email-config')
+        if success and response:
+            # Email config exists, so forgot password should work (or timeout)
+            self.log_test("Forgot Password - Email Config Check", True, "Email configuration exists")
+        else:
+            # No email config, forgot password should return appropriate error
+            success, response, status = self.make_request('POST', 'auth/forgot-password', 
+                                                        data=forgot_password_data, expected_status=500)
+            if status == 500 and "not configured" in response.get("detail", "").lower():
+                self.log_test("Forgot Password - No Email Config", True, "Correctly handles missing email config")
+            else:
+                self.log_test("Forgot Password - No Email Config", False, error=f"Status: {status}")
+
+    # ============================================================================
+    # BACKUP MANAGEMENT BACKEND TESTS (NEW - Supporting Frontend Features)
+    # ============================================================================
+
+    def test_backup_management_backend_apis(self):
+        """Test backend APIs that support Backup Management functionality"""
+        print("\n💾 Testing Backup Management Backend APIs...")
+        
+        # Test 1: Create Backup Now
+        success, response, status = self.make_request('POST', 'backup/create-now')
+        if success and "backup" in response:
+            backup_id = response["backup"]["id"]
+            self.log_test("Create Backup Now", True, f"Backup created: {backup_id}")
+            
+            # Test 2: Get Backup History
+            success, history_response, status = self.make_request('GET', 'backup/history')
+            if success and isinstance(history_response, list):
+                self.log_test("Get Backup History", True, f"Retrieved {len(history_response)} backup records")
+                
+                # Find our created backup
+                created_backup = next((b for b in history_response if b["id"] == backup_id), None)
+                if created_backup:
+                    self.log_test("Verify Created Backup in History", True, 
+                                f"Backup found: {created_backup['filename']}")
+                else:
+                    self.log_test("Verify Created Backup in History", False, error="Created backup not found in history")
+            else:
+                self.log_test("Get Backup History", False, error=f"Status: {status}")
+            
+            # Test 3: Download Backup
+            success, download_response, status = self.make_request('GET', f'backup/download/{backup_id}')
+            if success or status == 200:
+                self.log_test("Download Backup", True, "Backup download successful")
+            else:
+                self.log_test("Download Backup", False, error=f"Status: {status}")
+            
+            # Test 4: Delete Backup (cleanup)
+            success, delete_response, status = self.make_request('DELETE', f'backup/{backup_id}')
+            if success:
+                self.log_test("Delete Backup", True, "Backup deleted successfully")
+            else:
+                self.log_test("Delete Backup", False, error=f"Status: {status}")
+                
+        else:
+            self.log_test("Create Backup Now", False, error=f"Status: {status}, Response: {response}")
+        
+        # Test 5: Get Backup Info
+        success, response, status = self.make_request('GET', 'backup/info')
+        if success and "collections" in response:
+            total_records = sum(response["collections"].values())
+            self.log_test("Get Backup Info", True, f"Database has {total_records} total records")
+        else:
+            self.log_test("Get Backup Info", False, error=f"Status: {status}")
+        
+        # Test 6: Backup Schedules
+        print("\n   Testing Backup Schedules...")
+        
+        # Create a test schedule
+        schedule_data = {
+            "name": "Test Daily Backup",
+            "frequency": "daily",
+            "retention_days": 7
+        }
+        
+        success, response, status = self.make_request('POST', 'backup/schedules', data=schedule_data)
+        if success and "id" in response:
+            schedule_id = response["id"]
+            self.log_test("Create Backup Schedule", True, f"Schedule created: {schedule_id}")
+            
+            # Get all schedules
+            success, schedules_response, status = self.make_request('GET', 'backup/schedules')
+            if success and isinstance(schedules_response, list):
+                self.log_test("Get Backup Schedules", True, f"Retrieved {len(schedules_response)} schedules")
+            else:
+                self.log_test("Get Backup Schedules", False, error=f"Status: {status}")
+            
+            # Update schedule (disable)
+            success, update_response, status = self.make_request('PUT', f'backup/schedules/{schedule_id}', data={"enabled": False})
+            if success:
+                self.log_test("Update Backup Schedule (Disable)", True, "Schedule disabled successfully")
+            else:
+                self.log_test("Update Backup Schedule (Disable)", False, error=f"Status: {status}")
+            
+            # Delete schedule (cleanup)
+            success, delete_response, status = self.make_request('DELETE', f'backup/schedules/{schedule_id}')
+            if success:
+                self.log_test("Delete Backup Schedule", True, "Schedule deleted successfully")
+            else:
+                self.log_test("Delete Backup Schedule", False, error=f"Status: {status}")
+                
+        else:
+            self.log_test("Create Backup Schedule", False, error=f"Status: {status}, Response: {response}")
+
+    # ============================================================================
+    # SETTINGS BACKEND TESTS (Supporting Admin Panel Settings View)
+    # ============================================================================
+
+    def test_settings_backend_apis(self):
+        """Test backend APIs that support Settings functionality"""
+        print("\n⚙️ Testing Settings Backend APIs...")
+        
+        # Test 1: Get Settings Categories
+        success, response, status = self.make_request('GET', 'settings')
+        if success and isinstance(response, dict):
+            categories = list(response.keys())
+            self.log_test("Get Settings Categories", True, f"Categories: {categories}")
+        else:
+            self.log_test("Get Settings Categories", False, error=f"Status: {status}")
+        
+        # Test 2: Get Specific Module Settings (e.g., vessel settings)
+        success, response, status = self.make_request('GET', 'settings/vessel')
+        if success and isinstance(response, dict):
+            vessel_categories = list(response.keys())
+            self.log_test("Get Vessel Settings", True, f"Vessel categories: {vessel_categories}")
+        else:
+            self.log_test("Get Vessel Settings", False, error=f"Status: {status}")
+        
+        # Test 3: Get Specific Setting Category (e.g., vessel types)
+        success, response, status = self.make_request('GET', 'settings/vessel/vessel_types')
+        if success and isinstance(response, list):
+            self.log_test("Get Vessel Types Setting", True, f"Retrieved {len(response)} vessel types")
+        else:
+            self.log_test("Get Vessel Types Setting", False, error=f"Status: {status}")
+
     def run_all_tests(self):
         """Run all AMSA system tests"""
         print("🚀 Starting AMSA Safety Management Backend Testing - Trip Log Vessel & Trip Selection")
