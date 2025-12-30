@@ -207,6 +207,62 @@ const VesselDetailsDialog = ({ open, onClose, vessel, onMessage, onEdit }) => {
         headers: ['Incident #', 'Title', 'Type', 'Severity', 'Date', 'Status', 'Location'],
         data: incidents.length > 0 ? incidents.map(i => [safeValue(i.incident_number), safeValue(i.title), safeArrayJoin(i.incident_type, '; '), safeValue(i.severity), formatDate(i.incident_date), safeValue(i.investigation_status), safeValue(i.location)]) : [['No incidents recorded', '', '', '', '', '', '']],
         columnWidths: [15, 25, 20, 10, 12, 15, 20]
+      },
+      {
+        name: 'Induction',
+        headers: ['Crew Member', 'Completed Tasks', 'Completion Date', 'Total Tasks', 'Completion %'],
+        data: inductionRecords.length > 0 ? inductionRecords.map(rec => {
+          const completedCount = rec.completed_tasks?.length || 0;
+          const totalTasks = inductionTasks.length || 0;
+          const completionPct = totalTasks > 0 ? Math.round((completedCount / totalTasks) * 100) : 0;
+          return [
+            safeValue(rec.crew_name),
+            safeArrayJoin(rec.completed_tasks, ', ') || 'None',
+            formatDate(rec.updated_at || rec.created_at),
+            totalTasks,
+            `${completionPct}%`
+          ];
+        }) : [['No induction records', '', '', '', '']],
+        columnWidths: [20, 40, 15, 12, 12]
+      },
+      {
+        name: 'Compliance Certificates',
+        headers: ['Certificate Name', 'Certificate Type', 'Certificate Number', 'Issuing Authority', 'Issue Date', 'Expiry Date', 'Status', 'Notes'],
+        data: certificates.length > 0 ? certificates.map(cert => {
+          const now = new Date();
+          const expiry = cert.expiry_date ? new Date(cert.expiry_date) : null;
+          let status = 'Valid';
+          if (expiry) {
+            const daysUntil = Math.ceil((expiry - now) / (1000 * 60 * 60 * 24));
+            if (daysUntil < 0) status = 'Expired';
+            else if (daysUntil <= 30) status = 'Expiring Soon';
+          }
+          return [
+            safeValue(cert.certificate_name),
+            safeValue(cert.certificate_type),
+            safeValue(cert.certificate_number),
+            safeValue(cert.issuing_authority),
+            formatDate(cert.issue_date),
+            formatDate(cert.expiry_date),
+            status,
+            safeValue(cert.notes)
+          ];
+        }) : [['No compliance certificates', '', '', '', '', '', '', '']],
+        columnWidths: [25, 18, 15, 20, 12, 12, 12, 30]
+      },
+      {
+        name: 'Compliance Requirements',
+        headers: ['Requirement Name', 'Category', 'Description', 'Regulatory Reference', 'Status', 'Responsible Person', 'Notes'],
+        data: requirements.length > 0 ? requirements.map(req => [
+          safeValue(req.requirement_name),
+          safeValue(req.category),
+          safeValue(req.description),
+          safeValue(req.regulatory_reference),
+          safeValue(req.compliance_status),
+          safeValue(req.responsible_person),
+          safeValue(req.notes)
+        ]) : [['No compliance requirements', '', '', '', '', '', '']],
+        columnWidths: [25, 15, 35, 20, 15, 18, 30]
       }
     ];
 
