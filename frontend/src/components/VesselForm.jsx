@@ -412,7 +412,25 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create', defaultTab
   };
 
   const handleSubmit = () => {
-    onSave(formData);
+    // Clean form data - convert empty strings to null for numeric fields
+    const numericFields = [
+      'length_overall', 'length_at_waterline', 'beam', 'draft', 'air_draft',
+      'gross_tonnage', 'year_built', 'number_of_engines', 'engine_power',
+      'fuel_capacity', 'aux_power', 'water_capacity', 
+      'max_passengers_berthed', 'max_passengers_unberthed', 'max_crew'
+    ];
+    
+    const cleanedData = { ...formData };
+    numericFields.forEach(field => {
+      if (cleanedData[field] === '' || cleanedData[field] === undefined) {
+        cleanedData[field] = null;
+      } else if (typeof cleanedData[field] === 'string') {
+        const num = parseFloat(cleanedData[field]);
+        cleanedData[field] = isNaN(num) ? null : num;
+      }
+    });
+    
+    onSave(cleanedData);
   };
 
   // Drag and drop handlers for photo upload
