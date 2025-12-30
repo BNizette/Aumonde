@@ -245,14 +245,28 @@ const RunningLogForm = ({ open, onClose, onSave, log, tripId, mode = 'create' })
             </Select>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="log_datetime">Date & Time *</Label>
-            <Input
-              id="log_datetime"
-              type="datetime-local"
-              value={formData.log_datetime}
-              onChange={(e) => handleChange('log_datetime', e.target.value)}
-            />
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="log_datetime">Date & Time *</Label>
+              <Input
+                id="log_datetime"
+                type="datetime-local"
+                value={formData.log_datetime}
+                onChange={(e) => handleChange('log_datetime', e.target.value)}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="utc_offset">UTC Offset</Label>
+              <Input
+                id="utc_offset"
+                value={formData.utc_offset}
+                onChange={(e) => handleChange('utc_offset', e.target.value)}
+                placeholder="+00:00"
+                className="bg-gray-50"
+              />
+              <p className="text-xs text-gray-500">Auto-calculated from date</p>
+            </div>
           </div>
 
           <div className="space-y-2">
