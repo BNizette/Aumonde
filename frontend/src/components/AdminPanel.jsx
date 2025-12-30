@@ -1653,17 +1653,139 @@ const AdminPanel = () => {
               )}
             </CardContent>
           </Card>
-        </TabsContent>
+        )}
 
-        {/* BACKUP & RESTORE TAB */}
-        <TabsContent value="backup">
+        {/* EMAIL CONFIGURATION VIEW */}
+        {activeView === 'email' && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Mail className="h-5 w-5" />
+                Email Configuration
+              </CardTitle>
+              <CardDescription>Configure SMTP settings for sending emails (password reset, notifications)</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-6">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label className="flex items-center gap-2">
+                      <Server className="h-4 w-4" />
+                      SMTP Server
+                    </Label>
+                    <Input
+                      value={emailConfig.smtp_server}
+                      onChange={(e) => setEmailConfig({...emailConfig, smtp_server: e.target.value})}
+                      placeholder="e.g., smtp.gmail.com"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>SMTP Port</Label>
+                    <Input
+                      value={emailConfig.smtp_port}
+                      onChange={(e) => setEmailConfig({...emailConfig, smtp_port: e.target.value})}
+                      placeholder="587"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>SMTP Username</Label>
+                    <Input
+                      value={emailConfig.smtp_username}
+                      onChange={(e) => setEmailConfig({...emailConfig, smtp_username: e.target.value})}
+                      placeholder="your-email@example.com"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="flex items-center gap-2">
+                      <Lock className="h-4 w-4" />
+                      SMTP Password
+                    </Label>
+                    <Input
+                      type="password"
+                      value={emailConfig.smtp_password}
+                      onChange={(e) => setEmailConfig({...emailConfig, smtp_password: e.target.value})}
+                      placeholder="Enter new password to change"
+                    />
+                    <p className="text-xs text-gray-500">Leave blank to keep existing password</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>From Email Address</Label>
+                    <Input
+                      value={emailConfig.from_email}
+                      onChange={(e) => setEmailConfig({...emailConfig, from_email: e.target.value})}
+                      placeholder="noreply@example.com"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>From Name</Label>
+                    <Input
+                      value={emailConfig.from_name}
+                      onChange={(e) => setEmailConfig({...emailConfig, from_name: e.target.value})}
+                      placeholder="AMSA Safety Management"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    id="use_tls"
+                    checked={emailConfig.use_tls}
+                    onChange={(e) => setEmailConfig({...emailConfig, use_tls: e.target.checked})}
+                    className="h-4 w-4 rounded border-gray-300"
+                  />
+                  <Label htmlFor="use_tls">Use TLS (recommended)</Label>
+                </div>
+
+                <div className="flex gap-2">
+                  <Button onClick={handleSaveEmailConfig} disabled={emailConfigLoading}>
+                    {emailConfigLoading ? 'Saving...' : 'Save Configuration'}
+                  </Button>
+                </div>
+
+                {/* Test Email Section */}
+                <div className="border-t pt-4 mt-4">
+                  <h3 className="font-medium mb-3">Send Test Email</h3>
+                  <div className="flex gap-2">
+                    <Input
+                      value={testEmailAddress}
+                      onChange={(e) => setTestEmailAddress(e.target.value)}
+                      placeholder="Enter email address to test"
+                      className="max-w-sm"
+                    />
+                    <Button 
+                      onClick={handleSendTestEmail} 
+                      disabled={sendingTestEmail || !emailConfig.smtp_server}
+                      variant="outline"
+                    >
+                      {sendingTestEmail ? 'Sending...' : 'Send Test Email'}
+                    </Button>
+                  </div>
+                  {!emailConfig.smtp_server && (
+                    <p className="text-xs text-amber-600 mt-2">Save SMTP configuration first to send test emails</p>
+                  )}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* BACKUP & RESTORE VIEW */}
+        {activeView === 'backup' && (
           <BackupManagement />
-        </TabsContent>
+        )}
 
-        <TabsContent value="settings">
+        {/* SETTINGS VIEW */}
+        {activeView === 'settings' && (
           <Settings />
-        </TabsContent>
-      </Tabs>
+        )}
+      </div>
 
       {/* Edit User Dialog */}
       <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
