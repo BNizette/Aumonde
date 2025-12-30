@@ -50,6 +50,12 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
   // PassengerForm dialog state (for creating new passengers)
   const [newPassengerFormOpen, setNewPassengerFormOpen] = useState(false);
   
+  // Expenditure (APA) form state
+  const [expenditureDialogOpen, setExpenditureDialogOpen] = useState(false);
+  const [expenditureForm, setExpenditureForm] = useState({ expense_date: '', description: '', amount: '', receipt_url: '' });
+  const [editingExpenditure, setEditingExpenditure] = useState(null);
+  const [uploadingReceipt, setUploadingReceipt] = useState(false);
+  
   const [shiftFormOpen, setShiftFormOpen] = useState(false);
   const [runningFormOpen, setRunningFormOpen] = useState(false);
   const [engineFormOpen, setEngineFormOpen] = useState(false);
