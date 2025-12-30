@@ -527,7 +527,9 @@ const DocumentManagement = () => {
                 <div>
                   <h3 className="font-semibold text-sm text-gray-500 mb-1">File URL</h3>
                   <a 
-                    href={viewingDocument.file_url} 
+                    href={viewingDocument.file_url?.startsWith('/api/') 
+                      ? `${process.env.REACT_APP_BACKEND_URL}${viewingDocument.file_url}`
+                      : viewingDocument.file_url} 
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="text-sm text-blue-600 hover:underline break-all"
@@ -538,7 +540,12 @@ const DocumentManagement = () => {
 
                 <div className="pt-4">
                   <Button
-                    onClick={() => window.open(viewingDocument.file_url, '_blank')}
+                    onClick={() => {
+                      const url = viewingDocument.file_url?.startsWith('/api/') 
+                        ? `${process.env.REACT_APP_BACKEND_URL}${viewingDocument.file_url}`
+                        : viewingDocument.file_url;
+                      window.open(url, '_blank');
+                    }}
                     className="w-full"
                   >
                     <ExternalLink className="h-4 w-4 mr-2" />
