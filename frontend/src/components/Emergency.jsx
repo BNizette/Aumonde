@@ -1405,27 +1405,14 @@ const Emergency = () => {
         <div>
           <div className="flex items-center gap-2">
             <h2 className="text-3xl font-bold text-gray-900">Emergency Response</h2>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Info className="h-5 w-5 text-blue-500 cursor-help" />
-              </TooltipTrigger>
-              <TooltipContent className="max-w-sm">
-                <p className="font-semibold mb-1">Marine Order 504 (2024)</p>
-                <p className="text-sm mb-2">
-                  Requires emergency procedures, assembly station protocols, crew drills, emergency training, and emergency contact management within the SMS framework.
-                </p>
-                <a 
-                  href="https://www.amsa.gov.au/about/regulations-and-standards/marine-order-504-certificates-operation"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-500 hover:underline text-sm"
-                >
-                  View AMSA MO504 Regulations →
-                </a>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+            <HelpDialog 
+              moduleKey="emergency_response"
+              title="Marine Order 504 (2024)"
+              defaultContent="Requires emergency procedures, assembly station protocols, crew drills, emergency training, and emergency contact management within the SMS framework."
+              defaultLink="https://www.amsa.gov.au/about/regulations-and-standards/marine-order-504-certificates-operation"
+              defaultLinkText="View AMSA MO504 Regulations →"
+              isAdmin={isAdmin}
+            />
           </div>
           <p className="text-gray-500 mt-1">Manage emergency contacts, procedures, and drills</p>
         </div>
