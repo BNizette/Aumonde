@@ -345,14 +345,14 @@ const TripLogForm = ({ open, onClose, onSave, log, tripId, vesselId, vesselName,
             <div className="space-y-2">
               <Label htmlFor="vessel_id" className="flex items-center gap-1">
                 <Ship className="h-4 w-4" />
-                Vessel (Boat) *
+                Vessel (Boat)
               </Label>
               <Select value={formData.vessel_id || 'none'} onValueChange={handleVesselSelect}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select vessel" />
+                  <SelectValue placeholder="Select vessel (optional)" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="none" disabled>Select vessel</SelectItem>
+                  <SelectItem value="none">No Vessel</SelectItem>
                   {vessels.map((vessel) => (
                     <SelectItem key={vessel.id} value={vessel.id}>
                       {vessel.vessel_name}
@@ -365,7 +365,7 @@ const TripLogForm = ({ open, onClose, onSave, log, tripId, vesselId, vesselName,
             <div className="space-y-2">
               <Label htmlFor="trip_id" className="flex items-center gap-1">
                 <Anchor className="h-4 w-4" />
-                Trip (Optional)
+                Trip
               </Label>
               <Select value={formData.trip_id || 'none'} onValueChange={handleTripSelect}>
                 <SelectTrigger>
