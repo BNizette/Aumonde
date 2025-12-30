@@ -2731,6 +2731,7 @@ class AMSAComprehensiveTester:
         trip_log_tests = [
             self.test_log_forms_and_incident_edit,  # NEW TEST: Log Forms and Incident Edit Functionality
             self.test_trip_logs_vessel_and_trip_selection,  # MAIN TEST: Trip Log with Vessel & Trip Selection
+            self.test_expenditure_apa_pdf_receipt_upload,  # NEW TEST: Expenditure APA PDF Receipt Upload
         ]
         
         print("\n🎯 PRIORITY TESTS - TRIP LOG VESSEL & TRIP SELECTION")
