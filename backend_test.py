@@ -3164,8 +3164,7 @@ class AMSAComprehensiveTester:
                 self.log_test("Get Backup Schedules", False, error=f"Status: {status}")
             
             # Update schedule (disable)
-            update_data = {"enabled": False}
-            success, update_response, status = self.make_request('PUT', f'backup/schedules/{schedule_id}', data=update_data)
+            success, update_response, status = self.make_request('PUT', f'backup/schedules/{schedule_id}?enabled=false')
             if success:
                 self.log_test("Update Backup Schedule (Disable)", True, "Schedule disabled successfully")
             else:
