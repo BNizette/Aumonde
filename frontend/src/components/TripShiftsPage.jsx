@@ -341,6 +341,8 @@ const TripShiftsPage = () => {
         onSave={handleSaveShiftLog}
         log={selectedShiftLog}
         tripId={tripId}
+        vesselId={trip?.vessel_id}
+        vesselName={trip?.vessel_name}
         mode={shiftFormMode}
       />
     </div>
