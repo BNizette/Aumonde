@@ -549,6 +549,28 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
     wsDrills['!cols'] = [{ wch: 12 }, { wch: 20 }, { wch: 15 }, { wch: 12 }, { wch: 15 }, { wch: 30 }, { wch: 15 }];
     XLSX.utils.book_append_sheet(wb, wsDrills, 'Drills');
 
+    // Sheet 9: Expenditures (APA)
+    const expendituresHeaders = ['Date', 'Description', 'Amount', 'Receipt'];
+    const expendituresData = [expendituresHeaders];
+    let totalExpenditure = 0;
+    expenditures.forEach(exp => {
+      totalExpenditure += exp.amount || 0;
+      expendituresData.push([
+        exp.expense_date ? new Date(exp.expense_date).toLocaleDateString() : 'N/A',
+        exp.description || '-',
+        exp.amount ? `$${exp.amount.toFixed(2)}` : '$0.00',
+        exp.receipt_url ? 'Yes' : 'No'
+      ]);
+    });
+    if (expenditures.length === 0) {
+      expendituresData.push(['No expenditures recorded', '', '', '']);
+    } else {
+      expendituresData.push(['', 'Total:', `$${totalExpenditure.toFixed(2)}`, '']);
+    }
+    const wsExpenditures = XLSX.utils.aoa_to_sheet(expendituresData);
+    wsExpenditures['!cols'] = [{ wch: 12 }, { wch: 30 }, { wch: 12 }, { wch: 10 }];
+    XLSX.utils.book_append_sheet(wb, wsExpenditures, 'Expenditures APA');
+
     // Generate and download file
     const fileName = `${trip.trip_name?.replace(/\s+/g, '_')}_details_${new Date().toISOString().slice(0, 10)}.xlsx`;
     XLSX.writeFile(wb, fileName);
