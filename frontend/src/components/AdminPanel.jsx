@@ -458,7 +458,8 @@ const AdminPanel = () => {
     const variants = {
       'View': 'bg-blue-100 text-blue-800',
       'Edit': 'bg-purple-100 text-purple-800',
-      'Full': 'bg-indigo-100 text-indigo-800'
+      'Full': 'bg-indigo-100 text-indigo-800',
+      'Admin': 'bg-red-100 text-red-800'
     };
     return <Badge className={variants[level] || ''}>{level}</Badge>;
   };
