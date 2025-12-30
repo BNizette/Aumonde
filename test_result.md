@@ -1,4 +1,19 @@
 frontend:
+  - task: "HelpDialog Component - Click to Open and Admin Edit Feature"
+    implemented: true
+    working: true
+    file: "src/components/HelpDialog.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Need to fix: 1) HelpDialog should open on CLICK not hover, 2) Admin users should see pencil edit icon, 3) All modules should use HelpDialog instead of tooltips"
+      - working: true
+        agent: "main"
+        comment: "✅ FIXED: HelpDialog now opens on click across all modules (Crew, Vessels, Incidents, Emergency, Compliance, Maintenance, Risk Assessment, Trips). Changed Edit icon to Pencil icon for better visibility. Added title='Edit help content' for accessibility. Admin users can click pencil to enter edit mode with Title, Content, Link URL, and Link Text fields. Save and Cancel buttons work correctly."
+
   - task: "Login functionality"
     implemented: true
     working: true
