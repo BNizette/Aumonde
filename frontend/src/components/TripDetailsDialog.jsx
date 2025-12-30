@@ -1889,85 +1889,15 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
             </div>
             <div className="space-y-2">
               <Label>Receipt (PDF)</Label>
-              {expenditureForm.receipt_url ? (
-                <div className="border rounded-lg p-4 bg-green-50">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <FileText className="h-5 w-5 text-green-600" />
-                      <a
-                        href={expenditureForm.receipt_url.startsWith('http') ? expenditureForm.receipt_url : `${BACKEND_URL}${expenditureForm.receipt_url}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-600 hover:underline font-medium"
-                      >
-                        View Receipt PDF
-                      </a>
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="text-red-600 hover:text-red-800"
-                      onClick={() => setExpenditureForm({...expenditureForm, receipt_url: ''})}
-                    >
-                      <X className="h-4 w-4 mr-1" />
-                      Remove
-                    </Button>
-                  </div>
-                </div>
-              ) : (
-                <div
-                  className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-gray-400 transition-colors cursor-pointer"
-                  onClick={() => document.getElementById('receipt-upload')?.click()}
-                >
-                  <input
-                    id="receipt-upload"
-                    type="file"
-                    accept=".pdf"
-                    className="hidden"
-                    onChange={async (e) => {
-                      const file = e.target.files?.[0];
-                      if (!file) return;
-                      
-                      setUploadingReceipt(true);
-                      try {
-                        const formDataUpload = new FormData();
-                        formDataUpload.append('file', file);
-                        
-                        const token = localStorage.getItem('token');
-                        const response = await axios.post(`${API}/documents/upload`, formDataUpload, {
-                          headers: {
-                            'Content-Type': 'multipart/form-data',
-                            Authorization: `Bearer ${token}`
-                          }
-                        });
-                        
-                        if (response.data?.file_url) {
-                          setExpenditureForm({...expenditureForm, receipt_url: response.data.file_url});
-                          setMessage('Receipt uploaded successfully');
-                        }
-                      } catch (err) {
-                        setError('Failed to upload receipt');
-                      } finally {
-                        setUploadingReceipt(false);
-                        e.target.value = '';
-                      }
-                    }}
-                    disabled={uploadingReceipt}
-                  />
-                  {uploadingReceipt ? (
-                    <div className="flex items-center justify-center gap-2">
-                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-gray-600"></div>
-                      <span className="text-sm text-gray-600">Uploading...</span>
-                    </div>
-                  ) : (
-                    <>
-                      <Upload className="h-8 w-8 mx-auto text-gray-400 mb-2" />
-                      <p className="text-sm text-gray-600">Click to upload receipt PDF</p>
-                      <p className="text-xs text-gray-400 mt-1">Max 10MB</p>
-                    </>
-                  )}
-                </div>
-              )}
+              <FileUploadZone
+                value={expenditureForm.receipt_url}
+                onChange={(url) => setExpenditureForm({...expenditureForm, receipt_url: url})}
+                accept=".pdf"
+                label="Click or drag to upload receipt PDF"
+                description="Max 10MB"
+                onError={(msg) => setError(msg)}
+                onSuccess={(msg) => setMessage(msg)}
+              />
             </div>
           </div>
           <DialogFooter>
