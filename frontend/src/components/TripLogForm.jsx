@@ -23,13 +23,26 @@ const TripLogForm = ({ open, onClose, onSave, log, tripId, mode = 'create' }) =>
     crew_id: '',
     crew_name: '',
     shift_start_datetime: '',
+    shift_start_utc_offset: '',
     shift_stop_datetime: '',
+    shift_stop_utc_offset: '',
     task_performed: '',
     location_start: '',
     location_end: '',
     gps_location_start: '',
     gps_location_end: ''
   });
+
+  // Helper function to calculate UTC offset from a date
+  const calculateUtcOffset = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    const offsetMinutes = date.getTimezoneOffset();
+    const offsetHours = Math.abs(Math.floor(offsetMinutes / 60));
+    const offsetMins = Math.abs(offsetMinutes % 60);
+    const offsetSign = offsetMinutes <= 0 ? '+' : '-';
+    return `${offsetSign}${String(offsetHours).padStart(2, '0')}:${String(offsetMins).padStart(2, '0')}`;
+  };
 
   useEffect(() => {
     if (open) {
