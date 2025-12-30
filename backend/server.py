@@ -1806,10 +1806,12 @@ async def create_trip_log(log_data: TripLogCreate, current_user: dict = Depends(
     return trip_log
 
 @api_router.get("/trip-logs")
-async def get_trip_logs(trip_id: Optional[str] = None, current_user: dict = Depends(get_current_user)):
+async def get_trip_logs(trip_id: Optional[str] = None, vessel_id: Optional[str] = None, current_user: dict = Depends(get_current_user)):
     query = {}
     if trip_id:
         query["trip_id"] = trip_id
+    if vessel_id:
+        query["vessel_id"] = vessel_id
     
     logs = await db.trip_logs.find(query, {"_id": 0}).sort("shift_start_datetime", 1).to_list(1000)
     return logs
