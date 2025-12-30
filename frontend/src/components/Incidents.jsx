@@ -519,12 +519,21 @@ const Incidents = () => {
   };
 
   const resetForm = () => {
+    // Calculate current UTC offset
+    const now = new Date();
+    const offsetMinutes = now.getTimezoneOffset();
+    const offsetHours = Math.abs(Math.floor(offsetMinutes / 60));
+    const offsetMins = Math.abs(offsetMinutes % 60);
+    const offsetSign = offsetMinutes <= 0 ? '+' : '-';
+    const calculatedOffset = `${offsetSign}${String(offsetHours).padStart(2, '0')}:${String(offsetMins).padStart(2, '0')}`;
+    
     setFormData({
       incident_type: [],
       severity: 'Minor',
       title: '',
       description: '',
       incident_date: new Date().toISOString().slice(0, 16),
+      utc_offset: calculatedOffset,
       location: '',
       trip_from: '',
       trip_to: '',
