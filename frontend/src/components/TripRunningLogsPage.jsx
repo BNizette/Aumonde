@@ -327,6 +327,8 @@ const TripRunningLogsPage = () => {
         onSave={handleSaveLog}
         log={selectedLog}
         tripId={tripId}
+        vesselId={trip?.vessel_id}
+        vesselName={trip?.vessel_name}
         mode={formMode}
       />
     </div>
