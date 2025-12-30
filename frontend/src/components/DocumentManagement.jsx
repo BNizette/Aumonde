@@ -427,7 +427,12 @@ const DocumentManagement = () => {
                     <Button
                       size="sm"
                       variant="ghost"
-                      onClick={() => window.open(doc.file_url, '_blank')}
+                      onClick={() => {
+                        const url = doc.file_url?.startsWith('/api/') 
+                          ? `${process.env.REACT_APP_BACKEND_URL}${doc.file_url}`
+                          : doc.file_url;
+                        window.open(url, '_blank');
+                      }}
                       title="Open document"
                     >
                       <ExternalLink className="h-4 w-4" />
