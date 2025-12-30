@@ -1673,7 +1673,7 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
                                       target="_blank"
                                       rel="noopener noreferrer"
                                       className="text-blue-600 hover:text-blue-800"
-                                      title="View Receipt"
+                                      title="View Receipt PDF"
                                     >
                                       <FileText className="h-4 w-4" />
                                     </a>
@@ -1690,6 +1690,19 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
                                 <Button
                                   variant="ghost"
                                   size="sm"
+                                  className="text-blue-600 hover:text-blue-800"
+                                  title="View"
+                                  onClick={() => {
+                                    setViewingExpenditure(exp);
+                                    setViewExpenditureDialogOpen(true);
+                                  }}
+                                >
+                                  <Eye className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  title="Edit"
                                   onClick={() => {
                                     setEditingExpenditure(exp);
                                     setExpenditureForm({
@@ -1707,6 +1720,7 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
                                   variant="ghost"
                                   size="sm"
                                   className="text-red-600 hover:text-red-800"
+                                  title="Delete"
                                   onClick={async () => {
                                     if (window.confirm('Delete this expenditure?')) {
                                       try {
