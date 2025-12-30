@@ -9,7 +9,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
-import { Ship, Plus, Edit, Trash2, Search, Calendar, Filter, X, AlertTriangle, Download, ChevronDown, FileText, Eye, Info, FileSpreadsheet } from 'lucide-react';
+import { Ship, Plus, Edit, Trash2, Search, Calendar, Filter, X, AlertTriangle, Download, ChevronDown, FileText, Eye, FileSpreadsheet } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import VesselDetailsDialog from './VesselDetailsDialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -17,12 +17,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { ResponsiveListCard } from '@/components/ui/responsive-list-card';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { SummaryCard } from '@/components/ui/summary-card';
 import { ImportExcelDialog } from '@/components/ui/import-excel-dialog';
 import VesselForm from './VesselForm';
 import ManualLogEntry from './ManualLogEntry';
 import useAdvancedFilters from '../hooks/useAdvancedFilters';
+import HelpDialog from './HelpDialog';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
