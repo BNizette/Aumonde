@@ -2776,6 +2776,14 @@ class AMSAComprehensiveTester:
         
         # Delete created resources (only if user has Full access)
         if self.user_data.get('access_level') == 'Full':
+            # Delete expenditures
+            if hasattr(self, 'created_expenditures'):
+                for expenditure_id in self.created_expenditures[:]:
+                    success, _, _ = self.make_request('DELETE', f'expenditures/{expenditure_id}')
+                    if success:
+                        self.created_expenditures.remove(expenditure_id)
+                        print(f"   Deleted expenditure: {expenditure_id}")
+            
             # Delete risk assessments
             for risk_id in self.created_risks[:]:
                 success, _, _ = self.make_request('DELETE', f'risk-assessments/{risk_id}')
