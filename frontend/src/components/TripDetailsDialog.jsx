@@ -912,8 +912,9 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="allocated">Crew ({allocatedCrew.length})</SelectItem>
-                      <SelectItem value="passengers">Passengers ({tripPassengers.length})</SelectItem>
                       <SelectItem value="shift">Shifts ({shiftLogs.length})</SelectItem>
+                      <SelectItem value="passengers">Passengers ({tripPassengers.length})</SelectItem>
+                      <SelectItem value="expenditure">Expenditure APA ({expenditures.length})</SelectItem>
                       <SelectItem value="running">Running Logs ({runningLogs.length})</SelectItem>
                       <SelectItem value="engine">Engine Logs ({engineLogs.length})</SelectItem>
                       <SelectItem value="incidents">Incidents ({tripIncidents.length})</SelectItem>
