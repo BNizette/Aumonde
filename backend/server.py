@@ -2035,6 +2035,80 @@ async def delete_engine_running_log(log_id: str, current_user: dict = Depends(re
     return {"message": "Engine running log deleted successfully"}
 
 # ============================================================================
+# EXPENDITURE (APA) ENDPOINTS
+# ============================================================================
+
+@api_router.post("/expenditures")
+async def create_expenditure(expenditure_data: ExpenditureCreate, current_user: dict = Depends(require_access_level(AccessLevel.EDIT))):
+    expenditure = Expenditure(**expenditure_data.model_dump(), created_by=current_user["id"])
+    await db.expenditures.insert_one(expenditure.model_dump())
+    
+    await log_audit(
+        current_user["id"],
+        current_user["full_name"],
+        "create",
+        "expenditures",
+        expenditure.id,
+        f"Created expenditure: {expenditure_data.description} - ${expenditure_data.amount}"
+    )
+    
+    return expenditure
+
+@api_router.get("/expenditures")
+async def get_expenditures(trip_id: Optional[str] = None, current_user: dict = Depends(get_current_user)):
+    query = {}
+    if trip_id:
+        query["trip_id"] = trip_id
+    
+    expenditures = await db.expenditures.find(query, {"_id": 0}).sort("expense_date", -1).to_list(1000)
+    return expenditures
+
+@api_router.get("/expenditures/{expenditure_id}")
+async def get_expenditure(expenditure_id: str, current_user: dict = Depends(get_current_user)):
+    expenditure = await db.expenditures.find_one({"id": expenditure_id}, {"_id": 0})
+    if not expenditure:
+        raise HTTPException(status_code=404, detail="Expenditure not found")
+    return expenditure
+
+@api_router.put("/expenditures/{expenditure_id}")
+async def update_expenditure(expenditure_id: str, expenditure_data: ExpenditureCreate, current_user: dict = Depends(require_access_level(AccessLevel.EDIT))):
+    expenditure = await db.expenditures.find_one({"id": expenditure_id}, {"_id": 0})
+    if not expenditure:
+        raise HTTPException(status_code=404, detail="Expenditure not found")
+    
+    await db.expenditures.update_one({"id": expenditure_id}, {"$set": expenditure_data.model_dump()})
+    
+    await log_audit(
+        current_user["id"],
+        current_user["full_name"],
+        "update",
+        "expenditures",
+        expenditure_id,
+        f"Updated expenditure: {expenditure_data.description}"
+    )
+    
+    return {"message": "Expenditure updated successfully"}
+
+@api_router.delete("/expenditures/{expenditure_id}")
+async def delete_expenditure(expenditure_id: str, current_user: dict = Depends(require_access_level(AccessLevel.FULL))):
+    expenditure = await db.expenditures.find_one({"id": expenditure_id}, {"_id": 0})
+    if not expenditure:
+        raise HTTPException(status_code=404, detail="Expenditure not found")
+    
+    await db.expenditures.delete_one({"id": expenditure_id})
+    
+    await log_audit(
+        current_user["id"],
+        current_user["full_name"],
+        "delete",
+        "expenditures",
+        expenditure_id,
+        f"Deleted expenditure: {expenditure.get('description')}"
+    )
+    
+    return {"message": "Expenditure deleted successfully"}
+
+# ============================================================================
 # ALLOCATED CREW ENDPOINTS
 # ============================================================================
 
