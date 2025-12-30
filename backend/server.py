@@ -85,9 +85,9 @@ async def seed_default_admin():
                 "email": "admin@test.com",
                 "password_hash": pwd_context.hash("Admin123!"),
                 "full_name": "Admin User",
-                "role": "admin",
-                "access_level": "admin",
-                "status": "active",
+                "role": UserRole.OWNER,
+                "access_level": AccessLevel.FULL,
+                "account_status": AccountStatus.ACTIVE,
                 "created_at": datetime.now(timezone.utc),
                 "updated_at": datetime.now(timezone.utc)
             }
