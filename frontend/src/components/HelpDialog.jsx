@@ -110,8 +110,8 @@ const HelpDialog = ({
             <DialogTitle className="flex items-center justify-between">
               <span>{editing ? 'Edit Help Content' : helpData.title}</span>
               {isAdmin && !editing && (
-                <Button variant="ghost" size="sm" onClick={handleEdit}>
-                  <Edit className="h-4 w-4" />
+                <Button variant="ghost" size="sm" onClick={handleEdit} title="Edit help content">
+                  <Pencil className="h-4 w-4" />
                 </Button>
               )}
             </DialogTitle>
