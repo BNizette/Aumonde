@@ -1,10 +1,16 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Ship, Anchor } from 'lucide-react';
+
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const API = `${BACKEND_URL}/api`;
 
 // EngineField component - moved outside to prevent recreation on each render
 const EngineField = ({ label, engine, field, value, onChange }) => (
@@ -23,7 +29,9 @@ const EngineField = ({ label, engine, field, value, onChange }) => (
   </div>
 );
 
-const EngineRunningLogForm = ({ open, onClose, onSave, log, tripId, mode = 'create' }) => {
+const EngineRunningLogForm = ({ open, onClose, onSave, log, tripId, vesselId, vesselName, mode = 'create' }) => {
+  const [vessels, setVessels] = useState([]);
+  const [trips, setTrips] = useState([]);
   const [error, setError] = useState('');
 
   // Helper function to calculate UTC offset from a date
@@ -39,6 +47,8 @@ const EngineRunningLogForm = ({ open, onClose, onSave, log, tripId, mode = 'crea
 
   const [formData, setFormData] = useState({
     trip_id: tripId || '',
+    vessel_id: vesselId || '',
+    vessel_name: vesselName || '',
     log_datetime: '',
     utc_offset: '',
     // Engine One
@@ -69,6 +79,41 @@ const EngineRunningLogForm = ({ open, onClose, onSave, log, tripId, mode = 'crea
     engine2_engine_hrs_end: ''
   });
 
+  const fetchVessels = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`${API}/vessels`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setVessels(response.data);
+    } catch (err) {
+      console.error('Error fetching vessels:', err);
+    }
+  };
+
+  const fetchTrips = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`${API}/trips`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      // Sort by departure date descending to show recent trips first
+      const sortedTrips = response.data.sort((a, b) => 
+        new Date(b.departure_datetime || 0) - new Date(a.departure_datetime || 0)
+      );
+      setTrips(sortedTrips);
+    } catch (err) {
+      console.error('Error fetching trips:', err);
+    }
+  };
+
+  useEffect(() => {
+    if (open) {
+      fetchVessels();
+      fetchTrips();
+    }
+  }, [open]);
+
   useEffect(() => {
     if (!open) return;
     
@@ -76,6 +121,8 @@ const EngineRunningLogForm = ({ open, onClose, onSave, log, tripId, mode = 'crea
       const utcOffset = log.log_datetime ? calculateUtcOffset(log.log_datetime) : '';
       setFormData({
         trip_id: log.trip_id || tripId || '',
+        vessel_id: log.vessel_id || vesselId || '',
+        vessel_name: log.vessel_name || vesselName || '',
         log_datetime: log.log_datetime ? new Date(log.log_datetime).toISOString().slice(0, 16) : '',
         utc_offset: log.utc_offset || utcOffset,
         // Engine One
@@ -106,8 +153,11 @@ const EngineRunningLogForm = ({ open, onClose, onSave, log, tripId, mode = 'crea
         engine2_engine_hrs_end: log.engine2_engine_hrs_end || ''
       });
     } else if (mode === 'create') {
+      // Default to passed props (from trip context) but allow override
       setFormData({
         trip_id: tripId || '',
+        vessel_id: vesselId || '',
+        vessel_name: vesselName || '',
         log_datetime: '',
         utc_offset: '',
         // Engine One
@@ -139,7 +189,48 @@ const EngineRunningLogForm = ({ open, onClose, onSave, log, tripId, mode = 'crea
       });
     }
     setError('');
-  }, [log, mode, open, tripId]);
+  }, [log, mode, open, tripId, vesselId, vesselName]);
+
+  const handleVesselSelect = (vesselIdValue) => {
+    if (vesselIdValue === 'none') {
+      setFormData(prev => ({
+        ...prev,
+        vessel_id: '',
+        vessel_name: ''
+      }));
+    } else {
+      const selectedVessel = vessels.find(v => v.id === vesselIdValue);
+      if (selectedVessel) {
+        setFormData(prev => ({
+          ...prev,
+          vessel_id: vesselIdValue,
+          vessel_name: selectedVessel.vessel_name
+        }));
+      }
+    }
+  };
+
+  const handleTripSelect = (tripIdValue) => {
+    if (tripIdValue === 'none') {
+      setFormData(prev => ({
+        ...prev,
+        trip_id: ''
+      }));
+    } else {
+      const selectedTrip = trips.find(t => t.id === tripIdValue);
+      if (selectedTrip) {
+        setFormData(prev => ({
+          ...prev,
+          trip_id: tripIdValue,
+          // Auto-fill vessel from trip if vessel not already selected
+          ...((!prev.vessel_id && selectedTrip.vessel_id) ? {
+            vessel_id: selectedTrip.vessel_id,
+            vessel_name: selectedTrip.vessel_name
+          } : {})
+        }));
+      }
+    }
+  };
 
   const handleChange = (field, value) => {
     // Auto-calculate UTC offset when datetime field changes
@@ -154,14 +245,23 @@ const EngineRunningLogForm = ({ open, onClose, onSave, log, tripId, mode = 'crea
   const handleSubmit = () => {
     setError('');
 
+    // Vessel is compulsory for Engine Logs
+    if (!formData.vessel_id || !formData.vessel_name) {
+      setError('Please select a vessel (boat)');
+      return;
+    }
+
     if (!formData.log_datetime) {
       setError('Please enter date and time');
       return;
     }
 
     const submitData = {
-      trip_id: tripId,
+      trip_id: formData.trip_id || null,  // Optional
+      vessel_id: formData.vessel_id,
+      vessel_name: formData.vessel_name,
       log_datetime: new Date(formData.log_datetime).toISOString(),
+      utc_offset: formData.utc_offset || null,
       // Engine One
       engine1_rpm: formData.engine1_rpm ? parseFloat(formData.engine1_rpm) : null,
       engine1_water_temp: formData.engine1_water_temp ? parseFloat(formData.engine1_water_temp) : null,
@@ -193,6 +293,11 @@ const EngineRunningLogForm = ({ open, onClose, onSave, log, tripId, mode = 'crea
     onSave(submitData);
   };
 
+  // Filter trips for the selected vessel (if vessel is selected)
+  const filteredTrips = formData.vessel_id 
+    ? trips.filter(t => t.vessel_id === formData.vessel_id)
+    : trips;
+
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[90vh]">
@@ -211,6 +316,52 @@ const EngineRunningLogForm = ({ open, onClose, onSave, log, tripId, mode = 'crea
 
         <ScrollArea className="h-[60vh] pr-4">
           <div className="space-y-6">
+            {/* Vessel and Trip Selection */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="vessel_id" className="flex items-center gap-1">
+                  <Ship className="h-4 w-4" />
+                  Vessel (Boat) *
+                </Label>
+                <Select value={formData.vessel_id || 'none'} onValueChange={handleVesselSelect}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select vessel" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none" disabled>Select vessel</SelectItem>
+                    {vessels.map((vessel) => (
+                      <SelectItem key={vessel.id} value={vessel.id}>
+                        {vessel.vessel_name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="trip_id" className="flex items-center gap-1">
+                  <Anchor className="h-4 w-4" />
+                  Trip (Optional)
+                </Label>
+                <Select value={formData.trip_id || 'none'} onValueChange={handleTripSelect}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select trip (optional)" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">No Trip</SelectItem>
+                    {filteredTrips.map((tripItem) => (
+                      <SelectItem key={tripItem.id} value={tripItem.id}>
+                        {tripItem.trip_name || tripItem.id.slice(0, 8)} - {tripItem.departure_datetime ? new Date(tripItem.departure_datetime).toLocaleDateString() : 'No date'}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {formData.vessel_id && filteredTrips.length === 0 && (
+                  <p className="text-xs text-gray-500">No trips for this vessel</p>
+                )}
+              </div>
+            </div>
+
             {/* Date & Time with UTC Offset */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
