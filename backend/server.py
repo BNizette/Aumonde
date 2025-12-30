@@ -1347,8 +1347,8 @@ class TripLog(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     trip_id: Optional[str] = None  # Optional - can log without a trip
-    vessel_id: str  # Compulsory - must have a vessel
-    vessel_name: str  # Denormalized for display
+    vessel_id: Optional[str] = None  # Optional - vessel selection
+    vessel_name: Optional[str] = None  # Denormalized for display
     crew_id: str
     crew_name: str
     shift_start_datetime: datetime
@@ -1366,8 +1366,8 @@ class TripLog(BaseModel):
 
 class TripLogCreate(BaseModel):
     trip_id: Optional[str] = None  # Optional - can log without a trip
-    vessel_id: str  # Compulsory - must have a vessel
-    vessel_name: str  # Denormalized for display
+    vessel_id: Optional[str] = None  # Optional - vessel selection
+    vessel_name: Optional[str] = None  # Denormalized for display
     crew_id: str
     crew_name: str
     shift_start_datetime: datetime
