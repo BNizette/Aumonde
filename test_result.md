@@ -13,6 +13,9 @@ frontend:
       - working: true
         agent: "main"
         comment: "✅ FIXED: HelpDialog now opens on click across all modules (Crew, Vessels, Incidents, Emergency, Compliance, Maintenance, Risk Assessment, Trips). Changed Edit icon to Pencil icon for better visibility. Added title='Edit help content' for accessibility. Admin users can click pencil to enter edit mode with Title, Content, Link URL, and Link Text fields. Save and Cancel buttons work correctly."
+      - working: true
+        agent: "testing"
+        comment: "✅ COMPREHENSIVE TESTING PASSED: Successfully tested HelpDialog across 4 modules (Crew, Vessels, Emergency, Compliance). All requirements verified: 1) ✅ Click functionality works (not hover) - info icons open dialogs on click, 2) ✅ Correct dialog titles: Crew shows 'MO504 - Schedule 1 Clause 6(4)', Vessels/Emergency/Compliance show 'Marine Order 504 (2024)', 3) ✅ Pencil edit icons visible for admin user in all modules, 4) ✅ Edit mode functionality complete with Title, Content, Link URL, Link Text fields, 5) ✅ Cancel button exits edit mode correctly. HelpDialog component working perfectly across all tested modules."
 
   - task: "Login functionality"
     implemented: true
