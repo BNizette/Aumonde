@@ -147,11 +147,67 @@ const AdminPanel = () => {
       setCrewMembers(crewRes.data);
       setCrewList(crewRes.data);
       setSmsRevisions(smsRes.data || []);
+
+      // Fetch email config
+      try {
+        const emailConfigRes = await axios.get(`${API}/email-config`, { headers });
+        if (emailConfigRes.data) {
+          setEmailConfig({
+            smtp_server: emailConfigRes.data.smtp_server || '',
+            smtp_port: emailConfigRes.data.smtp_port || '587',
+            smtp_username: emailConfigRes.data.smtp_username || '',
+            smtp_password: '', // Don't show password
+            from_email: emailConfigRes.data.from_email || '',
+            from_name: emailConfigRes.data.from_name || 'AMSA Safety Management',
+            use_tls: emailConfigRes.data.use_tls !== false
+          });
+        }
+      } catch (emailErr) {
+        // Email config might not exist yet, that's ok
+        console.log('No email config found');
+      }
     } catch (err) {
       setError('Error fetching data');
       console.error(err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Email config handlers
+  const handleSaveEmailConfig = async () => {
+    setEmailConfigLoading(true);
+    try {
+      const token = localStorage.getItem('token');
+      await axios.post(`${API}/email-config`, emailConfig, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setMessage('Email configuration saved successfully');
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Failed to save email configuration');
+    } finally {
+      setEmailConfigLoading(false);
+    }
+  };
+
+  const handleSendTestEmail = async () => {
+    if (!testEmailAddress) {
+      setError('Please enter a test email address');
+      return;
+    }
+    setSendingTestEmail(true);
+    try {
+      const token = localStorage.getItem('token');
+      await axios.post(`${API}/email-config/test`, 
+        { email: testEmailAddress },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setMessage('Test email sent successfully');
+      setTestEmailAddress('');
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Failed to send test email');
+    } finally {
+      setSendingTestEmail(false);
     }
   };
 
