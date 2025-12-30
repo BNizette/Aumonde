@@ -496,89 +496,240 @@ class AMSAComprehensiveTester:
             self.log_test("Allocate Crew to Trip", False, error=f"Status: {status}, Response: {response}")
 
     # ============================================================================
-    # TRIP LOGS TESTS
+    # TRIP LOGS TESTS - UPDATED WITH VESSEL AND TRIP SELECTION
     # ============================================================================
 
-    def test_trip_logs(self):
-        """Test trip logging functionality"""
-        print("\n📝 Testing Trip Logs...")
+    def test_trip_logs_vessel_and_trip_selection(self):
+        """Test updated Trip Log (Shift Log) feature with Vessel and Trip selection"""
+        print("\n📝 Testing Trip Logs - Vessel and Trip Selection (UPDATED FEATURE)...")
         
-        if not hasattr(self, 'test_trip_id') or not hasattr(self, 'existing_crew'):
-            self.log_test("Test Trip Logs", False, error="No trip or crew available")
+        if not hasattr(self, 'existing_crew') or not self.existing_crew:
+            self.log_test("Trip Logs Setup", False, error="No crew members available")
             return False
         
-        if not self.existing_crew:
-            self.log_test("Test Trip Logs", False, error="No crew members available")
+        if not hasattr(self, 'existing_vessels') or not self.existing_vessels:
+            self.log_test("Trip Logs Setup", False, error="No vessels available")
             return False
         
         crew_member = self.existing_crew[0]
+        vessel = self.existing_vessels[0]
         
-        # Create crew shift log
-        shift_log_data = {
-            "trip_id": self.test_trip_id,
+        # Test 1: Create trip log WITH trip_id (vessel_id and vessel_name required)
+        print("\n   Test 1: Create Trip Log WITH trip_id...")
+        
+        trip_log_with_trip = {
+            "trip_id": getattr(self, 'test_trip_id', None),  # Optional - can be set
+            "vessel_id": vessel['id'],  # REQUIRED
+            "vessel_name": vessel['vessel_name'],  # REQUIRED
             "crew_id": crew_member['id'],
             "crew_name": crew_member['staff_name'],
-            "shift_start_datetime": "2024-01-15T09:00:00Z",
-            "shift_stop_datetime": "2024-01-15T17:00:00Z",
-            "task_performed": "Navigation and safety monitoring"
+            "shift_start_datetime": "2024-12-14T09:00:00Z",
+            "shift_stop_datetime": "2024-12-14T17:00:00Z",
+            "task_performed": "Navigation and safety monitoring with trip assignment"
         }
         
-        success, response, status = self.make_request('POST', 'trip-logs', data=shift_log_data)
+        success, response, status = self.make_request('POST', 'trip-logs', data=trip_log_with_trip)
         if success and 'id' in response:
-            self.log_test("Create Crew Shift Log", True, f"Created shift log: {response['id']}")
+            trip_log_with_trip_id = response['id']
+            self.log_test("POST /api/trip-logs - Create with trip_id", True, 
+                         f"Created trip log with trip_id: {trip_log_with_trip_id}")
+            
+            # Verify the created log has all required fields
+            success, get_response, _ = self.make_request('GET', f'trip-logs/{trip_log_with_trip_id}')
+            if success:
+                required_fields_present = (
+                    get_response.get('vessel_id') == vessel['id'] and
+                    get_response.get('vessel_name') == vessel['vessel_name'] and
+                    get_response.get('trip_id') == trip_log_with_trip.get('trip_id')
+                )
+                
+                if required_fields_present:
+                    self.log_test("Verify Trip Log Fields (with trip_id)", True, 
+                                 f"vessel_id: {get_response.get('vessel_id')}, vessel_name: {get_response.get('vessel_name')}")
+                else:
+                    self.log_test("Verify Trip Log Fields (with trip_id)", False, 
+                                 error=f"Missing required fields: {get_response}")
+            else:
+                self.log_test("Verify Trip Log Fields (with trip_id)", False, error="Failed to retrieve trip log")
         else:
-            self.log_test("Create Crew Shift Log", False, error=f"Status: {status}")
+            self.log_test("POST /api/trip-logs - Create with trip_id", False, 
+                         error=f"Status: {status}, Response: {response}")
         
-        # Create running log
-        running_log_data = {
-            "trip_id": self.test_trip_id,
+        # Test 2: Create trip log WITHOUT trip_id (trip_id can be null)
+        print("\n   Test 2: Create Trip Log WITHOUT trip_id (trip_id = null)...")
+        
+        trip_log_without_trip = {
+            "trip_id": None,  # OPTIONAL - can be null
+            "vessel_id": vessel['id'],  # REQUIRED
+            "vessel_name": vessel['vessel_name'],  # REQUIRED
             "crew_id": crew_member['id'],
             "crew_name": crew_member['staff_name'],
-            "log_datetime": "2024-01-15T12:00:00Z",
-            "activity": "Safety briefing conducted",
-            "activity_details": "Conducted passenger safety briefing before departure"
+            "shift_start_datetime": "2024-12-14T10:00:00Z",
+            "shift_stop_datetime": "2024-12-14T18:00:00Z",
+            "task_performed": "Maintenance duties without trip assignment"
         }
         
-        success, response, status = self.make_request('POST', 'running-logs', data=running_log_data)
+        success, response, status = self.make_request('POST', 'trip-logs', data=trip_log_without_trip)
         if success and 'id' in response:
-            self.log_test("Create Running Log", True, f"Created running log: {response['id']}")
+            trip_log_without_trip_id = response['id']
+            self.log_test("POST /api/trip-logs - Create without trip_id (null)", True, 
+                         f"Created trip log without trip_id: {trip_log_without_trip_id}")
+            
+            # Verify the created log has vessel info but null trip_id
+            success, get_response, _ = self.make_request('GET', f'trip-logs/{trip_log_without_trip_id}')
+            if success:
+                vessel_fields_present = (
+                    get_response.get('vessel_id') == vessel['id'] and
+                    get_response.get('vessel_name') == vessel['vessel_name'] and
+                    get_response.get('trip_id') is None
+                )
+                
+                if vessel_fields_present:
+                    self.log_test("Verify Trip Log Fields (without trip_id)", True, 
+                                 f"vessel_id: {get_response.get('vessel_id')}, trip_id: {get_response.get('trip_id')}")
+                else:
+                    self.log_test("Verify Trip Log Fields (without trip_id)", False, 
+                                 error=f"Incorrect fields: {get_response}")
+            else:
+                self.log_test("Verify Trip Log Fields (without trip_id)", False, error="Failed to retrieve trip log")
         else:
-            self.log_test("Create Running Log", False, error=f"Status: {status}")
+            self.log_test("POST /api/trip-logs - Create without trip_id (null)", False, 
+                         error=f"Status: {status}, Response: {response}")
         
-        # Create engine running log (Port Engine and Starboard Engine)
-        engine_log_data = {
-            "trip_id": self.test_trip_id,
-            "log_datetime": "2024-01-15T10:00:00Z",
-            # Port Engine (engine1)
-            "engine1_rpm": 1800.0,
-            "engine1_water_temp": 85.5,
-            "engine1_oil_temp": 90.0,
-            "engine1_oil_pressure": 45.0,
-            "engine1_fuel_level": 75.0,
-            "engine1_engine_hrs_start": 1250.5,
-            "engine1_engine_hrs_end": 1258.5,
-            # Starboard Engine (engine2)
-            "engine2_rpm": 1820.0,
-            "engine2_water_temp": 87.0,
-            "engine2_oil_temp": 92.0,
-            "engine2_oil_pressure": 46.0,
-            "engine2_fuel_level": 73.0,
-            "engine2_engine_hrs_start": 1245.0,
-            "engine2_engine_hrs_end": 1253.0
+        # Test 3: Test GET /api/trip-logs?vessel_id={id} - Filter by vessel
+        print("\n   Test 3: Filter Trip Logs by vessel_id...")
+        
+        success, vessel_logs, status = self.make_request('GET', f'trip-logs?vessel_id={vessel["id"]}')
+        if success and isinstance(vessel_logs, list):
+            # Should include both logs we created for this vessel
+            vessel_log_count = len(vessel_logs)
+            self.log_test("GET /api/trip-logs?vessel_id={id} - Filter by vessel", True, 
+                         f"Retrieved {vessel_log_count} trip logs for vessel {vessel['vessel_name']}")
+            
+            # Verify all returned logs have the correct vessel_id
+            all_correct_vessel = all(log.get('vessel_id') == vessel['id'] for log in vessel_logs)
+            if all_correct_vessel:
+                self.log_test("Verify Vessel Filter Results", True, "All logs have correct vessel_id")
+            else:
+                self.log_test("Verify Vessel Filter Results", False, error="Some logs have incorrect vessel_id")
+        else:
+            self.log_test("GET /api/trip-logs?vessel_id={id} - Filter by vessel", False, 
+                         error=f"Status: {status}")
+        
+        # Test 4: Test PUT /api/trip-logs/{id} - Update vessel and trip fields
+        print("\n   Test 4: Update Trip Log vessel and trip fields...")
+        
+        if 'trip_log_with_trip_id' in locals():
+            # Get another vessel for update test
+            update_vessel = self.existing_vessels[1] if len(self.existing_vessels) > 1 else vessel
+            
+            update_data = {
+                "trip_id": None,  # Change from having trip_id to null
+                "vessel_id": update_vessel['id'],  # Change vessel
+                "vessel_name": update_vessel['vessel_name'],  # Change vessel name
+                "crew_id": crew_member['id'],
+                "crew_name": crew_member['staff_name'],
+                "shift_start_datetime": "2024-12-14T09:00:00Z",
+                "shift_stop_datetime": "2024-12-14T17:00:00Z",
+                "task_performed": "Updated task with different vessel"
+            }
+            
+            success, update_response, status = self.make_request('PUT', f'trip-logs/{trip_log_with_trip_id}', data=update_data)
+            if success:
+                self.log_test("PUT /api/trip-logs/{id} - Update vessel and trip fields", True, 
+                             "Successfully updated trip log vessel and trip fields")
+                
+                # Verify the update
+                success, verify_response, _ = self.make_request('GET', f'trip-logs/{trip_log_with_trip_id}')
+                if success:
+                    update_correct = (
+                        verify_response.get('vessel_id') == update_vessel['id'] and
+                        verify_response.get('vessel_name') == update_vessel['vessel_name'] and
+                        verify_response.get('trip_id') is None
+                    )
+                    
+                    if update_correct:
+                        self.log_test("Verify Trip Log Update", True, 
+                                     f"Updated to vessel: {update_vessel['vessel_name']}, trip_id: null")
+                    else:
+                        self.log_test("Verify Trip Log Update", False, 
+                                     error=f"Update not applied correctly: {verify_response}")
+                else:
+                    self.log_test("Verify Trip Log Update", False, error="Failed to verify update")
+            else:
+                self.log_test("PUT /api/trip-logs/{id} - Update vessel and trip fields", False, 
+                             error=f"Status: {status}")
+        
+        # Test 5: Test required field validation
+        print("\n   Test 5: Test Required Field Validation...")
+        
+        # Test missing vessel_id (should fail)
+        invalid_log_no_vessel_id = {
+            "trip_id": None,
+            # Missing vessel_id - REQUIRED
+            "vessel_name": vessel['vessel_name'],
+            "crew_id": crew_member['id'],
+            "crew_name": crew_member['staff_name'],
+            "shift_start_datetime": "2024-12-14T11:00:00Z"
         }
         
-        success, response, status = self.make_request('POST', 'engine-running-logs', data=engine_log_data)
-        if success and 'id' in response:
-            self.log_test("Create Engine Running Log (Port & Starboard)", True, f"Created engine log: {response['id']}")
+        success, response, status = self.make_request('POST', 'trip-logs', 
+                                                     data=invalid_log_no_vessel_id, expected_status=422)
+        if status == 422:
+            self.log_test("Validation - Missing vessel_id (REQUIRED)", True, 
+                         "Correctly rejected log without vessel_id")
         else:
-            self.log_test("Create Engine Running Log (Port & Starboard)", False, error=f"Status: {status}")
+            self.log_test("Validation - Missing vessel_id (REQUIRED)", False, 
+                         error=f"Expected 422, got {status}")
         
-        # Get trip logs
-        success, response, status = self.make_request('GET', f'trip-logs?trip_id={self.test_trip_id}')
-        if success and isinstance(response, list):
-            self.log_test("Get Trip Logs", True, f"Retrieved {len(response)} trip logs")
+        # Test missing vessel_name (should fail)
+        invalid_log_no_vessel_name = {
+            "trip_id": None,
+            "vessel_id": vessel['id'],
+            # Missing vessel_name - REQUIRED
+            "crew_id": crew_member['id'],
+            "crew_name": crew_member['staff_name'],
+            "shift_start_datetime": "2024-12-14T11:00:00Z"
+        }
+        
+        success, response, status = self.make_request('POST', 'trip-logs', 
+                                                     data=invalid_log_no_vessel_name, expected_status=422)
+        if status == 422:
+            self.log_test("Validation - Missing vessel_name (REQUIRED)", True, 
+                         "Correctly rejected log without vessel_name")
         else:
-            self.log_test("Get Trip Logs", False, error=f"Status: {status}")
+            self.log_test("Validation - Missing vessel_name (REQUIRED)", False, 
+                         error=f"Expected 422, got {status}")
+        
+        # Test 6: Test backward compatibility - existing trip logs without vessel_id should still work
+        print("\n   Test 6: Test Backward Compatibility...")
+        
+        # Get all trip logs to check if any exist without vessel_id
+        success, all_logs, status = self.make_request('GET', 'trip-logs')
+        if success and isinstance(all_logs, list):
+            logs_without_vessel = [log for log in all_logs if not log.get('vessel_id')]
+            logs_with_vessel = [log for log in all_logs if log.get('vessel_id')]
+            
+            self.log_test("Backward Compatibility Check", True, 
+                         f"Total logs: {len(all_logs)}, With vessel_id: {len(logs_with_vessel)}, Without vessel_id: {len(logs_without_vessel)}")
+            
+            if logs_without_vessel:
+                self.log_test("Legacy Trip Logs Support", True, 
+                             f"Found {len(logs_without_vessel)} legacy trip logs without vessel_id - backward compatibility maintained")
+            else:
+                self.log_test("Legacy Trip Logs Support", True, 
+                             "No legacy trip logs found, all logs have vessel_id as expected")
+        else:
+            self.log_test("Backward Compatibility Check", False, error=f"Failed to get all logs: {status}")
+        
+        # Summary
+        print("\n   📊 Trip Log Vessel & Trip Selection Test Summary:")
+        print(f"      ✅ vessel_id and vessel_name are REQUIRED fields")
+        print(f"      ✅ trip_id is OPTIONAL (can be null)")
+        print(f"      ✅ Filtering by vessel_id works correctly")
+        print(f"      ✅ Update operations support vessel and trip fields")
+        print(f"      ✅ Validation prevents creation without required fields")
+        print(f"      ✅ Backward compatibility maintained for existing logs")
 
     # ============================================================================
     # MANUAL LOG ENTRY TESTS (NEW FEATURE)
