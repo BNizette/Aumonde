@@ -3252,7 +3252,7 @@ class AMSAComprehensiveTester:
                 self.log_test(test_method.__name__, False, error=f"Exception: {str(e)}")
         
         # Cleanup
-        self.cleanup_test_data()
+        self.cleanup()
         
         # Print summary
         print("\n" + "=" * 70)
