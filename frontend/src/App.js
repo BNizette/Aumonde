@@ -120,7 +120,7 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <Routes>
-          {/* Public Route */}
+          {/* Public Routes */}
           <Route
             path="/login"
             element={
