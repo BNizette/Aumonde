@@ -15,6 +15,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import HelpDialog from './HelpDialog';
 import RiskAssessmentForm from './RiskAssessmentForm';
 import RiskAssessmentDetails from './RiskAssessmentDetails';
 import useAdvancedFilters from '../hooks/useAdvancedFilters';
