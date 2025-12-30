@@ -903,19 +903,69 @@ const AdminPanel = () => {
         </Alert>
       )}
 
-      <Tabs defaultValue="users" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="users">Users ({users.length})</TabsTrigger>
-          <TabsTrigger value="activity">Activity Logs</TabsTrigger>
-          <TabsTrigger value="audit">Audit Trail</TabsTrigger>
-          <TabsTrigger value="sessions">Sessions ({sessions.length})</TabsTrigger>
-          <TabsTrigger value="sms">SMS Revisions</TabsTrigger>
-          <TabsTrigger value="backup">Backup & Restore</TabsTrigger>
-          <TabsTrigger value="settings">Settings</TabsTrigger>
-        </TabsList>
+      {/* Navigation Dropdown */}
+      <div className="mb-6">
+        <Label className="text-sm font-medium text-gray-700 mb-2 block">Select View</Label>
+        <Select value={activeView} onValueChange={setActiveView}>
+          <SelectTrigger className="w-full md:w-80">
+            <SelectValue placeholder="Select a view" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="users">
+              <span className="flex items-center gap-2">
+                <UsersIcon className="h-4 w-4" />
+                Users ({users.length})
+              </span>
+            </SelectItem>
+            <SelectItem value="activity">
+              <span className="flex items-center gap-2">
+                <Database className="h-4 w-4" />
+                Activity Logs
+              </span>
+            </SelectItem>
+            <SelectItem value="audit">
+              <span className="flex items-center gap-2">
+                <AlertCircle className="h-4 w-4" />
+                Audit Trail
+              </span>
+            </SelectItem>
+            <SelectItem value="sessions">
+              <span className="flex items-center gap-2">
+                <Key className="h-4 w-4" />
+                Sessions ({sessions.length})
+              </span>
+            </SelectItem>
+            <SelectItem value="sms">
+              <span className="flex items-center gap-2">
+                <FileSpreadsheet className="h-4 w-4" />
+                SMS Revisions
+              </span>
+            </SelectItem>
+            <SelectItem value="email">
+              <span className="flex items-center gap-2">
+                <Mail className="h-4 w-4" />
+                Email Configuration
+              </span>
+            </SelectItem>
+            <SelectItem value="backup">
+              <span className="flex items-center gap-2">
+                <Database className="h-4 w-4" />
+                Backup & Restore
+              </span>
+            </SelectItem>
+            <SelectItem value="settings">
+              <span className="flex items-center gap-2">
+                <Edit className="h-4 w-4" />
+                Settings
+              </span>
+            </SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
 
-        {/* USERS TAB */}
-        <TabsContent value="users">
+      <div className="space-y-4">
+        {/* USERS VIEW */}
+        {activeView === 'users' && (
           <Card>
             <CardHeader>
               <div className="flex items-center justify-between">
