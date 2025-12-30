@@ -85,8 +85,8 @@ const TripRunningLogsPage = () => {
     });
   };
 
-  const canEdit = user?.access_level === 'Edit' || user?.access_level === 'Full';
-  const canDelete = user?.access_level === 'Full';
+  const canEdit = user?.access_level === 'Edit' || user?.access_level === 'Full' || user?.access_level === 'Admin';
+  const canDelete = user?.access_level === 'Full' || user?.access_level === 'Admin';
 
   // Log handlers
   const handleAddLog = () => {
