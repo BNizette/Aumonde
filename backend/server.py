@@ -1440,6 +1440,7 @@ class EngineRunningLog(BaseModel):
 class EngineRunningLogCreate(BaseModel):
     trip_id: str
     log_datetime: datetime
+    utc_offset: Optional[str] = None  # UTC offset e.g., +10:00
     # Engine One
     engine1_rpm: Optional[float] = None
     engine1_water_temp: Optional[float] = None
