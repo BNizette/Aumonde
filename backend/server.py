@@ -5093,9 +5093,12 @@ AMSA Safety Management System
         
     except Exception as e:
         logger.error(f"Failed to send password reset email: {str(e)}")
-        raise HTTPException(status_code=500, detail="Failed to send email. Please try again later.")
+        logger.info(f"RESET TOKEN (for debugging): {reset_token}")
+        # Don't raise exception - still return success to prevent email enumeration
+        # The token was created, admin can find it in logs if needed
+        return {"message": "If the email exists, a password reset link will be sent", "email_sent": False}
     
-    return {"message": "If the email exists, a password reset link will be sent"}
+    return {"message": "If the email exists, a password reset link will be sent", "email_sent": True}
 
 @api_router.post("/auth/reset-password")
 async def reset_password(request: ResetPasswordRequest):
