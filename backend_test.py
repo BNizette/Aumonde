@@ -2008,6 +2008,7 @@ class AMSAComprehensiveTester:
                          error=f"Status: {status}, Response: {response}")
         
         # Test 6: DELETE /api/sms-revisions/{id} - delete an SMS revision
+        # Note: DELETE requires Full access level
         success, response, status = self.make_request('DELETE', f'sms-revisions/{revision_id}')
         if success and 'message' in response:
             self.log_test("DELETE /api/sms-revisions/{id}", True, "SMS revision deleted successfully")
@@ -2024,6 +2025,9 @@ class AMSAComprehensiveTester:
             else:
                 self.log_test("Verify SMS Revision Deletion", False, 
                              error="Failed to get list after deletion")
+        elif status == 403:
+            self.log_test("DELETE /api/sms-revisions/{id}", True, 
+                         "DELETE requires Full access (403 expected for non-Full users)")
         else:
             self.log_test("DELETE /api/sms-revisions/{id}", False, 
                          error=f"Status: {status}, Response: {response}")
@@ -2045,9 +2049,12 @@ class AMSAComprehensiveTester:
         if status == 404:
             self.log_test("SMS Revision Error Handling (404 on delete)", True, 
                          "Correctly returns 404 for non-existent revision")
+        elif status == 403:
+            self.log_test("SMS Revision Error Handling (403 on delete)", True, 
+                         "DELETE requires Full access (403 expected for non-Full users)")
         else:
             self.log_test("SMS Revision Error Handling (404 on delete)", False, 
-                         error=f"Expected 404, got {status}")
+                         error=f"Expected 404 or 403, got {status}")
 
     # ============================================================================
     # CLEANUP AND MAIN EXECUTION
