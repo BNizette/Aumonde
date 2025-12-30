@@ -1873,6 +1873,183 @@ class AMSAComprehensiveTester:
         print("      - ℹ️  Note: Uses /api/vessel-induction endpoint, not crew.induction_by_vessel field")
 
     # ============================================================================
+    # SMS REVISIONS TESTS
+    # ============================================================================
+
+    def test_sms_revisions(self):
+        """Test SMS Revisions functionality as per review request"""
+        print("\n📋 Testing SMS Revisions...")
+        
+        # Store created SMS revisions for cleanup
+        self.created_sms_revisions = []
+        
+        # Test 1: GET /api/sms-revisions - should return list of SMS revisions
+        success, response, status = self.make_request('GET', 'sms-revisions')
+        if success and isinstance(response, list):
+            self.log_test("GET /api/sms-revisions", True, f"Retrieved {len(response)} SMS revisions")
+            existing_revisions = response
+        else:
+            self.log_test("GET /api/sms-revisions", False, error=f"Status: {status}, Response: {response}")
+            existing_revisions = []
+        
+        # Test 2: POST /api/sms-revisions - create a new SMS revision with version "3.0"
+        revision_data = {
+            "revision_date": "2024-12-14T10:00:00Z",
+            "revision_description": "Test SMS revision for version 3.0 - Updated safety procedures",
+            "crew_member_id": None,
+            "crew_member_name": None,
+            "version_number": "3.0"
+        }
+        
+        success, response, status = self.make_request('POST', 'sms-revisions', data=revision_data)
+        if success and 'id' in response:
+            revision_id = response['id']
+            self.created_sms_revisions.append(revision_id)
+            self.log_test("POST /api/sms-revisions (create version 3.0)", True, f"Created SMS revision: {revision_id}")
+            
+            # Verify the created revision has correct data
+            if (response.get('version_number') == "3.0" and 
+                response.get('revision_description') == revision_data['revision_description']):
+                self.log_test("SMS Revision Data Validation", True, "Version 3.0 and description correct")
+            else:
+                self.log_test("SMS Revision Data Validation", False, 
+                             error=f"Data mismatch: {response}")
+        else:
+            self.log_test("POST /api/sms-revisions (create version 3.0)", False, 
+                         error=f"Status: {status}, Response: {response}")
+            return False
+        
+        # Test 3: PUT /api/sms-revisions/{id} - update an existing SMS revision's description
+        updated_description = "Updated test SMS revision - Enhanced safety protocols for version 3.0"
+        update_data = revision_data.copy()
+        update_data['revision_description'] = updated_description
+        
+        success, response, status = self.make_request('PUT', f'sms-revisions/{revision_id}', data=update_data)
+        if success and response.get('revision_description') == updated_description:
+            self.log_test("PUT /api/sms-revisions/{id} (update description)", True, 
+                         "SMS revision description updated successfully")
+        else:
+            self.log_test("PUT /api/sms-revisions/{id} (update description)", False, 
+                         error=f"Status: {status}, Response: {response}")
+        
+        # Test 4: Verify the revision appears in the list and check sorting
+        success, updated_list, status = self.make_request('GET', 'sms-revisions')
+        if success and isinstance(updated_list, list):
+            # Find our created revision
+            our_revision = next((r for r in updated_list if r['id'] == revision_id), None)
+            if our_revision:
+                self.log_test("SMS Revision in List After Update", True, 
+                             f"Revision found with updated description")
+                
+                # Check if list is sorted by version number descending (if multiple versions exist)
+                if len(updated_list) > 1:
+                    versions = [r.get('version_number') for r in updated_list if r.get('version_number')]
+                    if versions:
+                        # Convert versions to float for comparison (e.g., "3.0" -> 3.0)
+                        try:
+                            version_floats = [float(v) for v in versions]
+                            is_sorted_desc = version_floats == sorted(version_floats, reverse=True)
+                            if is_sorted_desc:
+                                self.log_test("SMS Revisions Version Sorting", True, 
+                                             f"List sorted by version descending: {versions}")
+                            else:
+                                self.log_test("SMS Revisions Version Sorting", False, 
+                                             error=f"Not sorted by version descending: {versions}")
+                        except ValueError:
+                            self.log_test("SMS Revisions Version Sorting", False, 
+                                         error=f"Invalid version numbers for sorting: {versions}")
+                    else:
+                        self.log_test("SMS Revisions Version Sorting", True, 
+                                     "No version numbers to sort (acceptable)")
+                else:
+                    self.log_test("SMS Revisions Version Sorting", True, 
+                                 "Only one revision (sorting not applicable)")
+            else:
+                self.log_test("SMS Revision in List After Update", False, 
+                             error="Updated revision not found in list")
+        else:
+            self.log_test("SMS Revision in List After Update", False, 
+                         error=f"Failed to get updated list: {status}")
+        
+        # Test 5: Create another revision with different version to test sorting
+        revision_data_v2 = {
+            "revision_date": "2024-12-13T10:00:00Z",
+            "revision_description": "Test SMS revision for version 2.0 - Previous version",
+            "crew_member_id": None,
+            "crew_member_name": None,
+            "version_number": "2.0"
+        }
+        
+        success, response, status = self.make_request('POST', 'sms-revisions', data=revision_data_v2)
+        if success and 'id' in response:
+            revision_id_v2 = response['id']
+            self.created_sms_revisions.append(revision_id_v2)
+            self.log_test("POST /api/sms-revisions (create version 2.0)", True, f"Created SMS revision v2.0: {revision_id_v2}")
+            
+            # Now test sorting with multiple versions
+            success, sorted_list, status = self.make_request('GET', 'sms-revisions')
+            if success and isinstance(sorted_list, list) and len(sorted_list) >= 2:
+                # Find positions of our revisions
+                v3_position = next((i for i, r in enumerate(sorted_list) if r['id'] == revision_id), -1)
+                v2_position = next((i for i, r in enumerate(sorted_list) if r['id'] == revision_id_v2), -1)
+                
+                if v3_position != -1 and v2_position != -1:
+                    if v3_position < v2_position:  # v3.0 should come before v2.0 (descending order)
+                        self.log_test("SMS Revisions Sorting Verification", True, 
+                                     f"Version 3.0 (pos {v3_position}) comes before 2.0 (pos {v2_position})")
+                    else:
+                        self.log_test("SMS Revisions Sorting Verification", False, 
+                                     error=f"Version 3.0 (pos {v3_position}) should come before 2.0 (pos {v2_position})")
+                else:
+                    self.log_test("SMS Revisions Sorting Verification", False, 
+                                 error="Could not find both revisions in sorted list")
+        else:
+            self.log_test("POST /api/sms-revisions (create version 2.0)", False, 
+                         error=f"Status: {status}, Response: {response}")
+        
+        # Test 6: DELETE /api/sms-revisions/{id} - delete an SMS revision
+        success, response, status = self.make_request('DELETE', f'sms-revisions/{revision_id}')
+        if success and 'message' in response:
+            self.log_test("DELETE /api/sms-revisions/{id}", True, "SMS revision deleted successfully")
+            
+            # Verify it's no longer in the list
+            success, final_list, status = self.make_request('GET', 'sms-revisions')
+            if success:
+                deleted_revision = next((r for r in final_list if r['id'] == revision_id), None)
+                if deleted_revision is None:
+                    self.log_test("Verify SMS Revision Deletion", True, "Deleted revision no longer in list")
+                else:
+                    self.log_test("Verify SMS Revision Deletion", False, 
+                                 error="Deleted revision still appears in list")
+            else:
+                self.log_test("Verify SMS Revision Deletion", False, 
+                             error="Failed to get list after deletion")
+        else:
+            self.log_test("DELETE /api/sms-revisions/{id}", False, 
+                         error=f"Status: {status}, Response: {response}")
+        
+        # Test 7: Test error handling - try to update non-existent revision
+        fake_id = "non-existent-id"
+        success, response, status = self.make_request('PUT', f'sms-revisions/{fake_id}', 
+                                                     data=revision_data, expected_status=404)
+        if status == 404:
+            self.log_test("SMS Revision Error Handling (404 on update)", True, 
+                         "Correctly returns 404 for non-existent revision")
+        else:
+            self.log_test("SMS Revision Error Handling (404 on update)", False, 
+                         error=f"Expected 404, got {status}")
+        
+        # Test 8: Test error handling - try to delete non-existent revision
+        success, response, status = self.make_request('DELETE', f'sms-revisions/{fake_id}', 
+                                                     expected_status=404)
+        if status == 404:
+            self.log_test("SMS Revision Error Handling (404 on delete)", True, 
+                         "Correctly returns 404 for non-existent revision")
+        else:
+            self.log_test("SMS Revision Error Handling (404 on delete)", False, 
+                         error=f"Expected 404, got {status}")
+
+    # ============================================================================
     # CLEANUP AND MAIN EXECUTION
     # ============================================================================
 
