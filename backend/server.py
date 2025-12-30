@@ -2629,6 +2629,7 @@ class IncidentCreate(BaseModel):
     title: str
     description: str
     incident_date: str
+    utc_offset: Optional[str] = None  # UTC offset e.g., +10:00
     location: str
     trip_from: Optional[str] = None
     trip_to: Optional[str] = None
