@@ -441,27 +441,14 @@ const CrewManagement = () => {
         <div>
           <div className="flex items-center gap-2">
             <h2 className="text-3xl font-bold text-gray-900">Crew Management</h2>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Info className="h-5 w-5 text-blue-500 cursor-help" />
-                </TooltipTrigger>
-                <TooltipContent className="max-w-sm">
-                  <p className="font-semibold mb-1">MO504 - Schedule 1 Clause 6(4)</p>
-                  <p className="text-sm mb-2">
-                    Requires crewing evaluation, fatigue risk management, crew certificates of competency, and documented SMS including crew training and responsibilities.
-                  </p>
-                  <a 
-                    href="https://www.amsa.gov.au/vessels-operators/domestic-commercial-vessels/crewing-guidance-domestic-commercial-vessels"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-500 hover:underline text-sm"
-                  >
-                    View AMSA Crewing Guidance →
-                  </a>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            <HelpDialog 
+              moduleKey="crew_management"
+              title="MO504 - Schedule 1 Clause 6(4)"
+              defaultContent="Requires crewing evaluation, fatigue risk management, crew certificates of competency, and documented SMS including crew training and responsibilities."
+              defaultLink="https://www.amsa.gov.au/vessels-operators/domestic-commercial-vessels/crewing-guidance-domestic-commercial-vessels"
+              defaultLinkText="View AMSA Crewing Guidance →"
+              isAdmin={isAdmin}
+            />
           </div>
           <p className="text-gray-500 mt-1">Manage crew members and their qualifications</p>
         </div>
