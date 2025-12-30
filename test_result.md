@@ -676,3 +676,15 @@ backend:
       - working: true
         agent: "testing"
         comment: "✅ INCIDENT EDIT FUNCTIONALITY TESTING COMPLETED: Successfully tested incident edit functionality as per review request: 1) ✅ GET /api/incidents/{id} - Fetch an incident works correctly, 2) ✅ Verify incident_type and activity can be arrays or undefined without causing errors - Both fields handle arrays, strings, and null values correctly, 3) ⚠️ Minor: Update incident with array values returns 422 validation error (likely due to backend validation rules), but core functionality of fetching and handling different data types works correctly. The freeze bug fix is working - incidents can be fetched and their field types are handled properly without causing application errors."
+
+  - task: "Expenditure APA - PDF Receipt Upload Fix"
+    implemented: true
+    working: true
+    file: "src/components/TripDetailsDialog.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "✅ FIXED: 1) Changed upload endpoint from /api/upload to /api/documents/upload, 2) Changed response.data.url to response.data.file_url, 3) Improved upload UI with dashed-border click area similar to Compliance Certificates, 4) Added Upload and X icons to imports, 5) Shows uploaded receipt with View link and Remove button."
