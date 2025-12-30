@@ -69,8 +69,9 @@ const CrewManagement = () => {
   });
 
   const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
-  const canEdit = currentUser.access_level === 'Edit' || currentUser.access_level === 'Full';
-  const canDelete = currentUser.access_level === 'Full';
+  const canEdit = currentUser.access_level === 'Edit' || currentUser.access_level === 'Full' || currentUser.access_level === 'Admin';
+  const canDelete = currentUser.access_level === 'Full' || currentUser.access_level === 'Admin';
+  const isAdmin = currentUser.access_level === 'Admin';
 
   useEffect(() => {
     fetchCrew();
