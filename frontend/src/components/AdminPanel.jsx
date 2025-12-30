@@ -1502,6 +1502,7 @@ const AdminPanel = () => {
                     <SelectItem value="View">View (Read-only)</SelectItem>
                     <SelectItem value="Edit">Edit (Modify)</SelectItem>
                     <SelectItem value="Full">Full (Delete)</SelectItem>
+                    <SelectItem value="Admin">Admin (Full + Admin Fields)</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
