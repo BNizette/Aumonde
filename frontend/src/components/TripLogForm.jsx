@@ -265,7 +265,7 @@ const TripLogForm = ({ open, onClose, onSave, log, tripId, mode = 'create' }) =>
             </Select>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-4 gap-4">
             <div className="space-y-2">
               <Label htmlFor="shift_start_datetime">Shift Start *</Label>
               <Input
@@ -277,6 +277,18 @@ const TripLogForm = ({ open, onClose, onSave, log, tripId, mode = 'create' }) =>
             </div>
 
             <div className="space-y-2">
+              <Label htmlFor="shift_start_utc_offset">UTC Offset</Label>
+              <Input
+                id="shift_start_utc_offset"
+                value={formData.shift_start_utc_offset}
+                onChange={(e) => handleChange('shift_start_utc_offset', e.target.value)}
+                placeholder="+00:00"
+                className="bg-gray-50"
+              />
+              <p className="text-xs text-gray-500">Auto-calculated</p>
+            </div>
+
+            <div className="space-y-2">
               <Label htmlFor="shift_stop_datetime">Shift Stop</Label>
               <Input
                 id="shift_stop_datetime"
@@ -284,6 +296,18 @@ const TripLogForm = ({ open, onClose, onSave, log, tripId, mode = 'create' }) =>
                 value={formData.shift_stop_datetime}
                 onChange={(e) => handleChange('shift_stop_datetime', e.target.value)}
               />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="shift_stop_utc_offset">UTC Offset</Label>
+              <Input
+                id="shift_stop_utc_offset"
+                value={formData.shift_stop_utc_offset}
+                onChange={(e) => handleChange('shift_stop_utc_offset', e.target.value)}
+                placeholder="+00:00"
+                className="bg-gray-50"
+              />
+              <p className="text-xs text-gray-500">Auto-calculated</p>
             </div>
           </div>
 
