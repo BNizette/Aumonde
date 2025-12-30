@@ -412,7 +412,7 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create', defaultTab
   };
 
   const handleSubmit = () => {
-    // Clean form data - convert empty strings to null for numeric fields
+    // Clean form data - convert empty strings to null for numeric and optional fields
     const numericFields = [
       'length_overall', 'length_at_waterline', 'beam', 'draft', 'air_draft',
       'gross_tonnage', 'year_built', 'number_of_engines', 'engine_power',
@@ -421,12 +421,21 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create', defaultTab
     ];
     
     const cleanedData = { ...formData };
+    
+    // Convert empty strings to null for numeric fields
     numericFields.forEach(field => {
       if (cleanedData[field] === '' || cleanedData[field] === undefined) {
         cleanedData[field] = null;
       } else if (typeof cleanedData[field] === 'string') {
         const num = parseFloat(cleanedData[field]);
         cleanedData[field] = isNaN(num) ? null : num;
+      }
+    });
+    
+    // Convert empty strings to null for all other optional fields
+    Object.keys(cleanedData).forEach(key => {
+      if (cleanedData[key] === '') {
+        cleanedData[key] = null;
       }
     });
     
