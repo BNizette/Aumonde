@@ -52,12 +52,16 @@ const TripLogForm = ({ open, onClose, onSave, log, tripId, mode = 'create' }) =>
 
   useEffect(() => {
     if (log && mode === 'edit') {
+      const startOffset = log.shift_start_datetime ? calculateUtcOffset(log.shift_start_datetime) : '';
+      const stopOffset = log.shift_stop_datetime ? calculateUtcOffset(log.shift_stop_datetime) : '';
       setFormData({
         trip_id: log.trip_id || tripId || '',
         crew_id: log.crew_id || '',
         crew_name: log.crew_name || '',
         shift_start_datetime: log.shift_start_datetime ? new Date(log.shift_start_datetime).toISOString().slice(0, 16) : '',
+        shift_start_utc_offset: log.shift_start_utc_offset || startOffset,
         shift_stop_datetime: log.shift_stop_datetime ? new Date(log.shift_stop_datetime).toISOString().slice(0, 16) : '',
+        shift_stop_utc_offset: log.shift_stop_utc_offset || stopOffset,
         task_performed: log.task_performed || '',
         location_start: log.location_start || '',
         location_end: log.location_end || '',
@@ -70,7 +74,9 @@ const TripLogForm = ({ open, onClose, onSave, log, tripId, mode = 'create' }) =>
         crew_id: '',
         crew_name: '',
         shift_start_datetime: '',
+        shift_start_utc_offset: '',
         shift_stop_datetime: '',
+        shift_stop_utc_offset: '',
         task_performed: '',
         location_start: '',
         location_end: '',
