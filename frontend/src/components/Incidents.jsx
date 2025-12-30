@@ -492,6 +492,9 @@ const Incidents = () => {
     
     setFormData({
       ...incident,
+      // Ensure arrays are properly initialized to prevent undefined errors
+      incident_type: Array.isArray(incident.incident_type) ? incident.incident_type : [],
+      activity: Array.isArray(incident.activity) ? incident.activity : [],
       incident_date: incident.incident_date ? new Date(incident.incident_date).toISOString().slice(0, 16) : '',
       utc_offset: incident.utc_offset || calculatedOffset,
       target_completion_date: incident.target_completion_date ? new Date(incident.target_completion_date).toISOString().slice(0, 16) : '',
