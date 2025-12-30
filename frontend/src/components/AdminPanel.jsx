@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -11,7 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Trash2, Edit, RefreshCw, Key, XCircle, UserPlus, Users as UsersIcon, Download, Upload, Database, AlertCircle, Search, Filter, X, FileSpreadsheet, Plus, Eye } from 'lucide-react';
+import { Trash2, Edit, RefreshCw, Key, XCircle, UserPlus, Users as UsersIcon, Download, Upload, Database, AlertCircle, Search, Filter, X, FileSpreadsheet, Plus, Eye, Mail, Server, Lock } from 'lucide-react';
 import { exportMultiSheetExcel, formatDate, safeValue } from '../utils/excelExport';
 import { useNavigate } from 'react-router-dom';
 import BackupManagement from './BackupManagement';
@@ -22,6 +21,7 @@ const API = `${BACKEND_URL}/api`;
 
 const AdminPanel = () => {
   const navigate = useNavigate();
+  const [activeView, setActiveView] = useState('users');
   const [users, setUsers] = useState([]);
   const [crewMembers, setCrewMembers] = useState([]);
   const [activityLogs, setActivityLogs] = useState([]);
