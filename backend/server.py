@@ -1383,8 +1383,9 @@ class TripLogCreate(BaseModel):
 class RunningLog(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    trip_id: Optional[str] = None  # Optional for manual entry
-    vessel_id: Optional[str] = None  # For manual entry without trip
+    trip_id: Optional[str] = None  # Optional - can log without a trip
+    vessel_id: str  # Compulsory - must have a vessel
+    vessel_name: str  # Denormalized for display
     crew_id: str
     crew_name: str
     log_datetime: datetime
@@ -1392,12 +1393,14 @@ class RunningLog(BaseModel):
     category: Optional[str] = None  # Radio, Conditions, Safety, Vessel Operation
     activity: str
     activity_details: Optional[str] = None
+    gps_location: Optional[str] = None
     created_by: str
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class RunningLogCreate(BaseModel):
-    trip_id: Optional[str] = None  # Optional for manual entry
-    vessel_id: Optional[str] = None  # For manual entry without trip
+    trip_id: Optional[str] = None  # Optional - can log without a trip
+    vessel_id: str  # Compulsory - must have a vessel
+    vessel_name: str  # Denormalized for display
     crew_id: str
     crew_name: str
     log_datetime: datetime
@@ -1405,11 +1408,14 @@ class RunningLogCreate(BaseModel):
     category: Optional[str] = None  # Radio, Conditions, Safety, Vessel Operation
     activity: str
     activity_details: Optional[str] = None
+    gps_location: Optional[str] = None
 
 class EngineRunningLog(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    trip_id: str
+    trip_id: Optional[str] = None  # Optional - can log without a trip
+    vessel_id: str  # Compulsory - must have a vessel
+    vessel_name: str  # Denormalized for display
     log_datetime: datetime
     utc_offset: Optional[str] = None  # UTC offset e.g., +10:00
     # Engine One
