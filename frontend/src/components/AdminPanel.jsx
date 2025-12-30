@@ -1794,6 +1794,126 @@ const AdminPanel = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* SMS Revision View Dialog */}
+      <Dialog open={smsViewDialogOpen} onOpenChange={setSmsViewDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>View SMS Revision</DialogTitle>
+            <DialogDescription>Safety Management System revision details</DialogDescription>
+          </DialogHeader>
+          {viewingSmsRevision && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-sm text-gray-500">Revision Date</Label>
+                  <p className="font-medium">{viewingSmsRevision.revision_date ? new Date(viewingSmsRevision.revision_date).toLocaleDateString() : '-'}</p>
+                </div>
+                <div>
+                  <Label className="text-sm text-gray-500">Version Number</Label>
+                  <p className="font-medium">{viewingSmsRevision.version_number || '-'}</p>
+                </div>
+              </div>
+              <div>
+                <Label className="text-sm text-gray-500">Description</Label>
+                <p className="font-medium whitespace-pre-wrap">{viewingSmsRevision.revision_description || '-'}</p>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-sm text-gray-500">Crew Member</Label>
+                  <p className="font-medium">{viewingSmsRevision.crew_member_name || '-'}</p>
+                </div>
+                <div>
+                  <Label className="text-sm text-gray-500">Created By</Label>
+                  <p className="font-medium">{viewingSmsRevision.created_by_name || '-'}</p>
+                </div>
+              </div>
+              <div>
+                <Label className="text-sm text-gray-500">Created At</Label>
+                <p className="font-medium">{viewingSmsRevision.created_at ? new Date(viewingSmsRevision.created_at).toLocaleString() : '-'}</p>
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => {
+              setSmsViewDialogOpen(false);
+              setViewingSmsRevision(null);
+            }}>Close</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* SMS Revision Edit Dialog */}
+      <Dialog open={smsEditDialogOpen} onOpenChange={setSmsEditDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit SMS Revision</DialogTitle>
+            <DialogDescription>Update Safety Management System revision</DialogDescription>
+          </DialogHeader>
+          {editingSmsRevision && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Revision Date</Label>
+                  <Input
+                    type="date"
+                    value={editingSmsRevision.revision_date || ''}
+                    onChange={(e) => setEditingSmsRevision({...editingSmsRevision, revision_date: e.target.value})}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Version Number</Label>
+                  <Input
+                    value={editingSmsRevision.version_number || ''}
+                    onChange={(e) => setEditingSmsRevision({...editingSmsRevision, version_number: e.target.value})}
+                    placeholder="e.g., 1.0, 2.1"
+                  />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label>Revision Description</Label>
+                <Textarea
+                  value={editingSmsRevision.revision_description || ''}
+                  onChange={(e) => setEditingSmsRevision({...editingSmsRevision, revision_description: e.target.value})}
+                  placeholder="Describe the changes made in this revision"
+                  rows={3}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Crew Member</Label>
+                <Select 
+                  value={editingSmsRevision.crew_member_id || 'none'} 
+                  onValueChange={(value) => {
+                    if (value === 'none') {
+                      setEditingSmsRevision({...editingSmsRevision, crew_member_id: '', crew_member_name: ''});
+                    } else {
+                      const crew = crewList.find(c => c.id === value);
+                      setEditingSmsRevision({...editingSmsRevision, crew_member_id: value, crew_member_name: crew?.staff_name || ''});
+                    }
+                  }}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select crew member" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">None</SelectItem>
+                    {crewList.map(crew => (
+                      <SelectItem key={crew.id} value={crew.id}>{crew.staff_name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => {
+              setSmsEditDialogOpen(false);
+              setEditingSmsRevision(null);
+            }}>Cancel</Button>
+            <Button onClick={handleUpdateSmsRevision}>Save Changes</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
