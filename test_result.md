@@ -257,10 +257,25 @@ frontend:
         agent: "testing"
         comment: "✅ PASSED: Vessel Details Induction View implemented correctly. Code analysis confirms: 1) Induction option available in View dropdown (line 229), 2) 'Manage in Vessel' button with ExternalLink icon implemented (lines 856-869), 3) Button triggers onEdit with 'induction' tab parameter (line 863), 4) Proper table display for induction records with crew names, dates, and task completion badges. Full functionality verified through code review."
 
+  - task: "Trip Details - Expenditure (APA) Feature"
+    implemented: true
+    working: true
+    file: "src/components/TripDetailsDialog.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Need to test new Expenditure (APA) feature: 1) View dropdown order with Expenditure APA as 4th item, 2) Empty state messages, 3) Open in new tab button, 4) Add Expenditure dialog with date, description, amount, and PDF upload fields"
+      - working: true
+        agent: "testing"
+        comment: "✅ PASSED ALL TESTS: Successfully tested new Expenditure (APA) feature in Trip Details dialog. 1) View Dropdown Order: 'Expenditure APA (0)' correctly positioned as 4th option in dropdown sequence (Crew, Shifts, Passengers, Expenditure APA, Running Logs, Engine Logs, Incidents, Drills), 2) Empty State: Shows correct messages 'No expenditures recorded' and 'Track APA expenses for this trip', 3) Open in New Tab Button: External link icon button present and functional, 4) Add Expenditure Button: Green 'Add Expenditure' button found and working, 5) Add Expenditure Dialog: Opens correctly with all required fields - Date (required) with date picker, Description (required) with placeholder 'e.g., Fuel, Provisions, Repairs', Amount (required) with note '(positive = expense, negative = refund/credit)', Receipt (PDF) file upload field. All functionality implemented correctly as per requirements."
+
 metadata:
   created_by: "testing_agent"
-  version: "1.5"
-  test_sequence: 6
+  version: "1.6"
+  test_sequence: 7
 
 test_plan:
   current_focus:
