@@ -1163,10 +1163,10 @@ const AdminPanel = () => {
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
+        )}
 
-        {/* ACTIVITY LOGS TAB */}
-        <TabsContent value="activity">
+        {/* ACTIVITY LOGS VIEW */}
+        {activeView === 'activity' && (
           <Card>
             <CardHeader>
               <div className="flex items-center justify-between">
