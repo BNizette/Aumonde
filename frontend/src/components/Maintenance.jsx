@@ -312,8 +312,9 @@ const Maintenance = () => {
     return colors[priority] || 'bg-gray-500 text-white';
   };
 
-  const canEdit = user?.access_level === 'Edit' || user?.access_level === 'Full';
-  const canDelete = user?.access_level === 'Full';
+  const canEdit = user?.access_level === 'Edit' || user?.access_level === 'Full' || user?.access_level === 'Admin';
+  const canDelete = user?.access_level === 'Full' || user?.access_level === 'Admin';
+  const isAdmin = user?.access_level === 'Admin';
 
   // Get unique vessels for filter
   const uniqueVessels = [...new Set(maintenanceRecords.map(r => r.vessel_name).filter(Boolean))];
