@@ -1566,6 +1566,125 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
                   )}
                 </div>
                 )}
+
+                {/* Expenditure (APA) View */}
+                {selectedLogView === 'expenditure' && (
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-gray-500">
+                          {expenditures.length} expenditure{expenditures.length !== 1 ? 's' : ''} recorded
+                        </p>
+                        {expenditures.length > 0 && (
+                          <p className="text-sm font-medium mt-1">
+                            Total: ${expenditures.reduce((sum, e) => sum + (e.amount || 0), 0).toFixed(2)}
+                          </p>
+                        )}
+                      </div>
+                      <div className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            const url = `${window.location.origin}/trips/${trip?.id}/expenditure`;
+                            window.open(url, '_blank');
+                          }}
+                          title="Open in new tab"
+                        >
+                          <ExternalLink className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          size="sm"
+                          onClick={() => {
+                            setEditingExpenditure(null);
+                            setExpenditureForm({ expense_date: new Date().toISOString().split('T')[0], description: '', amount: '', receipt_url: '' });
+                            setExpenditureDialogOpen(true);
+                          }}
+                        >
+                          <Plus className="h-4 w-4 mr-2" />
+                          Add Expenditure
+                        </Button>
+                      </div>
+                    </div>
+                    {expenditures.length === 0 ? (
+                      <div className="text-center py-8 text-gray-500">
+                        <FileText className="h-12 w-12 mx-auto mb-2 opacity-30" />
+                        <p>No expenditures recorded</p>
+                        <p className="text-xs mt-1">Track APA expenses for this trip</p>
+                      </div>
+                    ) : (
+                      <div className="space-y-2">
+                        {expenditures.map(exp => (
+                          <div key={exp.id} className="p-3 border rounded-lg bg-gray-50">
+                            <div className="flex items-start justify-between">
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2">
+                                  <p className="font-medium">{exp.description}</p>
+                                  {exp.receipt_url && (
+                                    <a
+                                      href={exp.receipt_url.startsWith('http') ? exp.receipt_url : `${BACKEND_URL}${exp.receipt_url}`}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="text-blue-600 hover:text-blue-800"
+                                      title="View Receipt"
+                                    >
+                                      <FileText className="h-4 w-4" />
+                                    </a>
+                                  )}
+                                </div>
+                                <p className="text-xs text-gray-500">
+                                  {exp.expense_date ? new Date(exp.expense_date).toLocaleDateString() : 'No date'}
+                                </p>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <span className={`font-semibold ${exp.amount >= 0 ? 'text-red-600' : 'text-green-600'}`}>
+                                  {exp.amount >= 0 ? '-' : '+'}${Math.abs(exp.amount).toFixed(2)}
+                                </span>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => {
+                                    setEditingExpenditure(exp);
+                                    setExpenditureForm({
+                                      expense_date: exp.expense_date ? exp.expense_date.split('T')[0] : '',
+                                      description: exp.description || '',
+                                      amount: exp.amount?.toString() || '',
+                                      receipt_url: exp.receipt_url || ''
+                                    });
+                                    setExpenditureDialogOpen(true);
+                                  }}
+                                >
+                                  <Edit className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="text-red-600 hover:text-red-800"
+                                  onClick={async () => {
+                                    if (window.confirm('Delete this expenditure?')) {
+                                      try {
+                                        const token = localStorage.getItem('token');
+                                        await axios.delete(`${API}/expenditures/${exp.id}`, {
+                                          headers: { Authorization: `Bearer ${token}` }
+                                        });
+                                        setMessage('Expenditure deleted');
+                                        fetchAllLogs();
+                                      } catch (err) {
+                                        setError('Failed to delete expenditure');
+                                      }
+                                    }
+                                  }}
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           </ScrollArea>
