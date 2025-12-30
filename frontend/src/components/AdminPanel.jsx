@@ -567,8 +567,9 @@ const AdminPanel = () => {
     return <div className="flex items-center justify-center h-64">Loading...</div>;
   }
 
-  const canEdit = currentUser.access_level === 'Edit' || currentUser.access_level === 'Full';
-  const canDelete = currentUser.access_level === 'Full';
+  const canEdit = currentUser.access_level === 'Edit' || currentUser.access_level === 'Full' || currentUser.access_level === 'Admin';
+  const canDelete = currentUser.access_level === 'Full' || currentUser.access_level === 'Admin';
+  const isAdmin = currentUser.access_level === 'Admin';
 
   // Excel Export Functions
   const exportUsersToExcel = () => {
