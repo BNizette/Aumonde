@@ -374,7 +374,7 @@ const DocumentForm = ({ open, onClose, onSave, document, mode = 'create' }) => {
               </SelectContent>
             </Select>
             <p className="text-xs text-gray-500">
-              Leave as "Global" for documents not specific to any vessel
+              Leave as &quot;Global&quot; for documents not specific to any vessel
             </p>
           </div>
 
