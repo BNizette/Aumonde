@@ -24,6 +24,8 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
 const Emergency = () => {
+  const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+  const isAdmin = currentUser.access_level === 'Admin';
   const [contacts, setContacts] = useState([]);
   const [procedures, setProcedures] = useState([]);
   const [drills, setDrills] = useState([]);
