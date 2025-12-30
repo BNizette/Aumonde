@@ -64,6 +64,7 @@ const Incidents = () => {
     title: '',
     description: '',
     incident_date: new Date().toISOString().slice(0, 16),
+    utc_offset: '',
     location: '',
     trip_from: '',
     trip_to: '',
