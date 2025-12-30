@@ -1448,15 +1448,17 @@ const AdminPanel = () => {
                     <FileSpreadsheet className="mr-2 h-4 w-4" />
                     Export to Excel
                   </Button>
-                  <Button onClick={() => setSmsDialogOpen(true)}>
-                    <Plus className="mr-2 h-4 w-4" />
-                    Add Revision
-                  </Button>
+                  {canEdit && (
+                    <Button onClick={() => setSmsDialogOpen(true)}>
+                      <Plus className="mr-2 h-4 w-4" />
+                      Add Revision
+                    </Button>
+                  )}
                 </div>
               </div>
             </CardHeader>
             <CardContent>
-              {smsRevisions.length === 0 ? (
+              {sortedSmsRevisions.length === 0 ? (
                 <div className="text-center py-8 text-gray-500">
                   No SMS revisions recorded yet
                 </div>
@@ -1469,11 +1471,11 @@ const AdminPanel = () => {
                       <TableHead>Description</TableHead>
                       <TableHead>Crew Member</TableHead>
                       <TableHead>Created By</TableHead>
-                      <TableHead className="w-[100px]">Actions</TableHead>
+                      <TableHead className="w-[150px]">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {smsRevisions.map(rev => (
+                    {sortedSmsRevisions.map(rev => (
                       <TableRow key={rev.id}>
                         <TableCell>{rev.revision_date ? new Date(rev.revision_date).toLocaleDateString() : '-'}</TableCell>
                         <TableCell>{rev.version_number || '-'}</TableCell>
@@ -1481,16 +1483,48 @@ const AdminPanel = () => {
                         <TableCell>{rev.crew_member_name || '-'}</TableCell>
                         <TableCell>{rev.created_by_name}</TableCell>
                         <TableCell>
-                          {canDelete && (
+                          <div className="flex gap-1">
                             <Button 
                               variant="ghost" 
                               size="sm" 
-                              onClick={() => handleDeleteSmsRevision(rev.id)}
-                              className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                              onClick={() => {
+                                setViewingSmsRevision(rev);
+                                setSmsViewDialogOpen(true);
+                              }}
+                              className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                              title="View"
                             >
-                              <Trash2 className="h-4 w-4" />
+                              <Eye className="h-4 w-4" />
                             </Button>
-                          )}
+                            {canEdit && (
+                              <Button 
+                                variant="ghost" 
+                                size="sm" 
+                                onClick={() => {
+                                  setEditingSmsRevision({
+                                    ...rev,
+                                    revision_date: rev.revision_date ? rev.revision_date.slice(0, 10) : ''
+                                  });
+                                  setSmsEditDialogOpen(true);
+                                }}
+                                className="text-gray-600 hover:text-gray-700 hover:bg-gray-50"
+                                title="Edit"
+                              >
+                                <Edit className="h-4 w-4" />
+                              </Button>
+                            )}
+                            {canDelete && (
+                              <Button 
+                                variant="ghost" 
+                                size="sm" 
+                                onClick={() => handleDeleteSmsRevision(rev.id)}
+                                className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                title="Delete"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            )}
+                          </div>
                         </TableCell>
                       </TableRow>
                     ))}
