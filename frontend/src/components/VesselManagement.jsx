@@ -456,7 +456,15 @@ const VesselManagement = () => {
       fetchVessels();
       setTimeout(() => setMessage(''), 3000);
     } catch (err) {
-      setError(err.response?.data?.detail || 'Error saving vessel');
+      // Handle FastAPI validation errors which return detail as array
+      const errorDetail = err.response?.data?.detail;
+      let errorMessage = 'Error saving vessel';
+      if (typeof errorDetail === 'string') {
+        errorMessage = errorDetail;
+      } else if (Array.isArray(errorDetail)) {
+        errorMessage = errorDetail.map(e => e.msg || e.message || JSON.stringify(e)).join(', ');
+      }
+      setError(errorMessage);
     }
   };
 
