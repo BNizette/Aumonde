@@ -1461,6 +1461,28 @@ class EngineRunningLogCreate(BaseModel):
     engine2_engine_hrs_end: Optional[float] = None
 
 # ============================================================================
+# EXPENDITURE (APA) MODEL
+# ============================================================================
+
+class Expenditure(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    trip_id: str
+    expense_date: datetime
+    description: str
+    amount: float  # Positive or negative
+    receipt_url: Optional[str] = None  # PDF receipt URL
+    created_by: str
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class ExpenditureCreate(BaseModel):
+    trip_id: str
+    expense_date: datetime
+    description: str
+    amount: float
+    receipt_url: Optional[str] = None
+
+# ============================================================================
 # DOCUMENT ENDPOINTS
 # ============================================================================
 
