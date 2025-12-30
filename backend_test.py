@@ -2242,11 +2242,12 @@ class AMSAComprehensiveTester:
         
         # Run NEW FIELDS TESTS (Review Request Focus)
         new_fields_tests = [
-            self.test_induction_functionality,         # Test 1: Induction Functionality (Review Request)
-            self.test_risk_assessment_new_fields,      # Test 2: Risk Assessment New Fields
-            self.test_maintenance_quote_pdf_field,     # Test 3: Maintenance Quote PDF Field
-            self.test_compliance_certificate_pdf_field, # Test 4: Compliance Certificate PDF Field
-            self.test_file_upload_api,                 # Test 5: File Upload API
+            self.test_sms_revisions,                       # Test 1: SMS Revisions (Review Request)
+            self.test_induction_functionality,            # Test 2: Induction Functionality (Review Request)
+            self.test_risk_assessment_new_fields,         # Test 3: Risk Assessment New Fields
+            self.test_maintenance_quote_pdf_field,        # Test 4: Maintenance Quote PDF Field
+            self.test_compliance_certificate_pdf_field,   # Test 5: Compliance Certificate PDF Field
+            self.test_file_upload_api,                    # Test 6: File Upload API
         ]
         
         print("\n🎯 PRIORITY TESTS - NEW FIELDS IMPLEMENTATION")
