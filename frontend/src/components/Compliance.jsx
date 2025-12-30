@@ -26,6 +26,8 @@ const API = `${BACKEND_URL}/api`;
 
 const Compliance = () => {
   const location = useLocation();
+  const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+  const isAdmin = currentUser.access_level === 'Admin';
   const [certificates, setCertificates] = useState([]);
   const [requirements, setRequirements] = useState([]);
   const [vessels, setVessels] = useState([]);
