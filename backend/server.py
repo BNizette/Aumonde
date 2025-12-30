@@ -22,7 +22,25 @@ ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
 mongo_url = os.environ['MONGO_URL']
-client = AsyncIOMotorClient(mongo_url)
+
+# Configure MongoDB client with appropriate settings for both local and Atlas connections
+# Atlas connections (mongodb+srv://) require SSL and longer timeouts
+if 'mongodb+srv://' in mongo_url or 'mongodb.net' in mongo_url:
+    # MongoDB Atlas connection - needs SSL and longer timeouts
+    client = AsyncIOMotorClient(
+        mongo_url,
+        serverSelectionTimeoutMS=30000,  # 30 seconds for server selection
+        connectTimeoutMS=30000,           # 30 seconds for initial connection
+        socketTimeoutMS=30000,            # 30 seconds for socket operations
+        tls=True,
+        tlsAllowInvalidCertificates=False,
+        retryWrites=True,
+        w='majority'
+    )
+else:
+    # Local MongoDB connection
+    client = AsyncIOMotorClient(mongo_url)
+
 db = client[os.environ['DB_NAME']]
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
