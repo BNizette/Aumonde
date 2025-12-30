@@ -48,6 +48,46 @@ const TripLogForm = ({ open, onClose, onSave, log, tripId, vesselId, vesselName,
     return `${offsetSign}${String(offsetHours).padStart(2, '0')}:${String(offsetMins).padStart(2, '0')}`;
   };
 
+  const fetchCrew = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`${API}/crew`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setCrew(response.data);
+    } catch (err) {
+      console.error('Error fetching crew:', err);
+    }
+  };
+
+  const fetchVessels = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`${API}/vessels`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setVessels(response.data);
+    } catch (err) {
+      console.error('Error fetching vessels:', err);
+    }
+  };
+
+  const fetchTrips = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`${API}/trips`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      // Sort by departure date descending to show recent trips first
+      const sortedTrips = response.data.sort((a, b) => 
+        new Date(b.departure_datetime || 0) - new Date(a.departure_datetime || 0)
+      );
+      setTrips(sortedTrips);
+    } catch (err) {
+      console.error('Error fetching trips:', err);
+    }
+  };
+
   useEffect(() => {
     if (open) {
       fetchCrew();
@@ -98,46 +138,6 @@ const TripLogForm = ({ open, onClose, onSave, log, tripId, vesselId, vesselName,
     setError('');
     setMessage('');
   }, [log, mode, open, tripId, vesselId, vesselName]);
-
-  const fetchCrew = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get(`${API}/crew`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setCrew(response.data);
-    } catch (err) {
-      console.error('Error fetching crew:', err);
-    }
-  };
-
-  const fetchVessels = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get(`${API}/vessels`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setVessels(response.data);
-    } catch (err) {
-      console.error('Error fetching vessels:', err);
-    }
-  };
-
-  const fetchTrips = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get(`${API}/trips`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      // Sort by departure date descending to show recent trips first
-      const sortedTrips = response.data.sort((a, b) => 
-        new Date(b.departure_datetime || 0) - new Date(a.departure_datetime || 0)
-      );
-      setTrips(sortedTrips);
-    } catch (err) {
-      console.error('Error fetching trips:', err);
-    }
-  };
 
   const handleVesselSelect = (vesselIdValue) => {
     if (vesselIdValue === 'none') {
