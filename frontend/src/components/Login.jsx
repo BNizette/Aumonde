@@ -8,6 +8,8 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Mail } from 'lucide-react';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -19,6 +21,13 @@ const Login = ({ onLoginSuccess }) => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
+  
+  // Forgot Password states
+  const [forgotPasswordOpen, setForgotPasswordOpen] = useState(false);
+  const [forgotPasswordEmail, setForgotPasswordEmail] = useState('');
+  const [forgotPasswordLoading, setForgotPasswordLoading] = useState(false);
+  const [forgotPasswordMessage, setForgotPasswordMessage] = useState('');
+  const [forgotPasswordError, setForgotPasswordError] = useState('');
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -53,6 +62,23 @@ const Login = ({ onLoginSuccess }) => {
       setError(err.response?.data?.detail || 'Registration failed');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleForgotPassword = async (e) => {
+    e.preventDefault();
+    setForgotPasswordError('');
+    setForgotPasswordMessage('');
+    setForgotPasswordLoading(true);
+
+    try {
+      await axios.post(`${API}/auth/forgot-password`, { email: forgotPasswordEmail });
+      setForgotPasswordMessage('If the email exists in our system, you will receive a password reset link shortly.');
+      setForgotPasswordEmail('');
+    } catch (err) {
+      setForgotPasswordError(err.response?.data?.detail || 'Failed to send reset email. Please try again.');
+    } finally {
+      setForgotPasswordLoading(false);
     }
   };
 
@@ -102,6 +128,15 @@ const Login = ({ onLoginSuccess }) => {
                 <Button type="submit" className="w-full" disabled={loading}>
                   {loading ? 'Logging in...' : 'Login'}
                 </Button>
+                <div className="text-center">
+                  <button
+                    type="button"
+                    onClick={() => setForgotPasswordOpen(true)}
+                    className="text-sm text-blue-600 hover:text-blue-800 hover:underline"
+                  >
+                    Forgot your password?
+                  </button>
+                </div>
               </form>
             </TabsContent>
 
@@ -173,6 +208,63 @@ const Login = ({ onLoginSuccess }) => {
           </Tabs>
         </CardContent>
       </Card>
+
+      {/* Forgot Password Dialog */}
+      <Dialog open={forgotPasswordOpen} onOpenChange={setForgotPasswordOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Mail className="h-5 w-5" />
+              Reset Your Password
+            </DialogTitle>
+            <DialogDescription>
+              Enter your email address and we'll send you a link to reset your password.
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handleForgotPassword}>
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <Label htmlFor="forgot-email">Email Address</Label>
+                <Input
+                  id="forgot-email"
+                  type="email"
+                  placeholder="your@email.com"
+                  value={forgotPasswordEmail}
+                  onChange={(e) => setForgotPasswordEmail(e.target.value)}
+                  required
+                />
+              </div>
+              {forgotPasswordMessage && (
+                <Alert className="bg-green-50 border-green-200">
+                  <AlertDescription className="text-green-800">{forgotPasswordMessage}</AlertDescription>
+                </Alert>
+              )}
+              {forgotPasswordError && (
+                <Alert variant="destructive">
+                  <AlertDescription>{forgotPasswordError}</AlertDescription>
+                </Alert>
+              )}
+            </div>
+            <DialogFooter>
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={() => {
+                  setForgotPasswordOpen(false);
+                  setForgotPasswordEmail('');
+                  setForgotPasswordMessage('');
+                  setForgotPasswordError('');
+                }}
+              >
+                Cancel
+              </Button>
+              <Button type="submit" disabled={forgotPasswordLoading}>
+                {forgotPasswordLoading ? 'Sending...' : 'Send Reset Link'}
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
