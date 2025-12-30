@@ -4919,6 +4919,210 @@ async def update_help_content(module_key: str, help_data: dict, current_user: di
     )
     return help_doc
 
+# ============================================================================
+# EMAIL CONFIGURATION ENDPOINTS
+# ============================================================================
+
+class EmailConfig(BaseModel):
+    smtp_server: str
+    smtp_port: str = "587"
+    smtp_username: str
+    smtp_password: Optional[str] = None
+    from_email: str
+    from_name: str = "AMSA Safety Management"
+    use_tls: bool = True
+
+class ForgotPasswordRequest(BaseModel):
+    email: str
+
+class ResetPasswordRequest(BaseModel):
+    token: str
+    new_password: str
+
+@api_router.get("/email-config")
+async def get_email_config(current_user: dict = Depends(require_access_level(AccessLevel.ADMIN))):
+    """Get email configuration (without password)"""
+    config = await db.email_config.find_one({}, {"_id": 0, "smtp_password": 0})
+    return config or {}
+
+@api_router.post("/email-config")
+async def save_email_config(config: EmailConfig, current_user: dict = Depends(require_access_level(AccessLevel.ADMIN))):
+    """Save email configuration"""
+    config_data = config.model_dump()
+    
+    # If password is empty, keep the existing one
+    if not config_data.get("smtp_password"):
+        existing = await db.email_config.find_one({})
+        if existing:
+            config_data["smtp_password"] = existing.get("smtp_password", "")
+    
+    config_data["updated_at"] = datetime.now(timezone.utc)
+    config_data["updated_by"] = current_user["id"]
+    
+    await db.email_config.update_one({}, {"$set": config_data}, upsert=True)
+    
+    await log_audit(
+        current_user["id"], 
+        current_user["full_name"], 
+        "update", 
+        "email_config", 
+        "system", 
+        "Updated email configuration"
+    )
+    
+    return {"message": "Email configuration saved"}
+
+@api_router.post("/email-config/test")
+async def send_test_email(data: dict, current_user: dict = Depends(require_access_level(AccessLevel.ADMIN))):
+    """Send a test email to verify configuration"""
+    import smtplib
+    from email.mime.text import MIMEText
+    from email.mime.multipart import MIMEMultipart
+    
+    config = await db.email_config.find_one({})
+    if not config:
+        raise HTTPException(status_code=400, detail="Email configuration not found")
+    
+    try:
+        # Create message
+        msg = MIMEMultipart()
+        msg['From'] = f"{config.get('from_name', 'AMSA')} <{config['from_email']}>"
+        msg['To'] = data['email']
+        msg['Subject'] = "AMSA Safety Management - Test Email"
+        
+        body = """
+        This is a test email from AMSA Safety Management System.
+        
+        If you received this email, your email configuration is working correctly.
+        
+        Best regards,
+        AMSA Safety Management System
+        """
+        
+        msg.attach(MIMEText(body, 'plain'))
+        
+        # Connect and send
+        if config.get('use_tls', True):
+            server = smtplib.SMTP(config['smtp_server'], int(config['smtp_port']))
+            server.starttls()
+        else:
+            server = smtplib.SMTP(config['smtp_server'], int(config['smtp_port']))
+        
+        server.login(config['smtp_username'], config['smtp_password'])
+        server.send_message(msg)
+        server.quit()
+        
+        return {"message": "Test email sent successfully"}
+        
+    except Exception as e:
+        logger.error(f"Failed to send test email: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to send email: {str(e)}")
+
+@api_router.post("/auth/forgot-password")
+async def forgot_password(request: ForgotPasswordRequest):
+    """Send password reset email"""
+    import smtplib
+    from email.mime.text import MIMEText
+    from email.mime.multipart import MIMEMultipart
+    
+    user = await db.users.find_one({"email": request.email.lower()}, {"_id": 0})
+    
+    # Always return success to prevent email enumeration
+    if not user:
+        return {"message": "If the email exists, a password reset link will be sent"}
+    
+    # Check if email config exists
+    config = await db.email_config.find_one({})
+    if not config or not config.get('smtp_server'):
+        raise HTTPException(status_code=500, detail="Email service not configured. Please contact administrator.")
+    
+    # Generate reset token (valid for 1 hour)
+    reset_token = str(uuid.uuid4())
+    reset_expires = datetime.now(timezone.utc) + timedelta(hours=1)
+    
+    # Store reset token
+    await db.users.update_one(
+        {"email": request.email.lower()},
+        {"$set": {
+            "reset_token": reset_token,
+            "reset_token_expires": reset_expires
+        }}
+    )
+    
+    try:
+        # Create reset email
+        msg = MIMEMultipart()
+        msg['From'] = f"{config.get('from_name', 'AMSA')} <{config['from_email']}>"
+        msg['To'] = request.email
+        msg['Subject'] = "AMSA Safety Management - Password Reset Request"
+        
+        # Get the frontend URL from environment or use default
+        frontend_url = os.environ.get('FRONTEND_URL', 'https://your-app.emergent.host')
+        reset_link = f"{frontend_url}/reset-password?token={reset_token}"
+        
+        body = f"""
+Hello {user.get('full_name', 'User')},
+
+You requested a password reset for your AMSA Safety Management account.
+
+Click the link below to reset your password:
+{reset_link}
+
+This link will expire in 1 hour.
+
+If you did not request this password reset, please ignore this email.
+
+Best regards,
+AMSA Safety Management System
+        """
+        
+        msg.attach(MIMEText(body, 'plain'))
+        
+        # Connect and send
+        if config.get('use_tls', True):
+            server = smtplib.SMTP(config['smtp_server'], int(config['smtp_port']))
+            server.starttls()
+        else:
+            server = smtplib.SMTP(config['smtp_server'], int(config['smtp_port']))
+        
+        server.login(config['smtp_username'], config['smtp_password'])
+        server.send_message(msg)
+        server.quit()
+        
+        logger.info(f"Password reset email sent to {request.email}")
+        
+    except Exception as e:
+        logger.error(f"Failed to send password reset email: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to send email. Please try again later.")
+    
+    return {"message": "If the email exists, a password reset link will be sent"}
+
+@api_router.post("/auth/reset-password")
+async def reset_password(request: ResetPasswordRequest):
+    """Reset password using token"""
+    user = await db.users.find_one({
+        "reset_token": request.token,
+        "reset_token_expires": {"$gt": datetime.now(timezone.utc)}
+    }, {"_id": 0})
+    
+    if not user:
+        raise HTTPException(status_code=400, detail="Invalid or expired reset token")
+    
+    # Update password and clear reset token
+    new_password_hash = hash_password(request.new_password)
+    
+    await db.users.update_one(
+        {"id": user["id"]},
+        {
+            "$set": {"password_hash": new_password_hash},
+            "$unset": {"reset_token": "", "reset_token_expires": ""}
+        }
+    )
+    
+    logger.info(f"Password reset successful for user {user['email']}")
+    
+    return {"message": "Password reset successful. You can now login with your new password."}
+
 # Include router
 app.include_router(api_router)
 
