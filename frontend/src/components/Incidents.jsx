@@ -17,6 +17,7 @@ import { AlertCircle, Plus, Edit, Trash2, Eye, Download, X, ChevronDown, FileSpr
 import * as XLSX from 'xlsx';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import HelpDialog from './HelpDialog';
 import useAdvancedFilters from '../hooks/useAdvancedFilters';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
