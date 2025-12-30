@@ -4940,13 +4940,13 @@ class ResetPasswordRequest(BaseModel):
     new_password: str
 
 @api_router.get("/email-config")
-async def get_email_config(current_user: dict = Depends(require_access_level(AccessLevel.ADMIN))):
+async def get_email_config(current_user: dict = Depends(require_access_level(AccessLevel.FULL))):
     """Get email configuration (without password)"""
     config = await db.email_config.find_one({}, {"_id": 0, "smtp_password": 0})
     return config or {}
 
 @api_router.post("/email-config")
-async def save_email_config(config: EmailConfig, current_user: dict = Depends(require_access_level(AccessLevel.ADMIN))):
+async def save_email_config(config: EmailConfig, current_user: dict = Depends(require_access_level(AccessLevel.FULL))):
     """Save email configuration"""
     config_data = config.model_dump()
     
