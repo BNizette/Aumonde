@@ -1629,6 +1629,16 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
                         )}
                       </div>
                       <div className="flex gap-2">
+                        {expenditures.length > 0 && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={exportExpendituresToExcel}
+                            title="Export to Excel"
+                          >
+                            <FileSpreadsheet className="h-4 w-4" />
+                          </Button>
+                        )}
                         <Button
                           variant="outline"
                           size="sm"
