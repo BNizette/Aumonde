@@ -802,14 +802,6 @@ const VesselDetailsDialog = ({ open, onClose, vessel, onMessage, onEdit, onEditT
               <p className="text-sm text-gray-500">
                 {certificates.length} compliance certificate{certificates.length !== 1 ? 's' : ''} for this vessel
               </p>
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => window.location.href = `/compliance?tab=certificates&vessel_id=${vessel.id}&vessel_name=${encodeURIComponent(vessel.vessel_name)}`}
-              >
-                <ExternalLink className="h-4 w-4 mr-2" />
-                Manage in Compliance
-              </Button>
             </div>
             {certificates.length > 0 ? (
               <Table>
