@@ -18,9 +18,18 @@ const PassengerForm = ({ open, onClose, onSave, passenger, mode = 'create' }) =>
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [dragActive, setDragActive] = useState(false);
   const [passengerTypes, setPassengerTypes] = useState(['Primary', 'Guest']);
+  const [activeSection, setActiveSection] = useState('details');
+
+  const sections = [
+    { value: 'details', label: 'Details' },
+    { value: 'medical', label: 'Medical & Dietary' },
+    { value: 'preferences', label: 'Preferences' },
+    { value: 'entertainment', label: 'Entertainment' },
+    { value: 'photo', label: 'Photo' },
+  ];
 
   const [formData, setFormData] = useState({
-    // Tab 1: Details
+    // Section 1: Details
     name: '',
     passenger_type: 'Primary',
     relationship_to_primary: '',
