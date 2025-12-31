@@ -100,13 +100,28 @@ const BrandingSettings = () => {
   const applyFavicon = (url) => {
     // Update the favicon in the document head
     const fullUrl = url.startsWith('http') ? url : `${BACKEND_URL}${url}`;
-    let link = document.querySelector("link[rel*='icon']");
+    
+    // Update the existing favicon link or create one
+    let link = document.getElementById('dynamic-favicon') || document.querySelector("link[rel*='icon']");
     if (!link) {
       link = document.createElement('link');
-      link.rel = 'shortcut icon';
+      link.id = 'dynamic-favicon';
+      link.rel = 'icon';
       document.head.appendChild(link);
     }
-    link.href = `${fullUrl}?t=${Date.now()}`; // Cache bust
+    
+    // Set type based on file extension
+    const ext = fullUrl.split('.').pop().split('?')[0].toLowerCase();
+    const typeMap = {
+      'ico': 'image/x-icon',
+      'png': 'image/png',
+      'jpg': 'image/jpeg',
+      'jpeg': 'image/jpeg',
+      'gif': 'image/gif',
+      'svg': 'image/svg+xml'
+    };
+    link.type = typeMap[ext] || 'image/x-icon';
+    link.href = `${fullUrl}?v=${Date.now()}`; // Cache bust
   };
 
   const handleRemove = async (type) => {
