@@ -607,28 +607,44 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create', defaultTab
     });
   };
 
+  const sections = [
+    { value: 'basic', label: 'Basic & Specs' },
+    { value: 'certificates', label: 'Certificates' },
+    { value: 'emergency', label: 'Emergency' },
+    { value: 'induction', label: 'Induction' },
+    { value: 'photo', label: 'Photo' },
+  ];
+
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{mode === 'create' ? 'Add New Vessel' : 'Edit Vessel'}</DialogTitle>
           <DialogDescription>
-            {mode === 'create' ? 'Enter vessel details across all tabs' : 'Update vessel information'}
+            {mode === 'create' ? 'Enter vessel details' : 'Update vessel information'}
           </DialogDescription>
         </DialogHeader>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-5">
-            <TabsTrigger value="basic">Basic & Specs</TabsTrigger>
-            <TabsTrigger value="certificates">Certificates</TabsTrigger>
-            <TabsTrigger value="emergency">Emergency</TabsTrigger>
-            <TabsTrigger value="induction">Induction</TabsTrigger>
-            <TabsTrigger value="photo">Photo</TabsTrigger>
-          </TabsList>
+        {/* Section Dropdown Navigation */}
+        <div className="mb-4">
+          <Select value={activeSection} onValueChange={setActiveSection}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Select section" />
+            </SelectTrigger>
+            <SelectContent>
+              {sections.map((section) => (
+                <SelectItem key={section.value} value={section.value}>
+                  {section.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
 
-          <ScrollArea className="h-[500px] w-full pr-4">
-            {/* TAB 1: BASIC DETAILS & SPECIFICATIONS */}
-            <TabsContent value="basic" className="space-y-4">
+        <ScrollArea className="h-[500px] w-full pr-4">
+          {/* SECTION 1: BASIC DETAILS & SPECIFICATIONS */}
+          {activeSection === 'basic' && (
+            <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="vessel_name">Vessel Name *</Label>
