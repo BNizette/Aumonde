@@ -1742,10 +1742,9 @@ const CrewForm = ({ open, onClose, onSave, crew, mode = 'create', prefilledData 
                     </div>
                   </div>
                 )}
-              </div>
-            </TabsContent>
-          </ScrollArea>
-        </Tabs>
+            </div>
+          )}
+        </ScrollArea>
 
         <DialogFooter>
           <Button variant="outline" onClick={onClose}>Cancel</Button>
