@@ -74,13 +74,15 @@ const Layout = ({ children, user, onLogout }) => {
 
   const isActive = (path) => location.pathname === path;
 
-  const SidebarContent = () => (
+  const logoUrl = getLogoUrl();
+
+  const sidebarContent = (
     <div className="flex flex-col h-full">
       <div className="p-4 border-b">
         <Link to="/dashboard">
-          {getLogoUrl() ? (
+          {logoUrl ? (
             <img 
-              src={getLogoUrl()} 
+              src={logoUrl} 
               alt={branding.app_name || 'Logo'} 
               className="h-8 max-w-[150px] object-contain cursor-pointer hover:opacity-80 transition-opacity"
             />
@@ -125,8 +127,9 @@ const Layout = ({ children, user, onLogout }) => {
     <div className="flex h-screen bg-gray-50">
       {/* Desktop Sidebar */}
       <aside className="hidden md:flex md:w-64 bg-white border-r">
-        <SidebarContent />
+        {sidebarContent}
       </aside>
+
 
       {/* Mobile Sidebar */}
       <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
