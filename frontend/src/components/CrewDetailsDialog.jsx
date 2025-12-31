@@ -278,33 +278,34 @@ const CrewDetailsDialog = ({ open, onClose, crew, onMessage, onEditTrip }) => {
               <p className="text-sm text-gray-500">
                 {shifts.length} shift log{shifts.length !== 1 ? 's' : ''} for this crew member
               </p>
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => window.location.href = `/trips?crew_name=${encodeURIComponent(crew?.staff_name || '')}`}
-              >
-                <ExternalLink className="h-4 w-4 mr-2" />
-                Manage in Trips
-              </Button>
             </div>
             {shifts.length > 0 ? (
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead>Trip Name</TableHead>
                 <TableHead>Shift Start</TableHead>
                 <TableHead>Shift End</TableHead>
                 <TableHead>Vessel</TableHead>
-                <TableHead>Task Performed</TableHead>
                 <TableHead>Total Hours</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {shifts.map((s) => (
                 <TableRow key={s.id}>
+                  <TableCell>
+                    {s.trip_id ? (
+                      <button
+                        className="text-blue-600 hover:text-blue-800 hover:underline cursor-pointer text-left"
+                        onClick={() => onEditTrip && onEditTrip({ id: s.trip_id, trip_name: s.trip_name })}
+                      >
+                        {s.trip_name || 'View Trip'}
+                      </button>
+                    ) : '-'}
+                  </TableCell>
                   <TableCell className="font-medium">{s.shift_start_datetime ? new Date(s.shift_start_datetime).toLocaleString() : 'N/A'}</TableCell>
                   <TableCell>{s.shift_stop_datetime ? new Date(s.shift_stop_datetime).toLocaleString() : 'N/A'}</TableCell>
                   <TableCell>{s.vessel_name ? <Badge variant="outline" className="bg-purple-50 text-purple-700">🚢 {s.vessel_name}</Badge> : '-'}</TableCell>
-                  <TableCell className="max-w-xs truncate">{s.task_performed || '-'}</TableCell>
                   <TableCell>{s.total_hours ? `${s.total_hours}h` : '-'}</TableCell>
                 </TableRow>
               ))}
