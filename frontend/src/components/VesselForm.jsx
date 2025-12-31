@@ -138,10 +138,10 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create', defaultTab
     vessel_photo_url: ''
   });
 
-  // Update active tab when defaultTab prop changes
+  // Update active section when defaultTab prop changes
   useEffect(() => {
     if (open && defaultTab) {
-      setActiveTab(defaultTab);
+      setActiveSection(defaultTab);
     }
   }, [open, defaultTab]);
 
