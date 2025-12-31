@@ -365,14 +365,6 @@ const CrewDetailsDialog = ({ open, onClose, crew, onMessage, onEditTrip }) => {
               <p className="text-sm text-gray-500">
                 {trainingRecords.length} training record{trainingRecords.length !== 1 ? 's' : ''} for this crew member
               </p>
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => window.location.href = `/crew?crew_name=${encodeURIComponent(crew?.staff_name || '')}`}
-              >
-                <ExternalLink className="h-4 w-4 mr-2" />
-                Manage in Crew
-              </Button>
             </div>
             {trainingRecords.length > 0 ? (
           <Table>
