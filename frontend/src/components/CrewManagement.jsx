@@ -408,6 +408,38 @@ const CrewManagement = () => {
     }
   };
 
+  // Handle editing a trip from CrewDetailsDialog
+  const handleEditTrip = (trip) => {
+    setSelectedTrip(trip);
+    setTripFormOpen(true);
+  };
+
+  // Handle saving trip changes
+  const handleTripSave = async (formData) => {
+    try {
+      const token = localStorage.getItem('token');
+      await axios.put(`${API}/trips/${selectedTrip.id}`, formData, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setMessage('Trip updated successfully');
+      setTripFormOpen(false);
+      setSelectedTrip(null);
+      // Refresh crew details to show updated data
+      if (viewDialogOpen && viewingCrew) {
+        const currentCrew = viewingCrew;
+        setViewDialogOpen(false);
+        setTimeout(() => {
+          setViewingCrew(currentCrew);
+          setViewDialogOpen(true);
+        }, 100);
+      }
+      setTimeout(() => setMessage(''), 3000);
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Error updating trip');
+      setTimeout(() => setError(''), 3000);
+    }
+  };
+
   const handleDelete = async (crewId, crewName) => {
     if (!window.confirm(`Are you sure you want to delete ${crewName}?`)) return;
 
