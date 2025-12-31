@@ -1006,6 +1006,25 @@ class CrewCreate(BaseModel):
     staff_signature: Optional[str] = None
     staff_date: Optional[str] = None
     crew_photo_url: Optional[str] = None
+    # Medical and Dietary
+    allergies: Optional[str] = None
+    dislikes: Optional[str] = None
+    dietary_restrictions: Optional[str] = None
+    medications: Optional[str] = None
+    medical_conditions: Optional[str] = None
+    special_equipment: Optional[str] = None
+    # Preferences and Provisioning
+    dietary_preference: Optional[str] = None
+    beverage_preference: Optional[str] = None
+    alcohol_allowed: Optional[bool] = True
+    dining_styles: Optional[List[str]] = []
+    # Entertainment & Activity Planning
+    music_genre: Optional[str] = None
+    movie_preferences: Optional[str] = None
+    internet_requirement: Optional[str] = None
+    desired_experiences: Optional[str] = None
+    special_requests: Optional[str] = None
+    privacy_level: Optional[str] = None
 
 # ============================================================================
 # CREW ENDPOINTS
