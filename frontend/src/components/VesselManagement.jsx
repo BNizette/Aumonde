@@ -12,6 +12,7 @@ import { Label } from '@/components/ui/label';
 import { Ship, Plus, Edit, Trash2, Search, Calendar, Filter, X, AlertTriangle, Download, ChevronDown, FileText, Eye, FileSpreadsheet } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import VesselDetailsDialog from './VesselDetailsDialog';
+import TripForm from './TripForm';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
