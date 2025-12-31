@@ -801,7 +801,7 @@ const CrewManagement = () => {
               Potential Duplicate Detected
             </AlertDialogTitle>
             <AlertDialogDescription>
-              The following fields match existing records:
+              The following fields match existing crew records. You can continue if this is intentional.
             </AlertDialogDescription>
           </AlertDialogHeader>
           
@@ -809,9 +809,10 @@ const CrewManagement = () => {
             {duplicateWarning?.map((dup, index) => (
               <div key={index} className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
                 <div className="font-semibold text-sm text-yellow-800 mb-1">
-                  {dup.field === 'email' && '⚠️ Email Address'}
+                  {dup.field === 'email' && '🚫 Email Address (Blocked)'}
                   {dup.field === 'phone' && '⚠️ Phone Number'}
                   {dup.field === 'name' && '⚠️ Staff Name'}
+                  {dup.field === 'date_of_birth' && '⚠️ Date of Birth'}
                 </div>
                 <div className="text-sm text-gray-700">
                   <span className="font-medium">Value:</span> {dup.value}
@@ -819,6 +820,9 @@ const CrewManagement = () => {
                 <div className="text-sm text-gray-600 mt-1">
                   <span className="font-medium">Existing Record:</span>{' '}
                   {dup.existing_record.name} ({dup.existing_record.position})
+                  {dup.existing_record.date_of_birth && dup.existing_record.date_of_birth !== 'N/A' && (
+                    <span className="ml-1">- DOB: {dup.existing_record.date_of_birth}</span>
+                  )}
                 </div>
               </div>
             ))}
@@ -833,10 +837,10 @@ const CrewManagement = () => {
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction 
-              onClick={() => performSave(pendingFormData)}
+              onClick={() => performSave(pendingFormData, true)}
               className="bg-yellow-600 hover:bg-yellow-700"
             >
-              Override and Save
+              Continue Anyway
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
