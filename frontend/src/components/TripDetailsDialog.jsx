@@ -982,6 +982,18 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
                       <SelectItem value="engine">Engine Logs ({engineLogs.length})</SelectItem>
                       <SelectItem value="incidents">Incidents ({tripIncidents.length})</SelectItem>
                       <SelectItem value="drills">Drills ({tripDrills.length})</SelectItem>
+                      <SelectItem value="pre_departure">
+                        <span className="flex items-center gap-2">
+                          <ClipboardCheck className="h-4 w-4" />
+                          Pre-departure Checklist
+                        </span>
+                      </SelectItem>
+                      <SelectItem value="safety_briefing">
+                        <span className="flex items-center gap-2">
+                          <Megaphone className="h-4 w-4" />
+                          Safety Briefing
+                        </span>
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
