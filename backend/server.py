@@ -1327,6 +1327,18 @@ class PassengerCreate(BaseModel):
 
 @api_router.post("/passengers")
 async def create_passenger(passenger_data: PassengerCreate, current_user: dict = Depends(require_access_level(AccessLevel.EDIT))):
+    # Check for duplicate passenger by name + email
+    if passenger_data.contact_email:
+        existing = await db.passengers.find_one({
+            "name": {"$regex": f"^{passenger_data.name}$", "$options": "i"},
+            "contact_email": {"$regex": f"^{passenger_data.contact_email}$", "$options": "i"}
+        }, {"_id": 0})
+        if existing:
+            raise HTTPException(
+                status_code=400,
+                detail=f"A passenger with name '{passenger_data.name}' and email '{passenger_data.contact_email}' already exists"
+            )
+    
     passenger = Passenger(**passenger_data.model_dump(), created_by=current_user["id"])
     await db.passengers.insert_one(passenger.model_dump())
     
@@ -1358,6 +1370,19 @@ async def update_passenger(passenger_id: str, passenger_data: PassengerCreate, c
     existing = await db.passengers.find_one({"id": passenger_id})
     if not existing:
         raise HTTPException(status_code=404, detail="Passenger not found")
+    
+    # Check for duplicate passenger by name + email (excluding current record)
+    if passenger_data.contact_email:
+        duplicate = await db.passengers.find_one({
+            "id": {"$ne": passenger_id},
+            "name": {"$regex": f"^{passenger_data.name}$", "$options": "i"},
+            "contact_email": {"$regex": f"^{passenger_data.contact_email}$", "$options": "i"}
+        }, {"_id": 0})
+        if duplicate:
+            raise HTTPException(
+                status_code=400,
+                detail=f"A passenger with name '{passenger_data.name}' and email '{passenger_data.contact_email}' already exists"
+            )
     
     update_data = passenger_data.model_dump()
     update_data["updated_at"] = datetime.now(timezone.utc)
