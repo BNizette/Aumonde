@@ -338,14 +338,6 @@ const VesselDetailsDialog = ({ open, onClose, vessel, onMessage, onEdit, onEditT
               <p className="text-sm text-gray-500">
                 {trips.length} trip{trips.length !== 1 ? 's' : ''} for this vessel
               </p>
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => window.location.href = `/trips?vessel_id=${vessel.id}&vessel_name=${encodeURIComponent(vessel.vessel_name)}`}
-              >
-                <ExternalLink className="h-4 w-4 mr-2" />
-                Manage in Trips
-              </Button>
             </div>
             {trips.length > 0 ? (
           <Table>
@@ -374,7 +366,14 @@ const VesselDetailsDialog = ({ open, onClose, vessel, onMessage, onEdit, onEditT
                 else if (plannedDepart && now > plannedDepart && !actualDepart) { status = 'Overdue'; statusVariant = 'destructive'; }
                 return (
                   <TableRow key={trip.id}>
-                    <TableCell className="font-medium">{trip.trip_name || '-'}</TableCell>
+                    <TableCell className="font-medium">
+                      <button
+                        className="text-blue-600 hover:text-blue-800 hover:underline cursor-pointer text-left"
+                        onClick={() => onEditTrip && onEditTrip(trip)}
+                      >
+                        {trip.trip_name || '-'}
+                      </button>
+                    </TableCell>
                     <TableCell><Badge variant="outline">{trip.trip_type || 'N/A'}</Badge></TableCell>
                     <TableCell><Badge variant={statusVariant}>{status}</Badge></TableCell>
                     <TableCell>{(actualDepart || plannedDepart) ? new Date(actualDepart || plannedDepart).toLocaleString() : '-'}</TableCell>
