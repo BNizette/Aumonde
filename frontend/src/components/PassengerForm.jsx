@@ -232,26 +232,35 @@ const PassengerForm = ({ open, onClose, onSave, passenger, mode = 'create' }) =>
           </DialogTitle>
         </DialogHeader>
 
-        <Tabs defaultValue="details" className="w-full">
-          <TabsList className="grid w-full grid-cols-5">
-            <TabsTrigger value="details">Details</TabsTrigger>
-            <TabsTrigger value="medical">Med & Diet</TabsTrigger>
-            <TabsTrigger value="preferences">Prefs</TabsTrigger>
-            <TabsTrigger value="entertainment">Entertain</TabsTrigger>
-            <TabsTrigger value="photo">Photo</TabsTrigger>
-          </TabsList>
+        {/* Section Dropdown Navigation */}
+        <div className="mb-4">
+          <Select value={activeSection} onValueChange={setActiveSection}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Select section" />
+            </SelectTrigger>
+            <SelectContent>
+              {sections.map((section) => (
+                <SelectItem key={section.value} value={section.value}>
+                  {section.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
 
-          {/* TAB 1: DETAILS */}
-          <TabsContent value="details" className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="name">Name *</Label>
-                <Input
-                  id="name"
-                  value={formData.name}
-                  onChange={(e) => handleChange('name', e.target.value)}
-                  placeholder="Full name"
-                />
+        <ScrollArea className="h-[400px] w-full pr-4">
+          {/* SECTION 1: DETAILS */}
+          {activeSection === 'details' && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="name">Name *</Label>
+                  <Input
+                    id="name"
+                    value={formData.name}
+                    onChange={(e) => handleChange('name', e.target.value)}
+                    placeholder="Full name"
+                  />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="passenger_type">Type *</Label>
