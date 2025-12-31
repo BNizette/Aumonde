@@ -3725,6 +3725,18 @@ class AMSAComprehensiveTester:
             except Exception as e:
                 self.log_test(test_method.__name__, False, error=f"Exception: {str(e)}")
         
+        # Run DUPLICATE PREVENTION TESTS (Review Request Focus)
+        duplicate_tests = [
+            self.test_duplicate_prevention,  # NEW TEST: Duplicate Prevention Feature
+        ]
+        
+        print("\n🔄 DUPLICATE PREVENTION TESTS - NEW FEATURE")
+        for test_method in duplicate_tests:
+            try:
+                test_method()
+            except Exception as e:
+                self.log_test(test_method.__name__, False, error=f"Exception: {str(e)}")
+        
         # Cleanup
         self.cleanup()
         
