@@ -402,14 +402,6 @@ const VesselDetailsDialog = ({ open, onClose, vessel, onMessage, onEdit, onEditT
               <p className="text-sm text-gray-500">
                 {passengers.length} passenger{passengers.length !== 1 ? 's' : ''} on this vessel&apos;s trips
               </p>
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => window.location.href = `/trips?vessel_id=${vessel.id}&vessel_name=${encodeURIComponent(vessel.vessel_name)}`}
-              >
-                <ExternalLink className="h-4 w-4 mr-2" />
-                Manage in Trips
-              </Button>
             </div>
             {passengers.length > 0 ? (
           <Table>
@@ -427,8 +419,24 @@ const VesselDetailsDialog = ({ open, onClose, vessel, onMessage, onEdit, onEditT
                 const trip = trips.find(t => t.id === p.trip_id);
                 return (
                   <TableRow key={p.id}>
-                    <TableCell className="font-medium">{p.name || '-'}</TableCell>
-                    <TableCell>{trip?.trip_name || '-'}</TableCell>
+                    <TableCell className="font-medium">
+                      <button
+                        className="text-blue-600 hover:text-blue-800 hover:underline cursor-pointer text-left"
+                        onClick={() => onEditPassenger && onEditPassenger(p, trip)}
+                      >
+                        {p.name || '-'}
+                      </button>
+                    </TableCell>
+                    <TableCell>
+                      {trip ? (
+                        <button
+                          className="text-blue-600 hover:text-blue-800 hover:underline cursor-pointer text-left"
+                          onClick={() => onEditTrip && onEditTrip(trip)}
+                        >
+                          {trip.trip_name}
+                        </button>
+                      ) : '-'}
+                    </TableCell>
                     <TableCell>{p.contact_number || p.email || '-'}</TableCell>
                     <TableCell>{p.emergency_contact || '-'}</TableCell>
                     <TableCell className="max-w-xs truncate">{p.special_requirements || '-'}</TableCell>
