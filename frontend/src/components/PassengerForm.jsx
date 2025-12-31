@@ -686,7 +686,7 @@ const PassengerForm = ({ open, onClose, onSave, passenger, mode = 'create' }) =>
             </div>
             </div>
           )}
-        </Tabs>
+        </ScrollArea>
 
         <DialogFooter>
           <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>
