@@ -151,9 +151,9 @@ const Layout = ({ children, user, onLogout }) => {
               </SheetTrigger>
             </Sheet>
             <Link to="/dashboard">
-              {getLogoUrl() ? (
+              {logoUrl ? (
                 <img 
-                  src={getLogoUrl()} 
+                  src={logoUrl} 
                   alt={branding.app_name || 'Logo'} 
                   className="h-8 max-w-[180px] object-contain cursor-pointer hover:opacity-80 transition-opacity"
                 />
