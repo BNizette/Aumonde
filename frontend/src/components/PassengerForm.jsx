@@ -358,10 +358,12 @@ const PassengerForm = ({ open, onClose, onSave, passenger, mode = 'create' }) =>
                 </div>
               </div>
             </div>
-          </TabsContent>
+            </div>
+          )}
 
           {/* TAB 2: MEDICAL AND DIETARY */}
-          <TabsContent value="medical" className="space-y-4">
+          {activeSection === 'medical' && (
+            <div className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="allergies">Allergies</Label>
               <Textarea
@@ -427,10 +429,12 @@ const PassengerForm = ({ open, onClose, onSave, passenger, mode = 'create' }) =>
                 rows={2}
               />
             </div>
-          </TabsContent>
+            </div>
+          )}
 
           {/* TAB 3: PREFERENCES AND PROVISIONING */}
-          <TabsContent value="preferences" className="space-y-4">
+          {activeSection === 'preferences' && (
+            <div className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="dietary_preference">Dietary Preference</Label>
               <Textarea
@@ -541,10 +545,12 @@ const PassengerForm = ({ open, onClose, onSave, passenger, mode = 'create' }) =>
                 </div>
               )}
             </div>
-          </TabsContent>
+            </div>
+          )}
 
           {/* TAB 4: ENTERTAINMENT & ACTIVITY PLANNING */}
-          <TabsContent value="entertainment" className="space-y-4">
+          {activeSection === 'entertainment' && (
+            <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="music_genre">Music Genre</Label>
@@ -623,10 +629,12 @@ const PassengerForm = ({ open, onClose, onSave, passenger, mode = 'create' }) =>
                 </SelectContent>
               </Select>
             </div>
-          </TabsContent>
+            </div>
+          )}
 
           {/* TAB 5: PHOTO */}
-          <TabsContent value="photo" className="space-y-4">
+          {activeSection === 'photo' && (
+            <div className="space-y-4">
             <div className="flex flex-col items-center">
               {formData.photo_url ? (
                 <div className="relative">
@@ -676,7 +684,8 @@ const PassengerForm = ({ open, onClose, onSave, passenger, mode = 'create' }) =>
                 Recommended: Square image, at least 200x200 pixels
               </p>
             </div>
-          </TabsContent>
+            </div>
+          )}
         </Tabs>
 
         <DialogFooter>
