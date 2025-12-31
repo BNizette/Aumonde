@@ -859,10 +859,12 @@ const CrewForm = ({ open, onClose, onSave, crew, mode = 'create', prefilledData 
                   </Select>
                 </div>
               </div>
-            </TabsContent>
+            </div>
+          )}
 
-            {/* TAB 2: QUALIFICATIONS */}
-            <TabsContent value="qualifications" className="space-y-4">
+          {/* SECTION 2: QUALIFICATIONS */}
+          {activeSection === 'qualifications' && (
+            <div className="space-y-4">
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <Label className="text-base font-semibold">Qualifications</Label>
