@@ -12,6 +12,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Users, Plus, Edit, Trash2, Search, Filter, X, Eye, AlertTriangle, FileText, Download, ChevronDown, Info, Activity, FileSpreadsheet } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import CrewDetailsDialog from './CrewDetailsDialog';
+import TripForm from './TripForm';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
