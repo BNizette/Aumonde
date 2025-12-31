@@ -233,6 +233,27 @@ const PassengerManagement = () => {
     setDeleteDialogOpen(true);
   };
 
+  // Handle editing a trip
+  const handleEditTrip = (trip) => {
+    setSelectedTrip(trip);
+    setTripFormOpen(true);
+  };
+
+  // Handle saving trip changes
+  const handleTripSave = async (formData) => {
+    try {
+      const token = localStorage.getItem('token');
+      await axios.put(`${API}/trips/${selectedTrip.id}`, formData, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setTripFormOpen(false);
+      setSelectedTrip(null);
+      fetchPassengers(); // Refresh to show updated trip info
+    } catch (err) {
+      console.error('Error updating trip:', err);
+    }
+  };
+
   const confirmDelete = async () => {
     if (!passengerToDelete) return;
     try {
