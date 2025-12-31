@@ -13,7 +13,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Plus, Edit, Trash2, Calendar, Clock, User, Users, FileText, Activity, Gauge, Download, FileSpreadsheet, AlertTriangle, Shield, ExternalLink, Search, UserPlus, Eye } from 'lucide-react';
+import { Plus, Edit, Trash2, Calendar, Clock, User, Users, FileText, Activity, Gauge, Download, FileSpreadsheet, AlertTriangle, Shield, ExternalLink, Search, UserPlus, Eye, ClipboardCheck, Megaphone } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import TripLogForm from './TripLogForm';
 import RunningLogForm from './RunningLogForm';
@@ -21,6 +21,7 @@ import EngineRunningLogForm from './EngineRunningLogForm';
 import AllocatedCrewForm from './AllocatedCrewForm';
 import PassengerForm from './PassengerForm';
 import FileUploadZone from './ui/file-upload-zone';
+import ChecklistView from './ChecklistView';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
