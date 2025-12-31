@@ -947,6 +947,28 @@ class Crew(BaseModel):
     # Tab 5: Photo
     crew_photo_url: Optional[str] = None
     
+    # Tab 6: Medical and Dietary (copied from Passenger)
+    allergies: Optional[str] = None
+    dislikes: Optional[str] = None
+    dietary_restrictions: Optional[str] = None
+    medications: Optional[str] = None
+    medical_conditions: Optional[str] = None
+    special_equipment: Optional[str] = None
+    
+    # Tab 7: Preferences and Provisioning (copied from Passenger)
+    dietary_preference: Optional[str] = None
+    beverage_preference: Optional[str] = None
+    alcohol_allowed: Optional[bool] = True
+    dining_styles: Optional[List[str]] = []
+    
+    # Tab 8: Entertainment & Activity Planning (copied from Passenger)
+    music_genre: Optional[str] = None
+    movie_preferences: Optional[str] = None
+    internet_requirement: Optional[str] = None
+    desired_experiences: Optional[str] = None
+    special_requests: Optional[str] = None
+    privacy_level: Optional[str] = None
+    
     created_by: str
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: Optional[datetime] = None
