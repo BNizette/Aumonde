@@ -134,7 +134,7 @@ const Layout = ({ children, user, onLogout }) => {
       {/* Mobile Sidebar */}
       <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
         <SheetContent side="left" className="p-0 w-64">
-          <SidebarContent />
+          {sidebarContent}
         </SheetContent>
       </Sheet>
 
