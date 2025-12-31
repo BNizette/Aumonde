@@ -389,6 +389,15 @@ async def update_user(user_id: str, update_data: UserUpdate, current_user: dict 
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     
+    # Check for duplicate email (excluding current user)
+    if update_data.email and update_data.email != user.get("email"):
+        existing = await db.users.find_one({
+            "id": {"$ne": user_id},
+            "email": update_data.email
+        })
+        if existing:
+            raise HTTPException(status_code=400, detail="Email already registered to another user")
+    
     update_dict = {k: v for k, v in update_data.model_dump().items() if v is not None}
     if update_dict:
         await db.users.update_one({"id": user_id}, {"$set": update_dict})
@@ -895,6 +904,7 @@ class Crew(BaseModel):
     
     # Tab 1: Crew Details
     staff_name: str
+    date_of_birth: Optional[str] = None
     email: Optional[str] = None
     address: Optional[str] = None
     telephone: Optional[str] = None
@@ -942,6 +952,7 @@ class Crew(BaseModel):
 
 class CrewCreate(BaseModel):
     staff_name: str
+    date_of_birth: Optional[str] = None
     email: Optional[str] = None
     address: Optional[str] = None
     telephone: Optional[str] = None
@@ -979,6 +990,18 @@ class CrewCreate(BaseModel):
 
 @api_router.post("/crew")
 async def create_crew(crew_data: CrewCreate, current_user: dict = Depends(require_access_level(AccessLevel.EDIT))):
+    # Check for duplicate crew by name + date of birth
+    if crew_data.date_of_birth:
+        existing = await db.crew.find_one({
+            "staff_name": {"$regex": f"^{crew_data.staff_name}$", "$options": "i"},
+            "date_of_birth": crew_data.date_of_birth
+        }, {"_id": 0})
+        if existing:
+            raise HTTPException(
+                status_code=400, 
+                detail=f"A crew member with name '{crew_data.staff_name}' and date of birth '{crew_data.date_of_birth}' already exists"
+            )
+    
     crew = Crew(**crew_data.model_dump(), created_by=current_user["id"])
     await db.crew.insert_one(crew.model_dump())
     
@@ -1083,6 +1106,19 @@ async def update_crew(crew_id: str, crew_data: CrewCreate, current_user: dict = 
     crew = await db.crew.find_one({"id": crew_id}, {"_id": 0})
     if not crew:
         raise HTTPException(status_code=404, detail="Crew member not found")
+    
+    # Check for duplicate crew by name + date of birth (excluding current record)
+    if crew_data.date_of_birth:
+        existing = await db.crew.find_one({
+            "id": {"$ne": crew_id},
+            "staff_name": {"$regex": f"^{crew_data.staff_name}$", "$options": "i"},
+            "date_of_birth": crew_data.date_of_birth
+        }, {"_id": 0})
+        if existing:
+            raise HTTPException(
+                status_code=400, 
+                detail=f"A crew member with name '{crew_data.staff_name}' and date of birth '{crew_data.date_of_birth}' already exists"
+            )
     
     update_dict = crew_data.model_dump()
     update_dict["updated_at"] = datetime.now(timezone.utc)
