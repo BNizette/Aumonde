@@ -513,19 +513,12 @@ const VesselDetailsDialog = ({ open, onClose, vessel, onMessage, onEdit, onEditT
               <p className="text-sm text-gray-500">
                 {runningLogs.length} running log{runningLogs.length !== 1 ? 's' : ''} for this vessel
               </p>
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => window.location.href = `/trips?vessel_id=${vessel.id}&vessel_name=${encodeURIComponent(vessel.vessel_name)}`}
-              >
-                <ExternalLink className="h-4 w-4 mr-2" />
-                Manage in Trips
-              </Button>
             </div>
             {runningLogs.length > 0 ? (
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead>Trip</TableHead>
                 <TableHead>Date & Time</TableHead>
                 <TableHead>Category</TableHead>
                 <TableHead>Activity</TableHead>
@@ -534,15 +527,28 @@ const VesselDetailsDialog = ({ open, onClose, vessel, onMessage, onEdit, onEditT
               </TableRow>
             </TableHeader>
             <TableBody>
-              {runningLogs.map((log) => (
-                <TableRow key={log.id}>
-                  <TableCell className="font-medium">{log.log_datetime ? new Date(log.log_datetime).toLocaleString() : 'N/A'}</TableCell>
-                  <TableCell><Badge variant="outline">{log.category || 'General'}</Badge></TableCell>
-                  <TableCell>{log.activity || '-'}</TableCell>
-                  <TableCell className="max-w-xs truncate">{log.activity_details || '-'}</TableCell>
-                  <TableCell>{log.crew_name || '-'}</TableCell>
-                </TableRow>
-              ))}
+              {runningLogs.map((log) => {
+                const trip = trips.find(t => t.id === log.trip_id);
+                return (
+                  <TableRow key={log.id}>
+                    <TableCell>
+                      {trip ? (
+                        <button
+                          className="text-blue-600 hover:text-blue-800 hover:underline cursor-pointer text-left"
+                          onClick={() => onEditTrip && onEditTrip(trip)}
+                        >
+                          {trip.trip_name}
+                        </button>
+                      ) : '-'}
+                    </TableCell>
+                    <TableCell className="font-medium">{log.log_datetime ? new Date(log.log_datetime).toLocaleString() : 'N/A'}</TableCell>
+                    <TableCell><Badge variant="outline">{log.category || 'General'}</Badge></TableCell>
+                    <TableCell>{log.activity || '-'}</TableCell>
+                    <TableCell className="max-w-xs truncate">{log.activity_details || '-'}</TableCell>
+                    <TableCell>{log.crew_name || '-'}</TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
             ) : (
