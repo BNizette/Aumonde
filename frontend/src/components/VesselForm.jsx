@@ -1785,7 +1785,6 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create', defaultTab
               </div>
             )}
           </ScrollArea>
-        </Tabs>
 
         <DialogFooter>
           <Button variant="outline" onClick={onClose}>Cancel</Button>
