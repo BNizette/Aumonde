@@ -432,10 +432,26 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
   };
 
   // Export all trip data to Excel with multiple worksheets
-  const exportTripToExcel = () => {
+  const exportTripToExcel = async () => {
     if (!trip) return;
 
     const wb = XLSX.utils.book_new();
+    const token = localStorage.getItem('token');
+
+    // Fetch checklists for export
+    let preDepartureChecklist = null;
+    let safetyBriefingChecklist = null;
+    
+    try {
+      const [preDepartureRes, safetyBriefingRes] = await Promise.all([
+        axios.get(`${API}/trips/${trip.id}/checklists/pre_departure`, { headers: { Authorization: `Bearer ${token}` } }),
+        axios.get(`${API}/trips/${trip.id}/checklists/safety_briefing`, { headers: { Authorization: `Bearer ${token}` } })
+      ]);
+      preDepartureChecklist = preDepartureRes.data;
+      safetyBriefingChecklist = safetyBriefingRes.data;
+    } catch (err) {
+      console.error('Error fetching checklists:', err);
+    }
 
     // Sheet 1: Trip Details
     const detailsData = [
@@ -460,7 +476,7 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
     wsDetails['!cols'] = [{ wch: 18 }, { wch: 40 }];
     XLSX.utils.book_append_sheet(wb, wsDetails, 'Trip Details');
 
-    // Sheet 2: Allocated Crew
+    // Sheet 2: Allocated Crew (matches dropdown order)
     const crewHeaders = ['Crew Name', 'Email', 'Phone', 'Position', 'Status'];
     const crewData = [crewHeaders];
     allocatedCrew.forEach(member => {
@@ -475,7 +491,7 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
     if (allocatedCrew.length === 0) crewData.push(['No crew allocated', '', '', '', '']);
     const wsCrew = XLSX.utils.aoa_to_sheet(crewData);
     wsCrew['!cols'] = [{ wch: 20 }, { wch: 25 }, { wch: 15 }, { wch: 15 }, { wch: 10 }];
-    XLSX.utils.book_append_sheet(wb, wsCrew, 'Allocated Crew');
+    XLSX.utils.book_append_sheet(wb, wsCrew, 'Crew');
 
     // Sheet 3: Crew Shifts
     const shiftsHeaders = ['Shift Start', 'Shift End', 'Crew Name', 'Task Performed', 'Total Hours'];
@@ -492,9 +508,49 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
     if (shiftLogs.length === 0) shiftsData.push(['No crew shifts recorded', '', '', '', '']);
     const wsShifts = XLSX.utils.aoa_to_sheet(shiftsData);
     wsShifts['!cols'] = [{ wch: 20 }, { wch: 20 }, { wch: 20 }, { wch: 30 }, { wch: 12 }];
-    XLSX.utils.book_append_sheet(wb, wsShifts, 'Crew Shifts');
+    XLSX.utils.book_append_sheet(wb, wsShifts, 'Shifts');
 
-    // Sheet 4: Running Logs
+    // Sheet 4: Passengers
+    const passengersHeaders = ['Name', 'Type', 'Contact', 'Emergency Contact', 'Special Requirements', 'Status'];
+    const passengersData = [passengersHeaders];
+    tripPassengers.forEach(passenger => {
+      passengersData.push([
+        passenger.name || 'N/A',
+        passenger.passenger_type || 'N/A',
+        passenger.contact_number || passenger.email || '-',
+        passenger.emergency_contact || '-',
+        passenger.special_requirements || '-',
+        passenger.status || 'N/A'
+      ]);
+    });
+    if (tripPassengers.length === 0) passengersData.push(['No passengers recorded', '', '', '', '', '']);
+    const wsPassengers = XLSX.utils.aoa_to_sheet(passengersData);
+    wsPassengers['!cols'] = [{ wch: 25 }, { wch: 12 }, { wch: 20 }, { wch: 20 }, { wch: 25 }, { wch: 10 }];
+    XLSX.utils.book_append_sheet(wb, wsPassengers, 'Passengers');
+
+    // Sheet 5: Expenditures (APA)
+    const expendituresHeaders = ['Date', 'Description', 'Amount', 'Receipt'];
+    const expendituresData = [expendituresHeaders];
+    let totalExpenditure = 0;
+    expenditures.forEach(exp => {
+      totalExpenditure += exp.amount || 0;
+      expendituresData.push([
+        exp.expense_date ? new Date(exp.expense_date).toLocaleDateString() : 'N/A',
+        exp.description || '-',
+        exp.amount ? `$${exp.amount.toFixed(2)}` : '$0.00',
+        exp.receipt_url ? 'Yes' : 'No'
+      ]);
+    });
+    if (expenditures.length === 0) {
+      expendituresData.push(['No expenditures recorded', '', '', '']);
+    } else {
+      expendituresData.push(['', 'Total:', `$${totalExpenditure.toFixed(2)}`, '']);
+    }
+    const wsExpenditures = XLSX.utils.aoa_to_sheet(expendituresData);
+    wsExpenditures['!cols'] = [{ wch: 12 }, { wch: 30 }, { wch: 12 }, { wch: 10 }];
+    XLSX.utils.book_append_sheet(wb, wsExpenditures, 'Expenditure APA');
+
+    // Sheet 6: Running Logs
     const runningHeaders = ['Date & Time', 'Location', 'Weather', 'Sea State', 'Speed (knots)', 'Course', 'Fuel Level', 'Remarks', 'Officer'];
     const runningData = [runningHeaders];
     runningLogs.forEach(log => {
@@ -515,7 +571,7 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
     wsRunning['!cols'] = [{ wch: 20 }, { wch: 15 }, { wch: 12 }, { wch: 10 }, { wch: 12 }, { wch: 8 }, { wch: 10 }, { wch: 25 }, { wch: 15 }];
     XLSX.utils.book_append_sheet(wb, wsRunning, 'Running Logs');
 
-    // Sheet 5: Engine Logs
+    // Sheet 7: Engine Logs
     const engineHeaders = ['Date & Time', 'Engine Hours', 'RPM', 'Oil Pressure', 'Coolant Temp', 'Fuel Consumption', 'Status', 'Notes', 'Engineer'];
     const engineData = [engineHeaders];
     engineLogs.forEach(log => {
@@ -536,81 +592,108 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
     wsEngine['!cols'] = [{ wch: 20 }, { wch: 12 }, { wch: 8 }, { wch: 12 }, { wch: 12 }, { wch: 15 }, { wch: 10 }, { wch: 20 }, { wch: 15 }];
     XLSX.utils.book_append_sheet(wb, wsEngine, 'Engine Logs');
 
-    // Sheet 6: Passengers
-    const passengersHeaders = ['Name', 'Status', 'Comment'];
-    const passengersData = [passengersHeaders];
-    tripPassengers.forEach(passenger => {
-      passengersData.push([
-        passenger.name || 'N/A',
-        passenger.status || 'N/A',
-        passenger.comment || '-'
-      ]);
-    });
-    if (tripPassengers.length === 0) passengersData.push(['No passengers recorded', '', '']);
-    const wsPassengers = XLSX.utils.aoa_to_sheet(passengersData);
-    wsPassengers['!cols'] = [{ wch: 25 }, { wch: 15 }, { wch: 30 }];
-    XLSX.utils.book_append_sheet(wb, wsPassengers, 'Passengers');
-
-    // Sheet 7: Incidents
-    const incidentsHeaders = ['Date', 'Type', 'Severity', 'Title', 'Description', 'Location', 'Status', 'Reported By'];
+    // Sheet 8: Incidents
+    const incidentsHeaders = ['Incident Name', 'Date', 'Type', 'Severity', 'Location', 'Status', 'Reported By'];
     const incidentsData = [incidentsHeaders];
     tripIncidents.forEach(incident => {
       incidentsData.push([
+        incident.title || incident.incident_number || '-',
         incident.incident_date ? new Date(incident.incident_date).toLocaleDateString() : 'N/A',
-        incident.incident_type || '-',
+        Array.isArray(incident.incident_type) ? incident.incident_type.join(', ') : (incident.incident_type || '-'),
         incident.severity || '-',
-        incident.title || '-',
-        incident.description || '-',
         incident.location || '-',
-        incident.status || '-',
+        incident.investigation_status || incident.status || '-',
         incident.reported_by || 'N/A'
       ]);
     });
-    if (tripIncidents.length === 0) incidentsData.push(['No incidents recorded', '', '', '', '', '', '', '']);
+    if (tripIncidents.length === 0) incidentsData.push(['No incidents recorded', '', '', '', '', '', '']);
     const wsIncidents = XLSX.utils.aoa_to_sheet(incidentsData);
-    wsIncidents['!cols'] = [{ wch: 12 }, { wch: 15 }, { wch: 10 }, { wch: 25 }, { wch: 35 }, { wch: 15 }, { wch: 12 }, { wch: 15 }];
+    wsIncidents['!cols'] = [{ wch: 25 }, { wch: 12 }, { wch: 20 }, { wch: 10 }, { wch: 15 }, { wch: 12 }, { wch: 15 }];
     XLSX.utils.book_append_sheet(wb, wsIncidents, 'Incidents');
 
-    // Sheet 8: Drills
-    const drillsHeaders = ['Date', 'Drill Type', 'Duration (mins)', 'Participants', 'Effectiveness', 'Notes', 'Conducted By'];
+    // Sheet 9: Drills
+    const drillsHeaders = ['Drill Type', 'Date', 'Duration (mins)', 'Participants', 'Effectiveness', 'Status', 'Notes', 'Conducted By'];
     const drillsData = [drillsHeaders];
     tripDrills.forEach(drill => {
       drillsData.push([
-        drill.drill_date ? new Date(drill.drill_date).toLocaleDateString() : 'N/A',
         drill.drill_type || '-',
+        drill.drill_date ? new Date(drill.drill_date).toLocaleDateString() : 'N/A',
         drill.duration_minutes || '-',
         drill.participants_count || drill.participants?.length || '-',
         drill.effectiveness_rating || '-',
+        drill.status || '-',
         drill.notes || '-',
         drill.conducted_by || 'N/A'
       ]);
     });
-    if (tripDrills.length === 0) drillsData.push(['No drills recorded', '', '', '', '', '', '']);
+    if (tripDrills.length === 0) drillsData.push(['No drills recorded', '', '', '', '', '', '', '']);
     const wsDrills = XLSX.utils.aoa_to_sheet(drillsData);
-    wsDrills['!cols'] = [{ wch: 12 }, { wch: 20 }, { wch: 15 }, { wch: 12 }, { wch: 15 }, { wch: 30 }, { wch: 15 }];
+    wsDrills['!cols'] = [{ wch: 20 }, { wch: 12 }, { wch: 15 }, { wch: 12 }, { wch: 15 }, { wch: 12 }, { wch: 25 }, { wch: 15 }];
     XLSX.utils.book_append_sheet(wb, wsDrills, 'Drills');
 
-    // Sheet 9: Expenditures (APA)
-    const expendituresHeaders = ['Date', 'Description', 'Amount', 'Receipt'];
-    const expendituresData = [expendituresHeaders];
-    let totalExpenditure = 0;
-    expenditures.forEach(exp => {
-      totalExpenditure += exp.amount || 0;
-      expendituresData.push([
-        exp.expense_date ? new Date(exp.expense_date).toLocaleDateString() : 'N/A',
-        exp.description || '-',
-        exp.amount ? `$${exp.amount.toFixed(2)}` : '$0.00',
-        exp.receipt_url ? 'Yes' : 'No'
-      ]);
-    });
-    if (expenditures.length === 0) {
-      expendituresData.push(['No expenditures recorded', '', '', '']);
+    // Sheet 10: Pre-departure Checklist
+    const preDepartureData = [
+      ['Pre-departure Checklist'],
+      [''],
+      preDepartureChecklist?.authorized_by_name 
+        ? ['Authorized By:', preDepartureChecklist.authorized_by_name, 'Date:', preDepartureChecklist.authorized_at ? new Date(preDepartureChecklist.authorized_at).toLocaleString() : 'N/A']
+        : ['Status:', 'Not yet authorized', '', ''],
+      ['']
+    ];
+    
+    if (preDepartureChecklist?.sections) {
+      preDepartureChecklist.sections.forEach(section => {
+        preDepartureData.push([section.section_name]);
+        preDepartureData.push(['Item', 'Description', 'Checked', 'Remarks']);
+        section.items.forEach(item => {
+          preDepartureData.push([
+            item.item_id,
+            item.label,
+            item.checked ? 'Yes' : 'No',
+            item.remarks || ''
+          ]);
+        });
+        preDepartureData.push(['']); // Empty row between sections
+      });
     } else {
-      expendituresData.push(['', 'Total:', `$${totalExpenditure.toFixed(2)}`, '']);
+      preDepartureData.push(['No checklist data available']);
     }
-    const wsExpenditures = XLSX.utils.aoa_to_sheet(expendituresData);
-    wsExpenditures['!cols'] = [{ wch: 12 }, { wch: 30 }, { wch: 12 }, { wch: 10 }];
-    XLSX.utils.book_append_sheet(wb, wsExpenditures, 'Expenditures APA');
+    
+    const wsPreDeparture = XLSX.utils.aoa_to_sheet(preDepartureData);
+    wsPreDeparture['!cols'] = [{ wch: 8 }, { wch: 60 }, { wch: 10 }, { wch: 30 }];
+    XLSX.utils.book_append_sheet(wb, wsPreDeparture, 'Pre-departure');
+
+    // Sheet 11: Safety Briefing
+    const safetyBriefingData = [
+      ['Passenger & Crew Safety Briefing'],
+      [''],
+      safetyBriefingChecklist?.authorized_by_name 
+        ? ['Conducted By:', safetyBriefingChecklist.authorized_by_name, 'Date:', safetyBriefingChecklist.authorized_at ? new Date(safetyBriefingChecklist.authorized_at).toLocaleString() : 'N/A']
+        : ['Status:', 'Not yet conducted', '', ''],
+      ['']
+    ];
+    
+    if (safetyBriefingChecklist?.sections) {
+      safetyBriefingChecklist.sections.forEach(section => {
+        safetyBriefingData.push([section.section_name]);
+        safetyBriefingData.push(['Item', 'Description', 'Covered', 'Remarks']);
+        section.items.forEach(item => {
+          safetyBriefingData.push([
+            item.item_id,
+            item.label,
+            item.checked ? 'Yes' : 'No',
+            item.remarks || ''
+          ]);
+        });
+        safetyBriefingData.push(['']); // Empty row between sections
+      });
+    } else {
+      safetyBriefingData.push(['No safety briefing data available']);
+    }
+    
+    const wsSafetyBriefing = XLSX.utils.aoa_to_sheet(safetyBriefingData);
+    wsSafetyBriefing['!cols'] = [{ wch: 8 }, { wch: 60 }, { wch: 10 }, { wch: 30 }];
+    XLSX.utils.book_append_sheet(wb, wsSafetyBriefing, 'Safety Briefing');
 
     // Generate and download file
     const fileName = `${trip.trip_name?.replace(/\s+/g, '_')}_details_${new Date().toISOString().slice(0, 10)}.xlsx`;
