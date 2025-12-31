@@ -439,21 +439,21 @@ const PassengerManagement = () => {
                         </Badge>
                       </TableCell>
                       <TableCell>
-                        <div className="text-sm">
-                          {lastTrip ? (
-                            <div className="flex items-center gap-1">
-                              <Calendar className="h-3 w-3 text-gray-400" />
-                              {formatDate(lastTrip.depart_datetime)}
-                            </div>
-                          ) : '-'}
-                        </div>
+                        {lastTrip ? (
+                          <button
+                            className="text-blue-600 hover:text-blue-800 hover:underline cursor-pointer text-left text-sm"
+                            onClick={() => handleEditTrip(lastTrip)}
+                          >
+                            {lastTrip.trip_name || 'View Trip'}
+                          </button>
+                        ) : '-'}
                       </TableCell>
                       <TableCell>
                         <div className="text-sm">
                           {lastTrip ? (
                             <div className="flex items-center gap-1">
                               <Calendar className="h-3 w-3 text-gray-400" />
-                              {formatDate(lastTrip.arrival_datetime)}
+                              {formatDate(lastTrip.depart_datetime)}
                             </div>
                           ) : '-'}
                         </div>
