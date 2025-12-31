@@ -1641,6 +1641,28 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
                 </div>
                 )}
 
+                {/* Pre-departure Checklist View */}
+                {selectedLogView === 'pre_departure' && (
+                  <ChecklistView 
+                    trip={trip}
+                    checklistType="pre_departure"
+                    title="Pre-departure Checklist"
+                    allCrew={allCrew}
+                    onRefresh={fetchAllLogs}
+                  />
+                )}
+
+                {/* Safety Briefing View */}
+                {selectedLogView === 'safety_briefing' && (
+                  <ChecklistView 
+                    trip={trip}
+                    checklistType="safety_briefing"
+                    title="Safety Briefing"
+                    allCrew={allCrew}
+                    onRefresh={fetchAllLogs}
+                  />
+                )}
+
                 {/* Expenditure (APA) View */}
                 {selectedLogView === 'expenditure' && (
                   <div className="space-y-4">
