@@ -904,3 +904,28 @@ backend:
         agent: "main"
         comment: "✅ POST /api/auth/forgot-password - Creates token even if email fails, POST /api/auth/reset-password - Validates token and resets password. Full flow verified end-to-end."
 
+
+  - task: "Duplicate Prevention - Crew (name + DOB)"
+    implemented: true
+    working: pending
+    file: "server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Added duplicate check in create_crew and update_crew endpoints using staff_name (case-insensitive) + date_of_birth. Added date_of_birth field to Crew and CrewCreate models."
+
+  - task: "Duplicate Prevention - Users (email)"
+    implemented: true
+    working: pending
+    file: "server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Added duplicate email check in update_user endpoint. Registration already had this check."
+
