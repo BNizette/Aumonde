@@ -23,6 +23,9 @@ const CrewForm = ({ open, onClose, onSave, crew, mode = 'create', prefilledData 
   const [vessels, setVessels] = useState([]);
   const [inductionTasks, setInductionTasks] = useState([]);
   
+  // Section navigation (dropdown instead of tabs)
+  const [activeSection, setActiveSection] = useState('details');
+  
   // Training tab selected vessel
   const [selectedTrainingVessel, setSelectedTrainingVessel] = useState('');
   // Induction tab selected vessel
@@ -32,9 +35,21 @@ const CrewForm = ({ open, onClose, onSave, crew, mode = 'create', prefilledData 
   const [inductionRecords, setInductionRecords] = useState({});
   const [savingInduction, setSavingInduction] = useState(false);
   
+  const sections = [
+    { value: 'details', label: 'Details' },
+    { value: 'qualifications', label: 'Qualifications' },
+    { value: 'training', label: 'Training' },
+    { value: 'induction', label: 'Induction' },
+    { value: 'medical', label: 'Medical & Dietary' },
+    { value: 'preferences', label: 'Preferences' },
+    { value: 'entertainment', label: 'Entertainment' },
+    { value: 'photo', label: 'Photo' },
+  ];
+  
   const [formData, setFormData] = useState({
-    // Tab 1: Crew Details
+    // Section 1: Crew Details
     staff_name: '',
+    date_of_birth: '',
     email: '',
     address: '',
     telephone: '',
@@ -48,7 +63,7 @@ const CrewForm = ({ open, onClose, onSave, crew, mode = 'create', prefilledData 
     default_position: '',
     role: 'Crew',
     
-    // Tab 2: Qualifications
+    // Section 2: Qualifications
     qualifications: [],
     qualifications_comment: '',
     experience: '',
@@ -58,8 +73,7 @@ const CrewForm = ({ open, onClose, onSave, crew, mode = 'create', prefilledData 
     license_expiry: '',
     medical_cert_expiry: '',
     
-    // Tab 3: Training Record (per vessel)
-    // Structure: { vessel_id: { vessel_name, records: [...], authorising_staff, date_signed_off, vessel_owner, date_signed_owner } }
+    // Section 3: Training Record (per vessel)
     training_by_vessel: {},
     
     // Legacy training arrays (keep for backwards compatibility)
@@ -67,11 +81,32 @@ const CrewForm = ({ open, onClose, onSave, crew, mode = 'create', prefilledData 
     briefings_delivered: [],
     practical_experience: [],
     
-    // Tab 4: Induction (per vessel)
-    // Structure: { vessel_id: { vessel_name, completed_tasks: [...], authorising_staff, date_signed, vessel_owner, date_signed_owner } }
+    // Section 4: Induction (per vessel)
     induction_by_vessel: {},
     
-    // Tab 5: Photo
+    // Section 5: Medical and Dietary
+    allergies: '',
+    dislikes: '',
+    dietary_restrictions: '',
+    medications: '',
+    medical_conditions: '',
+    special_equipment: '',
+    
+    // Section 6: Preferences and Provisioning
+    dietary_preference: '',
+    beverage_preference: '',
+    alcohol_allowed: true,
+    dining_styles: [],
+    
+    // Section 7: Entertainment & Activity Planning
+    music_genre: '',
+    movie_preferences: '',
+    internet_requirement: '',
+    desired_experiences: '',
+    special_requests: '',
+    privacy_level: '',
+    
+    // Section 8: Photo
     crew_photo_url: '',
   });
 
