@@ -460,19 +460,12 @@ const VesselDetailsDialog = ({ open, onClose, vessel, onMessage, onEdit, onEditT
               <p className="text-sm text-gray-500">
                 {staffLogs.length} shift log{staffLogs.length !== 1 ? 's' : ''} for this vessel
               </p>
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => window.location.href = `/trips?vessel_id=${vessel.id}&vessel_name=${encodeURIComponent(vessel.vessel_name)}`}
-              >
-                <ExternalLink className="h-4 w-4 mr-2" />
-                Manage in Trips
-              </Button>
             </div>
             {staffLogs.length > 0 ? (
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead>Trip</TableHead>
                 <TableHead>Shift Start</TableHead>
                 <TableHead>Shift End</TableHead>
                 <TableHead>Crew Member</TableHead>
@@ -481,15 +474,28 @@ const VesselDetailsDialog = ({ open, onClose, vessel, onMessage, onEdit, onEditT
               </TableRow>
             </TableHeader>
             <TableBody>
-              {staffLogs.map((shift) => (
-                <TableRow key={shift.id}>
-                  <TableCell className="font-medium">{shift.shift_start_datetime ? new Date(shift.shift_start_datetime).toLocaleString() : 'N/A'}</TableCell>
-                  <TableCell>{shift.shift_stop_datetime ? new Date(shift.shift_stop_datetime).toLocaleString() : 'N/A'}</TableCell>
-                  <TableCell>{shift.crew_name || 'Unknown'}</TableCell>
-                  <TableCell className="max-w-xs truncate">{shift.task_performed || '-'}</TableCell>
-                  <TableCell>{shift.total_hours ? `${shift.total_hours}h` : '-'}</TableCell>
-                </TableRow>
-              ))}
+              {staffLogs.map((shift) => {
+                const trip = trips.find(t => t.id === shift.trip_id);
+                return (
+                  <TableRow key={shift.id}>
+                    <TableCell>
+                      {trip ? (
+                        <button
+                          className="text-blue-600 hover:text-blue-800 hover:underline cursor-pointer text-left"
+                          onClick={() => onEditTrip && onEditTrip(trip)}
+                        >
+                          {trip.trip_name}
+                        </button>
+                      ) : '-'}
+                    </TableCell>
+                    <TableCell className="font-medium">{shift.shift_start_datetime ? new Date(shift.shift_start_datetime).toLocaleString() : 'N/A'}</TableCell>
+                    <TableCell>{shift.shift_stop_datetime ? new Date(shift.shift_stop_datetime).toLocaleString() : 'N/A'}</TableCell>
+                    <TableCell>{shift.crew_name || 'Unknown'}</TableCell>
+                    <TableCell className="max-w-xs truncate">{shift.task_performed || '-'}</TableCell>
+                    <TableCell>{shift.total_hours ? `${shift.total_hours}h` : '-'}</TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
             ) : (
