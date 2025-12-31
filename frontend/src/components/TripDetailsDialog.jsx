@@ -1529,14 +1529,6 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
                     <p className="text-sm text-gray-500">
                       {tripIncidents.length} incident{tripIncidents.length !== 1 ? 's' : ''} linked to this trip
                     </p>
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={() => window.location.href = `/incidents?trip_name=${encodeURIComponent(trip?.trip_name || '')}`}
-                    >
-                      <ExternalLink className="h-4 w-4 mr-2" />
-                      Manage in Incidents
-                    </Button>
                   </div>
                   {tripIncidents.length === 0 ? (
                     <div className="text-center py-8 text-gray-500">
@@ -1545,27 +1537,37 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
                       <p className="text-xs mt-1">Link incidents from the Incidents module</p>
                     </div>
                   ) : (
-                    <div className="space-y-2">
-                      {tripIncidents.map(incident => (
-                        <div key={incident.id} className="p-3 border rounded-lg bg-gray-50">
-                          <div className="flex items-start justify-between">
-                            <div>
-                              <div className="flex items-center gap-2 mb-1">
-                                <span className="font-medium">{incident.incident_number}</span>
-                                <Badge variant={incident.severity === 'Critical' ? 'destructive' : incident.severity === 'Major' ? 'warning' : 'secondary'}>
-                                  {incident.severity}
-                                </Badge>
-                                <Badge variant="outline">{incident.investigation_status}</Badge>
-                              </div>
-                              <p className="text-sm font-medium">{incident.title}</p>
-                              <p className="text-xs text-gray-500">
-                                {incident.incident_date ? new Date(incident.incident_date).toLocaleDateString() : 'No date'} • {incident.location || 'No location'}
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Incident Name</TableHead>
+                          <TableHead>Date</TableHead>
+                          <TableHead>Type</TableHead>
+                          <TableHead>Severity</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {tripIncidents.map(incident => (
+                          <TableRow key={incident.id}>
+                            <TableCell>
+                              <button
+                                className="text-blue-600 hover:text-blue-800 hover:underline cursor-pointer text-left font-medium"
+                                onClick={() => window.location.href = `/incidents?edit_id=${incident.id}`}
+                              >
+                                {incident.title || incident.incident_number}
+                              </button>
+                            </TableCell>
+                            <TableCell>{incident.incident_date ? new Date(incident.incident_date).toLocaleDateString() : '-'}</TableCell>
+                            <TableCell>{Array.isArray(incident.incident_type) ? incident.incident_type.join(', ') : (incident.incident_type || '-')}</TableCell>
+                            <TableCell>
+                              <Badge variant={incident.severity === 'Critical' || incident.severity === 'High' ? 'destructive' : 'secondary'}>
+                                {incident.severity || '-'}
+                              </Badge>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
                   )}
                 </div>
                 )}
