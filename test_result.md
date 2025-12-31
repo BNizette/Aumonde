@@ -287,6 +287,21 @@ frontend:
         agent: "testing"
         comment: "✅ BRANDING SETTINGS BACKEND FULLY FUNCTIONAL: Successfully tested all branding API endpoints as per review request: 1) ✅ GET /api/branding - Public endpoint returns branding settings (favicon_url, logo_url, app_name), 2) ✅ POST /api/branding - Save settings requires Full access, successfully saved app_name changes, 3) ✅ POST /api/branding/upload/favicon - Upload favicon image with multipart form data, returns file_url, updates branding settings, 4) ✅ POST /api/branding/upload/logo - Upload logo image with multipart form data, returns file_url, updates branding settings, 5) ✅ Validation tests - Invalid upload type returns 422 error (expected behavior), non-image files handled gracefully. All key requirements from review request verified and working correctly. Backend fully supports Branding Settings feature."
 
+  - task: "Trip Checklist Feature - Pre-departure and Safety Briefing Checklists"
+    implemented: true
+    working: true
+    file: "server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "testing"
+        comment: "Need to test Trip Checklist feature: 1) GET /api/trips/{trip_id}/checklists/pre_departure - Get pre-departure checklist with 5 sections and 42 items, 2) GET /api/trips/{trip_id}/checklists/safety_briefing - Get safety briefing checklist with 5 sections and 22 items, 3) PUT /api/trips/{trip_id}/checklists/pre_departure - Save checklist with items checked and authorization, 4) GET /api/trips/{trip_id}/checklists - Get all checklists for a trip, 5) Validation tests for invalid checklist_type and non-existent trip_id"
+      - working: true
+        agent: "testing"
+        comment: "✅ TRIP CHECKLIST BACKEND TESTING COMPLETED: Successfully tested new Trip Checklist feature as per review request: 1) ✅ GET /api/trips/{trip_id}/checklists/pre_departure - Retrieved checklist with 5 sections and 42 items total. Sections: CREW & ADMINISTRATION, WEATHER/TIDES, VESSEL SYSTEMS, SAFETY & NAVIGATION, FINAL PREPARATIONS, 2) ✅ GET /api/trips/{trip_id}/checklists/safety_briefing - Retrieved checklist with 5 sections and 22 items total. Sections: INTRODUCTION, EMERGENCY PROCEDURES, LIFEJACKETS, DAILY SAFETY, EQUIPMENT LOCATION, 3) ✅ PUT /api/trips/{trip_id}/checklists/pre_departure - Successfully saved checklist with items checked and verified persistence. Authorization functionality working with authorized_by, authorized_by_name, and authorized_at fields, 4) ✅ GET /api/trips/{trip_id}/checklists - Returns array of checklists for trip, 5) ✅ Validation tests - Invalid checklist_type returns 400 error, save to non-existent trip returns 404 error. All key requirements from review request verified and working correctly. Backend fully supports Trip Checklist feature with proper templates, save functionality, and validation."
+
 metadata:
   created_by: "testing_agent"
   version: "1.6"
