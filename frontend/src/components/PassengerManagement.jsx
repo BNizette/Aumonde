@@ -400,8 +400,8 @@ const PassengerManagement = () => {
                 <TableRow>
                   <TableHead>Name</TableHead>
                   <TableHead>Type</TableHead>
+                  <TableHead>Trip Name</TableHead>
                   <TableHead>Departure Date</TableHead>
-                  <TableHead>Arrival Date</TableHead>
                   <TableHead>Dietary</TableHead>
                   <TableHead>Medical Notes</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
