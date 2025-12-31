@@ -566,19 +566,12 @@ const VesselDetailsDialog = ({ open, onClose, vessel, onMessage, onEdit, onEditT
               <p className="text-sm text-gray-500">
                 {engineLogs.length} engine log{engineLogs.length !== 1 ? 's' : ''} for this vessel
               </p>
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => window.location.href = `/trips?vessel_id=${vessel.id}&vessel_name=${encodeURIComponent(vessel.vessel_name)}`}
-              >
-                <ExternalLink className="h-4 w-4 mr-2" />
-                Manage in Trips
-              </Button>
             </div>
             {engineLogs.length > 0 ? (
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead>Trip</TableHead>
                 <TableHead>Date & Time</TableHead>
                 <TableHead>Engine</TableHead>
                 <TableHead>Hours</TableHead>
@@ -589,17 +582,30 @@ const VesselDetailsDialog = ({ open, onClose, vessel, onMessage, onEdit, onEditT
               </TableRow>
             </TableHeader>
             <TableBody>
-              {engineLogs.map((e) => (
-                <TableRow key={e.id}>
-                  <TableCell className="font-medium">{e.log_datetime ? new Date(e.log_datetime).toLocaleString() : 'N/A'}</TableCell>
-                  <TableCell>{e.engine_number || '-'}</TableCell>
-                  <TableCell>{e.engine_hours || '-'}</TableCell>
-                  <TableCell>{e.fuel_used || '-'}</TableCell>
-                  <TableCell>{e.oil_pressure || '-'}</TableCell>
-                  <TableCell>{e.engine_temp || '-'}</TableCell>
-                  <TableCell className="max-w-xs truncate">{e.notes || '-'}</TableCell>
-                </TableRow>
-              ))}
+              {engineLogs.map((e) => {
+                const trip = trips.find(t => t.id === e.trip_id);
+                return (
+                  <TableRow key={e.id}>
+                    <TableCell>
+                      {trip ? (
+                        <button
+                          className="text-blue-600 hover:text-blue-800 hover:underline cursor-pointer text-left"
+                          onClick={() => onEditTrip && onEditTrip(trip)}
+                        >
+                          {trip.trip_name}
+                        </button>
+                      ) : '-'}
+                    </TableCell>
+                    <TableCell className="font-medium">{e.log_datetime ? new Date(e.log_datetime).toLocaleString() : 'N/A'}</TableCell>
+                    <TableCell>{e.engine_number || '-'}</TableCell>
+                    <TableCell>{e.engine_hours || '-'}</TableCell>
+                    <TableCell>{e.fuel_used || '-'}</TableCell>
+                    <TableCell>{e.oil_pressure || '-'}</TableCell>
+                    <TableCell>{e.engine_temp || '-'}</TableCell>
+                    <TableCell className="max-w-xs truncate">{e.notes || '-'}</TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
             ) : (
