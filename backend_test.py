@@ -3438,6 +3438,7 @@ class AMSAComprehensiveTester:
             self.test_forgot_password_backend_apis,     # NEW TEST: Forgot Password APIs
             self.test_backup_management_backend_apis,   # NEW TEST: Backup Management APIs
             self.test_settings_backend_apis,           # NEW TEST: Settings APIs
+            self.test_branding_settings,               # NEW TEST: Branding Settings APIs
         ]
         
         print("\n🎯 PRIORITY TESTS - ADMIN PANEL BACKEND FEATURES")
