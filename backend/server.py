@@ -1150,23 +1150,72 @@ async def check_crew_duplicate(crew_data: dict, current_user: dict = Depends(get
     }
 
 @api_router.put("/crew/{crew_id}")
-async def update_crew(crew_id: str, crew_data: CrewCreate, current_user: dict = Depends(require_access_level(AccessLevel.EDIT))):
+async def update_crew(crew_id: str, crew_data: CrewCreate, force: bool = False, current_user: dict = Depends(require_access_level(AccessLevel.EDIT))):
     crew = await db.crew.find_one({"id": crew_id}, {"_id": 0})
     if not crew:
         raise HTTPException(status_code=404, detail="Crew member not found")
     
-    # Check for duplicate crew by name + date of birth (excluding current record)
-    if crew_data.date_of_birth:
-        existing = await db.crew.find_one({
+    warnings = []
+    
+    # BLOCK: Check for duplicate email (hard stop, excluding current record)
+    if crew_data.email:
+        existing_email = await db.crew.find_one({
             "id": {"$ne": crew_id},
-            "staff_name": {"$regex": f"^{crew_data.staff_name}$", "$options": "i"},
-            "date_of_birth": crew_data.date_of_birth
+            "email": {"$regex": f"^{crew_data.email}$", "$options": "i"}
         }, {"_id": 0})
-        if existing:
+        if existing_email:
             raise HTTPException(
                 status_code=400, 
-                detail=f"A crew member with name '{crew_data.staff_name}' and date of birth '{crew_data.date_of_birth}' already exists"
+                detail=f"A crew member with email '{crew_data.email}' already exists (Name: {existing_email['staff_name']})"
             )
+    
+    # WARN: Check for matching name (soft warning, excluding current record)
+    existing_name = await db.crew.find_one({
+        "id": {"$ne": crew_id},
+        "staff_name": {"$regex": f"^{crew_data.staff_name}$", "$options": "i"}
+    }, {"_id": 0})
+    if existing_name:
+        warnings.append({
+            "field": "name",
+            "value": crew_data.staff_name,
+            "message": f"A crew member with the same name already exists",
+            "existing_record": {
+                "id": existing_name["id"],
+                "name": existing_name["staff_name"],
+                "position": existing_name.get("default_position", "N/A"),
+                "date_of_birth": existing_name.get("date_of_birth", "N/A")
+            }
+        })
+    
+    # WARN: Check for matching DOB (soft warning, excluding current record)
+    if crew_data.date_of_birth:
+        existing_dob = await db.crew.find_one({
+            "id": {"$ne": crew_id},
+            "date_of_birth": crew_data.date_of_birth
+        }, {"_id": 0})
+        if existing_dob and (not existing_name or existing_dob["id"] != existing_name.get("id")):
+            warnings.append({
+                "field": "date_of_birth",
+                "value": crew_data.date_of_birth,
+                "message": f"A crew member with the same date of birth already exists",
+                "existing_record": {
+                    "id": existing_dob["id"],
+                    "name": existing_dob["staff_name"],
+                    "position": existing_dob.get("default_position", "N/A"),
+                    "date_of_birth": existing_dob.get("date_of_birth", "N/A")
+                }
+            })
+    
+    # If there are warnings and force is not set, return warnings
+    if warnings and not force:
+        return JSONResponse(
+            status_code=200,
+            content={
+                "status": "warning",
+                "warnings": warnings,
+                "message": "Potential duplicates found. Set force=true to proceed."
+            }
+        )
     
     update_dict = crew_data.model_dump()
     update_dict["updated_at"] = datetime.now(timezone.utc)
