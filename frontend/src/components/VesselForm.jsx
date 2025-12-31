@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
@@ -14,7 +13,7 @@ import { Shield, Calendar, AlertTriangle, CheckCircle, Clock, FileText, Wrench, 
 
 const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create', defaultTab = 'basic' }) => {
   const API = process.env.REACT_APP_BACKEND_URL;
-  const [activeTab, setActiveTab] = useState(defaultTab);
+  const [activeSection, setActiveSection] = useState(defaultTab);
   const [vesselTypes, setVesselTypes] = useState([]);
   const [vesselCertificates, setVesselCertificates] = useState([]);
   const [loadingCertificates, setLoadingCertificates] = useState(false);
