@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -23,13 +23,9 @@ const ChecklistView = ({ tripId, checklistType, title, crewList = [], onMessage 
   const [expandedSections, setExpandedSections] = useState({});
   const [error, setError] = useState('');
 
-  useEffect(() => {
-    if (tripId) {
-      fetchChecklist();
-    }
-  }, [tripId, checklistType]);
-
-  const fetchChecklist = async () => {
+  const fetchChecklist = useCallback(async () => {
+    if (!tripId) return;
+    
     try {
       setLoading(true);
       const token = localStorage.getItem('token');
@@ -54,7 +50,11 @@ const ChecklistView = ({ tripId, checklistType, title, crewList = [], onMessage 
     } finally {
       setLoading(false);
     }
-  };
+  }, [tripId, checklistType]);
+
+  useEffect(() => {
+    fetchChecklist();
+  }, [fetchChecklist]);
 
   const handleCheckItem = (sectionId, itemId, checked) => {
     setChecklist(prev => ({
