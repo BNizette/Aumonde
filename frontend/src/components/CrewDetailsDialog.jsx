@@ -232,14 +232,6 @@ const CrewDetailsDialog = ({ open, onClose, crew, onMessage, onEditTrip }) => {
               <p className="text-sm text-gray-500">
                 {trips.length} trip{trips.length !== 1 ? 's' : ''} for this crew member
               </p>
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => window.location.href = `/trips?crew_name=${encodeURIComponent(crew?.staff_name || '')}`}
-              >
-                <ExternalLink className="h-4 w-4 mr-2" />
-                Manage in Trips
-              </Button>
             </div>
             {trips.length > 0 ? (
           <Table>
@@ -255,7 +247,14 @@ const CrewDetailsDialog = ({ open, onClose, crew, onMessage, onEditTrip }) => {
             <TableBody>
               {trips.map((t) => (
                 <TableRow key={t.id}>
-                  <TableCell className="font-medium">{t.trip_name || 'N/A'}</TableCell>
+                  <TableCell className="font-medium">
+                    <button
+                      className="text-blue-600 hover:text-blue-800 hover:underline cursor-pointer text-left"
+                      onClick={() => onEditTrip && onEditTrip(t)}
+                    >
+                      {t.trip_name || 'N/A'}
+                    </button>
+                  </TableCell>
                   <TableCell>{t.vessel_name || '-'}</TableCell>
                   <TableCell>{t.start_date ? new Date(t.start_date).toLocaleDateString() : 'N/A'}</TableCell>
                   <TableCell>{t.end_date ? new Date(t.end_date).toLocaleDateString() : 'N/A'}</TableCell>
