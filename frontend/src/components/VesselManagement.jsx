@@ -952,7 +952,23 @@ const VesselManagement = () => {
           setDefaultEditTab(tab || 'basic');
           setFormOpen(true);
         }}
+        onEditTrip={handleEditTrip}
+        onNavigateWithFilter={handleNavigateWithFilter}
       />
+
+      {/* Trip Edit Dialog */}
+      {tripFormOpen && selectedTrip && (
+        <TripForm
+          open={tripFormOpen}
+          onClose={() => {
+            setTripFormOpen(false);
+            setSelectedTrip(null);
+          }}
+          onSave={handleTripSave}
+          trip={selectedTrip}
+          mode="edit"
+        />
+      )}
 
       {/* Import Excel Dialog */}
       <ImportExcelDialog
