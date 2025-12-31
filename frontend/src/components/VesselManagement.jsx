@@ -49,6 +49,11 @@ const VesselManagement = () => {
   const [logsDialogOpen, setLogsDialogOpen] = useState(false);
   const [selectedVesselForLogs, setSelectedVesselForLogs] = useState(null);
   const [importDialogOpen, setImportDialogOpen] = useState(false);
+  
+  // Trip editing state
+  const [tripFormOpen, setTripFormOpen] = useState(false);
+  const [selectedTrip, setSelectedTrip] = useState(null);
+  const [allVessels, setAllVessels] = useState([]);
 
   // Use custom hook for advanced filtering
   const {
