@@ -226,7 +226,7 @@ const BrandingSettings = () => {
               <Upload className="h-4 w-4 mr-2" />
               {uploading.favicon ? 'Uploading...' : 'Upload Favicon'}
             </Button>
-            <span className="text-xs text-gray-500">JPG, PNG, ICO, or SVG (max 2MB)</span>
+            <span className="text-xs text-gray-500">JPG, PNG, ICO, SVG, or GIF (max 2MB)</span>
           </div>
 
           {branding.favicon_url && (
@@ -283,7 +283,7 @@ const BrandingSettings = () => {
               <Upload className="h-4 w-4 mr-2" />
               {uploading.logo ? 'Uploading...' : 'Upload Logo'}
             </Button>
-            <span className="text-xs text-gray-500">JPG, PNG, or SVG (max 2MB)</span>
+            <span className="text-xs text-gray-500">JPG, PNG, SVG, or GIF (max 2MB)</span>
           </div>
 
           {branding.logo_url && (
