@@ -950,3 +950,16 @@ backend:
         agent: "main"
         comment: "✅ FIXED: Added email field to UserUpdate model. Successfully tested: 1) Updating user with duplicate email returns 400 'Email already registered to another user', 2) Updating user with unique email succeeds. Both duplicate prevention features now fully working."
 
+
+  - task: "Duplicate Prevention - Passengers (name + email)"
+    implemented: true
+    working: true
+    file: "server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "✅ IMPLEMENTED & TESTED: Added duplicate check in create_passenger and update_passenger endpoints using name (case-insensitive) + contact_email (case-insensitive). Tests: 1) Created first passenger - success, 2) Tried duplicate (same name + email, case insensitive) - correctly rejected with 400 error, 3) Same name different email - allowed, 4) Same email different name - allowed. Duplicate prevention requires BOTH name AND email to match."
+
