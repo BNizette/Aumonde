@@ -78,7 +78,17 @@ const Layout = ({ children, user, onLogout }) => {
     <div className="flex flex-col h-full">
       <div className="p-4 border-b">
         <Link to="/dashboard">
-          <h2 className="text-xl font-bold text-blue-900 cursor-pointer hover:text-blue-700 transition-colors">AMSA Safety</h2>
+          {getLogoUrl() ? (
+            <img 
+              src={getLogoUrl()} 
+              alt={branding.app_name || 'Logo'} 
+              className="h-8 max-w-[150px] object-contain cursor-pointer hover:opacity-80 transition-opacity"
+            />
+          ) : (
+            <h2 className="text-xl font-bold text-blue-900 cursor-pointer hover:text-blue-700 transition-colors">
+              {branding.app_name || 'AMSA Safety'}
+            </h2>
+          )}
         </Link>
         <p className="text-sm text-gray-500 mt-1">{user?.full_name}</p>
         <p className="text-xs text-gray-400">{user?.role}</p>
