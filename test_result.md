@@ -937,3 +937,16 @@ backend:
         agent: "testing"
         comment: "❌ USER EMAIL DUPLICATE PREVENTION NOT WORKING: Backend logic exists but UserUpdate model doesn't support email field. Testing revealed: 1) ✅ Backend code has duplicate email check in update_user endpoint (lines 393-399), 2) ❌ UserUpdate model (lines 164-168) doesn't include email field, only full_name, role, access_level, account_status, 3) ❌ API requests with email field return JSON parsing errors. ISSUE: UserUpdate model needs email field added for duplicate prevention to work. Backend logic is correct but model validation prevents email updates."
 
+
+  - task: "Duplicate Prevention - Users (email) FIX"
+    implemented: true
+    working: true
+    file: "server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "✅ FIXED: Added email field to UserUpdate model. Successfully tested: 1) Updating user with duplicate email returns 400 'Email already registered to another user', 2) Updating user with unique email succeeds. Both duplicate prevention features now fully working."
+
