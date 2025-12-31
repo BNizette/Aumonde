@@ -752,14 +752,6 @@ const VesselDetailsDialog = ({ open, onClose, vessel, onMessage, onEdit, onEditT
               <p className="text-sm text-gray-500">
                 {incidents.length} incident{incidents.length !== 1 ? 's' : ''} for this vessel
               </p>
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => window.location.href = `/incidents?vessel_id=${vessel.id}&vessel_name=${encodeURIComponent(vessel.vessel_name)}`}
-              >
-                <ExternalLink className="h-4 w-4 mr-2" />
-                Manage in Incidents
-              </Button>
             </div>
             {incidents.length > 0 ? (
           <Table>
@@ -778,7 +770,14 @@ const VesselDetailsDialog = ({ open, onClose, vessel, onMessage, onEdit, onEditT
               {incidents.map((incident) => (
                 <TableRow key={incident.id}>
                   <TableCell className="font-medium">{incident.incident_number || '-'}</TableCell>
-                  <TableCell>{incident.title || '-'}</TableCell>
+                  <TableCell>
+                    <button
+                      className="text-blue-600 hover:text-blue-800 hover:underline cursor-pointer text-left"
+                      onClick={() => onNavigateWithFilter && onNavigateWithFilter('incidents', vessel, incident)}
+                    >
+                      {incident.title || '-'}
+                    </button>
+                  </TableCell>
                   <TableCell>{Array.isArray(incident.incident_type) ? incident.incident_type.join(', ') : (incident.incident_type || '-')}</TableCell>
                   <TableCell><Badge variant={incident.severity === 'Critical' || incident.severity === 'High' ? 'destructive' : 'secondary'}>{incident.severity || '-'}</Badge></TableCell>
                   <TableCell>{incident.incident_date ? new Date(incident.incident_date).toLocaleDateString() : '-'}</TableCell>
