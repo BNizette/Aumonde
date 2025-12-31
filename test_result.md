@@ -907,15 +907,18 @@ backend:
 
   - task: "Duplicate Prevention - Crew (name + DOB)"
     implemented: true
-    working: pending
+    working: true
     file: "server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Added duplicate check in create_crew and update_crew endpoints using staff_name (case-insensitive) + date_of_birth. Added date_of_birth field to Crew and CrewCreate models."
+      - working: true
+        agent: "testing"
+        comment: "✅ CREW DUPLICATE PREVENTION WORKING: Successfully tested crew duplicate prevention functionality: 1) ✅ Created first crew member with name 'Test Duplicate Crew' and DOB '1990-01-15', 2) ✅ Correctly rejected duplicate crew creation with same name (case-insensitive 'test duplicate crew') and same DOB '1990-01-15' - returned 400 error with message 'A crew member with name 'test duplicate crew' and date of birth '1990-01-15' already exists', 3) ✅ Successfully created crew member with same name 'Test Duplicate Crew' but different DOB '1995-05-20' - different people with same name allowed. Duplicate prevention logic working correctly using case-insensitive name matching + exact date_of_birth matching."
 
   - task: "Duplicate Prevention - Users (email)"
     implemented: true
