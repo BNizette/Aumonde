@@ -162,6 +162,7 @@ class UserResponse(BaseModel):
     last_login: Optional[datetime] = None
 
 class UserUpdate(BaseModel):
+    email: Optional[EmailStr] = None
     full_name: Optional[str] = None
     role: Optional[str] = None
     access_level: Optional[str] = None
