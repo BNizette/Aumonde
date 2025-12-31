@@ -1265,10 +1265,12 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create', defaultTab
                 </div>
               </div>
               </div>
-            </TabsContent>
+              </div>
+            )}
 
             {/* TAB 6: COMPLIANCE CERTIFICATES */}
-            <TabsContent value="certificates" className="space-y-4">
+            {activeSection === 'certificates' && (
+              <div className="space-y-4">
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <h3 className="font-semibold text-lg">Compliance Certificates</h3>
@@ -1426,10 +1428,12 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create', defaultTab
                   </div>
                 </div>
               )}
-            </TabsContent>
+              </div>
+            )}
 
             {/* TAB: EMERGENCY */}
-            <TabsContent value="emergency" className="space-y-4">
+            {activeSection === 'emergency' && (
+              <div className="space-y-4">
               {mode === 'edit' ? (
                 <div className="space-y-4">
                   <h3 className="text-lg font-semibold">Emergency Information</h3>
@@ -1532,10 +1536,12 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create', defaultTab
                   <p>Emergency information will be available after creating the vessel</p>
                 </div>
               )}
-            </TabsContent>
+              </div>
+            )}
 
             {/* TAB: INDUCTION */}
-            <TabsContent value="induction" className="space-y-4">
+            {activeSection === 'induction' && (
+              <div className="space-y-4">
               {mode === 'edit' ? (
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
@@ -1683,10 +1689,12 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create', defaultTab
                   <p>Induction management will be available after creating the vessel</p>
                 </div>
               )}
-            </TabsContent>
+              </div>
+            )}
 
             {/* TAB 8: PHOTO */}
-            <TabsContent value="photo" className="space-y-4">
+            {activeSection === 'photo' && (
+              <div className="space-y-4">
               <div className="space-y-4">
                 <Label>Vessel Photo</Label>
                 
@@ -1774,7 +1782,8 @@ const VesselForm = ({ open, onClose, onSave, vessel, mode = 'create', defaultTab
                   </div>
                 )}
               </div>
-            </TabsContent>
+              </div>
+            )}
           </ScrollArea>
         </Tabs>
 
