@@ -75,6 +75,7 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
   const [selectedRunningLog, setSelectedRunningLog] = useState(null);
   const [selectedEngineLog, setSelectedEngineLog] = useState(null);
   const [selectedCrewMember, setSelectedCrewMember] = useState(null);
+  const [allCrew, setAllCrew] = useState([]); // For checklist authorization
   
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
@@ -86,7 +87,19 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
     if (userData) {
       setUser(JSON.parse(userData));
     }
+    // Fetch all crew for checklist authorization dropdown
+    fetchAllCrew();
   }, []);
+
+  const fetchAllCrew = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`${API}/crew`, { headers: { Authorization: `Bearer ${token}` } });
+      setAllCrew(response.data || []);
+    } catch (err) {
+      console.error('Error fetching crew list:', err);
+    }
+  };
 
   const fetchAllLogs = useCallback(async () => {
     if (!trip) return;
