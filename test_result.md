@@ -272,6 +272,21 @@ frontend:
         agent: "testing"
         comment: "✅ PASSED ALL TESTS: Successfully tested new Expenditure (APA) feature in Trip Details dialog. 1) View Dropdown Order: 'Expenditure APA (0)' correctly positioned as 4th option in dropdown sequence (Crew, Shifts, Passengers, Expenditure APA, Running Logs, Engine Logs, Incidents, Drills), 2) Empty State: Shows correct messages 'No expenditures recorded' and 'Track APA expenses for this trip', 3) Open in New Tab Button: External link icon button present and functional, 4) Add Expenditure Button: Green 'Add Expenditure' button found and working, 5) Add Expenditure Dialog: Opens correctly with all required fields - Date (required) with date picker, Description (required) with placeholder 'e.g., Fuel, Provisions, Repairs', Amount (required) with note '(positive = expense, negative = refund/credit)', Receipt (PDF) file upload field. All functionality implemented correctly as per requirements."
 
+  - task: "Branding Settings Backend APIs"
+    implemented: true
+    working: true
+    file: "server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "testing"
+        comment: "Need to test new Branding Settings feature: GET /api/branding (public), POST /api/branding (Full access), POST /api/branding/upload/favicon, POST /api/branding/upload/logo, validation tests"
+      - working: true
+        agent: "testing"
+        comment: "✅ BRANDING SETTINGS BACKEND FULLY FUNCTIONAL: Successfully tested all branding API endpoints as per review request: 1) ✅ GET /api/branding - Public endpoint returns branding settings (favicon_url, logo_url, app_name), 2) ✅ POST /api/branding - Save settings requires Full access, successfully saved app_name changes, 3) ✅ POST /api/branding/upload/favicon - Upload favicon image with multipart form data, returns file_url, updates branding settings, 4) ✅ POST /api/branding/upload/logo - Upload logo image with multipart form data, returns file_url, updates branding settings, 5) ✅ Validation tests - Invalid upload type returns 422 error (expected behavior), non-image files handled gracefully. All key requirements from review request verified and working correctly. Backend fully supports Branding Settings feature."
+
 metadata:
   created_by: "testing_agent"
   version: "1.6"
