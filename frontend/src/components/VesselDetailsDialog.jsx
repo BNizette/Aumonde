@@ -706,10 +706,10 @@ const VesselDetailsDialog = ({ open, onClose, vessel, onMessage, onEdit, onEditT
               <Button 
                 variant="outline" 
                 size="sm"
-                onClick={() => window.location.href = `/maintenance?vessel_id=${vessel.id}&vessel_name=${encodeURIComponent(vessel.vessel_name)}`}
+                onClick={() => onNavigateWithFilter && onNavigateWithFilter('maintenance', vessel)}
               >
                 <ExternalLink className="h-4 w-4 mr-2" />
-                Manage in Maintenance
+                View in Maintenance
               </Button>
             </div>
             {maintenance.length > 0 ? (
