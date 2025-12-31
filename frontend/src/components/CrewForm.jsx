@@ -993,10 +993,12 @@ const CrewForm = ({ open, onClose, onSave, crew, mode = 'create', prefilledData 
                   </div>
                 </div>
               </div>
-            </TabsContent>
+            </div>
+          )}
 
-            {/* TAB 3: TRAINING RECORD */}
-            <TabsContent value="training" className="space-y-6">
+          {/* SECTION 3: TRAINING RECORD */}
+          {activeSection === 'training' && (
+            <div className="space-y-6">
               {/* Vessel Selection at Top */}
               <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
                 <Label className="text-base font-semibold text-blue-800 mb-2 block">Select Vessel for Training Records</Label>
