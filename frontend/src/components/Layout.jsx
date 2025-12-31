@@ -29,13 +29,27 @@ const Layout = ({ children, user, onLogout }) => {
             const fullUrl = response.data.favicon_url.startsWith('http') 
               ? response.data.favicon_url 
               : `${BACKEND_URL}${response.data.favicon_url}`;
-            let link = document.querySelector("link[rel*='icon']");
+            
+            // Update the existing favicon link or create one
+            let link = document.getElementById('dynamic-favicon') || document.querySelector("link[rel*='icon']");
             if (!link) {
               link = document.createElement('link');
-              link.rel = 'shortcut icon';
+              link.id = 'dynamic-favicon';
+              link.rel = 'icon';
               document.head.appendChild(link);
             }
-            link.href = fullUrl;
+            // Set type based on file extension
+            const ext = fullUrl.split('.').pop().toLowerCase();
+            const typeMap = {
+              'ico': 'image/x-icon',
+              'png': 'image/png',
+              'jpg': 'image/jpeg',
+              'jpeg': 'image/jpeg',
+              'gif': 'image/gif',
+              'svg': 'image/svg+xml'
+            };
+            link.type = typeMap[ext] || 'image/x-icon';
+            link.href = `${fullUrl}?v=${Date.now()}`; // Cache bust
           }
         }
       } catch (err) {
