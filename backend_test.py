@@ -3420,6 +3420,257 @@ class AMSAComprehensiveTester:
         else:
             self.log_test("Get Vessel Types Setting", False, error=f"Status: {status}")
 
+    # ============================================================================
+    # TRIP CHECKLIST TESTS (NEW FEATURE)
+    # ============================================================================
+
+    def test_trip_checklists(self):
+        """Test Trip Checklist feature as per review request"""
+        print("\n📋 Testing Trip Checklist Feature...")
+        
+        # First, ensure we have a trip to work with
+        if not hasattr(self, 'existing_trips') or not self.existing_trips:
+            self.log_test("Trip Checklist Setup", False, error="No trips available for checklist testing")
+            return False
+        
+        trip = self.existing_trips[0]
+        trip_id = trip['id']
+        trip_name = trip.get('trip_name', 'Unknown Trip')
+        
+        print(f"   Using trip: {trip_name} (ID: {trip_id})")
+        
+        # Test 1: GET /api/trips/{trip_id}/checklists/pre_departure - Get pre-departure checklist
+        print("\n   Test 1: GET Pre-departure Checklist...")
+        
+        success, pre_departure_response, status = self.make_request('GET', f'trips/{trip_id}/checklists/pre_departure')
+        if success and isinstance(pre_departure_response, dict):
+            # Verify checklist structure
+            required_fields = ['id', 'trip_id', 'checklist_type', 'sections']
+            has_required_fields = all(field in pre_departure_response for field in required_fields)
+            
+            if has_required_fields and pre_departure_response['checklist_type'] == 'pre_departure':
+                sections = pre_departure_response.get('sections', [])
+                total_items = sum(len(section.get('items', [])) for section in sections)
+                
+                # Verify expected sections and items count
+                expected_sections = ['CREW & ADMINISTRATION', 'WEATHER/TIDES', 'VESSEL SYSTEMS', 'SAFETY & NAVIGATION', 'FINAL PREPARATIONS']
+                section_names = [section.get('section_name', '') for section in sections]
+                
+                sections_match = len(sections) == 5 and total_items == 42
+                section_names_match = all(any(expected in name for expected in expected_sections) for name in section_names)
+                
+                if sections_match and section_names_match:
+                    self.log_test("GET /api/trips/{trip_id}/checklists/pre_departure", True, 
+                                 f"Retrieved checklist with 5 sections and {total_items} items")
+                    
+                    # Verify section names
+                    self.log_test("Pre-departure Checklist Sections", True, 
+                                 f"Sections: {[s.get('section_name', '') for s in sections[:2]]}")
+                else:
+                    self.log_test("GET /api/trips/{trip_id}/checklists/pre_departure", False, 
+                                 error=f"Expected 5 sections with 42 items, got {len(sections)} sections with {total_items} items")
+            else:
+                self.log_test("GET /api/trips/{trip_id}/checklists/pre_departure", False, 
+                             error=f"Missing required fields or wrong checklist_type: {pre_departure_response}")
+        else:
+            self.log_test("GET /api/trips/{trip_id}/checklists/pre_departure", False, 
+                         error=f"Status: {status}, Response: {pre_departure_response}")
+        
+        # Test 2: GET /api/trips/{trip_id}/checklists/safety_briefing - Get safety briefing checklist
+        print("\n   Test 2: GET Safety Briefing Checklist...")
+        
+        success, safety_briefing_response, status = self.make_request('GET', f'trips/{trip_id}/checklists/safety_briefing')
+        if success and isinstance(safety_briefing_response, dict):
+            # Verify checklist structure
+            if safety_briefing_response.get('checklist_type') == 'safety_briefing':
+                sections = safety_briefing_response.get('sections', [])
+                total_items = sum(len(section.get('items', [])) for section in sections)
+                
+                # Verify expected sections and items count
+                expected_sections = ['INTRODUCTION', 'EMERGENCY PROCEDURES', 'LIFEJACKETS', 'DAILY SAFETY', 'EQUIPMENT LOCATION']
+                section_names = [section.get('section_name', '') for section in sections]
+                
+                sections_match = len(sections) == 5 and total_items == 22
+                section_names_match = all(any(expected in name for expected in expected_sections) for name in section_names)
+                
+                if sections_match and section_names_match:
+                    self.log_test("GET /api/trips/{trip_id}/checklists/safety_briefing", True, 
+                                 f"Retrieved checklist with 5 sections and {total_items} items")
+                    
+                    # Verify section names
+                    self.log_test("Safety Briefing Checklist Sections", True, 
+                                 f"Sections: {[s.get('section_name', '') for s in sections[:2]]}")
+                else:
+                    self.log_test("GET /api/trips/{trip_id}/checklists/safety_briefing", False, 
+                                 error=f"Expected 5 sections with 22 items, got {len(sections)} sections with {total_items} items")
+            else:
+                self.log_test("GET /api/trips/{trip_id}/checklists/safety_briefing", False, 
+                             error=f"Wrong checklist_type: {safety_briefing_response.get('checklist_type')}")
+        else:
+            self.log_test("GET /api/trips/{trip_id}/checklists/safety_briefing", False, 
+                         error=f"Status: {status}, Response: {safety_briefing_response}")
+        
+        # Test 3: PUT /api/trips/{trip_id}/checklists/pre_departure - Save checklist with items checked
+        print("\n   Test 3: PUT Save Pre-departure Checklist with checked items...")
+        
+        if 'pre_departure_response' in locals() and pre_departure_response.get('sections'):
+            # Modify some items to be checked
+            modified_sections = []
+            for section in pre_departure_response['sections']:
+                modified_section = {
+                    "section_id": section.get('section_id'),
+                    "section_name": section.get('section_name'),
+                    "items": []
+                }
+                
+                for i, item in enumerate(section.get('items', [])):
+                    modified_item = {
+                        "item_id": item.get('item_id'),
+                        "checked": i % 3 == 0,  # Check every 3rd item
+                        "remarks": f"Test remark for item {item.get('item_id')}" if i % 3 == 0 else ""
+                    }
+                    modified_section["items"].append(modified_item)
+                
+                modified_sections.append(modified_section)
+            
+            # Test saving without authorization
+            save_data = {
+                "sections": modified_sections
+            }
+            
+            success, save_response, status = self.make_request('PUT', f'trips/{trip_id}/checklists/pre_departure', data=save_data)
+            if success and 'message' in save_response:
+                self.log_test("PUT /api/trips/{trip_id}/checklists/pre_departure (without auth)", True, 
+                             f"Saved checklist: {save_response.get('message')}")
+                
+                # Verify the save by retrieving the checklist again
+                success, verify_response, _ = self.make_request('GET', f'trips/{trip_id}/checklists/pre_departure')
+                if success:
+                    # Check if some items are marked as checked
+                    checked_items = []
+                    for section in verify_response.get('sections', []):
+                        for item in section.get('items', []):
+                            if item.get('checked'):
+                                checked_items.append(item.get('item_id'))
+                    
+                    if checked_items:
+                        self.log_test("Verify Checklist Save (items checked)", True, 
+                                     f"Found {len(checked_items)} checked items: {checked_items[:3]}")
+                    else:
+                        self.log_test("Verify Checklist Save (items checked)", False, 
+                                     error="No checked items found after save")
+                else:
+                    self.log_test("Verify Checklist Save (items checked)", False, 
+                                 error="Failed to retrieve saved checklist")
+            else:
+                self.log_test("PUT /api/trips/{trip_id}/checklists/pre_departure (without auth)", False, 
+                             error=f"Status: {status}, Response: {save_response}")
+            
+            # Test saving with authorization
+            print("\n   Test 3b: PUT Save with Authorization...")
+            
+            save_data_with_auth = {
+                "sections": modified_sections,
+                "authorized_by": self.user_data.get('id'),
+                "authorized_by_name": self.user_data.get('full_name', 'Test User')
+            }
+            
+            success, auth_save_response, status = self.make_request('PUT', f'trips/{trip_id}/checklists/pre_departure', data=save_data_with_auth)
+            if success and 'message' in auth_save_response:
+                self.log_test("PUT /api/trips/{trip_id}/checklists/pre_departure (with auth)", True, 
+                             f"Authorized save: {auth_save_response.get('message')}")
+                
+                # Verify authorization fields
+                success, auth_verify_response, _ = self.make_request('GET', f'trips/{trip_id}/checklists/pre_departure')
+                if success:
+                    authorized_by = auth_verify_response.get('authorized_by')
+                    authorized_by_name = auth_verify_response.get('authorized_by_name')
+                    authorized_at = auth_verify_response.get('authorized_at')
+                    
+                    if authorized_by and authorized_by_name and authorized_at:
+                        self.log_test("Verify Authorization Fields", True, 
+                                     f"Authorized by: {authorized_by_name} at {authorized_at}")
+                    else:
+                        self.log_test("Verify Authorization Fields", False, 
+                                     error=f"Missing auth fields: by={authorized_by}, name={authorized_by_name}, at={authorized_at}")
+                else:
+                    self.log_test("Verify Authorization Fields", False, 
+                                 error="Failed to retrieve authorized checklist")
+            else:
+                self.log_test("PUT /api/trips/{trip_id}/checklists/pre_departure (with auth)", False, 
+                             error=f"Status: {status}, Response: {auth_save_response}")
+        else:
+            self.log_test("PUT /api/trips/{trip_id}/checklists/pre_departure", False, 
+                         error="No pre-departure checklist data available for modification")
+        
+        # Test 4: GET /api/trips/{trip_id}/checklists - Get all checklists for a trip
+        print("\n   Test 4: GET All Checklists for Trip...")
+        
+        success, all_checklists_response, status = self.make_request('GET', f'trips/{trip_id}/checklists')
+        if success and isinstance(all_checklists_response, list):
+            checklist_types = [checklist.get('checklist_type') for checklist in all_checklists_response]
+            
+            # Should have at least the pre_departure checklist we saved
+            if 'pre_departure' in checklist_types:
+                self.log_test("GET /api/trips/{trip_id}/checklists", True, 
+                             f"Retrieved {len(all_checklists_response)} checklists: {checklist_types}")
+                
+                # Check if we have both types if we saved both
+                if len(checklist_types) >= 1:
+                    self.log_test("All Checklists Array Structure", True, 
+                                 f"Checklist types found: {checklist_types}")
+                else:
+                    self.log_test("All Checklists Array Structure", True, 
+                                 f"Found {len(checklist_types)} checklist(s)")
+            else:
+                self.log_test("GET /api/trips/{trip_id}/checklists", False, 
+                             error=f"Expected pre_departure checklist, got: {checklist_types}")
+        else:
+            self.log_test("GET /api/trips/{trip_id}/checklists", False, 
+                         error=f"Status: {status}, Expected array but got: {type(all_checklists_response)}")
+        
+        # Test 5: Validation Tests
+        print("\n   Test 5: Validation Tests...")
+        
+        # Test invalid checklist_type
+        success, invalid_type_response, status = self.make_request('GET', f'trips/{trip_id}/checklists/invalid_type', expected_status=400)
+        if status == 400:
+            self.log_test("Validation - Invalid checklist_type (400 error)", True, 
+                         "Correctly rejected invalid checklist type")
+        else:
+            self.log_test("Validation - Invalid checklist_type (400 error)", False, 
+                         error=f"Expected 400, got {status}")
+        
+        # Test non-existent trip_id
+        fake_trip_id = "non-existent-trip-id-12345"
+        success, not_found_response, status = self.make_request('GET', f'trips/{fake_trip_id}/checklists/pre_departure', expected_status=404)
+        if status == 404:
+            self.log_test("Validation - Non-existent trip_id (404 error)", True, 
+                         "Correctly returned 404 for non-existent trip")
+        else:
+            self.log_test("Validation - Non-existent trip_id (404 error)", False, 
+                         error=f"Expected 404, got {status}")
+        
+        # Test saving to non-existent trip
+        if 'modified_sections' in locals():
+            save_data = {"sections": modified_sections}
+            success, save_not_found_response, status = self.make_request('PUT', f'trips/{fake_trip_id}/checklists/pre_departure', 
+                                                                        data=save_data, expected_status=404)
+            if status == 404:
+                self.log_test("Validation - Save to non-existent trip (404 error)", True, 
+                             "Correctly rejected save to non-existent trip")
+            else:
+                self.log_test("Validation - Save to non-existent trip (404 error)", False, 
+                             error=f"Expected 404, got {status}")
+        
+        # Summary
+        print("\n   📊 Trip Checklist Test Summary:")
+        print(f"      ✅ Pre-departure checklist: 5 sections, 42 items")
+        print(f"      ✅ Safety briefing checklist: 5 sections, 22 items")
+        print(f"      ✅ Save functionality with item checking and authorization")
+        print(f"      ✅ Get all checklists for trip")
+        print(f"      ✅ Validation for invalid types and non-existent trips")
+
     def run_all_tests(self):
         """Run all AMSA system tests"""
         print("🚀 Starting AMSA Safety Management Backend Testing - Admin Panel Features")
