@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { Button } from '@/components/ui/button';
@@ -15,32 +15,40 @@ const Layout = ({ children, user, onLogout }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const fetchBranding = useCallback(async () => {
-    try {
-      const response = await axios.get(`${API}/branding`);
-      setBranding(response.data);
-      
-      // Apply favicon if available
-      if (response.data.favicon_url) {
-        const fullUrl = response.data.favicon_url.startsWith('http') 
-          ? response.data.favicon_url 
-          : `${BACKEND_URL}${response.data.favicon_url}`;
-        let link = document.querySelector("link[rel*='icon']");
-        if (!link) {
-          link = document.createElement('link');
-          link.rel = 'shortcut icon';
-          document.head.appendChild(link);
-        }
-        link.href = fullUrl;
-      }
-    } catch (err) {
-      console.log('Using default branding');
-    }
-  }, []);
-
   useEffect(() => {
-    fetchBranding();
-  }, [fetchBranding]);
+    let isMounted = true;
+    
+    const loadBranding = async () => {
+      try {
+        const response = await axios.get(`${API}/branding`);
+        if (isMounted) {
+          setBranding(response.data);
+          
+          // Apply favicon if available
+          if (response.data.favicon_url) {
+            const fullUrl = response.data.favicon_url.startsWith('http') 
+              ? response.data.favicon_url 
+              : `${BACKEND_URL}${response.data.favicon_url}`;
+            let link = document.querySelector("link[rel*='icon']");
+            if (!link) {
+              link = document.createElement('link');
+              link.rel = 'shortcut icon';
+              document.head.appendChild(link);
+            }
+            link.href = fullUrl;
+          }
+        }
+      } catch (err) {
+        // Using default branding
+      }
+    };
+    
+    loadBranding();
+    
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const getLogoUrl = () => {
     if (!branding.logo_url) return null;
