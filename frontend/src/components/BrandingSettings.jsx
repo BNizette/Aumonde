@@ -214,7 +214,7 @@ const BrandingSettings = () => {
             <input
               type="file"
               ref={faviconInputRef}
-              accept=".jpg,.jpeg,.png,.ico,.svg"
+              accept=".jpg,.jpeg,.png,.ico,.svg,.gif"
               onChange={(e) => handleFileUpload('favicon', e.target.files[0])}
               className="hidden"
             />
@@ -271,7 +271,7 @@ const BrandingSettings = () => {
             <input
               type="file"
               ref={logoInputRef}
-              accept=".jpg,.jpeg,.png,.svg"
+              accept=".jpg,.jpeg,.png,.svg,.gif"
               onChange={(e) => handleFileUpload('logo', e.target.files[0])}
               className="hidden"
             />
