@@ -963,3 +963,16 @@ backend:
         agent: "main"
         comment: "✅ IMPLEMENTED & TESTED: Added duplicate check in create_passenger and update_passenger endpoints using name (case-insensitive) + contact_email (case-insensitive). Tests: 1) Created first passenger - success, 2) Tried duplicate (same name + email, case insensitive) - correctly rejected with 400 error, 3) Same name different email - allowed, 4) Same email different name - allowed. Duplicate prevention requires BOTH name AND email to match."
 
+
+  - task: "Crew Duplicate Check - Block Email, Warn Name/DOB"
+    implemented: true
+    working: pending
+    file: "server.py, CrewManagement.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Modified crew duplicate logic: 1) BLOCK on duplicate email (400 error), 2) WARN on duplicate name or DOB (return 200 with warnings), 3) Added force=true parameter to bypass warnings. Frontend updated to show warning dialog with 'Continue Anyway' button."
+
