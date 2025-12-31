@@ -39,6 +39,10 @@ const PassengerManagement = () => {
   const [logsPassenger, setLogsPassenger] = useState(null);
   const [passengerTripLogs, setPassengerTripLogs] = useState([]);
   const [loadingLogs, setLoadingLogs] = useState(false);
+  
+  // Trip editing state
+  const [tripFormOpen, setTripFormOpen] = useState(false);
+  const [selectedTrip, setSelectedTrip] = useState(null);
 
   useEffect(() => {
     fetchPassengers();
