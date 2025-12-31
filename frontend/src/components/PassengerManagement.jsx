@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogD
 import { SummaryCard } from '@/components/ui/summary-card';
 import { Label } from '@/components/ui/label';
 import PassengerForm from './PassengerForm';
+import TripForm from './TripForm';
 import axios from 'axios';
 
 const PassengerManagement = () => {
