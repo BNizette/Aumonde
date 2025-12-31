@@ -620,7 +620,14 @@ const PassengerManagement = () => {
                 <TableBody>
                   {passengerTripLogs.map((trip, index) => (
                     <TableRow key={`${trip.trip_id}-${index}`}>
-                      <TableCell className="font-medium">{trip.trip_name}</TableCell>
+                      <TableCell className="font-medium">
+                        <button
+                          className="text-blue-600 hover:text-blue-800 hover:underline cursor-pointer text-left"
+                          onClick={() => handleEditTrip(trip)}
+                        >
+                          {trip.trip_name}
+                        </button>
+                      </TableCell>
                       <TableCell>{trip.vessel_name || '-'}</TableCell>
                       <TableCell>{formatDate(trip.depart_datetime)}</TableCell>
                       <TableCell>{formatDate(trip.arrival_datetime)}</TableCell>
