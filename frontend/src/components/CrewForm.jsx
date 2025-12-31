@@ -747,9 +747,6 @@ const CrewForm = ({ open, onClose, onSave, crew, mode = 'create', prefilledData 
                     onChange={(e) => handleChange('email', e.target.value)}
                     placeholder="email@example.com"
                   />
-                </div>}
-                    placeholder="email@example.com"
-                  />
                 </div>
                 <div className="space-y-2 col-span-2">
                   <Label htmlFor="address">Address</Label>
