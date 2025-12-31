@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { Button } from '@/components/ui/button';
@@ -15,11 +15,7 @@ const Layout = ({ children, user, onLogout }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  useEffect(() => {
-    fetchBranding();
-  }, []);
-
-  const fetchBranding = async () => {
+  const fetchBranding = useCallback(async () => {
     try {
       const response = await axios.get(`${API}/branding`);
       setBranding(response.data);
@@ -40,7 +36,11 @@ const Layout = ({ children, user, onLogout }) => {
     } catch (err) {
       console.log('Using default branding');
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchBranding();
+  }, [fetchBranding]);
 
   const getLogoUrl = () => {
     if (!branding.logo_url) return null;
