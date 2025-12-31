@@ -5328,7 +5328,7 @@ async def upload_branding_image(
         raise HTTPException(status_code=400, detail="Type must be 'favicon' or 'logo'")
     
     # Validate file type
-    allowed_extensions = ['.jpg', '.jpeg', '.png', '.ico', '.svg']
+    allowed_extensions = ['.jpg', '.jpeg', '.png', '.ico', '.svg', '.gif']
     file_extension = Path(file.filename).suffix.lower()
     if file_extension not in allowed_extensions:
         raise HTTPException(status_code=400, detail=f"File type not allowed. Allowed: {', '.join(allowed_extensions)}")

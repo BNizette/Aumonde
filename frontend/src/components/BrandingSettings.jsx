@@ -46,9 +46,9 @@ const BrandingSettings = () => {
     if (!file) return;
     
     // Validate file type
-    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/x-icon', 'image/svg+xml'];
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/x-icon', 'image/svg+xml', 'image/gif'];
     if (!allowedTypes.includes(file.type)) {
-      setError(`Invalid file type. Allowed: JPG, PNG, ICO, SVG`);
+      setError(`Invalid file type. Allowed: JPG, PNG, ICO, SVG, GIF`);
       setTimeout(() => setError(''), 5000);
       return;
     }
