@@ -103,7 +103,7 @@ async def test_crew_logs_comprehensive():
             print("🔍 Starting Comprehensive Crew Logs Vessel Column Testing")
             
             # Login
-            await page.goto('https://nautical-ops-2.preview.emergentagent.com')
+            await page.goto('https://seaflex-1.preview.emergentagent.com')
             await page.wait_for_timeout(2000)
             
             print("Step 1: Logging in")
@@ -114,7 +114,7 @@ async def test_crew_logs_comprehensive():
             
             # Navigate to crew management
             print("Step 2: Navigating to Crew Management")
-            await page.goto('https://nautical-ops-2.preview.emergentagent.com/crew')
+            await page.goto('https://seaflex-1.preview.emergentagent.com/crew')
             await page.wait_for_timeout(3000)
             
             # Wait for crew list

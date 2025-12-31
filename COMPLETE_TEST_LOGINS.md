@@ -308,7 +308,7 @@ Login as admin, go to Admin Panel → Users
 
 ## 🚀 LOGIN URL
 
-**Preview:** https://nautical-ops-2.preview.emergentagent.com
+**Preview:** https://seaflex-1.preview.emergentagent.com
 
 ---
 
