@@ -5412,8 +5412,10 @@ async def forgot_password(request: ForgotPasswordRequest):
         msg['To'] = request.email
         msg['Subject'] = "AMSA Safety Management - Password Reset Request"
         
-        # Get the frontend URL from environment or use default
-        frontend_url = os.environ.get('FRONTEND_URL', 'https://seaflex-1.preview.emergentagent.com')
+        # Get the frontend URL from environment variable (required for deployment)
+        frontend_url = os.environ.get('FRONTEND_URL')
+        if not frontend_url:
+            raise HTTPException(status_code=500, detail="FRONTEND_URL environment variable not configured")
         reset_link = f"{frontend_url}/reset-password?token={reset_token}"
         
         body = f"""
