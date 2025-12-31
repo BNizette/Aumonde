@@ -1579,14 +1579,6 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
                     <p className="text-sm text-gray-500">
                       {tripDrills.length} drill{tripDrills.length !== 1 ? 's' : ''} linked to this trip
                     </p>
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={() => window.location.href = `/emergency?tab=drills&vessel_name=${encodeURIComponent(trip?.vessel_name || '')}`}
-                    >
-                      <ExternalLink className="h-4 w-4 mr-2" />
-                      Manage in Drills
-                    </Button>
                   </div>
                   {tripDrills.length === 0 ? (
                     <div className="text-center py-8 text-gray-500">
@@ -1600,7 +1592,12 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
                         <div key={drill.id} className="p-3 border rounded-lg bg-gray-50">
                           <div className="flex items-start justify-between">
                             <div>
-                              <p className="font-medium">{drill.drill_type}</p>
+                              <button
+                                className="text-blue-600 hover:text-blue-800 hover:underline cursor-pointer text-left font-medium"
+                                onClick={() => window.location.href = `/emergency?tab=drills&edit_id=${drill.id}`}
+                              >
+                                {drill.drill_type}
+                              </button>
                               <p className="text-xs text-gray-500">
                                 {drill.drill_date ? new Date(drill.drill_date).toLocaleDateString() : 'No date'} • {drill.vessel_name || 'No vessel'}
                               </p>
