@@ -1380,24 +1380,296 @@ const CrewForm = ({ open, onClose, onSave, crew, mode = 'create', prefilledData 
                   <p>Please select a vessel above to manage induction checklist</p>
                 </div>
               )}
-            </TabsContent>
+            </div>
+          )}
 
-            {/* TAB 5: PHOTO */}
-            <TabsContent value="photo" className="space-y-4">
-              <div className="space-y-4">
-                <Label>Crew Member Photo</Label>
-                
-                {/* Show current photo or drag-drop zone */}
-                {formData.crew_photo_url ? (
-                  <div className="space-y-4">
-                    <div className="relative border-2 border-gray-200 rounded-lg p-4 bg-gray-50">
-                      <div className="flex justify-center">
-                        <img 
-                          src={formData.crew_photo_url.startsWith('http') ? formData.crew_photo_url : `${BACKEND_URL}${formData.crew_photo_url}`} 
-                          alt="Crew Member" 
-                          className="max-w-full h-auto max-h-64 object-contain rounded-lg shadow-md"
-                          onError={(e) => {
-                            e.target.style.display = 'none';
+          {/* SECTION 5: MEDICAL AND DIETARY */}
+          {activeSection === 'medical' && (
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="allergies">Allergies</Label>
+                <Textarea
+                  id="allergies"
+                  value={formData.allergies}
+                  onChange={(e) => handleChange('allergies', e.target.value)}
+                  placeholder="List any allergies (food, medication, environmental)"
+                  rows={2}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="dislikes">Dislikes</Label>
+                <Textarea
+                  id="dislikes"
+                  value={formData.dislikes}
+                  onChange={(e) => handleChange('dislikes', e.target.value)}
+                  placeholder="Food or activity dislikes"
+                  rows={2}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="dietary_restrictions">Dietary Restrictions</Label>
+                <Textarea
+                  id="dietary_restrictions"
+                  value={formData.dietary_restrictions}
+                  onChange={(e) => handleChange('dietary_restrictions', e.target.value)}
+                  placeholder="e.g., Vegetarian, Vegan, Gluten-free, Kosher, Halal"
+                  rows={2}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="medications">Medications</Label>
+                <Textarea
+                  id="medications"
+                  value={formData.medications}
+                  onChange={(e) => handleChange('medications', e.target.value)}
+                  placeholder="Current medications and dosages"
+                  rows={2}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="medical_conditions">Medical Conditions</Label>
+                <Textarea
+                  id="medical_conditions"
+                  value={formData.medical_conditions}
+                  onChange={(e) => handleChange('medical_conditions', e.target.value)}
+                  placeholder="Any medical conditions that should be known"
+                  rows={2}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="special_equipment">Special Equipment</Label>
+                <Textarea
+                  id="special_equipment"
+                  value={formData.special_equipment}
+                  onChange={(e) => handleChange('special_equipment', e.target.value)}
+                  placeholder="e.g., CPAP machine, wheelchair, mobility aids"
+                  rows={2}
+                />
+              </div>
+            </div>
+          )}
+
+          {/* SECTION 6: PREFERENCES AND PROVISIONING */}
+          {activeSection === 'preferences' && (
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="dietary_preference">Dietary Preference</Label>
+                <Textarea
+                  id="dietary_preference"
+                  value={formData.dietary_preference}
+                  onChange={(e) => handleChange('dietary_preference', e.target.value)}
+                  placeholder="Favorite foods, cuisines, or specific preferences"
+                  rows={2}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="beverage_preference">Beverage Preference</Label>
+                <Textarea
+                  id="beverage_preference"
+                  value={formData.beverage_preference}
+                  onChange={(e) => handleChange('beverage_preference', e.target.value)}
+                  placeholder="Favorite drinks, coffee preferences, etc."
+                  rows={2}
+                />
+              </div>
+
+              <div className="flex items-center space-x-2 py-2">
+                <Checkbox
+                  id="alcohol_allowed"
+                  checked={formData.alcohol_allowed}
+                  onCheckedChange={(checked) => handleChange('alcohol_allowed', checked)}
+                />
+                <Label htmlFor="alcohol_allowed" className="cursor-pointer">
+                  Alcohol Allowed
+                </Label>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Dining Style</Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline" className="w-full justify-between">
+                      <span className="truncate">
+                        {formData.dining_styles?.length === 0
+                          ? 'Select dining styles'
+                          : formData.dining_styles?.length === 1
+                          ? formData.dining_styles[0].charAt(0).toUpperCase() + formData.dining_styles[0].slice(1)
+                          : `${formData.dining_styles?.length || 0} selected`}
+                      </span>
+                      <ChevronDown className="h-4 w-4 ml-2 shrink-0" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-64 p-0 z-[200]" align="start">
+                    <div className="p-2">
+                      <div className="flex items-center justify-between px-2 py-1.5 mb-1">
+                        <span className="text-sm font-medium">Select Dining Styles</span>
+                        {formData.dining_styles?.length > 0 && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleChange('dining_styles', [])}
+                            className="h-auto p-1 text-xs"
+                          >
+                            Clear
+                          </Button>
+                        )}
+                      </div>
+                      {[
+                        { value: 'casual', label: 'Casual' },
+                        { value: 'buffet', label: 'Buffet' },
+                        { value: 'family', label: 'Family Style' },
+                        { value: 'formal', label: 'Formal' }
+                      ].map(style => (
+                        <div
+                          key={style.value}
+                          className="flex items-center space-x-2 px-2 py-2 hover:bg-gray-100 rounded cursor-pointer"
+                          onClick={() => {
+                            const current = formData.dining_styles || [];
+                            const newStyles = current.includes(style.value)
+                              ? current.filter(s => s !== style.value)
+                              : [...current, style.value];
+                            handleChange('dining_styles', newStyles);
+                          }}
+                        >
+                          <Checkbox
+                            checked={formData.dining_styles?.includes(style.value)}
+                            onCheckedChange={() => {
+                              const current = formData.dining_styles || [];
+                              const newStyles = current.includes(style.value)
+                                ? current.filter(s => s !== style.value)
+                                : [...current, style.value];
+                              handleChange('dining_styles', newStyles);
+                            }}
+                          />
+                          <span className="text-sm">{style.label}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </PopoverContent>
+                </Popover>
+                {formData.dining_styles?.length > 0 && (
+                  <div className="flex flex-wrap gap-1 mt-2">
+                    {formData.dining_styles.map(style => (
+                      <Badge key={style} variant="secondary" className="text-xs">
+                        {style.charAt(0).toUpperCase() + style.slice(1)}
+                        <X
+                          className="h-3 w-3 ml-1 cursor-pointer"
+                          onClick={() => handleChange('dining_styles', formData.dining_styles.filter(s => s !== style))}
+                        />
+                      </Badge>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* SECTION 7: ENTERTAINMENT & ACTIVITY PLANNING */}
+          {activeSection === 'entertainment' && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="music_genre">Music Genre</Label>
+                  <Input
+                    id="music_genre"
+                    value={formData.music_genre}
+                    onChange={(e) => handleChange('music_genre', e.target.value)}
+                    placeholder="e.g., Jazz, Classical, Pop, Rock"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="movie_preferences">Movie Preferences</Label>
+                  <Input
+                    id="movie_preferences"
+                    value={formData.movie_preferences}
+                    onChange={(e) => handleChange('movie_preferences', e.target.value)}
+                    placeholder="e.g., Comedy, Drama, Action"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="internet_requirement">Internet Requirement</Label>
+                <Select
+                  value={formData.internet_requirement}
+                  onValueChange={(value) => handleChange('internet_requirement', value)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select internet requirement" />
+                  </SelectTrigger>
+                  <SelectContent className="z-[200]">
+                    <SelectItem value="none">None / Minimal</SelectItem>
+                    <SelectItem value="basic">Basic (Email/Messaging)</SelectItem>
+                    <SelectItem value="moderate">Moderate (Web Browsing)</SelectItem>
+                    <SelectItem value="high">High (Video Calls/Streaming)</SelectItem>
+                    <SelectItem value="business">Business Critical</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="desired_experiences">Desired Experiences</Label>
+                <Textarea
+                  id="desired_experiences"
+                  value={formData.desired_experiences}
+                  onChange={(e) => handleChange('desired_experiences', e.target.value)}
+                  placeholder="e.g., Theme nights, water activities, fishing, diving"
+                  rows={3}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="special_requests">Special Requests</Label>
+                <Textarea
+                  id="special_requests"
+                  value={formData.special_requests}
+                  onChange={(e) => handleChange('special_requests', e.target.value)}
+                  placeholder="e.g., Anniversary celebration, wellness focus"
+                  rows={3}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="privacy_level">Privacy Level (Interaction Preference)</Label>
+                <Select
+                  value={formData.privacy_level}
+                  onValueChange={(value) => handleChange('privacy_level', value)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select privacy level" />
+                  </SelectTrigger>
+                  <SelectContent className="z-[200]">
+                    <SelectItem value="formal">Formal - Minimal interaction</SelectItem>
+                    <SelectItem value="balanced">Balanced - Professional but friendly</SelectItem>
+                    <SelectItem value="social">Social - Enjoy interaction</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          )}
+
+          {/* SECTION 8: PHOTO */}
+          {activeSection === 'photo' && (
+            <div className="space-y-4">
+              <Label>Crew Member Photo</Label>
+              
+              {/* Show current photo or drag-drop zone */}
+              {formData.crew_photo_url ? (
+                <div className="space-y-4">
+                  <div className="relative border-2 border-gray-200 rounded-lg p-4 bg-gray-50">
+                    <div className="flex justify-center">
+                      <img 
+                        src={formData.crew_photo_url.startsWith('http') ? formData.crew_photo_url : `${BACKEND_URL}${formData.crew_photo_url}`} 
+                        alt="Crew Member" 
+                        className="max-w-full h-auto max-h-64 object-contain rounded-lg shadow-md"
+                        onError={(e) => {
+                          e.target.style.display = 'none';
                             e.target.nextElementSibling.style.display = 'flex';
                           }}
                         />
