@@ -144,9 +144,10 @@ const BrandingSettings = () => {
 
       // Reset favicon to default if removed
       if (type === 'favicon') {
-        let link = document.querySelector("link[rel*='icon']");
+        let link = document.getElementById('dynamic-favicon') || document.querySelector("link[rel*='icon']");
         if (link) {
           link.href = '/favicon.ico';
+          link.type = 'image/x-icon';
         }
       }
 
