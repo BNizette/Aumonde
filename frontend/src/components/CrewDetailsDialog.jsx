@@ -326,14 +326,6 @@ const CrewDetailsDialog = ({ open, onClose, crew, onMessage, onEditTrip }) => {
               <p className="text-sm text-gray-500">
                 {drillRecords.length} drill record{drillRecords.length !== 1 ? 's' : ''} for this crew member
               </p>
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => window.location.href = `/emergency?tab=drills&crew_name=${encodeURIComponent(crew?.staff_name || '')}`}
-              >
-                <ExternalLink className="h-4 w-4 mr-2" />
-                Manage in Emergency
-              </Button>
             </div>
             {drillRecords.length > 0 ? (
           <Table>
