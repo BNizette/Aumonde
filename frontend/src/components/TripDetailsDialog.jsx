@@ -1184,7 +1184,7 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
                     <div className="text-center py-8 text-gray-500">
                       <Users className="h-12 w-12 mx-auto mb-2 opacity-30" />
                       <p>No passengers recorded for this trip</p>
-                      <p className="text-sm mt-1">Use "Allocate Passenger" to select existing or "Add New" to create</p>
+                      <p className="text-sm mt-1">Use &quot;Allocate Passenger&quot; to select existing or &quot;Add New&quot; to create</p>
                     </div>
                   ) : (
                     <div className="space-y-2">
