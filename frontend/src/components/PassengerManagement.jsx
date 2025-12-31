@@ -737,6 +737,20 @@ const PassengerManagement = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Trip Edit Dialog */}
+      {tripFormOpen && selectedTrip && (
+        <TripForm
+          open={tripFormOpen}
+          onClose={() => {
+            setTripFormOpen(false);
+            setSelectedTrip(null);
+          }}
+          onSave={handleTripSave}
+          trip={selectedTrip}
+          mode="edit"
+        />
+      )}
     </div>
   );
 };
