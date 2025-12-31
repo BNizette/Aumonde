@@ -369,42 +369,44 @@ const CrewManagement = () => {
   const handleSave = async (formData) => {
     setPendingFormData(formData);
     
-    // Check for duplicates
-    const duplicateCheck = await checkDuplicates(formData);
-    
-    if (duplicateCheck.has_duplicates) {
-      setDuplicateWarning(duplicateCheck.duplicates);
-      setShowDuplicateDialog(true);
-      return; // Don't save yet, wait for user confirmation
-    }
-    
-    // No duplicates, proceed with save
-    await performSave(formData);
+    // Try to save directly - backend will return warnings if there are soft duplicates
+    await performSave(formData, false);
   };
 
-  const performSave = async (formData) => {
+  const performSave = async (formData, force = false) => {
     try {
       const token = localStorage.getItem('token');
+      let response;
       
       if (formMode === 'create') {
-        await axios.post(`${API}/crew`, formData, {
+        response = await axios.post(`${API}/crew${force ? '?force=true' : ''}`, formData, {
           headers: { Authorization: `Bearer ${token}` }
         });
-        setMessage('Crew member created successfully');
       } else {
-        await axios.put(`${API}/crew/${selectedCrew.id}`, formData, {
+        response = await axios.put(`${API}/crew/${selectedCrew.id}${force ? '?force=true' : ''}`, formData, {
           headers: { Authorization: `Bearer ${token}` }
         });
-        setMessage('Crew member updated successfully');
       }
       
+      // Check if response contains warnings (soft duplicate detection for name/DOB)
+      if (response.data.status === 'warning' && response.data.warnings) {
+        setDuplicateWarning(response.data.warnings);
+        setShowDuplicateDialog(true);
+        return; // Wait for user to confirm
+      }
+      
+      // Success - crew was saved
+      setMessage(formMode === 'create' ? 'Crew member created successfully' : 'Crew member updated successfully');
       setFormOpen(false);
       setShowDuplicateDialog(false);
       setPendingFormData(null);
+      setDuplicateWarning(null);
       fetchCrew();
       setTimeout(() => setMessage(''), 3000);
     } catch (err) {
+      // Hard error - e.g., duplicate email (blocked)
       setError(err.response?.data?.detail || 'Error saving crew member');
+      setShowDuplicateDialog(false);
     }
   };
 
