@@ -53,6 +53,10 @@ const CrewManagement = () => {
   const [pendingFormData, setPendingFormData] = useState(null);
   const [manualCrewLogOpen, setManualCrewLogOpen] = useState(false);
   const [importDialogOpen, setImportDialogOpen] = useState(false);
+  
+  // Trip editing state
+  const [tripFormOpen, setTripFormOpen] = useState(false);
+  const [selectedTrip, setSelectedTrip] = useState(null);
 
   // Use custom hook for advanced filtering
   const {
