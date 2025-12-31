@@ -1838,6 +1838,270 @@ async def delete_trip(trip_id: str, current_user: dict = Depends(require_access_
     return {"message": "Trip deleted successfully"}
 
 # ============================================================================
+# TRIP CHECKLIST ENDPOINTS (Pre-departure & Safety Briefing)
+# ============================================================================
+
+class ChecklistItem(BaseModel):
+    item_id: str
+    checked: bool = False
+    remarks: Optional[str] = None
+
+class ChecklistSection(BaseModel):
+    section_id: str
+    section_name: str
+    items: List[ChecklistItem] = []
+
+class TripChecklist(BaseModel):
+    id: str = ""
+    trip_id: str
+    checklist_type: str  # "pre_departure" or "safety_briefing"
+    sections: List[ChecklistSection] = []
+    authorized_by: Optional[str] = None
+    authorized_by_name: Optional[str] = None
+    authorized_at: Optional[datetime] = None
+    created_at: datetime = None
+    updated_at: datetime = None
+    updated_by: Optional[str] = None
+
+class ChecklistUpdate(BaseModel):
+    sections: List[ChecklistSection]
+    authorized_by: Optional[str] = None
+    authorized_by_name: Optional[str] = None
+
+# Pre-departure checklist template
+PRE_DEPARTURE_TEMPLATE = {
+    "sections": [
+        {
+            "section_id": "crew_admin",
+            "section_name": "SECTION 1: CREW & ADMINISTRATION",
+            "items": [
+                {"item_id": "1.1", "label": "Crew list completed and contact details of shore contact obtained.", "checked": False, "remarks": ""},
+                {"item_id": "1.2", "label": "Float Plan filed with responsible shore contact (details below).", "checked": False, "remarks": ""},
+                {"item_id": "1.3", "label": "Safety Briefing for all persons conducted (per VSM-007).", "checked": False, "remarks": ""},
+                {"item_id": "1.4", "label": "Master holds valid licence/certificate.", "checked": False, "remarks": ""},
+                {"item_id": "1.5", "label": "All crew/guests aware of seasickness medication location/use.", "checked": False, "remarks": ""}
+            ]
+        },
+        {
+            "section_id": "weather_passage",
+            "section_name": "SECTION 2: WEATHER, TIDES & PASSAGE PLANNING",
+            "items": [
+                {"item_id": "2.1", "label": "BOM Marine Forecast obtained for route & destination.", "checked": False, "remarks": ""},
+                {"item_id": "2.2", "label": "Local Warnings checked (e.g., Marine Rescue bar reports, Notams).", "checked": False, "remarks": ""},
+                {"item_id": "2.3", "label": "Tide/Current calculations completed for departure & arrival.", "checked": False, "remarks": ""},
+                {"item_id": "2.4", "label": "Passage Plan prepared & plotted (for voyages beyond enclosed waters).", "checked": False, "remarks": ""},
+                {"item_id": "2.5", "label": "Abort Points / Safe Havens identified on plan.", "checked": False, "remarks": ""},
+                {"item_id": "2.6", "label": "VHF Weather Channels (86/87) schedule noted.", "checked": False, "remarks": ""}
+            ]
+        },
+        {
+            "section_id": "vessel_systems",
+            "section_name": "SECTION 3: VESSEL SYSTEMS & MACHINERY",
+            "items": [
+                {"item_id": "3.1", "label": "FUEL: Tanks full/sufficient for trip + 30% reserve.", "checked": False, "remarks": ""},
+                {"item_id": "3.2", "label": "FUEL: Water separators/filters checked, no water in tanks.", "checked": False, "remarks": ""},
+                {"item_id": "3.3", "label": "ENGINE(S): Oil level checked.", "checked": False, "remarks": ""},
+                {"item_id": "3.4", "label": "ENGINE(S): Coolant level checked.", "checked": False, "remarks": ""},
+                {"item_id": "3.5", "label": "ENGINE(S): No fuel, oil, or coolant leaks. Belts tensioned.", "checked": False, "remarks": ""},
+                {"item_id": "3.6", "label": "STEERING: Full movement tested (port-starboard). Smooth operation.", "checked": False, "remarks": ""},
+                {"item_id": "3.7", "label": "GEARBOX: Engages forward/astern smoothly.", "checked": False, "remarks": ""},
+                {"item_id": "3.8", "label": "SEACOCKS: All operational and secure (except those in use).", "checked": False, "remarks": ""},
+                {"item_id": "3.9", "label": "BILGES: Pumped dry. Automatic bilge pump tested (manual override).", "checked": False, "remarks": ""},
+                {"item_id": "3.10", "label": "BATTERIES: Voltage checked. Secured & terminals clean.", "checked": False, "remarks": ""},
+                {"item_id": "3.11", "label": "CHARGING: Alternator output confirmed after start.", "checked": False, "remarks": ""}
+            ]
+        },
+        {
+            "section_id": "safety_navigation",
+            "section_name": "SECTION 4: SAFETY & NAVIGATION EQUIPMENT",
+            "items": [
+                {"item_id": "4.1", "label": "LIFEJACKETS (PFDs): Correct number & sizes accessible.", "checked": False, "remarks": ""},
+                {"item_id": "4.2", "label": "FLARES: In date and stowed in accessible, marked location.", "checked": False, "remarks": ""},
+                {"item_id": "4.3", "label": "EPIRB/PLB: Stowed in Grab Bag/located at helm. And current.", "checked": False, "remarks": ""},
+                {"item_id": "4.4", "label": "FIRE EXTINGUISHERS: All charged, pins & tags intact.", "checked": False, "remarks": ""},
+                {"item_id": "4.5", "label": "FIRE BLANKET: Located in galley.", "checked": False, "remarks": ""},
+                {"item_id": "4.6", "label": "FIRST AID KIT: Checked, fully stocked.", "checked": False, "remarks": ""},
+                {"item_id": "4.7", "label": "ANCHOR & RODE: Secured and ready for immediate use.", "checked": False, "remarks": ""},
+                {"item_id": "4.8", "label": "VHF RADIO: Tested on Ch 73/16. DSC MMSI programmed.", "checked": False, "remarks": ""},
+                {"item_id": "4.9", "label": "NAVIGATION LIGHTS: All operational (test at switch panel).", "checked": False, "remarks": ""},
+                {"item_id": "4.10", "label": "SOUND SIGNALS: Horn/whistle operational.", "checked": False, "remarks": ""},
+                {"item_id": "4.11", "label": "CHARTS/GPS: Primary and backup GPS operational. Charts/plotter for area.", "checked": False, "remarks": ""},
+                {"item_id": "4.12", "label": "TORCHES: Waterproof torches with fresh batteries.", "checked": False, "remarks": ""},
+                {"item_id": "4.13", "label": "GRAB BAG: Prepared (see separate list) and stowed.", "checked": False, "remarks": ""}
+            ]
+        },
+        {
+            "section_id": "final_prep",
+            "section_name": "SECTION 5: FINAL PREPARATIONS",
+            "items": [
+                {"item_id": "5.1", "label": "DOCUMENTS: Registration, Radio Licence, Insurance on board.", "checked": False, "remarks": ""},
+                {"item_id": "5.2", "label": "LOOSE GEAR: All gear stowed and secured for sea.", "checked": False, "remarks": ""},
+                {"item_id": "5.3", "label": "HATCHES/PORTHOLES: All closed and dogged (as required).", "checked": False, "remarks": ""},
+                {"item_id": "5.4", "label": "DINGHY/TENDER: If carried, securely lashed, drained, engine secured.", "checked": False, "remarks": ""},
+                {"item_id": "5.5", "label": "FUEL VENTS: Clear. Fuel caps secure.", "checked": False, "remarks": ""},
+                {"item_id": "5.6", "label": "ENGINE START: Started, warmed up, no alarms.", "checked": False, "remarks": ""},
+                {"item_id": "5.7", "label": "LINES & FENDERS: Ready for release/stowage.", "checked": False, "remarks": ""}
+            ]
+        }
+    ]
+}
+
+# Safety briefing checklist template
+SAFETY_BRIEFING_TEMPLATE = {
+    "sections": [
+        {
+            "section_id": "intro_fundamentals",
+            "section_name": "1. INTRODUCTION & FUNDAMENTALS",
+            "items": [
+                {"item_id": "1.1", "label": "Welcome; Master & Crew introductions.", "checked": False, "remarks": ""},
+                {"item_id": "1.2", "label": "Safety is #1 Policy: Speak up if concerned.", "checked": False, "remarks": ""},
+                {"item_id": "1.3", "label": "Master's authority; crew cooperation.", "checked": False, "remarks": ""},
+                {"item_id": "1.4", "label": "General layout: Heads, Galley, Saloon, Cabins.", "checked": False, "remarks": ""}
+            ]
+        },
+        {
+            "section_id": "emergency_procedures",
+            "section_name": "2. EMERGENCY PROCEDURES - ACTIONS",
+            "items": [
+                {"item_id": "2.1", "label": "\"MAN OVERBOARD\" – Shout, Point, Throw, Alert.", "checked": False, "remarks": ""},
+                {"item_id": "2.2", "label": "\"FIRE\" – Shout location, PASS technique, isolate.", "checked": False, "remarks": ""},
+                {"item_id": "2.3", "label": "\"ABANDON SHIP\" – Master's order only. Lifejackets, EPIRB, Grab Bag.", "checked": False, "remarks": ""},
+                {"item_id": "2.4", "label": "MAYDAY CALL – Location of VHF. How to press RED DSC button.", "checked": False, "remarks": ""}
+            ]
+        },
+        {
+            "section_id": "lifejackets",
+            "section_name": "3. LIFEJACKETS (PFDs) – PRACTICAL",
+            "items": [
+                {"item_id": "3.1", "label": "Location of lifejacket for EACH person.", "checked": False, "remarks": ""},
+                {"item_id": "3.2", "label": "Fitting & Securing – Zips, buckles, crotch strap.", "checked": False, "remarks": ""},
+                {"item_id": "3.3", "label": "Mandatory Wear Times: Night, bad weather, bar crossing, when alone on deck.", "checked": False, "remarks": ""}
+            ]
+        },
+        {
+            "section_id": "daily_safety",
+            "section_name": "4. DAILY SAFETY & COMFORT",
+            "items": [
+                {"item_id": "4.1", "label": "\"One Hand for the Ship\" – Always hold on.", "checked": False, "remarks": ""},
+                {"item_id": "4.2", "label": "Galley Safety – Stove use, pot holders, sea rails.", "checked": False, "remarks": ""},
+                {"item_id": "4.3", "label": "Heads/Toilet – Operation & pump-through procedure.", "checked": False, "remarks": ""},
+                {"item_id": "4.4", "label": "No-Go Zones – (e.g., Foredeck underway only with captains approval, helm area).", "checked": False, "remarks": ""},
+                {"item_id": "4.5", "label": "Slips, Trips, Falls – Mind steps, wet decks, hatches.", "checked": False, "remarks": ""}
+            ]
+        },
+        {
+            "section_id": "equipment_location",
+            "section_name": "5. LOCATION OF KEY EQUIPMENT (POINT-OUT TOUR)",
+            "items": [
+                {"item_id": "5.1", "label": "First Aid Kit – Location: Galley", "checked": False, "remarks": ""},
+                {"item_id": "5.2", "label": "Main Electrical Switches – Location: Main Helm", "checked": False, "remarks": ""},
+                {"item_id": "5.3", "label": "Fuel Shut-Off Valves – Location: Engine Room - crew only", "checked": False, "remarks": ""},
+                {"item_id": "5.4", "label": "Engine Room Access/Fire Port – Location: Engine Room Crew Only", "checked": False, "remarks": ""},
+                {"item_id": "5.5", "label": "Tender/Dinghy – Launch/Recovery procedure discussed.", "checked": False, "remarks": ""},
+                {"item_id": "5.6", "label": "QUESTION & ANSWER TIME – All questions answered.", "checked": False, "remarks": ""}
+            ]
+        }
+    ]
+}
+
+@api_router.get("/trips/{trip_id}/checklists/{checklist_type}")
+async def get_trip_checklist(trip_id: str, checklist_type: str, current_user: dict = Depends(get_current_user)):
+    """Get a trip's checklist (pre_departure or safety_briefing)"""
+    if checklist_type not in ["pre_departure", "safety_briefing"]:
+        raise HTTPException(status_code=400, detail="Invalid checklist type. Use 'pre_departure' or 'safety_briefing'")
+    
+    # Check if checklist exists
+    checklist = await db.trip_checklists.find_one(
+        {"trip_id": trip_id, "checklist_type": checklist_type},
+        {"_id": 0}
+    )
+    
+    if checklist:
+        return checklist
+    
+    # Return template if no checklist exists
+    template = PRE_DEPARTURE_TEMPLATE if checklist_type == "pre_departure" else SAFETY_BRIEFING_TEMPLATE
+    return {
+        "id": "",
+        "trip_id": trip_id,
+        "checklist_type": checklist_type,
+        "sections": template["sections"],
+        "authorized_by": None,
+        "authorized_by_name": None,
+        "authorized_at": None,
+        "created_at": None,
+        "updated_at": None
+    }
+
+@api_router.put("/trips/{trip_id}/checklists/{checklist_type}")
+async def save_trip_checklist(
+    trip_id: str, 
+    checklist_type: str, 
+    data: ChecklistUpdate,
+    current_user: dict = Depends(require_access_level(AccessLevel.EDIT))
+):
+    """Save or update a trip's checklist"""
+    if checklist_type not in ["pre_departure", "safety_briefing"]:
+        raise HTTPException(status_code=400, detail="Invalid checklist type")
+    
+    # Check if trip exists
+    trip = await db.trips.find_one({"id": trip_id})
+    if not trip:
+        raise HTTPException(status_code=404, detail="Trip not found")
+    
+    now = datetime.now(timezone.utc)
+    
+    # Check if checklist already exists
+    existing = await db.trip_checklists.find_one({"trip_id": trip_id, "checklist_type": checklist_type})
+    
+    checklist_data = {
+        "trip_id": trip_id,
+        "checklist_type": checklist_type,
+        "sections": [s.model_dump() for s in data.sections],
+        "updated_at": now,
+        "updated_by": current_user["id"]
+    }
+    
+    # Set authorization if provided
+    if data.authorized_by:
+        checklist_data["authorized_by"] = data.authorized_by
+        checklist_data["authorized_by_name"] = data.authorized_by_name
+        checklist_data["authorized_at"] = now
+    
+    if existing:
+        await db.trip_checklists.update_one(
+            {"trip_id": trip_id, "checklist_type": checklist_type},
+            {"$set": checklist_data}
+        )
+        checklist_data["id"] = existing.get("id", str(uuid.uuid4()))
+    else:
+        checklist_data["id"] = str(uuid.uuid4())
+        checklist_data["created_at"] = now
+        await db.trip_checklists.insert_one(checklist_data)
+    
+    checklist_type_name = "Pre-departure Checklist" if checklist_type == "pre_departure" else "Safety Briefing"
+    await log_audit(
+        current_user["id"],
+        current_user["full_name"],
+        "update",
+        "trip_checklists",
+        trip_id,
+        f"Updated {checklist_type_name} for trip: {trip.get('trip_name')}"
+    )
+    
+    return {"message": "Checklist saved successfully", "id": checklist_data["id"]}
+
+@api_router.get("/trips/{trip_id}/checklists")
+async def get_all_trip_checklists(trip_id: str, current_user: dict = Depends(get_current_user)):
+    """Get all checklists for a trip"""
+    checklists = await db.trip_checklists.find(
+        {"trip_id": trip_id},
+        {"_id": 0}
+    ).to_list(10)
+    
+    return checklists
+
+# ============================================================================
 # TRIP LOG ENDPOINTS
 # ============================================================================
 
