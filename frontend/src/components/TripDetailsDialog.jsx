@@ -1644,22 +1644,22 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
                 {/* Pre-departure Checklist View */}
                 {selectedLogView === 'pre_departure' && (
                   <ChecklistView 
-                    trip={trip}
+                    tripId={trip?.id}
                     checklistType="pre_departure"
                     title="Pre-departure Checklist"
-                    allCrew={allCrew}
-                    onRefresh={fetchAllLogs}
+                    crewList={allCrew}
+                    onMessage={(msg) => { setMessage(msg); setTimeout(() => setMessage(''), 3000); }}
                   />
                 )}
 
                 {/* Safety Briefing View */}
                 {selectedLogView === 'safety_briefing' && (
                   <ChecklistView 
-                    trip={trip}
+                    tripId={trip?.id}
                     checklistType="safety_briefing"
-                    title="Safety Briefing"
-                    allCrew={allCrew}
-                    onRefresh={fetchAllLogs}
+                    title="Passenger & Crew Safety Briefing"
+                    crewList={allCrew}
+                    onMessage={(msg) => { setMessage(msg); setTimeout(() => setMessage(''), 3000); }}
                   />
                 )}
 
