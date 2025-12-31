@@ -1,14 +1,53 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import axios from 'axios';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Menu, X, LayoutDashboard, Ship, Users, UserPlus, FileText, MapPin, AlertTriangle, Wrench, AlertCircle, ShieldAlert, CheckSquare, Bot, UserCog, LogOut } from 'lucide-react';
 
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const API = `${BACKEND_URL}/api`;
+
 const Layout = ({ children, user, onLogout }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [branding, setBranding] = useState({ favicon_url: null, logo_url: null, app_name: 'AMSA Safety' });
   const navigate = useNavigate();
   const location = useLocation();
+
+  useEffect(() => {
+    fetchBranding();
+  }, []);
+
+  const fetchBranding = async () => {
+    try {
+      const response = await axios.get(`${API}/branding`);
+      setBranding(response.data);
+      
+      // Apply favicon if available
+      if (response.data.favicon_url) {
+        const fullUrl = response.data.favicon_url.startsWith('http') 
+          ? response.data.favicon_url 
+          : `${BACKEND_URL}${response.data.favicon_url}`;
+        let link = document.querySelector("link[rel*='icon']");
+        if (!link) {
+          link = document.createElement('link');
+          link.rel = 'shortcut icon';
+          document.head.appendChild(link);
+        }
+        link.href = fullUrl;
+      }
+    } catch (err) {
+      console.log('Using default branding');
+    }
+  };
+
+  const getLogoUrl = () => {
+    if (!branding.logo_url) return null;
+    return branding.logo_url.startsWith('http') 
+      ? branding.logo_url 
+      : `${BACKEND_URL}${branding.logo_url}`;
+  };
 
   const menuItems = [
     { path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
