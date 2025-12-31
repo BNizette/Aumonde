@@ -186,14 +186,35 @@ const CrewForm = ({ open, onClose, onSave, crew, mode = 'create', prefilledData 
         training_by_vessel: crew.training_by_vessel || {},
         induction_by_vessel: crew.induction_by_vessel || {},
         crew_photo_url: crew.crew_photo_url || '',
+        // Medical fields
+        allergies: crew.allergies || '',
+        dislikes: crew.dislikes || '',
+        dietary_restrictions: crew.dietary_restrictions || '',
+        medications: crew.medications || '',
+        medical_conditions: crew.medical_conditions || '',
+        special_equipment: crew.special_equipment || '',
+        // Preferences fields
+        dietary_preference: crew.dietary_preference || '',
+        beverage_preference: crew.beverage_preference || '',
+        alcohol_allowed: crew.alcohol_allowed !== false,
+        dining_styles: crew.dining_styles || [],
+        // Entertainment fields
+        music_genre: crew.music_genre || '',
+        movie_preferences: crew.movie_preferences || '',
+        internet_requirement: crew.internet_requirement || '',
+        desired_experiences: crew.desired_experiences || '',
+        special_requests: crew.special_requests || '',
+        privacy_level: crew.privacy_level || '',
       });
       setSelectedTrainingVessel('');
       setSelectedInductionVessel('');
+      setActiveSection('details');
       // Fetch induction records for this crew
       fetchInductionRecords(crew.id);
     } else if (mode === 'create' && prefilledData) {
       setFormData({
         staff_name: prefilledData.staff_name || '',
+        date_of_birth: '',
         email: prefilledData.email || '',
         address: '',
         telephone: '',
@@ -220,12 +241,30 @@ const CrewForm = ({ open, onClose, onSave, crew, mode = 'create', prefilledData 
         training_by_vessel: {},
         induction_by_vessel: {},
         crew_photo_url: '',
+        allergies: '',
+        dislikes: '',
+        dietary_restrictions: '',
+        medications: '',
+        medical_conditions: '',
+        special_equipment: '',
+        dietary_preference: '',
+        beverage_preference: '',
+        alcohol_allowed: true,
+        dining_styles: [],
+        music_genre: '',
+        movie_preferences: '',
+        internet_requirement: '',
+        desired_experiences: '',
+        special_requests: '',
+        privacy_level: '',
       });
       setSelectedTrainingVessel('');
       setSelectedInductionVessel('');
+      setActiveSection('details');
     } else if (mode === 'create') {
       setFormData({
         staff_name: '',
+        date_of_birth: '',
         email: '',
         address: '',
         telephone: '',
@@ -252,9 +291,26 @@ const CrewForm = ({ open, onClose, onSave, crew, mode = 'create', prefilledData 
         training_by_vessel: {},
         induction_by_vessel: {},
         crew_photo_url: '',
+        allergies: '',
+        dislikes: '',
+        dietary_restrictions: '',
+        medications: '',
+        medical_conditions: '',
+        special_equipment: '',
+        dietary_preference: '',
+        beverage_preference: '',
+        alcohol_allowed: true,
+        dining_styles: [],
+        music_genre: '',
+        movie_preferences: '',
+        internet_requirement: '',
+        desired_experiences: '',
+        special_requests: '',
+        privacy_level: '',
       });
       setSelectedTrainingVessel('');
       setSelectedInductionVessel('');
+      setActiveSection('details');
     }
   }, [crew, mode, open, prefilledData]);
 
