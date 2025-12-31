@@ -771,7 +771,22 @@ const CrewManagement = () => {
         onClose={() => setViewDialogOpen(false)}
         crew={viewingCrew}
         onMessage={(msg) => { setMessage(msg); setTimeout(() => setMessage(""), 3000); }}
+        onEditTrip={handleEditTrip}
       />
+
+      {/* Trip Edit Dialog */}
+      {tripFormOpen && selectedTrip && (
+        <TripForm
+          open={tripFormOpen}
+          onClose={() => {
+            setTripFormOpen(false);
+            setSelectedTrip(null);
+          }}
+          onSave={handleTripSave}
+          trip={selectedTrip}
+          mode="edit"
+        />
+      )}
 
 
 
