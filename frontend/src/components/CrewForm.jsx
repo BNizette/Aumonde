@@ -1246,10 +1246,12 @@ const CrewForm = ({ open, onClose, onSave, crew, mode = 'create', prefilledData 
                   <p>Please select a vessel above to manage training records</p>
                 </div>
               )}
-            </TabsContent>
+            </div>
+          )}
 
-            {/* TAB 4: INDUCTION */}
-            <TabsContent value="induction" className="space-y-6">
+          {/* SECTION 4: INDUCTION */}
+          {activeSection === 'induction' && (
+            <div className="space-y-6">
               {/* Vessel Selection at Top */}
               <div className="bg-green-50 p-4 rounded-lg border border-green-200">
                 <Label className="text-base font-semibold text-green-800 mb-2 block">Select Vessel for Induction Checklist</Label>
