@@ -10,11 +10,12 @@ import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Trash2, Edit, RefreshCw, Key, XCircle, UserPlus, Users as UsersIcon, Download, Upload, Database, AlertCircle, Search, Filter, X, FileSpreadsheet, Plus, Eye, Mail, Server, Lock } from 'lucide-react';
+import { Trash2, Edit, RefreshCw, Key, XCircle, UserPlus, Users as UsersIcon, Download, Upload, Database, AlertCircle, Search, Filter, X, FileSpreadsheet, Plus, Eye, Mail, Server, Lock, Image } from 'lucide-react';
 import { exportMultiSheetExcel, formatDate, safeValue } from '../utils/excelExport';
 import { useNavigate } from 'react-router-dom';
 import BackupManagement from './BackupManagement';
 import Settings from './Settings';
+import BrandingSettings from './BrandingSettings';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
