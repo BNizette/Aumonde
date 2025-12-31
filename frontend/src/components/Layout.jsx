@@ -148,7 +148,17 @@ const Layout = ({ children, user, onLogout }) => {
               </SheetTrigger>
             </Sheet>
             <Link to="/dashboard">
-              <h1 className="text-xl font-bold text-blue-900 cursor-pointer hover:text-blue-700 transition-colors">Safety Management System</h1>
+              {getLogoUrl() ? (
+                <img 
+                  src={getLogoUrl()} 
+                  alt={branding.app_name || 'Logo'} 
+                  className="h-8 max-w-[180px] object-contain cursor-pointer hover:opacity-80 transition-opacity"
+                />
+              ) : (
+                <h1 className="text-xl font-bold text-blue-900 cursor-pointer hover:text-blue-700 transition-colors">
+                  {branding.app_name || 'Safety Management System'}
+                </h1>
+              )}
             </Link>
           </div>
           <div className="flex items-center gap-2">
