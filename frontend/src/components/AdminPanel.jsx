@@ -1788,6 +1788,11 @@ const AdminPanel = () => {
           <BackupManagement />
         )}
 
+        {/* BRANDING VIEW */}
+        {activeView === 'branding' && (
+          <BrandingSettings />
+        )}
+
         {/* SETTINGS VIEW */}
         {activeView === 'settings' && (
           <Settings />
