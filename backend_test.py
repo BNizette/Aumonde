@@ -3703,10 +3703,23 @@ class AMSAComprehensiveTester:
         supporting_tests = [
             self.test_dashboard_stats,
             self.test_user_management,
+            self.test_trip_management,  # Need trips for checklist testing
         ]
         
         print("\n🔧 SUPPORTING TESTS - System Integrity")
         for test_method in supporting_tests:
+            try:
+                test_method()
+            except Exception as e:
+                self.log_test(test_method.__name__, False, error=f"Exception: {str(e)}")
+        
+        # Run TRIP CHECKLIST TESTS (Review Request Focus)
+        checklist_tests = [
+            self.test_trip_checklists,  # NEW TEST: Trip Checklist Feature
+        ]
+        
+        print("\n📋 TRIP CHECKLIST TESTS - NEW FEATURE")
+        for test_method in checklist_tests:
             try:
                 test_method()
             except Exception as e:
