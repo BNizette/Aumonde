@@ -695,22 +695,30 @@ const CrewForm = ({ open, onClose, onSave, crew, mode = 'create', prefilledData 
         <DialogHeader>
           <DialogTitle>{mode === 'create' ? 'Add New Crew Member' : 'Edit Crew Member'}</DialogTitle>
           <DialogDescription>
-            {mode === 'create' ? 'Enter crew member details across all tabs' : 'Update crew member information'}
+            {mode === 'create' ? 'Enter crew member details' : 'Update crew member information'}
           </DialogDescription>
         </DialogHeader>
 
-        <Tabs defaultValue="details" className="w-full">
-          <TabsList className="grid w-full grid-cols-5">
-            <TabsTrigger value="details">Details</TabsTrigger>
-            <TabsTrigger value="qualifications">Qualifications</TabsTrigger>
-            <TabsTrigger value="training">Training</TabsTrigger>
-            <TabsTrigger value="induction">Induction</TabsTrigger>
-            <TabsTrigger value="photo">Photo</TabsTrigger>
-          </TabsList>
+        {/* Section Dropdown Navigation */}
+        <div className="mb-4">
+          <Select value={activeSection} onValueChange={setActiveSection}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Select section" />
+            </SelectTrigger>
+            <SelectContent>
+              {sections.map((section) => (
+                <SelectItem key={section.value} value={section.value}>
+                  {section.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
 
-          <ScrollArea className="h-[400px] w-full pr-4">
-            {/* TAB 1: CREW DETAILS */}
-            <TabsContent value="details" className="space-y-4">
+        <ScrollArea className="h-[400px] w-full pr-4">
+          {/* SECTION 1: CREW DETAILS */}
+          {activeSection === 'details' && (
+            <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2 col-span-2">
                   <Label htmlFor="staff_name">Staff Member Name *</Label>
@@ -721,13 +729,25 @@ const CrewForm = ({ open, onClose, onSave, crew, mode = 'create', prefilledData 
                     placeholder="Full name"
                   />
                 </div>
-                <div className="space-y-2 col-span-2">
+                <div className="space-y-2">
+                  <Label htmlFor="date_of_birth">Date of Birth</Label>
+                  <Input
+                    id="date_of_birth"
+                    type="date"
+                    value={formData.date_of_birth}
+                    onChange={(e) => handleChange('date_of_birth', e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
                   <Label htmlFor="email">Email Address</Label>
                   <Input
                     id="email"
                     type="email"
                     value={formData.email}
                     onChange={(e) => handleChange('email', e.target.value)}
+                    placeholder="email@example.com"
+                  />
+                </div>}
                     placeholder="email@example.com"
                   />
                 </div>
