@@ -5018,6 +5018,98 @@ async def send_test_email(data: dict, current_user: dict = Depends(require_acces
         logger.error(f"Failed to send test email: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to send email: {str(e)}")
 
+# ============================================================================
+# BRANDING SETTINGS ENDPOINTS
+# ============================================================================
+
+class BrandingSettings(BaseModel):
+    favicon_url: Optional[str] = None
+    logo_url: Optional[str] = None
+    app_name: Optional[str] = "AMSA Safety Management"
+
+@api_router.get("/branding")
+async def get_branding():
+    """Get branding settings (public endpoint for favicon/logo)"""
+    branding = await db.branding.find_one({}, {"_id": 0})
+    return branding or {"favicon_url": None, "logo_url": None, "app_name": "AMSA Safety Management"}
+
+@api_router.post("/branding")
+async def save_branding(settings: BrandingSettings, current_user: dict = Depends(require_access_level(AccessLevel.FULL))):
+    """Save branding settings"""
+    settings_data = settings.model_dump()
+    settings_data["updated_at"] = datetime.now(timezone.utc)
+    settings_data["updated_by"] = current_user["id"]
+    
+    await db.branding.update_one({}, {"$set": settings_data}, upsert=True)
+    
+    await log_audit(
+        current_user["id"], 
+        current_user["full_name"], 
+        "update", 
+        "branding", 
+        "system", 
+        "Updated branding settings"
+    )
+    
+    return {"message": "Branding settings saved successfully"}
+
+@api_router.post("/branding/upload/{type}")
+async def upload_branding_image(
+    type: str,
+    file: UploadFile = File(...),
+    current_user: dict = Depends(require_access_level(AccessLevel.FULL))
+):
+    """Upload favicon or logo image"""
+    if type not in ["favicon", "logo"]:
+        raise HTTPException(status_code=400, detail="Type must be 'favicon' or 'logo'")
+    
+    # Validate file type
+    allowed_extensions = ['.jpg', '.jpeg', '.png', '.ico', '.svg']
+    file_extension = Path(file.filename).suffix.lower()
+    if file_extension not in allowed_extensions:
+        raise HTTPException(status_code=400, detail=f"File type not allowed. Allowed: {', '.join(allowed_extensions)}")
+    
+    try:
+        # Create branding uploads directory
+        upload_dir = Path("/app/backend/uploads/branding")
+        upload_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Use fixed filename for favicon/logo (overwrite previous)
+        unique_filename = f"{type}{file_extension}"
+        file_path = upload_dir / unique_filename
+        
+        # Save file
+        with file_path.open("wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+        
+        # Return file URL
+        file_url = f"/api/uploads/branding/{unique_filename}"
+        
+        # Update branding settings with new URL
+        field = f"{type}_url"
+        await db.branding.update_one(
+            {},
+            {"$set": {field: file_url, "updated_at": datetime.now(timezone.utc), "updated_by": current_user["id"]}},
+            upsert=True
+        )
+        
+        await log_audit(
+            current_user["id"],
+            current_user["full_name"],
+            "update",
+            "branding",
+            type,
+            f"Uploaded new {type} image"
+        )
+        
+        return {
+            "file_url": file_url,
+            "filename": file.filename,
+            "type": type
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"File upload failed: {str(e)}")
+
 @api_router.post("/auth/forgot-password")
 async def forgot_password(request: ForgotPasswordRequest):
     """Send password reset email"""
