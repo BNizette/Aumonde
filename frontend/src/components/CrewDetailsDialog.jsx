@@ -12,7 +12,7 @@ import { exportMultiSheetExcel, formatDate, safeValue } from '../utils/excelExpo
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-const CrewDetailsDialog = ({ open, onClose, crew, onMessage }) => {
+const CrewDetailsDialog = ({ open, onClose, crew, onMessage, onEditTrip }) => {
   const [loading, setLoading] = useState(false);
   const [selectedView, setSelectedView] = useState('details');
   const [trips, setTrips] = useState([]);
