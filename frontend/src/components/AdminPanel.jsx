@@ -953,6 +953,12 @@ const AdminPanel = () => {
                 Backup & Restore
               </span>
             </SelectItem>
+            <SelectItem value="branding">
+              <span className="flex items-center gap-2">
+                <Image className="h-4 w-4" />
+                Branding
+              </span>
+            </SelectItem>
             <SelectItem value="settings">
               <span className="flex items-center gap-2">
                 <Edit className="h-4 w-4" />
