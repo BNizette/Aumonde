@@ -27,7 +27,7 @@ const ChecklistView = ({ tripId, checklistType, title, crewList = [], onMessage 
     if (tripId) {
       fetchChecklist();
     }
-  }, [tripId, checklistType]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [tripId, checklistType]);
 
   const fetchChecklist = async () => {
     try {
