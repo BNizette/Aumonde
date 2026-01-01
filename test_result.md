@@ -1010,3 +1010,28 @@ backend:
         agent: "main"
         comment: "Modified crew duplicate logic: 1) BLOCK on duplicate email (400 error), 2) WARN on duplicate name or DOB (return 200 with warnings), 3) Added force=true parameter to bypass warnings. Frontend updated to show warning dialog with 'Continue Anyway' button."
 
+
+  - task: "Role Management in Admin Panel"
+    implemented: true
+    working: pending
+    file: "server.py, RolesSettings.jsx, AdminPanel.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Implemented full role management system: 1) Backend: Added Role model with permissions grid per module, attached_records_only flag, API endpoints for CRUD operations, default system roles (Admin, Owner, Master, Crew, Primary Guest, Designated Person, Inspector). 2) Frontend: Created RolesSettings.jsx component with permissions grid UI, added 'Roles & Permissions' to Admin Panel dropdown."
+
+  - task: "Edit Passenger Details in Trip Details Dialog"
+    implemented: true
+    working: pending
+    file: "TripDetailsDialog.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Added 'Details' button to passenger rows in Trip Details that opens PassengerForm in edit mode to edit full passenger record from Passenger module."
+
