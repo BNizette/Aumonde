@@ -466,30 +466,49 @@ async def log_audit(admin_id: str, admin_name: str, action: str, target_type: st
 # AUTH ENDPOINTS
 # ============================================================================
 
+@api_router.get("/auth/registration-allowed")
+async def check_registration_allowed():
+    """Check if registration is allowed (only when no users exist)"""
+    user_count = await db.users.count_documents({})
+    return {"allowed": user_count == 0, "user_count": user_count}
+
 @api_router.post("/auth/register", response_model=UserResponse)
 async def register(user_data: UserCreate):
+    # Only allow registration if no users exist (first user setup)
+    user_count = await db.users.count_documents({})
+    if user_count > 0:
+        raise HTTPException(
+            status_code=403, 
+            detail="Registration is disabled. Please contact an administrator to create your account."
+        )
+    
     existing = await db.users.find_one({"email": user_data.email})
     if existing:
         raise HTTPException(status_code=400, detail="Email already registered")
     
-    access_level = user_data.access_level
-    if not access_level:
-        if user_data.role == UserRole.OWNER:
-            access_level = AccessLevel.FULL
-        elif user_data.role in [UserRole.MASTER, UserRole.CREW]:
-            access_level = AccessLevel.EDIT
-        else:
-            access_level = AccessLevel.VIEW
+    # Force Admin role for first user
+    admin_role = await db.roles.find_one({"name": "Admin"}, {"_id": 0})
     
     user = User(
         email=user_data.email,
         password_hash=hash_password(user_data.password),
         full_name=user_data.full_name,
-        role=user_data.role,
-        access_level=access_level
+        role="Admin",  # Force admin role for first user
+        role_id=admin_role["id"] if admin_role else None,
+        access_level=AccessLevel.ADMIN  # Force admin access level
     )
     
     await db.users.insert_one(user.model_dump())
+    
+    await log_audit(
+        user.id,
+        user.full_name,
+        "register",
+        "user",
+        user.id,
+        "First user registered as Admin"
+    )
+    
     return UserResponse(**user.model_dump())
 
 @api_router.post("/auth/login", response_model=Token)
