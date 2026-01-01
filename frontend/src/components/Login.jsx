@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -9,7 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { Mail } from 'lucide-react';
+import { Mail, ShieldAlert } from 'lucide-react';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -21,6 +21,8 @@ const Login = ({ onLoginSuccess }) => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
+  const [registrationAllowed, setRegistrationAllowed] = useState(false);
+  const [checkingRegistration, setCheckingRegistration] = useState(true);
   
   // Forgot Password states
   const [forgotPasswordOpen, setForgotPasswordOpen] = useState(false);
@@ -28,6 +30,22 @@ const Login = ({ onLoginSuccess }) => {
   const [forgotPasswordLoading, setForgotPasswordLoading] = useState(false);
   const [forgotPasswordMessage, setForgotPasswordMessage] = useState('');
   const [forgotPasswordError, setForgotPasswordError] = useState('');
+
+  // Check if registration is allowed on mount
+  useEffect(() => {
+    const checkRegistration = async () => {
+      try {
+        const response = await axios.get(`${API}/auth/registration-allowed`);
+        setRegistrationAllowed(response.data.allowed);
+      } catch (err) {
+        console.error('Error checking registration status:', err);
+        setRegistrationAllowed(false);
+      } finally {
+        setCheckingRegistration(false);
+      }
+    };
+    checkRegistration();
+  }, []);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -56,8 +74,9 @@ const Login = ({ onLoginSuccess }) => {
 
     try {
       await axios.post(`${API}/auth/register`, registerData);
-      setSuccess('Registration successful! Please login.');
+      setSuccess('Registration successful! You are now the system administrator. Please login.');
       setRegisterData({ email: '', password: '', full_name: '', role: 'Crew' });
+      setRegistrationAllowed(false); // Disable registration after first user
     } catch (err) {
       setError(err.response?.data?.detail || 'Registration failed');
     } finally {
