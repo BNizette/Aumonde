@@ -1833,21 +1833,26 @@ const AdminPanel = () => {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="edit-role">Role</Label>
-                <Select value={editingUser.role} onValueChange={(value) => setEditingUser({ ...editingUser, role: value })}>
+                <Select value={editingUser.role} onValueChange={(value) => {
+                  const selectedRole = availableRoles.find(r => r.name === value);
+                  setEditingUser({ 
+                    ...editingUser, 
+                    role: value,
+                    role_id: selectedRole?.id || null
+                  });
+                }}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Owner">Owner</SelectItem>
-                    <SelectItem value="Master">Master</SelectItem>
-                    <SelectItem value="Crew">Crew</SelectItem>
-                    <SelectItem value="Designated Person">Designated Person</SelectItem>
-                    <SelectItem value="Inspector">Inspector</SelectItem>
+                    {availableRoles.map(role => (
+                      <SelectItem key={role.id} value={role.name}>{role.name}</SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="edit-access">Access Level</Label>
+                <Label htmlFor="edit-access">Access Level (Legacy)</Label>
                 <Select value={editingUser.access_level} onValueChange={(value) => setEditingUser({ ...editingUser, access_level: value })}>
                   <SelectTrigger>
                     <SelectValue />
@@ -1859,6 +1864,7 @@ const AdminPanel = () => {
                     <SelectItem value="Admin">Admin (Full + Admin Fields)</SelectItem>
                   </SelectContent>
                 </Select>
+                <p className="text-xs text-gray-500">Note: Role permissions will take precedence</p>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="edit-status">Account Status</Label>
