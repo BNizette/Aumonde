@@ -26,7 +26,7 @@ import ChecklistView from './ChecklistView';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
+const TripDetailsDialog = ({ open, onClose, trip, onRefresh, onEditCrew, onEditPassenger, onViewIncident }) => {
   const [shiftLogs, setShiftLogs] = useState([]);
   const [runningLogs, setRunningLogs] = useState([]);
   const [engineLogs, setEngineLogs] = useState([]);
@@ -39,7 +39,7 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
   
   // Passenger form state (for simple trip passenger entry)
   const [passengerDialogOpen, setPassengerDialogOpen] = useState(false);
-  const [passengerForm, setPassengerForm] = useState({ name: '', status: 'Adult', comment: '' });
+  const [passengerForm, setPassengerForm] = useState({ name: '', status: 'Adult', comment: '', role: '' });
   const [editingPassenger, setEditingPassenger] = useState(null);
   
   // Passenger allocation state (for selecting from Passenger module)
