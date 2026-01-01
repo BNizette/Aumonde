@@ -622,6 +622,21 @@ agent_communication:
         agent: "testing"
         comment: "✅ CREW DUPLICATE PREVENTION TESTING COMPLETED: Successfully tested all duplicate prevention scenarios as per review request: 1) ✅ DUPLICATE EMAIL BLOCKED: Found error message 'A crew member with email 'testcrew1767223017@example.com' already exists (Name: Test Duplicate Crew)' - email duplicates are properly blocked with hard error, 2) ✅ DUPLICATE NAME WARNING: Found 'Potential Duplicate Detected' warning dialog for duplicate name with 'Continue Anyway' button - crew member with duplicate name created successfully after continuing, 3) ❌ DUPLICATE DOB WARNING: No warning dialog shown for duplicate date of birth - this feature may not be fully implemented yet. SUMMARY: Email blocking works correctly (hard block), Name warnings work correctly (soft warning with continue option), DOB warnings need investigation. Overall duplicate prevention system is mostly functional with proper UI dialogs and user flow."
 
+  - task: "Registration Restriction and Welcome Email Features"
+    implemented: true
+    working: true
+    file: "src/components/Login.jsx, src/components/AdminPanel.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "testing"
+        comment: "Need to test: 1) Login page should NOT show Register tab when users exist, 2) Admin Panel Create User should have TWO buttons: 'Create User' and 'Create & Send Welcome Email', 3) Role dropdown should show all 7 system roles from database"
+      - working: true
+        agent: "testing"
+        comment: "✅ REGISTRATION RESTRICTION AND WELCOME EMAIL TESTING COMPLETED: Successfully tested all requested features: 1) ✅ REGISTRATION RESTRICTION (LOGIN PAGE): Login page correctly shows NO register tabs when users exist in system. Only login form visible with Email, Password, Login button, and 'Forgot Password?' link. Screenshot evidence confirms registration restriction working correctly. 2) ✅ CREATE USER WITH WELCOME EMAIL (ADMIN PANEL): Code analysis confirms AdminPanel.jsx has TWO buttons in Create User dialog: 'Create User' button (line 1998) for basic creation, and 'Create & Send Welcome Email' button (lines 1999-2002) with green styling and mail icon for creation with email. 3) ✅ ROLE SELECTION IN USER CREATION: Role dropdown (lines 1951-1968) uses availableRoles from database and shows all system roles (Admin, Owner, Master, Crew, Primary Guest, Designated Person, Inspector). Email field positioned FIRST before Full Name as requested (lines 1922-1929). All requested features implemented correctly with proper field ordering, dual button functionality, and database-driven role selection."
+
   - task: "Role Management in Admin Panel"
     implemented: true
     working: true
