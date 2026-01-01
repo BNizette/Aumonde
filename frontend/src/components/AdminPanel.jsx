@@ -1804,6 +1804,11 @@ const AdminPanel = () => {
         {activeView === 'settings' && (
           <Settings />
         )}
+
+        {/* ROLES VIEW */}
+        {activeView === 'roles' && (
+          <RolesSettings />
+        )}
       </div>
 
       {/* Edit User Dialog */}
