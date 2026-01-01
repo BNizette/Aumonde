@@ -232,6 +232,7 @@ class UserRole:
     INSPECTOR = "Inspector"
 
 class AccessLevel:
+    HIDE = "Hide"  # Module is completely hidden from user
     VIEW = "View"
     EDIT = "Edit"
     FULL = "Full"
