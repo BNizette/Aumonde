@@ -79,6 +79,13 @@ const AdminPanel = () => {
   const [emailConfigLoading, setEmailConfigLoading] = useState(false);
   const [testEmailAddress, setTestEmailAddress] = useState('');
   const [sendingTestEmail, setSendingTestEmail] = useState(false);
+  
+  // Welcome email templates
+  const [welcomeTemplates, setWelcomeTemplates] = useState([]);
+  const [selectedTemplateRole, setSelectedTemplateRole] = useState('');
+  const [templateSubject, setTemplateSubject] = useState('');
+  const [templateBody, setTemplateBody] = useState('');
+  const [savingTemplate, setSavingTemplate] = useState(false);
 
   // Filter states for Users
   const [userSearch, setUserSearch] = useState('');
