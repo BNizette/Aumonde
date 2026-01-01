@@ -458,7 +458,6 @@ async def get_attached_trip_ids(user: dict) -> list:
     """
     user_id = user.get("id")
     user_email = user.get("email", "").lower()
-    user_name = user.get("full_name", "")
     role = user.get("role", "")
     
     attached_trip_ids = set()
