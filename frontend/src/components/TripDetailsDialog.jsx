@@ -1375,10 +1375,27 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh, onEditCrew, onEditP
                         </Popover>
                       )}
                       
-                      {/* Add New Passenger */}
+                      {/* Quick Add Passenger (with User Account Option) */}
+                      {canEdit && (
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          className="bg-green-50 hover:bg-green-100 text-green-700 border-green-200"
+                          onClick={() => {
+                            setPassengerForm({ name: '', status: passengerTypes[0] || 'Primary', comment: '', role: '', email: '' });
+                            setEditingPassenger(null);
+                            setPassengerDialogOpen(true);
+                          }}
+                        >
+                          <UserPlus className="h-4 w-4 mr-1" />
+                          Quick Add + User
+                        </Button>
+                      )}
+                      
+                      {/* Add New Passenger (Full Form) */}
                       {canEdit && (
                         <Button size="sm" onClick={() => setNewPassengerFormOpen(true)}>
-                          <UserPlus className="h-4 w-4 mr-1" />
+                          <Plus className="h-4 w-4 mr-1" />
                           Add New
                         </Button>
                       )}
@@ -1388,7 +1405,7 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh, onEditCrew, onEditP
                     <div className="text-center py-8 text-gray-500">
                       <Users className="h-12 w-12 mx-auto mb-2 opacity-30" />
                       <p>No passengers recorded for this trip</p>
-                      <p className="text-sm mt-1">Use &quot;Allocate Passenger&quot; to select existing or &quot;Add New&quot; to create</p>
+                      <p className="text-sm mt-1">Use &quot;Allocate Passenger&quot; to select existing, &quot;Quick Add + User&quot; to create with account, or &quot;Add New&quot; for full form</p>
                     </div>
                   ) : (
                     <div className="space-y-2">
