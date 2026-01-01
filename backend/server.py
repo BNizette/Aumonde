@@ -5321,6 +5321,178 @@ async def populate_setting_from_existing(
 
 
 # ============================================================================
+# ROLE MANAGEMENT
+# ============================================================================
+
+@api_router.get("/roles")
+async def get_roles(current_user: dict = Depends(get_current_user)):
+    """Get all roles"""
+    try:
+        roles = await db.roles.find({}, {"_id": 0}).to_list(1000)
+        return roles
+    except Exception as e:
+        logger.error(f"Error fetching roles: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error fetching roles: {str(e)}")
+
+@api_router.get("/roles/{role_id}")
+async def get_role(role_id: str, current_user: dict = Depends(get_current_user)):
+    """Get a single role by ID"""
+    try:
+        role = await db.roles.find_one({"id": role_id}, {"_id": 0})
+        if not role:
+            raise HTTPException(status_code=404, detail="Role not found")
+        return role
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error fetching role: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error fetching role: {str(e)}")
+
+@api_router.post("/roles")
+async def create_role(role_data: RoleCreate, current_user: dict = Depends(require_access_level(AccessLevel.FULL))):
+    """Create a new role"""
+    try:
+        # Check for duplicate name
+        existing = await db.roles.find_one({"name": {"$regex": f"^{role_data.name}$", "$options": "i"}})
+        if existing:
+            raise HTTPException(status_code=400, detail=f"A role with name '{role_data.name}' already exists")
+        
+        # Build permissions object
+        permissions = {}
+        if role_data.permissions:
+            for module in MODULES:
+                permissions[module] = role_data.permissions.get(module, AccessLevel.VIEW)
+        else:
+            for module in MODULES:
+                permissions[module] = AccessLevel.VIEW
+        
+        new_role = {
+            "id": str(uuid.uuid4()),
+            "name": role_data.name,
+            "description": role_data.description or "",
+            "permissions": permissions,
+            "attached_records_only": role_data.attached_records_only,
+            "is_system": False,
+            "created_at": datetime.now(timezone.utc).isoformat()
+        }
+        
+        await db.roles.insert_one(new_role)
+        
+        await log_audit(
+            current_user["id"],
+            current_user["full_name"],
+            "create",
+            "role",
+            new_role["id"],
+            f"Created role: {role_data.name}"
+        )
+        
+        return {**new_role, "_id": None}
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error creating role: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error creating role: {str(e)}")
+
+@api_router.put("/roles/{role_id}")
+async def update_role(role_id: str, role_data: RoleCreate, current_user: dict = Depends(require_access_level(AccessLevel.FULL))):
+    """Update an existing role"""
+    try:
+        existing = await db.roles.find_one({"id": role_id}, {"_id": 0})
+        if not existing:
+            raise HTTPException(status_code=404, detail="Role not found")
+        
+        # Check for duplicate name (excluding current role)
+        if role_data.name != existing["name"]:
+            duplicate = await db.roles.find_one({
+                "id": {"$ne": role_id},
+                "name": {"$regex": f"^{role_data.name}$", "$options": "i"}
+            })
+            if duplicate:
+                raise HTTPException(status_code=400, detail=f"A role with name '{role_data.name}' already exists")
+        
+        # Build permissions object
+        permissions = {}
+        if role_data.permissions:
+            for module in MODULES:
+                permissions[module] = role_data.permissions.get(module, AccessLevel.VIEW)
+        else:
+            permissions = existing.get("permissions", {})
+        
+        update_data = {
+            "name": role_data.name,
+            "description": role_data.description or "",
+            "permissions": permissions,
+            "attached_records_only": role_data.attached_records_only,
+            "updated_at": datetime.now(timezone.utc).isoformat()
+        }
+        
+        await db.roles.update_one({"id": role_id}, {"$set": update_data})
+        
+        await log_audit(
+            current_user["id"],
+            current_user["full_name"],
+            "update",
+            "role",
+            role_id,
+            f"Updated role: {role_data.name}"
+        )
+        
+        updated = await db.roles.find_one({"id": role_id}, {"_id": 0})
+        return updated
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error updating role: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error updating role: {str(e)}")
+
+@api_router.delete("/roles/{role_id}")
+async def delete_role(role_id: str, current_user: dict = Depends(require_access_level(AccessLevel.FULL))):
+    """Delete a role (system roles cannot be deleted)"""
+    try:
+        existing = await db.roles.find_one({"id": role_id}, {"_id": 0})
+        if not existing:
+            raise HTTPException(status_code=404, detail="Role not found")
+        
+        if existing.get("is_system"):
+            raise HTTPException(status_code=400, detail="System roles cannot be deleted")
+        
+        # Check if any users are using this role
+        users_with_role = await db.users.count_documents({"role_id": role_id})
+        if users_with_role > 0:
+            raise HTTPException(status_code=400, detail=f"Cannot delete role: {users_with_role} user(s) are assigned to this role")
+        
+        await db.roles.delete_one({"id": role_id})
+        
+        await log_audit(
+            current_user["id"],
+            current_user["full_name"],
+            "delete",
+            "role",
+            role_id,
+            f"Deleted role: {existing['name']}"
+        )
+        
+        return {"message": "Role deleted successfully"}
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error deleting role: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error deleting role: {str(e)}")
+
+@api_router.get("/modules")
+async def get_modules(current_user: dict = Depends(get_current_user)):
+    """Get list of all modules for permissions"""
+    return {
+        "modules": MODULES,
+        "access_levels": [AccessLevel.VIEW, AccessLevel.EDIT, AccessLevel.FULL, AccessLevel.ADMIN]
+    }
+
+
+# ============================================================================
 # SMS REVISION MANAGEMENT
 # ============================================================================
 
