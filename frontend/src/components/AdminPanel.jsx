@@ -47,6 +47,7 @@ const AdminPanel = () => {
   const [backupInfo, setBackupInfo] = useState(null);
   const [backupLoading, setBackupLoading] = useState(false);
   const [restoreFile, setRestoreFile] = useState(null);
+  const [availableRoles, setAvailableRoles] = useState([]);
 
   // SMS Revision states
   const [smsRevisions, setSmsRevisions] = useState([]);
