@@ -134,13 +134,14 @@ const AdminPanel = () => {
       const token = localStorage.getItem('token');
       const headers = { Authorization: `Bearer ${token}` };
 
-      const [usersRes, activityRes, auditRes, sessionsRes, crewRes, smsRes] = await Promise.all([
+      const [usersRes, activityRes, auditRes, sessionsRes, crewRes, smsRes, rolesRes] = await Promise.all([
         axios.get(`${API}/users`, { headers }),
         axios.get(`${API}/activity-logs`, { headers }),
         axios.get(`${API}/audit-logs`, { headers }),
         axios.get(`${API}/sessions`, { headers }),
         axios.get(`${API}/crew`, { headers }),
-        axios.get(`${API}/sms-revisions`, { headers })
+        axios.get(`${API}/sms-revisions`, { headers }),
+        axios.get(`${API}/roles`, { headers })
       ]);
 
       setUsers(usersRes.data);
@@ -150,6 +151,7 @@ const AdminPanel = () => {
       setCrewMembers(crewRes.data);
       setCrewList(crewRes.data);
       setSmsRevisions(smsRes.data || []);
+      setAvailableRoles(rolesRes.data || []);
 
       // Fetch email config
       try {
