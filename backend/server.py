@@ -177,8 +177,9 @@ class User(BaseModel):
     email: EmailStr
     password_hash: str
     full_name: str
-    role: str = UserRole.CREW
-    access_level: str = AccessLevel.EDIT
+    role: str = UserRole.CREW  # Legacy field for backward compatibility
+    role_id: Optional[str] = None  # Reference to Role collection
+    access_level: str = AccessLevel.EDIT  # Legacy field
     account_status: str = AccountStatus.ACTIVE
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     last_login: Optional[datetime] = None
@@ -189,6 +190,7 @@ class UserCreate(BaseModel):
     password: str
     full_name: str
     role: str = UserRole.CREW
+    role_id: Optional[str] = None
     access_level: Optional[str] = None
 
 class UserLogin(BaseModel):
@@ -200,6 +202,7 @@ class UserResponse(BaseModel):
     email: str
     full_name: str
     role: str
+    role_id: Optional[str] = None
     access_level: str = AccessLevel.EDIT  # Default for backward compatibility
     account_status: str = AccountStatus.ACTIVE  # Default for backward compatibility
     created_at: datetime
@@ -209,6 +212,7 @@ class UserUpdate(BaseModel):
     email: Optional[EmailStr] = None
     full_name: Optional[str] = None
     role: Optional[str] = None
+    role_id: Optional[str] = None
     access_level: Optional[str] = None
     account_status: Optional[str] = None
 
