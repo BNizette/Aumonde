@@ -1440,7 +1440,19 @@ async def create_crew(crew_data: CrewCreate, force: bool = False, current_user: 
 
 @api_router.get("/crew")
 async def get_crew(current_user: dict = Depends(get_current_user)):
-    crew_list = await db.crew.find({}, {"_id": 0}).sort("staff_name", 1).to_list(1000)
+    # Check if user's role has attached_records_only restriction
+    role_settings = await get_user_role_settings(current_user)
+    
+    if role_settings.get("attached_records_only"):
+        # Crew users can only see their own crew record
+        attached_crew_id = await get_attached_crew_id(current_user)
+        if attached_crew_id:
+            crew_list = await db.crew.find({"id": attached_crew_id}, {"_id": 0}).to_list(10)
+        else:
+            # User has no attached crew record, return empty
+            return []
+    else:
+        crew_list = await db.crew.find({}, {"_id": 0}).sort("staff_name", 1).to_list(1000)
     
     # Handle old qualification format (string to object array)
     for member in crew_list:
