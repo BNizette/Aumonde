@@ -1878,6 +1878,62 @@ const AdminPanel = () => {
                     <p className="text-xs text-amber-600 mt-2">Save SMTP configuration first to send test emails</p>
                   )}
                 </div>
+                
+                {/* Welcome Email Templates Section */}
+                <div className="border-t pt-4 mt-4">
+                  <h3 className="font-medium mb-3">Welcome Email Templates</h3>
+                  <p className="text-sm text-gray-600 mb-4">
+                    Customize the welcome email sent to new users based on their role. 
+                    Available placeholders: {"{{full_name}}"}, {"{{email}}"}, {"{{password}}"}, {"{{role}}"}
+                  </p>
+                  
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label>Select Role</Label>
+                      <Select value={selectedTemplateRole} onValueChange={handleSelectTemplateRole}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a role to edit its template" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {availableRoles.map(role => (
+                            <SelectItem key={role.id} value={role.name}>{role.name}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    {selectedTemplateRole && (
+                      <>
+                        <div className="space-y-2">
+                          <Label>Subject Line</Label>
+                          <Input
+                            value={templateSubject}
+                            onChange={(e) => setTemplateSubject(e.target.value)}
+                            placeholder="Welcome to AMSA Safety Management"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label>Email Body</Label>
+                          <Textarea
+                            value={templateBody}
+                            onChange={(e) => setTemplateBody(e.target.value)}
+                            placeholder="Dear {{full_name}},&#10;&#10;Welcome to the system..."
+                            rows={12}
+                            className="font-mono text-sm"
+                          />
+                        </div>
+                        
+                        <Button 
+                          onClick={handleSaveTemplate}
+                          disabled={savingTemplate}
+                        >
+                          {savingTemplate ? 'Saving...' : 'Save Template'}
+                        </Button>
+                      </>
+                    )}
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>
