@@ -1952,22 +1952,6 @@ const AdminPanel = () => {
                 </SelectContent>
               </Select>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="create-access">Access Level (Optional - Legacy)</Label>
-              <Select value={newUser.access_level || 'auto'} onValueChange={(value) => setNewUser({ ...newUser, access_level: value === 'auto' ? '' : value })}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Auto-assign based on role" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="auto">Auto-assign based on role</SelectItem>
-                  <SelectItem value="View">View (Read-only)</SelectItem>
-                  <SelectItem value="Edit">Edit (Modify)</SelectItem>
-                  <SelectItem value="Full">Full (Delete)</SelectItem>
-                  <SelectItem value="Admin">Admin (Full + Admin Fields)</SelectItem>
-                </SelectContent>
-              </Select>
-              <p className="text-xs text-gray-500">Note: Role permissions will take precedence</p>
-            </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => {
@@ -1977,7 +1961,7 @@ const AdminPanel = () => {
                 password: '',
                 full_name: '',
                 role: 'Crew',
-                access_level: 'auto'
+                role_id: null
               });
             }}>Cancel</Button>
             <Button onClick={() => handleCreateUser(false)}>Create User</Button>
