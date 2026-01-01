@@ -2274,6 +2274,7 @@ async def delete_trip(trip_id: str, current_user: dict = Depends(require_access_
 
 class ChecklistItem(BaseModel):
     item_id: str
+    label: str = ""  # The checklist item text
     checked: bool = False
     remarks: Optional[str] = None
 
