@@ -38,6 +38,7 @@ const AdminPanel = () => {
     password: '',
     full_name: '',
     role: 'Crew',
+    role_id: null,
     access_level: 'auto'
   });
   const [resetPasswordUser, setResetPasswordUser] = useState(null);
