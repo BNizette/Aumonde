@@ -14,7 +14,7 @@ async def test_john_masters_vessel_data():
             print("🔍 Testing John Masters for vessel data in crew shifts")
             
             # Login and navigate
-            await page.goto('https://seaflex-1.preview.emergentagent.com')
+            await page.goto('https://seaflow.preview.emergentagent.com')
             await page.wait_for_timeout(2000)
             
             await page.fill('input[type="email"]', 'admin@test.com')
@@ -22,7 +22,7 @@ async def test_john_masters_vessel_data():
             await page.click('button[type="submit"]')
             await page.wait_for_timeout(3000)
             
-            await page.goto('https://seaflex-1.preview.emergentagent.com/crew')
+            await page.goto('https://seaflow.preview.emergentagent.com/crew')
             await page.wait_for_timeout(3000)
             
             await page.wait_for_selector('.divide-y', timeout=10000)

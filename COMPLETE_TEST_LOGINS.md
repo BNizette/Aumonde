@@ -308,7 +308,7 @@ Login as admin, go to Admin Panel → Users
 
 ## 🚀 LOGIN URL
 
-**Preview:** https://seaflex-1.preview.emergentagent.com
+**Preview:** https://seaflow.preview.emergentagent.com
 
 ---
 

@@ -235,4 +235,4 @@ With 12 users now available:
 - ✅ Diverse email domains
 - ✅ Ready for comprehensive filter testing
 
-**Login and start testing:** https://seaflex-1.preview.emergentagent.com
+**Login and start testing:** https://seaflow.preview.emergentagent.com
