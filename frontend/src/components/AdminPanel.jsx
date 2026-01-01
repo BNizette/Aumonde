@@ -179,6 +179,14 @@ const AdminPanel = () => {
         // Email config might not exist yet, that's ok
         console.log('No email config found');
       }
+      
+      // Fetch welcome email templates
+      try {
+        const templatesRes = await axios.get(`${API}/welcome-email-templates`, { headers });
+        setWelcomeTemplates(templatesRes.data || []);
+      } catch (templatesErr) {
+        console.log('No welcome templates found');
+      }
     } catch (err) {
       setError('Error fetching data');
       console.error(err);
