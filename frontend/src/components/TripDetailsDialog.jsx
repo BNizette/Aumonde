@@ -1314,8 +1314,33 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
                             )}
                           </div>
                           <div className="flex gap-1">
+                            {/* Edit full passenger details from Passenger module */}
+                            {canEdit && passenger.passenger_id && (
+                              <Button 
+                                size="sm" 
+                                variant="outline" 
+                                onClick={async () => {
+                                  // Fetch full passenger record
+                                  try {
+                                    const token = localStorage.getItem('token');
+                                    const res = await axios.get(`${API}/passengers/${passenger.passenger_id}`, {
+                                      headers: { Authorization: `Bearer ${token}` }
+                                    });
+                                    setEditingFullPassenger(res.data);
+                                    setEditFullPassengerOpen(true);
+                                  } catch (err) {
+                                    setError('Error loading passenger details');
+                                    setTimeout(() => setError(''), 3000);
+                                  }
+                                }}
+                                title="Edit full passenger details"
+                              >
+                                <Eye className="h-4 w-4 mr-1" />
+                                Details
+                              </Button>
+                            )}
                             {canEdit && (
-                              <Button size="sm" variant="ghost" onClick={() => handleEditPassenger(passenger)}>
+                              <Button size="sm" variant="ghost" onClick={() => handleEditPassenger(passenger)} title="Edit trip assignment">
                                 <Edit className="h-4 w-4" />
                               </Button>
                             )}
