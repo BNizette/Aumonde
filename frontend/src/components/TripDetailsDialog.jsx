@@ -2023,6 +2023,33 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
         mode="create"
       />
 
+      {/* Edit Full Passenger Details Dialog */}
+      <PassengerForm
+        open={editFullPassengerOpen}
+        onClose={() => {
+          setEditFullPassengerOpen(false);
+          setEditingFullPassenger(null);
+        }}
+        onSave={async (data) => {
+          try {
+            const token = localStorage.getItem('token');
+            await axios.put(`${API}/passengers/${editingFullPassenger.id}`, data, {
+              headers: { Authorization: `Bearer ${token}` }
+            });
+            setMessage('Passenger details updated');
+            setEditFullPassengerOpen(false);
+            setEditingFullPassenger(null);
+            fetchAllLogs(); // Refresh to get updated name/details
+            setTimeout(() => setMessage(''), 3000);
+          } catch (err) {
+            setError(err.response?.data?.detail || 'Error updating passenger');
+            setTimeout(() => setError(''), 3000);
+          }
+        }}
+        passenger={editingFullPassenger}
+        mode="edit"
+      />
+
       {/* Expenditure (APA) Dialog */}
       <Dialog open={expenditureDialogOpen} onOpenChange={setExpenditureDialogOpen}>
         <DialogContent>
