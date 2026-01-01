@@ -1122,6 +1122,24 @@ async def create_vessel(vessel_data: VesselCreate, current_user: dict = Depends(
 
 @api_router.get("/vessels")
 async def get_vessels(current_user: dict = Depends(get_current_user)):
+    # Check if user's role has attached_records_only restriction
+    role_settings = await get_user_role_settings(current_user)
+    
+    if role_settings.get("attached_records_only"):
+        # Get trips the user is attached to, then get vessels from those trips
+        attached_trip_ids = await get_attached_trip_ids(current_user)
+        if attached_trip_ids:
+            # Find vessels associated with those trips
+            trips = await db.trips.find(
+                {"id": {"$in": attached_trip_ids}}, 
+                {"_id": 0, "vessel_id": 1}
+            ).to_list(1000)
+            vessel_ids = list(set(t["vessel_id"] for t in trips if t.get("vessel_id")))
+            if vessel_ids:
+                vessels = await db.vessels.find({"id": {"$in": vessel_ids}}, {"_id": 0}).sort("vessel_name", 1).to_list(100)
+                return vessels
+        return []
+    
     vessels = await db.vessels.find({}, {"_id": 0}).sort("vessel_name", 1).to_list(1000)
     return vessels
 
