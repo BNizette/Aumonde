@@ -102,6 +102,124 @@ async def seed_default_admin():
         logger.error(f"Error during admin seed: {str(e)}")
         # Don't raise - allow app to start even if seeding fails
 
+@app.on_event("startup")
+async def seed_default_roles():
+    """Create default system roles if they don't exist."""
+    try:
+        role_count = await db.roles.count_documents({})
+        
+        if role_count == 0:
+            logger.info("No roles found in database. Creating default roles...")
+            
+            default_roles = [
+                {
+                    "id": str(uuid.uuid4()),
+                    "name": "Admin",
+                    "description": "Full system administrator with all permissions",
+                    "permissions": {
+                        "vessels": "Admin", "crew": "Admin", "trips": "Admin",
+                        "passengers": "Admin", "incidents": "Admin", "drills": "Admin",
+                        "documents": "Admin", "maintenance": "Admin", "risk_assessment": "Admin",
+                        "compliance": "Admin", "emergency": "Admin", "admin_panel": "Admin"
+                    },
+                    "attached_records_only": False,
+                    "is_system": True,
+                    "created_at": datetime.now(timezone.utc).isoformat()
+                },
+                {
+                    "id": str(uuid.uuid4()),
+                    "name": "Owner",
+                    "description": "Vessel owner with full operational access",
+                    "permissions": {
+                        "vessels": "Full", "crew": "Full", "trips": "Full",
+                        "passengers": "Full", "incidents": "Full", "drills": "Full",
+                        "documents": "Full", "maintenance": "Full", "risk_assessment": "Full",
+                        "compliance": "Full", "emergency": "Full", "admin_panel": "View"
+                    },
+                    "attached_records_only": False,
+                    "is_system": True,
+                    "created_at": datetime.now(timezone.utc).isoformat()
+                },
+                {
+                    "id": str(uuid.uuid4()),
+                    "name": "Master",
+                    "description": "Vessel master with operational permissions",
+                    "permissions": {
+                        "vessels": "Edit", "crew": "Edit", "trips": "Full",
+                        "passengers": "Edit", "incidents": "Full", "drills": "Full",
+                        "documents": "Edit", "maintenance": "Edit", "risk_assessment": "Edit",
+                        "compliance": "Edit", "emergency": "Full", "admin_panel": "View"
+                    },
+                    "attached_records_only": True,
+                    "is_system": True,
+                    "created_at": datetime.now(timezone.utc).isoformat()
+                },
+                {
+                    "id": str(uuid.uuid4()),
+                    "name": "Crew",
+                    "description": "Crew member with basic operational access",
+                    "permissions": {
+                        "vessels": "View", "crew": "View", "trips": "Edit",
+                        "passengers": "View", "incidents": "Edit", "drills": "Edit",
+                        "documents": "View", "maintenance": "View", "risk_assessment": "View",
+                        "compliance": "View", "emergency": "Edit", "admin_panel": "View"
+                    },
+                    "attached_records_only": True,
+                    "is_system": True,
+                    "created_at": datetime.now(timezone.utc).isoformat()
+                },
+                {
+                    "id": str(uuid.uuid4()),
+                    "name": "Primary Guest",
+                    "description": "Primary guest with limited access to their own trips",
+                    "permissions": {
+                        "vessels": "View", "crew": "View", "trips": "View",
+                        "passengers": "View", "incidents": "View", "drills": "View",
+                        "documents": "View", "maintenance": "View", "risk_assessment": "View",
+                        "compliance": "View", "emergency": "View", "admin_panel": "View"
+                    },
+                    "attached_records_only": True,
+                    "is_system": True,
+                    "created_at": datetime.now(timezone.utc).isoformat()
+                },
+                {
+                    "id": str(uuid.uuid4()),
+                    "name": "Designated Person",
+                    "description": "Safety designated person with compliance focus",
+                    "permissions": {
+                        "vessels": "Edit", "crew": "View", "trips": "View",
+                        "passengers": "View", "incidents": "Full", "drills": "Full",
+                        "documents": "Full", "maintenance": "Full", "risk_assessment": "Full",
+                        "compliance": "Full", "emergency": "Full", "admin_panel": "View"
+                    },
+                    "attached_records_only": False,
+                    "is_system": True,
+                    "created_at": datetime.now(timezone.utc).isoformat()
+                },
+                {
+                    "id": str(uuid.uuid4()),
+                    "name": "Inspector",
+                    "description": "Inspector with read-only audit access",
+                    "permissions": {
+                        "vessels": "View", "crew": "View", "trips": "View",
+                        "passengers": "View", "incidents": "View", "drills": "View",
+                        "documents": "View", "maintenance": "View", "risk_assessment": "View",
+                        "compliance": "View", "emergency": "View", "admin_panel": "View"
+                    },
+                    "attached_records_only": False,
+                    "is_system": True,
+                    "created_at": datetime.now(timezone.utc).isoformat()
+                }
+            ]
+            
+            await db.roles.insert_many(default_roles)
+            logger.info(f"Created {len(default_roles)} default roles")
+        else:
+            logger.info(f"Database has {role_count} existing role(s). Skipping role seed.")
+            
+    except Exception as e:
+        logger.error(f"Error during role seed: {str(e)}")
+
 # ============================================================================
 # CONSTANTS
 # ============================================================================
