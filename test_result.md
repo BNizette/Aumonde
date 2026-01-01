@@ -135,17 +135,50 @@ backend:
         comment: "✅ GET /api/incidents - Returns id and title for navigation links"
 
 frontend:
-  - task: "Frontend UI Testing - Not Required"
-    implemented: false
-    working: "NA"
-    file: "N/A"
+  - task: "Add Passenger & Create User UI in Trip Details Dialog"
+    implemented: true
+    working: false
+    file: "/app/frontend/src/components/TripDetailsDialog.jsx"
     stuck_count: 0
-    priority: "low"
+    priority: "high"
     needs_retesting: false
     status_history:
       - working: "NA"
+        agent: "main"
+        comment: "Frontend UI implemented for Add Passenger dialog with Name, Email, Role, Status, Comment fields and Add & Email User button"
+      - working: false
         agent: "testing"
-        comment: "Frontend testing not required per system limitations"
+        comment: "❌ CRITICAL: Authentication session expires frequently during testing. Successfully navigated to Trips page and can see trip cards with Eye icons, but session management issues prevent completing full UI flow testing. Need to investigate session persistence."
+
+  - task: "Hyperlinks in Trip Details Dialog"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/TripDetailsDialog.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Frontend hyperlinks implemented for crew names, passenger names, and incident names in Trip Details dialog"
+      - working: "NA"
+        agent: "testing"
+        comment: "Unable to complete testing due to authentication session expiry issues. Code review shows hyperlinks are implemented with blue color and hover effects."
+
+  - task: "Hyperlinks in Vessel Details Dialog"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/VesselDetailsDialog.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Frontend hyperlinks implemented for trip names, passenger names in Vessel Details dialog"
+      - working: "NA"
+        agent: "testing"
+        comment: "Unable to complete testing due to authentication session expiry issues. Code review shows hyperlinks are implemented with blue color and hover effects."
 
 metadata:
   created_by: "testing_agent"
