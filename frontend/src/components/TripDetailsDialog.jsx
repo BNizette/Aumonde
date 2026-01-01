@@ -1145,7 +1145,18 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh, onEditCrew, onEditP
                         <tbody className="divide-y divide-gray-200">
                           {allocatedCrew.map((crew) => (
                             <tr key={crew.id} className="hover:bg-gray-50">
-                              <td className="px-4 py-3 text-sm text-gray-900">{crew.crew_name}</td>
+                              <td className="px-4 py-3 text-sm text-gray-900">
+                                {onEditCrew && crew.crew_id ? (
+                                  <button
+                                    onClick={() => onEditCrew(crew.crew_id)}
+                                    className="text-blue-600 hover:text-blue-800 hover:underline font-medium"
+                                  >
+                                    {crew.crew_name}
+                                  </button>
+                                ) : (
+                                  crew.crew_name
+                                )}
+                              </td>
                               <td className="px-4 py-3 text-sm text-gray-600">{crew.position}</td>
                               {(canEdit || canDelete) && (
                                 <td className="px-4 py-3 text-right">
