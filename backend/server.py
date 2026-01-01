@@ -173,10 +173,10 @@ async def seed_default_roles():
                     "name": "Primary Guest",
                     "description": "Primary guest with limited access to their own trips",
                     "permissions": {
-                        "vessels": "View", "crew": "View", "trips": "View",
-                        "passengers": "View", "incidents": "View", "drills": "View",
-                        "documents": "View", "maintenance": "View", "risk_assessment": "View",
-                        "compliance": "View", "emergency": "View", "admin_panel": "View"
+                        "vessels": "Hide", "crew": "Hide", "trips": "View",
+                        "passengers": "View", "incidents": "Hide", "drills": "Hide",
+                        "documents": "Hide", "maintenance": "Hide", "risk_assessment": "Hide",
+                        "compliance": "Hide", "emergency": "View", "admin_panel": "Hide"
                     },
                     "attached_records_only": True,
                     "is_system": True,
