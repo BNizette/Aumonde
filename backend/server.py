@@ -441,6 +441,107 @@ def require_access_level(required_level: str):
         return current_user
     return check_access
 
+async def get_user_role_settings(user: dict) -> dict:
+    """Get the role settings for a user, including attached_records_only flag"""
+    role_id = user.get("role_id")
+    if not role_id:
+        return {"attached_records_only": False}
+    role = await db.roles.find_one({"id": role_id}, {"_id": 0})
+    return role or {"attached_records_only": False}
+
+async def get_attached_trip_ids(user: dict) -> list:
+    """
+    Get the trip IDs that a user is attached to based on their role.
+    
+    - Primary Guest: Can see records associated with the last trip they were on
+    - Crew: Can see records associated with trips they are allocated to
+    """
+    user_id = user.get("id")
+    user_email = user.get("email", "").lower()
+    user_name = user.get("full_name", "")
+    role = user.get("role", "")
+    
+    attached_trip_ids = set()
+    
+    # Check if user is allocated as crew to any trips
+    # Match by user_id, email, or name in allocated_crew
+    crew_query = {
+        "$or": [
+            {"user_id": user_id},
+            {"crew_email": {"$regex": f"^{user_email}$", "$options": "i"}} if user_email else {"_id": None},
+        ]
+    }
+    allocated_crew_records = await db.allocated_crew.find(crew_query, {"_id": 0, "trip_id": 1}).to_list(1000)
+    for record in allocated_crew_records:
+        if record.get("trip_id"):
+            attached_trip_ids.add(record["trip_id"])
+    
+    # Also check crew collection for crew_id linkage
+    crew_member = await db.crew.find_one({
+        "$or": [
+            {"user_id": user_id},
+            {"email": {"$regex": f"^{user_email}$", "$options": "i"}} if user_email else {"_id": None},
+        ]
+    }, {"_id": 0, "id": 1})
+    
+    if crew_member:
+        # Find all allocated_crew records for this crew member
+        crew_allocations = await db.allocated_crew.find(
+            {"crew_id": crew_member["id"]}, 
+            {"_id": 0, "trip_id": 1}
+        ).to_list(1000)
+        for allocation in crew_allocations:
+            if allocation.get("trip_id"):
+                attached_trip_ids.add(allocation["trip_id"])
+    
+    # For Primary Guest role: Check trip passengers for user's email/name
+    if "guest" in role.lower() or "primary" in role.lower():
+        # Find passengers matching user's email
+        passenger_query = {
+            "$or": [
+                {"email": {"$regex": f"^{user_email}$", "$options": "i"}} if user_email else {"_id": None},
+                {"contact_email": {"$regex": f"^{user_email}$", "$options": "i"}} if user_email else {"_id": None},
+            ]
+        }
+        # Check in passengers collection first
+        passengers = await db.passengers.find(passenger_query, {"_id": 0, "id": 1}).to_list(100)
+        passenger_ids = [p["id"] for p in passengers]
+        
+        # Now find trip_passengers that reference these passengers
+        if passenger_ids:
+            trip_passenger_records = await db.trip_passengers.find(
+                {"passenger_id": {"$in": passenger_ids}},
+                {"_id": 0, "trip_id": 1}
+            ).to_list(1000)
+            for record in trip_passenger_records:
+                if record.get("trip_id"):
+                    attached_trip_ids.add(record["trip_id"])
+        
+        # Also check trip_passengers by email directly
+        direct_passengers = await db.trip_passengers.find(
+            {"email": {"$regex": f"^{user_email}$", "$options": "i"}} if user_email else {"_id": None},
+            {"_id": 0, "trip_id": 1}
+        ).to_list(1000)
+        for record in direct_passengers:
+            if record.get("trip_id"):
+                attached_trip_ids.add(record["trip_id"])
+    
+    return list(attached_trip_ids)
+
+async def get_attached_crew_id(user: dict) -> str:
+    """Get the crew ID for a user if they have a linked crew record"""
+    user_id = user.get("id")
+    user_email = user.get("email", "").lower()
+    
+    crew_member = await db.crew.find_one({
+        "$or": [
+            {"user_id": user_id},
+            {"email": {"$regex": f"^{user_email}$", "$options": "i"}} if user_email else {"_id": None},
+        ]
+    }, {"_id": 0, "id": 1})
+    
+    return crew_member["id"] if crew_member else None
+
 async def log_activity(user_id: str, user_email: str, action: str, ip: Optional[str] = None, user_agent: Optional[str] = None):
     activity = ActivityLog(
         user_id=user_id,
