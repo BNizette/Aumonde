@@ -964,6 +964,72 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh, onEditCrew, onEditP
     }
   };
 
+  // Save passenger and create user account with welcome email
+  const handleSavePassengerAndCreateUser = async () => {
+    if (!passengerForm.name || !passengerForm.email || !passengerForm.role) {
+      setError('Name, email and role are required to create user');
+      setTimeout(() => setError(''), 3000);
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('token');
+      
+      // Step 1: Create trip passenger
+      const passengerData = { 
+        trip_id: trip.id,
+        name: passengerForm.name,
+        email: passengerForm.email,
+        status: passengerForm.status,
+        comment: passengerForm.comment
+      };
+      
+      await axios.post(`${API}/trip-passengers`, passengerData, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      // Step 2: Generate a temporary password
+      const tempPassword = Math.random().toString(36).slice(-8) + 'A1!';
+      
+      // Step 3: Create user account
+      const userData = {
+        email: passengerForm.email.toLowerCase(),
+        full_name: passengerForm.name,
+        password: tempPassword,
+        role: passengerForm.role
+      };
+      
+      const userRes = await axios.post(`${API}/users`, userData, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      const newUser = userRes.data;
+      
+      // Step 4: Send welcome email
+      try {
+        await axios.post(`${API}/users/send-welcome-email`, {
+          user_id: newUser.id,
+          password: tempPassword
+        }, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setMessage(`Passenger added, user created, and welcome email sent to ${passengerForm.email}`);
+      } catch (emailErr) {
+        // User was created but email failed
+        setMessage(`Passenger and user created. Email failed: ${emailErr.response?.data?.detail || 'Check SMTP config'}`);
+      }
+      
+      setPassengerDialogOpen(false);
+      setPassengerForm({ name: '', status: 'Adult', comment: '', role: '', email: '' });
+      setEditingPassenger(null);
+      fetchAllLogs();
+      setTimeout(() => setMessage(''), 5000);
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Error creating passenger and user');
+      setTimeout(() => setError(''), 3000);
+    }
+  };
+
   const getStatusColor = (status) => {
     const colors = {
       'Adult': 'bg-blue-100 text-blue-800',
