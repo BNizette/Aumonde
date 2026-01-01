@@ -5930,6 +5930,302 @@ async def upload_branding_image(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"File upload failed: {str(e)}")
 
+# ============================================================================
+# WELCOME EMAIL TEMPLATES
+# ============================================================================
+
+class WelcomeEmailTemplate(BaseModel):
+    role: str
+    subject: str
+    body: str
+
+@api_router.get("/welcome-email-templates")
+async def get_welcome_email_templates(current_user: dict = Depends(require_access_level(AccessLevel.FULL))):
+    """Get all welcome email templates"""
+    templates = await db.welcome_email_templates.find({}, {"_id": 0}).to_list(100)
+    
+    # If no templates exist, return defaults
+    if not templates:
+        default_templates = get_default_welcome_templates()
+        return default_templates
+    
+    return templates
+
+@api_router.put("/welcome-email-templates")
+async def save_welcome_email_templates(templates: List[WelcomeEmailTemplate], current_user: dict = Depends(require_access_level(AccessLevel.FULL))):
+    """Save welcome email templates"""
+    try:
+        # Clear existing and insert new
+        await db.welcome_email_templates.delete_many({})
+        
+        template_dicts = [t.model_dump() for t in templates]
+        if template_dicts:
+            await db.welcome_email_templates.insert_many(template_dicts)
+        
+        await log_audit(
+            current_user["id"],
+            current_user["full_name"],
+            "update",
+            "welcome_email_templates",
+            "all",
+            f"Updated {len(templates)} welcome email templates"
+        )
+        
+        return {"message": "Templates saved successfully"}
+    except Exception as e:
+        logger.error(f"Error saving welcome email templates: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error saving templates: {str(e)}")
+
+def get_default_welcome_templates():
+    """Return default welcome email templates for each role"""
+    frontend_url = os.environ.get('FRONTEND_URL', 'https://your-app.com')
+    
+    return [
+        {
+            "role": "Admin",
+            "subject": "Welcome to AMSA Safety Management - Administrator Account",
+            "body": f"""Dear {{{{full_name}}}},
+
+Welcome to AMSA Safety Management System! Your administrator account has been created.
+
+Login Details:
+- Email: {{{{email}}}}
+- Temporary Password: {{{{password}}}}
+
+Please login at: {frontend_url}
+
+IMPORTANT: Please change your password immediately after your first login.
+
+As an Administrator, you have full access to all system features including:
+- User management
+- Role and permissions configuration
+- System settings
+- All operational modules
+
+Best regards,
+AMSA Safety Management System"""
+        },
+        {
+            "role": "Owner",
+            "subject": "Welcome to AMSA Safety Management - Owner Account",
+            "body": f"""Dear {{{{full_name}}}},
+
+Welcome to AMSA Safety Management System! Your owner account has been created.
+
+Login Details:
+- Email: {{{{email}}}}
+- Temporary Password: {{{{password}}}}
+
+Please login at: {frontend_url}
+
+IMPORTANT: Please change your password immediately after your first login.
+
+As an Owner, you have full access to operational features including:
+- Vessel management
+- Crew management
+- Trip planning and monitoring
+- Safety documentation
+
+Best regards,
+AMSA Safety Management System"""
+        },
+        {
+            "role": "Master",
+            "subject": "Welcome to AMSA Safety Management - Master Account",
+            "body": f"""Dear {{{{full_name}}}},
+
+Welcome to AMSA Safety Management System! Your master account has been created.
+
+Login Details:
+- Email: {{{{email}}}}
+- Temporary Password: {{{{password}}}}
+
+Please login at: {frontend_url}
+
+IMPORTANT: Please change your password immediately after your first login.
+
+As a Master, you have access to:
+- Trip management for your assigned vessels
+- Crew shift and log management
+- Incident and drill reporting
+- Safety documentation
+
+Best regards,
+AMSA Safety Management System"""
+        },
+        {
+            "role": "Crew",
+            "subject": "Welcome to AMSA Safety Management - Crew Account",
+            "body": f"""Dear {{{{full_name}}}},
+
+Welcome to AMSA Safety Management System! Your crew account has been created.
+
+Login Details:
+- Email: {{{{email}}}}
+- Temporary Password: {{{{password}}}}
+
+Please login at: {frontend_url}
+
+IMPORTANT: Please change your password immediately after your first login.
+
+As a Crew member, you have access to:
+- View your assigned vessels and trips
+- Log shifts and activities
+- Report incidents
+- Access safety documentation
+
+Best regards,
+AMSA Safety Management System"""
+        },
+        {
+            "role": "Primary Guest",
+            "subject": "Welcome to AMSA Safety Management - Guest Access",
+            "body": f"""Dear {{{{full_name}}}},
+
+Welcome to AMSA Safety Management System! Your guest account has been created.
+
+Login Details:
+- Email: {{{{email}}}}
+- Temporary Password: {{{{password}}}}
+
+Please login at: {frontend_url}
+
+IMPORTANT: Please change your password immediately after your first login.
+
+As a Primary Guest, you can:
+- View your upcoming and past trips
+- Access trip itineraries
+- View safety information
+
+Best regards,
+AMSA Safety Management System"""
+        },
+        {
+            "role": "Designated Person",
+            "subject": "Welcome to AMSA Safety Management - Designated Person Account",
+            "body": f"""Dear {{{{full_name}}}},
+
+Welcome to AMSA Safety Management System! Your Designated Person account has been created.
+
+Login Details:
+- Email: {{{{email}}}}
+- Temporary Password: {{{{password}}}}
+
+Please login at: {frontend_url}
+
+IMPORTANT: Please change your password immediately after your first login.
+
+As a Designated Person, you have access to:
+- Safety compliance monitoring
+- Incident and drill management
+- Risk assessments
+- Emergency procedures
+- Documentation management
+
+Best regards,
+AMSA Safety Management System"""
+        },
+        {
+            "role": "Inspector",
+            "subject": "Welcome to AMSA Safety Management - Inspector Account",
+            "body": f"""Dear {{{{full_name}}}},
+
+Welcome to AMSA Safety Management System! Your inspector account has been created.
+
+Login Details:
+- Email: {{{{email}}}}
+- Temporary Password: {{{{password}}}}
+
+Please login at: {frontend_url}
+
+IMPORTANT: Please change your password immediately after your first login.
+
+As an Inspector, you have read-only access to:
+- Vessel information
+- Safety documentation
+- Compliance records
+- Audit trails
+
+Best regards,
+AMSA Safety Management System"""
+        }
+    ]
+
+@api_router.post("/users/send-welcome-email")
+async def send_welcome_email(data: dict, current_user: dict = Depends(require_access_level(AccessLevel.EDIT))):
+    """Send welcome email to a user"""
+    import smtplib
+    from email.mime.text import MIMEText
+    from email.mime.multipart import MIMEMultipart
+    
+    user_id = data.get("user_id")
+    password = data.get("password")  # Temporary password to include in email
+    
+    if not user_id:
+        raise HTTPException(status_code=400, detail="user_id is required")
+    
+    # Get user
+    user = await db.users.find_one({"id": user_id}, {"_id": 0})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Check if email config exists
+    config = await db.email_config.find_one({})
+    if not config or not config.get('smtp_server'):
+        raise HTTPException(status_code=500, detail="Email service not configured. Please configure SMTP settings first.")
+    
+    # Get welcome email template for this role
+    role = user.get("role", "Crew")
+    template = await db.welcome_email_templates.find_one({"role": role}, {"_id": 0})
+    
+    if not template:
+        # Use default template
+        defaults = get_default_welcome_templates()
+        template = next((t for t in defaults if t["role"] == role), defaults[3])  # Default to Crew template
+    
+    try:
+        # Replace placeholders in template
+        subject = template["subject"]
+        body = template["body"].replace("{{full_name}}", user.get("full_name", "User"))
+        body = body.replace("{{email}}", user.get("email", ""))
+        body = body.replace("{{password}}", password or "[Contact administrator for password]")
+        body = body.replace("{{role}}", role)
+        
+        # Create message
+        msg = MIMEMultipart()
+        msg['From'] = f"{config.get('from_name', 'AMSA')} <{config['from_email']}>"
+        msg['To'] = user['email']
+        msg['Subject'] = subject
+        
+        msg.attach(MIMEText(body, 'plain'))
+        
+        # Connect and send with timeout
+        if config.get('use_tls', True):
+            server = smtplib.SMTP(config['smtp_server'], int(config['smtp_port']), timeout=10)
+            server.starttls()
+        else:
+            server = smtplib.SMTP(config['smtp_server'], int(config['smtp_port']), timeout=10)
+        
+        server.login(config['smtp_username'], config['smtp_password'])
+        server.send_message(msg)
+        server.quit()
+        
+        await log_audit(
+            current_user["id"],
+            current_user["full_name"],
+            "send_welcome_email",
+            "user",
+            user_id,
+            f"Sent welcome email to {user['email']}"
+        )
+        
+        logger.info(f"Welcome email sent to {user['email']}")
+        return {"message": f"Welcome email sent to {user['email']}"}
+        
+    except Exception as e:
+        logger.error(f"Failed to send welcome email: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to send email: {str(e)}")
+
 @api_router.post("/auth/forgot-password")
 async def forgot_password(request: ForgotPasswordRequest):
     """Send password reset email"""
