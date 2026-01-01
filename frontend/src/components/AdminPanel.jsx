@@ -1927,21 +1927,26 @@ const AdminPanel = () => {
             </div>
             <div className="space-y-2">
               <Label htmlFor="create-role">Role</Label>
-              <Select value={newUser.role} onValueChange={(value) => setNewUser({ ...newUser, role: value })}>
+              <Select value={newUser.role} onValueChange={(value) => {
+                const selectedRole = availableRoles.find(r => r.name === value);
+                setNewUser({ 
+                  ...newUser, 
+                  role: value,
+                  role_id: selectedRole?.id || null
+                });
+              }}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Owner">Owner</SelectItem>
-                  <SelectItem value="Master">Master</SelectItem>
-                  <SelectItem value="Crew">Crew</SelectItem>
-                  <SelectItem value="Designated Person">Designated Person</SelectItem>
-                  <SelectItem value="Inspector">Inspector</SelectItem>
+                  {availableRoles.map(role => (
+                    <SelectItem key={role.id} value={role.name}>{role.name}</SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="create-access">Access Level (Optional)</Label>
+              <Label htmlFor="create-access">Access Level (Optional - Legacy)</Label>
               <Select value={newUser.access_level || 'auto'} onValueChange={(value) => setNewUser({ ...newUser, access_level: value === 'auto' ? '' : value })}>
                 <SelectTrigger>
                   <SelectValue placeholder="Auto-assign based on role" />
@@ -1954,6 +1959,7 @@ const AdminPanel = () => {
                   <SelectItem value="Admin">Admin (Full + Admin Fields)</SelectItem>
                 </SelectContent>
               </Select>
+              <p className="text-xs text-gray-500">Note: Role permissions will take precedence</p>
             </div>
           </div>
           <DialogFooter>
