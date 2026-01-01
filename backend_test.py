@@ -4097,6 +4097,20 @@ class AMSAComprehensiveTester:
             print("\n❌ Authentication failed - cannot continue with other tests")
             return False
         
+        # Run NEW FEATURE TESTS FIRST (Review Request Focus - HIGH PRIORITY)
+        new_feature_tests = [
+            self.test_add_passenger_create_user_flow,      # NEW TEST: Add Passenger & Create User Flow
+            self.test_restrict_to_attached_records_logic,  # NEW TEST: Restrict to Attached Records Logic
+            self.test_hyperlink_navigation_data,           # NEW TEST: Hyperlink Navigation Data
+        ]
+        
+        print("\n🆕 NEW FEATURE TESTS - AMSA SAFETY MANAGEMENT (HIGH PRIORITY)")
+        for test_method in new_feature_tests:
+            try:
+                test_method()
+            except Exception as e:
+                self.log_test(test_method.__name__, False, error=f"Exception: {str(e)}")
+        
         # Run ADMIN PANEL BACKEND TESTS (Review Request Focus)
         admin_panel_tests = [
             self.test_admin_panel_backend_apis,        # NEW TEST: Admin Panel APIs
