@@ -117,11 +117,55 @@ class AccessLevel:
     VIEW = "View"
     EDIT = "Edit"
     FULL = "Full"
+    ADMIN = "Admin"
 
 class AccountStatus:
     ACTIVE = "Active"
     DISABLED = "Disabled"
     SUSPENDED = "Suspended"
+
+# List of all modules for permissions
+MODULES = [
+    "vessels", "crew", "trips", "passengers", "incidents", "drills",
+    "documents", "maintenance", "risk_assessment", "compliance",
+    "emergency", "admin_panel"
+]
+
+# ============================================================================
+# ROLE MODEL
+# ============================================================================
+
+class RolePermissions(BaseModel):
+    """Permissions for each module"""
+    vessels: str = AccessLevel.VIEW
+    crew: str = AccessLevel.VIEW
+    trips: str = AccessLevel.VIEW
+    passengers: str = AccessLevel.VIEW
+    incidents: str = AccessLevel.VIEW
+    drills: str = AccessLevel.VIEW
+    documents: str = AccessLevel.VIEW
+    maintenance: str = AccessLevel.VIEW
+    risk_assessment: str = AccessLevel.VIEW
+    compliance: str = AccessLevel.VIEW
+    emergency: str = AccessLevel.VIEW
+    admin_panel: str = AccessLevel.VIEW
+
+class Role(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    description: Optional[str] = ""
+    permissions: RolePermissions = Field(default_factory=RolePermissions)
+    attached_records_only: bool = False  # If true, users can only see records they're attached to
+    is_system: bool = False  # System roles cannot be deleted
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: Optional[datetime] = None
+
+class RoleCreate(BaseModel):
+    name: str
+    description: Optional[str] = ""
+    permissions: Optional[dict] = None
+    attached_records_only: bool = False
 
 # ============================================================================
 # MODELS
