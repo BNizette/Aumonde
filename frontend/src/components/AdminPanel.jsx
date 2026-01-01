@@ -967,6 +967,12 @@ const AdminPanel = () => {
                 Settings
               </span>
             </SelectItem>
+            <SelectItem value="roles">
+              <span className="flex items-center gap-2">
+                <Shield className="h-4 w-4" />
+                Roles & Permissions
+              </span>
+            </SelectItem>
           </SelectContent>
         </Select>
       </div>
