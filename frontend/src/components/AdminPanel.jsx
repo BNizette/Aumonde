@@ -1994,7 +1994,11 @@ const AdminPanel = () => {
                 access_level: 'auto'
               });
             }}>Cancel</Button>
-            <Button onClick={handleCreateUser}>Create User</Button>
+            <Button onClick={() => handleCreateUser(false)}>Create User</Button>
+            <Button onClick={() => handleCreateUser(true)} variant="default" className="bg-green-600 hover:bg-green-700">
+              <Mail className="h-4 w-4 mr-2" />
+              Create & Send Welcome Email
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
