@@ -5554,7 +5554,7 @@ async def get_modules(current_user: dict = Depends(get_current_user)):
     """Get list of all modules for permissions"""
     return {
         "modules": MODULES,
-        "access_levels": [AccessLevel.VIEW, AccessLevel.EDIT, AccessLevel.FULL, AccessLevel.ADMIN]
+        "access_levels": [AccessLevel.HIDE, AccessLevel.VIEW, AccessLevel.EDIT, AccessLevel.FULL, AccessLevel.ADMIN]
     }
 
 
