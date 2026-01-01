@@ -187,8 +187,12 @@ metadata:
   run_ui: false
 
 test_plan:
-  current_focus: []
-  stuck_tasks: []
+  current_focus:
+    - "Add Passenger & Create User UI in Trip Details Dialog"
+    - "Hyperlinks in Trip Details Dialog"
+    - "Hyperlinks in Vessel Details Dialog"
+  stuck_tasks:
+    - "Add Passenger & Create User UI in Trip Details Dialog"
   test_all: false
   test_priority: "high_first"
 
@@ -197,3 +201,5 @@ agent_communication:
     message: "Starting backend API testing for new AMSA Safety Management System features"
   - agent: "testing"
     message: "✅ All high priority backend tests PASSED! Add Passenger & Create User flow working correctly. Restrict to Attached Records logic working correctly. Hyperlink navigation data structure working correctly. Welcome email timeout is expected due to SMTP connectivity in preview environment."
+  - agent: "testing"
+    message: "❌ CRITICAL ISSUE: Frontend UI testing blocked by authentication session management problems. Session expires frequently during testing, preventing completion of UI flow tests. Successfully accessed Trips page and can see UI elements, but cannot complete full testing workflow. This needs immediate investigation."
