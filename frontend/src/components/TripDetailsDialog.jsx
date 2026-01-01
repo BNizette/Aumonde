@@ -928,7 +928,7 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh, onEditCrew, onEditP
       }
       
       setPassengerDialogOpen(false);
-      setPassengerForm({ name: '', status: 'Adult', comment: '' });
+      setPassengerForm({ name: '', status: 'Adult', comment: '', role: '', email: '' });
       setEditingPassenger(null);
       fetchAllLogs();
       setTimeout(() => setMessage(''), 3000);
@@ -942,7 +942,9 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh, onEditCrew, onEditP
     setPassengerForm({
       name: passenger.name || '',
       status: passenger.status || 'Adult',
-      comment: passenger.comment || ''
+      comment: passenger.comment || '',
+      email: passenger.email || '',
+      role: ''
     });
     setEditingPassenger(passenger);
     setPassengerDialogOpen(true);
