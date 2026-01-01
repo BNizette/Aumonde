@@ -384,10 +384,11 @@ const RolesSettings = () => {
             <div className="bg-gray-50 p-4 rounded-lg">
               <h4 className="font-medium mb-2">Permission Levels:</h4>
               <div className="grid grid-cols-2 gap-2 text-sm">
+                <div><Badge className={getAccessLevelColor('Hide')}>Hide</Badge> - Module is completely hidden from user</div>
                 <div><Badge className={getAccessLevelColor('View')}>View</Badge> - Can view records only</div>
                 <div><Badge className={getAccessLevelColor('Edit')}>Edit</Badge> - Can view and modify records</div>
                 <div><Badge className={getAccessLevelColor('Full')}>Full</Badge> - Can view, modify, and delete records</div>
-                <div><Badge className={getAccessLevelColor('Admin')}>Admin</Badge> - Full access including admin functions</div>
+                <div className="col-span-2"><Badge className={getAccessLevelColor('Admin')}>Admin</Badge> - Full access including admin functions</div>
               </div>
             </div>
           </div>
