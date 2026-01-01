@@ -511,6 +511,52 @@ async def register(user_data: UserCreate):
     
     return UserResponse(**user.model_dump())
 
+@api_router.post("/users", response_model=UserResponse)
+async def create_user(user_data: UserCreate, current_user: dict = Depends(require_access_level(AccessLevel.EDIT))):
+    """Create a new user (admin only)"""
+    existing = await db.users.find_one({"email": user_data.email})
+    if existing:
+        raise HTTPException(status_code=400, detail="Email already registered")
+    
+    # Get access level from role if not specified
+    access_level = user_data.access_level
+    if not access_level:
+        if user_data.role in ["Admin", "Owner"]:
+            access_level = AccessLevel.FULL
+        elif user_data.role in ["Master", "Crew"]:
+            access_level = AccessLevel.EDIT
+        else:
+            access_level = AccessLevel.VIEW
+    
+    # Look up role_id if role_id not provided
+    role_id = user_data.role_id
+    if not role_id:
+        role = await db.roles.find_one({"name": user_data.role}, {"_id": 0})
+        if role:
+            role_id = role["id"]
+    
+    user = User(
+        email=user_data.email,
+        password_hash=hash_password(user_data.password),
+        full_name=user_data.full_name,
+        role=user_data.role,
+        role_id=role_id,
+        access_level=access_level
+    )
+    
+    await db.users.insert_one(user.model_dump())
+    
+    await log_audit(
+        current_user["id"],
+        current_user["full_name"],
+        "create",
+        "user",
+        user.id,
+        f"Created user: {user.email} with role {user.role}"
+    )
+    
+    return UserResponse(**user.model_dump())
+
 @api_router.post("/auth/login", response_model=Token)
 async def login(credentials: UserLogin, user_agent: Optional[str] = Header(None), x_forwarded_for: Optional[str] = Header(None)):
     user = await db.users.find_one({"email": credentials.email}, {"_id": 0})
