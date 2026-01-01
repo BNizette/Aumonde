@@ -115,6 +115,7 @@ const ChecklistView = ({ tripId, checklistType, title, crewList = [], onMessage 
           section_name: section.section_name,
           items: section.items.map(item => ({
             item_id: item.item_id,
+            label: item.label,  // Include the label text
             checked: item.checked,
             remarks: item.remarks || ''
           }))
