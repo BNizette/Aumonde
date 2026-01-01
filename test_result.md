@@ -1065,3 +1065,28 @@ backend:
         agent: "main"
         comment: "Added 'Details' button to passenger rows in Trip Details that opens PassengerForm in edit mode to edit full passenger record from Passenger module."
 
+
+  - task: "Registration Restricted - First User Only"
+    implemented: true
+    working: pending
+    file: "server.py, Login.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "1) Backend: Added /auth/registration-allowed endpoint, modified /auth/register to only allow when no users exist and force Admin role. 2) Frontend: Login.jsx now checks if registration is allowed and only shows 'First-Time Setup' tab when no users exist, otherwise shows login only."
+
+  - task: "Welcome Email - Save and Send Button"
+    implemented: true
+    working: pending
+    file: "server.py, AdminPanel.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "1) Backend: Added /welcome-email-templates endpoints for CRUD, /users/send-welcome-email endpoint with role-based templates. Added default templates for all 7 roles. 2) Frontend: Added 'Create & Send Welcome Email' button in AdminPanel create user dialog. Uses existing SMTP configuration."
+
