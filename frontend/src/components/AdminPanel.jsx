@@ -232,6 +232,59 @@ const AdminPanel = () => {
     }
   };
 
+  // Welcome template handlers
+  const handleSelectTemplateRole = (role) => {
+    setSelectedTemplateRole(role);
+    const template = welcomeTemplates.find(t => t.role === role);
+    if (template) {
+      setTemplateSubject(template.subject);
+      setTemplateBody(template.body);
+    } else {
+      setTemplateSubject('');
+      setTemplateBody('');
+    }
+  };
+
+  const handleSaveTemplate = async () => {
+    if (!selectedTemplateRole || !templateSubject || !templateBody) {
+      setError('Please fill in all template fields');
+      return;
+    }
+    
+    setSavingTemplate(true);
+    try {
+      const token = localStorage.getItem('token');
+      
+      // Update the templates array
+      const updatedTemplates = welcomeTemplates.map(t => 
+        t.role === selectedTemplateRole 
+          ? { ...t, subject: templateSubject, body: templateBody }
+          : t
+      );
+      
+      // If role wasn't found, add it
+      if (!welcomeTemplates.find(t => t.role === selectedTemplateRole)) {
+        updatedTemplates.push({
+          role: selectedTemplateRole,
+          subject: templateSubject,
+          body: templateBody
+        });
+      }
+      
+      await axios.put(`${API}/welcome-email-templates`, updatedTemplates, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      setWelcomeTemplates(updatedTemplates);
+      setMessage('Welcome email template saved successfully');
+      setTimeout(() => setMessage(''), 3000);
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Failed to save template');
+    } finally {
+      setSavingTemplate(false);
+    }
+  };
+
   // Filter logic for Users
   const applyUserFilters = () => {
     let filtered = [...users];
