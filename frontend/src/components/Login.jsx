@@ -109,43 +109,158 @@ const Login = ({ onLoginSuccess }) => {
           <CardDescription>Vessel and Crew Safety System</CardDescription>
         </CardHeader>
         <CardContent>
-          <Tabs defaultValue="login" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="login">Login</TabsTrigger>
-              <TabsTrigger value="register">Register</TabsTrigger>
-            </TabsList>
+          {checkingRegistration ? (
+            <div className="text-center py-4">Loading...</div>
+          ) : registrationAllowed ? (
+            // Show tabs with register option for first-time setup
+            <Tabs defaultValue="register" className="w-full">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="login">Login</TabsTrigger>
+                <TabsTrigger value="register">
+                  <ShieldAlert className="h-4 w-4 mr-1" />
+                  First-Time Setup
+                </TabsTrigger>
+              </TabsList>
 
-            <TabsContent value="login">
-              <form onSubmit={handleLogin} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="login-email">Email</Label>
-                  <Input
-                    id="login-email"
-                    type="email"
-                    placeholder="your@email.com"
-                    value={loginData.email}
-                    onChange={(e) => setLoginData({ ...loginData, email: e.target.value })}
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="login-password">Password</Label>
-                  <Input
-                    id="login-password"
-                    type="password"
-                    placeholder="••••••••"
-                    value={loginData.password}
-                    onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
-                    required
-                  />
-                </div>
-                {error && (
-                  <Alert variant="destructive">
-                    <AlertDescription>{error}</AlertDescription>
-                  </Alert>
-                )}
-                <Button type="submit" className="w-full" disabled={loading}>
-                  {loading ? 'Logging in...' : 'Login'}
+              <TabsContent value="login">
+                <form onSubmit={handleLogin} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="login-email">Email</Label>
+                    <Input
+                      id="login-email"
+                      type="email"
+                      placeholder="your@email.com"
+                      value={loginData.email}
+                      onChange={(e) => setLoginData({ ...loginData, email: e.target.value })}
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="login-password">Password</Label>
+                    <Input
+                      id="login-password"
+                      type="password"
+                      placeholder="••••••••"
+                      value={loginData.password}
+                      onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
+                      required
+                    />
+                  </div>
+                  {error && (
+                    <Alert variant="destructive">
+                      <AlertDescription>{error}</AlertDescription>
+                    </Alert>
+                  )}
+                  <Button type="submit" className="w-full" disabled={loading}>
+                    {loading ? 'Logging in...' : 'Login'}
+                  </Button>
+                  <div className="text-center mt-4">
+                    <Button variant="link" className="text-sm text-blue-600 hover:text-blue-800" onClick={() => setForgotPasswordOpen(true)}>
+                      Forgot Password?
+                    </Button>
+                  </div>
+                </form>
+              </TabsContent>
+
+              <TabsContent value="register">
+                <Alert className="mb-4 bg-blue-50 border-blue-200">
+                  <ShieldAlert className="h-4 w-4 text-blue-600" />
+                  <AlertDescription className="text-blue-800">
+                    No users exist. Create the first administrator account to get started.
+                  </AlertDescription>
+                </Alert>
+                <form onSubmit={handleRegister} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="register-name">Full Name *</Label>
+                    <Input
+                      id="register-name"
+                      placeholder="Your full name"
+                      value={registerData.full_name}
+                      onChange={(e) => setRegisterData({ ...registerData, full_name: e.target.value })}
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="register-email">Email *</Label>
+                    <Input
+                      id="register-email"
+                      type="email"
+                      placeholder="admin@yourcompany.com"
+                      value={registerData.email}
+                      onChange={(e) => setRegisterData({ ...registerData, email: e.target.value })}
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="register-password">Password *</Label>
+                    <Input
+                      id="register-password"
+                      type="password"
+                      placeholder="Create a strong password"
+                      value={registerData.password}
+                      onChange={(e) => setRegisterData({ ...registerData, password: e.target.value })}
+                      required
+                    />
+                  </div>
+                  <div className="p-3 bg-gray-50 rounded-lg text-sm text-gray-600">
+                    <strong>Note:</strong> This account will be created with Administrator privileges with full system access.
+                  </div>
+                  {error && (
+                    <Alert variant="destructive">
+                      <AlertDescription>{error}</AlertDescription>
+                    </Alert>
+                  )}
+                  {success && (
+                    <Alert className="bg-green-50 border-green-200">
+                      <AlertDescription className="text-green-800">{success}</AlertDescription>
+                    </Alert>
+                  )}
+                  <Button type="submit" className="w-full" disabled={loading}>
+                    {loading ? 'Creating Admin Account...' : 'Create Administrator Account'}
+                  </Button>
+                </form>
+              </TabsContent>
+            </Tabs>
+          ) : (
+            // Login only mode (no registration when users exist)
+            <form onSubmit={handleLogin} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="login-email">Email</Label>
+                <Input
+                  id="login-email"
+                  type="email"
+                  placeholder="your@email.com"
+                  value={loginData.email}
+                  onChange={(e) => setLoginData({ ...loginData, email: e.target.value })}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="login-password">Password</Label>
+                <Input
+                  id="login-password"
+                  type="password"
+                  placeholder="••••••••"
+                  value={loginData.password}
+                  onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
+                  required
+                />
+              </div>
+              {error && (
+                <Alert variant="destructive">
+                  <AlertDescription>{error}</AlertDescription>
+                </Alert>
+              )}
+              <Button type="submit" className="w-full" disabled={loading}>
+                {loading ? 'Logging in...' : 'Login'}
+              </Button>
+              <div className="text-center mt-4">
+                <Button variant="link" className="text-sm text-blue-600 hover:text-blue-800" onClick={() => setForgotPasswordOpen(true)}>
+                  Forgot Password?
+                </Button>
+              </div>
+            </form>
+          )}
                 </Button>
                 <div className="text-center">
                   <button
