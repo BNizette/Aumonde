@@ -79,6 +79,7 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh, onEditCrew, onEditP
   const [selectedEngineLog, setSelectedEngineLog] = useState(null);
   const [selectedCrewMember, setSelectedCrewMember] = useState(null);
   const [allCrew, setAllCrew] = useState([]); // For checklist authorization
+  const [availableRoles, setAvailableRoles] = useState([]); // For add passenger with user
   
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
@@ -92,6 +93,8 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh, onEditCrew, onEditP
     }
     // Fetch all crew for checklist authorization dropdown
     fetchAllCrew();
+    // Fetch available roles for add passenger with user
+    fetchRoles();
   }, []);
 
   const fetchAllCrew = async () => {
@@ -101,6 +104,16 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh, onEditCrew, onEditP
       setAllCrew(response.data || []);
     } catch (err) {
       console.error('Error fetching crew list:', err);
+    }
+  };
+
+  const fetchRoles = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`${API}/roles`, { headers: { Authorization: `Bearer ${token}` } });
+      setAvailableRoles(response.data || []);
+    } catch (err) {
+      console.error('Error fetching roles:', err);
     }
   };
 
