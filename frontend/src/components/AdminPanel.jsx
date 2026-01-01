@@ -1874,21 +1874,6 @@ const AdminPanel = () => {
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="edit-access">Access Level (Legacy)</Label>
-                <Select value={editingUser.access_level} onValueChange={(value) => setEditingUser({ ...editingUser, access_level: value })}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="View">View (Read-only)</SelectItem>
-                    <SelectItem value="Edit">Edit (Modify)</SelectItem>
-                    <SelectItem value="Full">Full (Delete)</SelectItem>
-                    <SelectItem value="Admin">Admin (Full + Admin Fields)</SelectItem>
-                  </SelectContent>
-                </Select>
-                <p className="text-xs text-gray-500">Note: Role permissions will take precedence</p>
-              </div>
-              <div className="space-y-2">
                 <Label htmlFor="edit-status">Account Status</Label>
                 <Select value={editingUser.account_status} onValueChange={(value) => setEditingUser({ ...editingUser, account_status: value })}>
                   <SelectTrigger>
