@@ -1328,7 +1328,28 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh, onEditCrew, onEditP
                         <div key={passenger.id} className="p-3 border rounded-lg bg-gray-50 flex items-center justify-between">
                           <div>
                             <div className="flex items-center gap-2">
-                              <span className="font-medium">{passenger.name}</span>
+                              {passenger.passenger_id ? (
+                                <button
+                                  onClick={async () => {
+                                    try {
+                                      const token = localStorage.getItem('token');
+                                      const res = await axios.get(`${API}/passengers/${passenger.passenger_id}`, {
+                                        headers: { Authorization: `Bearer ${token}` }
+                                      });
+                                      setEditingFullPassenger(res.data);
+                                      setEditFullPassengerOpen(true);
+                                    } catch (err) {
+                                      setError('Error loading passenger details');
+                                      setTimeout(() => setError(''), 3000);
+                                    }
+                                  }}
+                                  className="font-medium text-blue-600 hover:text-blue-800 hover:underline"
+                                >
+                                  {passenger.name}
+                                </button>
+                              ) : (
+                                <span className="font-medium">{passenger.name}</span>
+                              )}
                               <span className={`px-2 py-0.5 rounded text-xs font-medium ${getStatusColor(passenger.status)}`}>
                                 {passenger.status}
                               </span>
@@ -1344,7 +1365,6 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh, onEditCrew, onEditP
                                 size="sm" 
                                 variant="outline" 
                                 onClick={async () => {
-                                  // Fetch full passenger record
                                   try {
                                     const token = localStorage.getItem('token');
                                     const res = await axios.get(`${API}/passengers/${passenger.passenger_id}`, {
