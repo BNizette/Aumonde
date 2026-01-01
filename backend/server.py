@@ -2241,6 +2241,20 @@ async def get_trips(vessel_id: Optional[str] = None, current_user: dict = Depend
     if vessel_id:
         query["vessel_id"] = vessel_id
     
+    # Check if user's role has attached_records_only restriction
+    role_settings = await get_user_role_settings(current_user)
+    if role_settings.get("attached_records_only"):
+        attached_trip_ids = await get_attached_trip_ids(current_user)
+        if attached_trip_ids:
+            if "id" in query:
+                # Combine with existing id filter
+                query["id"] = {"$in": attached_trip_ids}
+            else:
+                query["id"] = {"$in": attached_trip_ids}
+        else:
+            # User has no attached trips, return empty
+            return []
+    
     trips = await db.trips.find(query, {"_id": 0}).sort([("planned_depart_datetime", -1), ("depart_datetime", -1)]).to_list(1000)
     
     # Batch query optimization: Fetch all vessels at once
