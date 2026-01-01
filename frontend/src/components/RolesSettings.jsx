@@ -30,7 +30,7 @@ const MODULES = [
   { key: 'admin_panel', label: 'Admin Panel' },
 ];
 
-const ACCESS_LEVELS = ['View', 'Edit', 'Full', 'Admin'];
+const ACCESS_LEVELS = ['Hide', 'View', 'Edit', 'Full', 'Admin'];
 
 const RolesSettings = () => {
   const [roles, setRoles] = useState([]);
