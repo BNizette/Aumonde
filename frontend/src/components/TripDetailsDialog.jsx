@@ -52,6 +52,9 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh }) => {
   
   // PassengerForm dialog state (for creating new passengers)
   const [newPassengerFormOpen, setNewPassengerFormOpen] = useState(false);
+  // State for editing full passenger details from Passenger module
+  const [editFullPassengerOpen, setEditFullPassengerOpen] = useState(false);
+  const [editingFullPassenger, setEditingFullPassenger] = useState(null);
   
   // Expenditure (APA) form state
   const [expenditureDialogOpen, setExpenditureDialogOpen] = useState(false);
