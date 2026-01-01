@@ -16,6 +16,7 @@ import { useNavigate } from 'react-router-dom';
 import BackupManagement from './BackupManagement';
 import Settings from './Settings';
 import BrandingSettings from './BrandingSettings';
+import RolesSettings from './RolesSettings';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
