@@ -402,7 +402,7 @@ const AdminPanel = () => {
   const hasActiveAuditFilters = auditSearch || auditActionFilter !== 'all' || auditUserFilter !== 'all' || auditSort !== 'date';
   const hasActiveSessionFilters = sessionSearch || sessionUserFilter !== 'all' || sessionStatusFilter !== 'all' || sessionSort !== 'date';
 
-  const handleCreateUser = async () => {
+  const handleCreateUser = async (sendWelcomeEmail = false) => {
     if (!newUser.email || !newUser.password || !newUser.full_name) {
       setError('Please fill in all required fields');
       return;
@@ -422,20 +422,41 @@ const AdminPanel = () => {
         ...newUser,
         access_level: newUser.access_level === 'auto' ? '' : newUser.access_level
       };
-      await axios.post(`${API}/auth/register`, userData, {
+      const response = await axios.post(`${API}/users`, userData, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setMessage('User created successfully');
+      
+      const createdUser = response.data;
+      
+      // If sendWelcomeEmail is true, send the welcome email
+      if (sendWelcomeEmail) {
+        try {
+          await axios.post(`${API}/users/send-welcome-email`, {
+            user_id: createdUser.id,
+            password: newUser.password  // Include the password for the email
+          }, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          setMessage('User created and welcome email sent successfully');
+        } catch (emailErr) {
+          console.error('Email error:', emailErr);
+          setMessage('User created but failed to send welcome email: ' + (emailErr.response?.data?.detail || 'Email error'));
+        }
+      } else {
+        setMessage('User created successfully');
+      }
+      
       setCreateDialogOpen(false);
       setNewUser({
         email: '',
         password: '',
         full_name: '',
         role: 'Crew',
+        role_id: null,
         access_level: 'auto'
       });
       fetchData();
-      setTimeout(() => setMessage(''), 3000);
+      setTimeout(() => setMessage(''), 5000);
     } catch (err) {
       setError(err.response?.data?.detail || 'Error creating user');
     }
