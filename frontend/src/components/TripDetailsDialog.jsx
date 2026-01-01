@@ -2024,6 +2024,32 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh, onEditCrew, onEditP
               />
             </div>
             <div className="space-y-2">
+              <Label>Email</Label>
+              <Input
+                type="email"
+                value={passengerForm.email || ''}
+                onChange={(e) => setPassengerForm({...passengerForm, email: e.target.value})}
+                placeholder="passenger@example.com"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Role (for user account)</Label>
+              <Select 
+                value={passengerForm.role || ''} 
+                onValueChange={(value) => setPassengerForm({...passengerForm, role: value})}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select role if creating user account" />
+                </SelectTrigger>
+                <SelectContent className="z-[200]">
+                  {availableRoles.map((role) => (
+                    <SelectItem key={role.id} value={role.name}>{role.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-gray-500">Required only if creating a user account</p>
+            </div>
+            <div className="space-y-2">
               <Label>Status *</Label>
               <Select 
                 value={passengerForm.status} 
@@ -2049,11 +2075,20 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh, onEditCrew, onEditP
               />
             </div>
           </div>
-          <DialogFooter>
+          <DialogFooter className="flex-wrap gap-2">
             <Button variant="outline" onClick={() => setPassengerDialogOpen(false)}>Cancel</Button>
             <Button onClick={handleSavePassenger} disabled={!passengerForm.name}>
               {editingPassenger ? 'Update' : 'Add'} Passenger
             </Button>
+            {!editingPassenger && passengerForm.email && passengerForm.role && (
+              <Button 
+                onClick={handleSavePassengerAndCreateUser} 
+                disabled={!passengerForm.name || !passengerForm.email || !passengerForm.role}
+                className="bg-green-600 hover:bg-green-700"
+              >
+                Add & Email User
+              </Button>
+            )}
           </DialogFooter>
         </DialogContent>
       </Dialog>
