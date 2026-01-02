@@ -297,7 +297,7 @@ const CrewDetailsDialog = ({ open, onClose, crew, onMessage, onEditTrip, onViewT
                     {s.trip_id ? (
                       <button
                         className="text-blue-600 hover:text-blue-800 hover:underline cursor-pointer text-left"
-                        onClick={() => onEditTrip && onEditTrip({ id: s.trip_id, trip_name: s.trip_name })}
+                        onClick={() => onViewTripLog ? onViewTripLog({ id: s.trip_id, trip_name: s.trip_name, vessel_name: s.vessel_name }) : (onEditTrip && onEditTrip({ id: s.trip_id, trip_name: s.trip_name }))}
                       >
                         {s.trip_name || 'View Trip'}
                       </button>
