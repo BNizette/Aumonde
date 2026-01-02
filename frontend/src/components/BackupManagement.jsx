@@ -29,6 +29,10 @@ const BackupManagement = () => {
     cron_expression: '',
     retention_days: 30
   });
+  // Module selection for selective export
+  const [exportDialogOpen, setExportDialogOpen] = useState(false);
+  const [availableModules, setAvailableModules] = useState([]);
+  const [selectedModules, setSelectedModules] = useState([]);
 
   useEffect(() => {
     fetchData();
