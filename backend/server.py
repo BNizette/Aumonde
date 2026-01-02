@@ -2586,6 +2586,17 @@ async def get_trip_checklist(trip_id: str, checklist_type: str, current_user: di
     if checklist_type not in ["pre_departure", "safety_briefing"]:
         raise HTTPException(status_code=400, detail="Invalid checklist type. Use 'pre_departure' or 'safety_briefing'")
     
+    # Get the template for this checklist type
+    template = PRE_DEPARTURE_TEMPLATE if checklist_type == "pre_departure" else SAFETY_BRIEFING_TEMPLATE
+    
+    # Build a lookup map: section_id -> item_id -> label
+    template_labels = {}
+    for section in template["sections"]:
+        template_labels[section["section_id"]] = {
+            "section_name": section["section_name"],
+            "items": {item["item_id"]: item["label"] for item in section["items"]}
+        }
+    
     # Check if checklist exists
     checklist = await db.trip_checklists.find_one(
         {"trip_id": trip_id, "checklist_type": checklist_type},
@@ -2593,10 +2604,22 @@ async def get_trip_checklist(trip_id: str, checklist_type: str, current_user: di
     )
     
     if checklist:
+        # Merge labels from template if missing in saved data
+        for section in checklist.get("sections", []):
+            section_template = template_labels.get(section["section_id"], {})
+            # Restore section name if missing
+            if not section.get("section_name") and section_template.get("section_name"):
+                section["section_name"] = section_template["section_name"]
+            
+            item_labels = section_template.get("items", {})
+            for item in section.get("items", []):
+                # Restore item label if empty or missing
+                if not item.get("label") and item["item_id"] in item_labels:
+                    item["label"] = item_labels[item["item_id"]]
+        
         return checklist
     
     # Return template if no checklist exists
-    template = PRE_DEPARTURE_TEMPLATE if checklist_type == "pre_departure" else SAFETY_BRIEFING_TEMPLATE
     return {
         "id": "",
         "trip_id": trip_id,
