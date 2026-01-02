@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { FileSpreadsheet, ExternalLink } from 'lucide-react';
+import { FileSpreadsheet, ExternalLink, Plus } from 'lucide-react';
 import { exportMultiSheetExcel, formatDate, safeValue, safeArrayJoin } from '../utils/excelExport';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
