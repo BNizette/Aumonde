@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -11,9 +12,11 @@ import { SummaryCard } from '@/components/ui/summary-card';
 import { Label } from '@/components/ui/label';
 import PassengerForm from './PassengerForm';
 import TripForm from './TripForm';
+import TripDetailsDialog from './TripDetailsDialog';
 import axios from 'axios';
 
 const PassengerManagement = () => {
+  const navigate = useNavigate();
   const API = process.env.REACT_APP_BACKEND_URL + '/api';
   const [passengers, setPassengers] = useState([]);
   const [filteredPassengers, setFilteredPassengers] = useState([]);
