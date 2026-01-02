@@ -6377,12 +6377,19 @@ async def send_welcome_email(data: dict, current_user: dict = Depends(require_ac
         template = next((t for t in defaults if t["role"] == role), defaults[3])  # Default to Crew template
     
     try:
+        # Get site URL from branding settings or env var
+        branding = await db.branding.find_one({}, {"_id": 0, "site_url": 1})
+        site_url = branding.get("site_url") if branding and branding.get("site_url") else os.environ.get('FRONTEND_URL', 'https://your-app.com')
+        
         # Replace placeholders in template
         subject = template["subject"]
         body = template["body"].replace("{{full_name}}", user.get("full_name", "User"))
         body = body.replace("{{email}}", user.get("email", ""))
         body = body.replace("{{password}}", password or "[Contact administrator for password]")
         body = body.replace("{{role}}", role)
+        body = body.replace("{{site_url}}", site_url)
+        # Also replace the hardcoded URLs from old templates
+        body = body.replace(os.environ.get('FRONTEND_URL', ''), site_url)
         
         # Create message
         msg = MIMEMultipart()
