@@ -326,6 +326,14 @@ const CrewDetailsDialog = ({ open, onClose, crew, onMessage, onEditTrip, onViewT
               <p className="text-sm text-gray-500">
                 {drillRecords.length} drill record{drillRecords.length !== 1 ? 's' : ''} for this crew member
               </p>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => window.location.href = '/emergency?view=drills'}
+              >
+                <ExternalLink className="h-4 w-4 mr-1" />
+                Manage in Drills
+              </Button>
             </div>
             {drillRecords.length > 0 ? (
           <Table>
@@ -341,7 +349,18 @@ const CrewDetailsDialog = ({ open, onClose, crew, onMessage, onEditTrip, onViewT
             <TableBody>
               {drillRecords.map((r) => (
                 <TableRow key={r.id}>
-                  <TableCell className="font-medium">{r.drill_type || 'N/A'}</TableCell>
+                  <TableCell className="font-medium">
+                    {r.drill_id ? (
+                      <button
+                        className="text-blue-600 hover:text-blue-800 hover:underline cursor-pointer text-left"
+                        onClick={() => onViewDrill ? onViewDrill(r.drill_id) : window.location.href = `/emergency?view=drills&edit_id=${r.drill_id}`}
+                      >
+                        {r.drill_type || 'N/A'}
+                      </button>
+                    ) : (
+                      r.drill_type || 'N/A'
+                    )}
+                  </TableCell>
                   <TableCell>{new Date(r.record_date).toLocaleString()}</TableCell>
                   <TableCell><Badge variant={r.status === 'Pass' ? 'default' : 'destructive'}>{r.status}</Badge></TableCell>
                   <TableCell>{r.authorized_by}</TableCell>
