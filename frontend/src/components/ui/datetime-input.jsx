@@ -28,21 +28,22 @@ const DateTimeInput = ({
   };
 
   return (
-    <div className={`flex gap-2 ${className}`}>
+    <div className={`flex items-center gap-1 ${className}`}>
       <Input
         id={id}
         type="datetime-local"
         value={value || ''}
         onChange={(e) => onChange(e.target.value)}
-        className="flex-1"
+        className="flex-1 min-w-0"
       />
       {showNowButton && (
         <Button 
           type="button" 
           variant="outline" 
-          size="icon"
+          size="sm"
           onClick={setToNow}
           title="Set to current date and time"
+          className="px-2 h-9 flex-shrink-0"
         >
           <Clock className="h-4 w-4" />
         </Button>
