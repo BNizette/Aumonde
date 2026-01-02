@@ -34,6 +34,7 @@ const API = `${BACKEND_URL}/api`;
 
 const CrewManagement = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [crewList, setCrewList] = useState([]);
   const [filteredCrew, setFilteredCrew] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -58,6 +59,10 @@ const CrewManagement = () => {
   // Trip editing state
   const [tripFormOpen, setTripFormOpen] = useState(false);
   const [selectedTrip, setSelectedTrip] = useState(null);
+  
+  // Trip details (log view) state
+  const [tripDetailsOpen, setTripDetailsOpen] = useState(false);
+  const [selectedTripForDetails, setSelectedTripForDetails] = useState(null);
 
   // Use custom hook for advanced filtering
   const {
