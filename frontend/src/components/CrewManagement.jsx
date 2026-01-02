@@ -780,6 +780,29 @@ const CrewManagement = () => {
         crew={viewingCrew}
         onMessage={(msg) => { setMessage(msg); setTimeout(() => setMessage(""), 3000); }}
         onEditTrip={handleEditTrip}
+        onViewTripLog={(trip) => {
+          setSelectedTripForDetails(trip);
+          setTripDetailsOpen(true);
+        }}
+        onViewDrill={(drillId) => navigate(`/emergency?view=drills&edit_id=${drillId}`)}
+        onEditCrewTraining={(crewId, section) => {
+          setViewDialogOpen(false);
+          navigate(`/crew?edit_id=${crewId}&section=${section}`);
+        }}
+      />
+
+      {/* Trip Details/Log Dialog */}
+      <TripDetailsDialog
+        open={tripDetailsOpen}
+        onClose={() => {
+          setTripDetailsOpen(false);
+          setSelectedTripForDetails(null);
+        }}
+        trip={selectedTripForDetails}
+        onRefresh={() => {}}
+        onEditCrew={(crewId) => navigate(`/crew?edit_id=${crewId}`)}
+        onEditPassenger={(passengerId) => navigate(`/passengers?edit_id=${passengerId}`)}
+        onViewIncident={(incidentId) => navigate(`/incidents?edit_id=${incidentId}`)}
       />
 
       {/* Trip Edit Dialog */}
