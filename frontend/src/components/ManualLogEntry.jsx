@@ -265,10 +265,10 @@ const ManualLogEntry = ({ open, onClose, type = 'running' }) => {
 
               <div className="space-y-2">
                 <Label>Date & Time *</Label>
-                <Input
-                  type="datetime-local"
+                <DateTimeInput
+                  id="log_datetime"
                   value={formData.log_datetime}
-                  onChange={(e) => handleChange('log_datetime', e.target.value)}
+                  onChange={(value) => handleChange('log_datetime', value)}
                 />
               </div>
 
