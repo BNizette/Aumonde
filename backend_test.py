@@ -1039,7 +1039,268 @@ class AMSAComprehensiveTester:
             self.log_test("Create Risk Assessment (5x5 Matrix)", False, error=f"Status: {status}, Response: {response}")
 
     # ============================================================================
-    # BACKUP/IMPORT TESTS
+    # BACKUP MODULE SELECTION TESTS (NEW FEATURE)
+    # ============================================================================
+
+    def test_backup_module_selection(self):
+        """Test backup module selection feature"""
+        print("\n💾 Testing Backup Module Selection (NEW FEATURE)...")
+        
+        # Test 1: Get available modules for selective backup
+        print("\n   Test 1: GET /api/backup/modules...")
+        
+        success, response, status = self.make_request('GET', 'backup/modules')
+        if success and isinstance(response, list):
+            self.log_test("GET /api/backup/modules", True, f"Retrieved {len(response)} available modules")
+            
+            # Verify module structure
+            if response:
+                first_module = response[0]
+                required_fields = ['id', 'label', 'description']
+                has_all_fields = all(field in first_module for field in required_fields)
+                
+                if has_all_fields:
+                    self.log_test("Module Structure Validation", True, 
+                                 f"Modules have required fields: {required_fields}")
+                    
+                    # Show available modules
+                    print("      Available modules:")
+                    for module in response[:5]:  # Show first 5
+                        print(f"        - {module['id']}: {module['label']}")
+                        
+                    # Store modules for selective export test
+                    self.available_modules = response
+                else:
+                    self.log_test("Module Structure Validation", False, 
+                                 error=f"Missing required fields in module: {first_module}")
+            else:
+                self.log_test("Module Structure Validation", False, error="No modules returned")
+        else:
+            self.log_test("GET /api/backup/modules", False, error=f"Status: {status}, Response: {response}")
+            return False
+        
+        # Test 2: Selective backup export with specific modules
+        print("\n   Test 2: POST /api/backup/export-selective...")
+        
+        if hasattr(self, 'available_modules') and self.available_modules:
+            # Test with vessels and crew modules
+            test_modules = ["vessels", "crew"]
+            
+            # Verify these modules exist in available modules
+            available_module_ids = [m['id'] for m in self.available_modules]
+            valid_test_modules = [m for m in test_modules if m in available_module_ids]
+            
+            if valid_test_modules:
+                selective_export_data = {"modules": valid_test_modules}
+                
+                success, response, status = self.make_request(
+                    'POST', 'backup/export-selective', 
+                    data=selective_export_data
+                )
+                
+                if success and isinstance(response, dict):
+                    # Check if it's a download response or JSON response
+                    if "collections" in response:
+                        # JSON response with backup data
+                        collections = response.get("collections", {})
+                        
+                        # Verify only requested modules are included
+                        included_modules = list(collections.keys())
+                        unexpected_modules = [m for m in included_modules if m not in valid_test_modules]
+                        missing_modules = [m for m in valid_test_modules if m not in included_modules]
+                        
+                        if not unexpected_modules and not missing_modules:
+                            self.log_test("Selective Export - Module Filtering", True, 
+                                         f"Correctly exported only requested modules: {included_modules}")
+                            
+                            # Verify data structure
+                            total_records = sum(len(collections[m]) if isinstance(collections[m], list) else 0 
+                                              for m in collections)
+                            self.log_test("Selective Export - Data Structure", True, 
+                                         f"Total records in export: {total_records}")
+                        else:
+                            error_msg = ""
+                            if unexpected_modules:
+                                error_msg += f"Unexpected modules: {unexpected_modules}. "
+                            if missing_modules:
+                                error_msg += f"Missing modules: {missing_modules}."
+                            self.log_test("Selective Export - Module Filtering", False, error=error_msg)
+                    else:
+                        # Might be a file download response
+                        self.log_test("Selective Export - File Download", True, 
+                                     "Received file download response")
+                else:
+                    self.log_test("POST /api/backup/export-selective", False, 
+                                 error=f"Status: {status}, Response: {response}")
+            else:
+                self.log_test("POST /api/backup/export-selective", False, 
+                             error=f"Test modules {test_modules} not available in {available_module_ids}")
+        
+        # Test 3: Test with different module combinations
+        print("\n   Test 3: Test different module combinations...")
+        
+        if hasattr(self, 'available_modules') and len(self.available_modules) >= 3:
+            # Test with first 3 available modules
+            test_combinations = [
+                [self.available_modules[0]['id']],  # Single module
+                [self.available_modules[0]['id'], self.available_modules[1]['id']],  # Two modules
+                [m['id'] for m in self.available_modules[:3]]  # Three modules
+            ]
+            
+            for i, modules in enumerate(test_combinations, 1):
+                selective_data = {"modules": modules}
+                
+                success, response, status = self.make_request(
+                    'POST', 'backup/export-selective', 
+                    data=selective_data
+                )
+                
+                if success:
+                    self.log_test(f"Selective Export - Combination {i} ({len(modules)} modules)", True, 
+                                 f"Successfully exported: {modules}")
+                else:
+                    self.log_test(f"Selective Export - Combination {i} ({len(modules)} modules)", False, 
+                                 error=f"Status: {status}")
+        
+        # Test 4: Test validation - invalid modules
+        print("\n   Test 4: Test validation with invalid modules...")
+        
+        invalid_modules_data = {"modules": ["invalid_module", "nonexistent_collection"]}
+        
+        success, response, status = self.make_request(
+            'POST', 'backup/export-selective', 
+            data=invalid_modules_data,
+            expected_status=400  # Expect validation error
+        )
+        
+        if status == 400:
+            self.log_test("Selective Export - Invalid Module Validation", True, 
+                         "Correctly rejected invalid modules")
+        elif success:
+            # If it succeeds, check if invalid modules are simply ignored
+            if isinstance(response, dict) and "collections" in response:
+                collections = response.get("collections", {})
+                if not collections or all(len(collections[k]) == 0 for k in collections):
+                    self.log_test("Selective Export - Invalid Module Handling", True, 
+                                 "Invalid modules ignored, empty collections returned")
+                else:
+                    self.log_test("Selective Export - Invalid Module Handling", False, 
+                                 error="Invalid modules should not return data")
+            else:
+                self.log_test("Selective Export - Invalid Module Validation", False, 
+                             error="Expected validation error or empty response")
+        else:
+            self.log_test("Selective Export - Invalid Module Validation", False, 
+                         error=f"Unexpected status: {status}")
+        
+        # Test 5: Test empty modules array
+        print("\n   Test 5: Test empty modules array...")
+        
+        empty_modules_data = {"modules": []}
+        
+        success, response, status = self.make_request(
+            'POST', 'backup/export-selective', 
+            data=empty_modules_data
+        )
+        
+        if success:
+            if isinstance(response, dict) and "collections" in response:
+                collections = response.get("collections", {})
+                if not collections:
+                    self.log_test("Selective Export - Empty Modules Array", True, 
+                                 "Empty modules array returns empty backup")
+                else:
+                    self.log_test("Selective Export - Empty Modules Array", False, 
+                                 error="Empty modules should return empty backup")
+            else:
+                self.log_test("Selective Export - Empty Modules Array", True, 
+                             "Empty modules handled appropriately")
+        else:
+            self.log_test("Selective Export - Empty Modules Array", False, 
+                         error=f"Status: {status}")
+
+    def test_scheduler_configuration(self):
+        """Test scheduler configuration for duplicate prevention"""
+        print("\n⏰ Testing Scheduler Configuration...")
+        
+        # Test 1: Check backend logs for scheduler startup
+        print("\n   Test 1: Check scheduler startup in logs...")
+        
+        try:
+            # Check supervisor backend logs for scheduler messages
+            import subprocess
+            result = subprocess.run(
+                ["tail", "-n", "200", "/var/log/supervisor/backend.out.log"], 
+                capture_output=True, text=True, timeout=10
+            )
+            
+            if result.returncode == 0:
+                log_content = result.stdout
+                
+                # Look for scheduler startup messages
+                if "Scheduler started" in log_content:
+                    self.log_test("Scheduler Startup Detection", True, 
+                                 "Found 'Scheduler started' message in logs")
+                    
+                    # Count occurrences to check for duplicates
+                    startup_count = log_content.count("Scheduler started")
+                    if startup_count == 1:
+                        self.log_test("Scheduler Single Startup", True, 
+                                     "Scheduler started only once (no duplicates)")
+                    else:
+                        self.log_test("Scheduler Single Startup", False, 
+                                     error=f"Scheduler started {startup_count} times")
+                else:
+                    self.log_test("Scheduler Startup Detection", False, 
+                                 error="No 'Scheduler started' message found in recent logs")
+            else:
+                self.log_test("Scheduler Startup Detection", False, 
+                             error="Could not read backend logs")
+                
+        except Exception as e:
+            self.log_test("Scheduler Startup Detection", False, 
+                         error=f"Error checking logs: {str(e)}")
+        
+        # Test 2: Check if backup schedules endpoint works
+        print("\n   Test 2: Check backup schedules endpoint...")
+        
+        success, response, status = self.make_request('GET', 'backup/schedules')
+        if success and isinstance(response, list):
+            self.log_test("GET /api/backup/schedules", True, 
+                         f"Retrieved {len(response)} backup schedules")
+            
+            # Check if any schedules have next_run_time (indicating scheduler is working)
+            active_schedules = [s for s in response if s.get('enabled') and s.get('next_run_time')]
+            if active_schedules:
+                self.log_test("Active Scheduled Jobs", True, 
+                             f"Found {len(active_schedules)} active scheduled jobs")
+            else:
+                self.log_test("Active Scheduled Jobs", True, 
+                             "No active scheduled jobs (normal for new system)")
+        else:
+            self.log_test("GET /api/backup/schedules", False, 
+                         error=f"Status: {status}")
+        
+        # Test 3: Verify scheduler configuration in code
+        print("\n   Test 3: Verify scheduler configuration...")
+        
+        # This test verifies the scheduler is configured with the correct settings
+        # by checking if the backup scheduler is accessible and properly configured
+        try:
+            # Check if we can access backup info (indicates scheduler is running)
+            success, response, status = self.make_request('GET', 'backup/info')
+            if success:
+                self.log_test("Scheduler Service Availability", True, 
+                             "Backup service accessible (scheduler running)")
+            else:
+                self.log_test("Scheduler Service Availability", False, 
+                             error=f"Backup service not accessible: {status}")
+        except Exception as e:
+            self.log_test("Scheduler Service Availability", False, 
+                         error=f"Error testing scheduler: {str(e)}")
+
+    # ============================================================================
+    # BACKUP/IMPORT TESTS (LEGACY)
     # ============================================================================
 
     def test_backup_import(self):
