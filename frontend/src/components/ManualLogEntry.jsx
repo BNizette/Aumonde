@@ -164,8 +164,8 @@ const ManualLogEntry = ({ open, onClose, type = 'running' }) => {
         const logData = {
           crew_id: formData.crew_id,
           crew_name: formData.crew_name,
-          shift_start_datetime: formData.shift_start_datetime,
-          shift_stop_datetime: formData.shift_stop_datetime || null,
+          shift_start_datetime: new Date(formData.shift_start_datetime).toISOString(),
+          shift_stop_datetime: formData.shift_stop_datetime ? new Date(formData.shift_stop_datetime).toISOString() : null,
           task_performed: formData.task_performed || null,
           location_start: formData.location_start || null,
           location_end: formData.location_end || null,
