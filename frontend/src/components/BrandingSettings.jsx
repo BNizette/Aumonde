@@ -375,6 +375,36 @@ const BrandingSettings = () => {
           </div>
         </div>
 
+        {/* Live Site URL */}
+        <div className="border rounded-lg p-4 space-y-4 border-blue-200 bg-blue-50">
+          <div>
+            <Label className="text-base font-semibold">Live Site URL</Label>
+            <p className="text-sm text-gray-600 mt-1">
+              This URL is used in password reset and welcome emails. Set this to your production/live URL when deployed.
+            </p>
+          </div>
+          
+          <div className="flex items-center gap-2">
+            <Input
+              type="url"
+              placeholder="https://your-live-site.com"
+              value={branding.site_url || ''}
+              onChange={(e) => setBranding(prev => ({ ...prev, site_url: e.target.value }))}
+              className="flex-1 bg-white"
+            />
+            <Button 
+              onClick={handleSaveSiteUrl}
+              disabled={saving}
+            >
+              {saving ? 'Saving...' : 'Save URL'}
+            </Button>
+          </div>
+          
+          <p className="text-xs text-gray-500">
+            <strong>Important:</strong> Without this setting, emails will use the preview URL. Make sure to enter the full URL including https://
+          </p>
+        </div>
+
         <div className="text-xs text-gray-500">
           <p><strong>Note:</strong> Changes to the favicon may require a browser refresh to take effect. The logo will be applied to the application header once uploaded.</p>
         </div>
