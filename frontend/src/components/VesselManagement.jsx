@@ -31,6 +31,7 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
 const VesselManagement = () => {
+  const navigate = useNavigate();
   const [vessels, setVessels] = useState([]);
   const [filteredVessels, setFilteredVessels] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -56,6 +57,10 @@ const VesselManagement = () => {
   const [tripFormOpen, setTripFormOpen] = useState(false);
   const [selectedTrip, setSelectedTrip] = useState(null);
   const [allVessels, setAllVessels] = useState([]);
+  
+  // Trip details (log view) state  
+  const [tripDetailsOpen, setTripDetailsOpen] = useState(false);
+  const [selectedTripForDetails, setSelectedTripForDetails] = useState(null);
 
   // Use custom hook for advanced filtering
   const {
