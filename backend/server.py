@@ -6038,12 +6038,13 @@ class BrandingSettings(BaseModel):
     favicon_url: Optional[str] = None
     logo_url: Optional[str] = None
     app_name: Optional[str] = "AMSA Safety Management"
+    site_url: Optional[str] = None  # Live site URL for emails (e.g., https://your-live-site.com)
 
 @api_router.get("/branding")
 async def get_branding():
     """Get branding settings (public endpoint for favicon/logo)"""
     branding = await db.branding.find_one({}, {"_id": 0})
-    return branding or {"favicon_url": None, "logo_url": None, "app_name": "AMSA Safety Management"}
+    return branding or {"favicon_url": None, "logo_url": None, "app_name": "AMSA Safety Management", "site_url": None}
 
 @api_router.post("/branding")
 async def save_branding(settings: BrandingSettings, current_user: dict = Depends(require_access_level(AccessLevel.FULL))):
