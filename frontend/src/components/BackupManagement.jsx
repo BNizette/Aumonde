@@ -486,7 +486,7 @@ const BackupManagement = () => {
                   {loading ? 'Creating Backup...' : 'Create Backup Now'}
                 </Button>
                 <Button 
-                  onClick={handleDownloadViaExport}
+                  onClick={handleOpenExportDialog}
                   disabled={loading}
                   variant="outline"
                   className="w-full"
