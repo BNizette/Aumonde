@@ -795,6 +795,14 @@ const VesselDetailsDialog = ({
               <p className="text-sm text-gray-500">
                 {incidents.length} incident{incidents.length !== 1 ? 's' : ''} for this vessel
               </p>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => onNavigateToModule ? onNavigateToModule('/incidents') : window.location.href = '/incidents'}
+              >
+                <ExternalLink className="h-4 w-4 mr-1" />
+                Manage in Incidents
+              </Button>
             </div>
             {incidents.length > 0 ? (
           <Table>
