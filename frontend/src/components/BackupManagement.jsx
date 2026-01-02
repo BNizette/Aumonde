@@ -158,6 +158,83 @@ const BackupManagement = () => {
     }
   };
 
+  const handleOpenExportDialog = () => {
+    setSelectedModules([]);
+    setExportDialogOpen(true);
+  };
+
+  const handleToggleModule = (moduleId) => {
+    setSelectedModules(prev => 
+      prev.includes(moduleId) 
+        ? prev.filter(m => m !== moduleId)
+        : [...prev, moduleId]
+    );
+  };
+
+  const handleSelectAllModules = () => {
+    if (selectedModules.length === availableModules.length) {
+      setSelectedModules([]);
+    } else {
+      setSelectedModules(availableModules.map(m => m.id));
+    }
+  };
+
+  const handleSelectiveExport = async () => {
+    if (selectedModules.length === 0) {
+      setError('Please select at least one module to export');
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+    
+    try {
+      const token = localStorage.getItem('token');
+      
+      const response = await fetch(`${API}/backup/export-selective`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ modules: selectedModules })
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      // Get blob
+      const blob = await response.blob();
+      
+      // Create download
+      const url = window.URL.createObjectURL(blob);
+      const timestamp = new Date().toISOString().split('T')[0].replace(/-/g, '');
+      const moduleList = selectedModules.slice(0, 3).join('_');
+      const filename = `amsa_backup_${moduleList}${selectedModules.length > 3 ? '_etc' : ''}_${timestamp}.json`;
+      
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      window.URL.revokeObjectURL(url);
+      
+      setMessage(`✅ Backup exported: ${filename}`);
+      setExportDialogOpen(false);
+      setTimeout(() => setMessage(''), 3000);
+    } catch (err) {
+      console.error('Export error:', err);
+      setError('Export failed. Please check console or try again.');
+      setTimeout(() => setError(''), 5000);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleDownloadViaExport = async () => {
     setLoading(true);
     setError('');
