@@ -312,19 +312,19 @@ const ManualLogEntry = ({ open, onClose, type = 'running' }) => {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Shift Start *</Label>
-                  <Input
-                    type="datetime-local"
+                  <DateTimeInput
+                    id="shift_start_datetime"
                     value={formData.shift_start_datetime}
-                    onChange={(e) => handleChange('shift_start_datetime', e.target.value)}
+                    onChange={(value) => handleChange('shift_start_datetime', value)}
                   />
                 </div>
 
                 <div className="space-y-2">
                   <Label>Shift End</Label>
-                  <Input
-                    type="datetime-local"
+                  <DateTimeInput
+                    id="shift_stop_datetime"
                     value={formData.shift_stop_datetime}
-                    onChange={(e) => handleChange('shift_stop_datetime', e.target.value)}
+                    onChange={(value) => handleChange('shift_stop_datetime', value)}
                   />
                 </div>
               </div>
