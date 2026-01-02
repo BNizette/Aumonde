@@ -36,7 +36,20 @@ const BackupManagement = () => {
 
   useEffect(() => {
     fetchData();
+    fetchModules();
   }, []);
+
+  const fetchModules = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`${API}/backup/modules`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setAvailableModules(response.data.modules || []);
+    } catch (err) {
+      console.error('Error fetching backup modules:', err);
+    }
+  };
 
   const fetchData = async () => {
     try {
