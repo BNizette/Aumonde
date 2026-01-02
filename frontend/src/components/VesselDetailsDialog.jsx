@@ -124,6 +124,12 @@ const VesselDetailsDialog = ({
       } else {
         setPassengers([]);
       }
+      
+      // Fetch documents - vessel-specific and global
+      const docsRes = await axios.get(`${API}/documents`, { headers }).catch(() => ({ data: [] }));
+      const allDocs = docsRes.data || [];
+      setVesselDocuments(allDocs.filter(d => d.vessel_id === vesselId));
+      setGlobalDocuments(allDocs.filter(d => !d.vessel_id || d.vessel_id === null || d.vessel_id === ''));
     } catch (err) {
       console.error('Error fetching vessel data:', err);
     } finally {
