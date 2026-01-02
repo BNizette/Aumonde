@@ -1397,7 +1397,7 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh, onEditCrew, onEditP
                         <Button size="sm" onClick={() => setNewPassengerFormOpen(true)}>
                           <Plus className="h-4 w-4 mr-1" />
                           Add New
-                        </Button>
+                        <Button>
                       )}
                     </div>
                   </div>
@@ -1413,21 +1413,9 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh, onEditCrew, onEditP
                         <div key={passenger.id} className="p-3 border rounded-lg bg-gray-50 flex items-center justify-between">
                           <div>
                             <div className="flex items-center gap-2">
-                              {passenger.passenger_id ? (
+                              {onEditPassenger && passenger.passenger_id ? (
                                 <button
-                                  onClick={async () => {
-                                    try {
-                                      const token = localStorage.getItem('token');
-                                      const res = await axios.get(`${API}/passengers/${passenger.passenger_id}`, {
-                                        headers: { Authorization: `Bearer ${token}` }
-                                      });
-                                      setEditingFullPassenger(res.data);
-                                      setEditFullPassengerOpen(true);
-                                    } catch (err) {
-                                      setError('Error loading passenger details');
-                                      setTimeout(() => setError(''), 3000);
-                                    }
-                                  }}
+                                  onClick={() => onEditPassenger(passenger.passenger_id)}
                                   className="font-medium text-blue-600 hover:text-blue-800 hover:underline"
                                 >
                                   {passenger.name}
