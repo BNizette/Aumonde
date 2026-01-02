@@ -350,6 +350,14 @@ const VesselDetailsDialog = ({
               <p className="text-sm text-gray-500">
                 {trips.length} trip{trips.length !== 1 ? 's' : ''} for this vessel
               </p>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => onAddTrip ? onAddTrip(vessel) : window.location.href = `/trips?add=true&vessel_id=${vessel.id}`}
+              >
+                <Plus className="h-4 w-4 mr-1" />
+                Add Trip
+              </Button>
             </div>
             {trips.length > 0 ? (
           <Table>
@@ -381,7 +389,7 @@ const VesselDetailsDialog = ({
                     <TableCell className="font-medium">
                       <button
                         className="text-blue-600 hover:text-blue-800 hover:underline cursor-pointer text-left"
-                        onClick={() => onEditTrip && onEditTrip(trip)}
+                        onClick={() => onViewTripLog ? onViewTripLog(trip) : (onEditTrip && onEditTrip(trip))}
                       >
                         {trip.trip_name || '-'}
                       </button>
