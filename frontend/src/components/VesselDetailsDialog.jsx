@@ -1117,6 +1117,110 @@ const VesselDetailsDialog = ({
           </div>
         );
 
+      case 'vessel_documents':
+        return (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <p className="text-sm text-gray-500">
+                {vesselDocuments.length} document{vesselDocuments.length !== 1 ? 's' : ''} for this vessel
+              </p>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => onNavigateToModule ? onNavigateToModule('/documents') : window.location.href = '/documents'}
+              >
+                <ExternalLink className="h-4 w-4 mr-1" />
+                Manage in Documents
+              </Button>
+            </div>
+            {vesselDocuments.length > 0 ? (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Document Title</TableHead>
+                    <TableHead>Type</TableHead>
+                    <TableHead>Category</TableHead>
+                    <TableHead>Version</TableHead>
+                    <TableHead>Issue Date</TableHead>
+                    <TableHead>Review Date</TableHead>
+                    <TableHead>Status</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {vesselDocuments.map(doc => (
+                    <TableRow key={doc.id}>
+                      <TableCell className="font-medium">{doc.title || '-'}</TableCell>
+                      <TableCell><Badge variant="outline">{doc.document_type || '-'}</Badge></TableCell>
+                      <TableCell>{doc.category || '-'}</TableCell>
+                      <TableCell>{doc.version || '-'}</TableCell>
+                      <TableCell>{doc.issue_date ? formatDate(doc.issue_date) : '-'}</TableCell>
+                      <TableCell>{doc.review_date ? formatDate(doc.review_date) : '-'}</TableCell>
+                      <TableCell><Badge variant={doc.status === 'Current' ? 'default' : 'secondary'}>{doc.status || '-'}</Badge></TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            ) : (
+              <div className="text-center py-8 text-gray-500">
+                <p>No documents for this vessel.</p>
+                <p className="text-xs mt-1">Add documents from the Documents module</p>
+              </div>
+            )}
+          </div>
+        );
+
+      case 'global_documents':
+        return (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <p className="text-sm text-gray-500">
+                {globalDocuments.length} global document{globalDocuments.length !== 1 ? 's' : ''} (applicable to all vessels)
+              </p>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => onNavigateToModule ? onNavigateToModule('/documents') : window.location.href = '/documents'}
+              >
+                <ExternalLink className="h-4 w-4 mr-1" />
+                Manage in Documents
+              </Button>
+            </div>
+            {globalDocuments.length > 0 ? (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Document Title</TableHead>
+                    <TableHead>Type</TableHead>
+                    <TableHead>Category</TableHead>
+                    <TableHead>Version</TableHead>
+                    <TableHead>Issue Date</TableHead>
+                    <TableHead>Review Date</TableHead>
+                    <TableHead>Status</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {globalDocuments.map(doc => (
+                    <TableRow key={doc.id}>
+                      <TableCell className="font-medium">{doc.title || '-'}</TableCell>
+                      <TableCell><Badge variant="outline">{doc.document_type || '-'}</Badge></TableCell>
+                      <TableCell>{doc.category || '-'}</TableCell>
+                      <TableCell>{doc.version || '-'}</TableCell>
+                      <TableCell>{doc.issue_date ? formatDate(doc.issue_date) : '-'}</TableCell>
+                      <TableCell>{doc.review_date ? formatDate(doc.review_date) : '-'}</TableCell>
+                      <TableCell><Badge variant={doc.status === 'Current' ? 'default' : 'secondary'}>{doc.status || '-'}</Badge></TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            ) : (
+              <div className="text-center py-8 text-gray-500">
+                <p>No global documents found.</p>
+                <p className="text-xs mt-1">Add documents from the Documents module</p>
+              </div>
+            )}
+          </div>
+        );
+
       default:
         return null;
     }
