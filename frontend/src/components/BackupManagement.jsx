@@ -801,6 +801,70 @@ const BackupManagement = () => {
           </ul>
         </CardContent>
       </Card>
+
+      {/* Export Module Selection Dialog */}
+      <Dialog open={exportDialogOpen} onOpenChange={setExportDialogOpen}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Select Modules to Export</DialogTitle>
+            <DialogDescription>
+              Choose which data modules you want to include in your backup export.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4 space-y-4">
+            {/* Select All Toggle */}
+            <div className="flex items-center justify-between border-b pb-3">
+              <Label className="font-medium">Select All Modules</Label>
+              <Switch
+                checked={selectedModules.length === availableModules.length && availableModules.length > 0}
+                onCheckedChange={handleSelectAllModules}
+              />
+            </div>
+            
+            {/* Module List */}
+            <div className="space-y-3 max-h-[300px] overflow-y-auto">
+              {availableModules.map((module) => (
+                <div 
+                  key={module.id} 
+                  className={`flex items-center justify-between p-3 rounded-lg border cursor-pointer transition-colors ${
+                    selectedModules.includes(module.id) 
+                      ? 'bg-blue-50 border-blue-200' 
+                      : 'hover:bg-gray-50'
+                  }`}
+                  onClick={() => handleToggleModule(module.id)}
+                >
+                  <div>
+                    <p className="font-medium">{module.label}</p>
+                    <p className="text-sm text-gray-500">{module.description}</p>
+                  </div>
+                  <Switch
+                    checked={selectedModules.includes(module.id)}
+                    onCheckedChange={() => handleToggleModule(module.id)}
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                </div>
+              ))}
+            </div>
+            
+            {selectedModules.length > 0 && (
+              <p className="text-sm text-blue-600">
+                {selectedModules.length} module{selectedModules.length > 1 ? 's' : ''} selected for export
+              </p>
+            )}
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setExportDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleSelectiveExport} 
+              disabled={loading || selectedModules.length === 0}
+            >
+              {loading ? 'Exporting...' : `Export ${selectedModules.length > 0 ? `(${selectedModules.length})` : ''}`}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
