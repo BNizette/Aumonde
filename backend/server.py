@@ -4465,6 +4465,105 @@ async def get_ai_suggestions(current_user: dict = Depends(get_current_user)):
 # BACKUP & RESTORE ENDPOINTS
 # ============================================================================
 
+# Module to collection mapping for selective exports
+MODULE_COLLECTIONS = {
+    "vessels": ["vessels"],
+    "crew": ["crew"],
+    "passengers": ["trip_passengers"],
+    "trips": ["trips", "allocated_crew", "trip_logs", "running_logs", "engine_running_logs", "trip_passengers"],
+    "documents": ["documents"],
+    "risk_assessment": ["risk_assessments"],
+    "maintenance": ["maintenance"],
+    "incidents": ["incidents"],
+    "emergency": ["emergency_contacts", "emergency_procedures", "emergency_drills"],
+    "compliance": ["compliance_certificates", "compliance_requirements"],
+    "users": ["users"],
+    "logs": ["activity_logs", "audit_logs", "sessions"],
+    "settings": ["settings", "branding", "roles", "backup_schedules", "sms_revisions"]
+}
+
+@api_router.get("/backup/modules")
+async def get_backup_modules(current_user: dict = Depends(get_current_user)):
+    """Get list of available modules for selective backup"""
+    if current_user.get("access_level") != AccessLevel.FULL:
+        raise HTTPException(status_code=403, detail="Only users with Full access can view backup options")
+    
+    return {
+        "modules": [
+            {"id": "vessels", "label": "Vessels", "description": "Vessel records"},
+            {"id": "crew", "label": "Crew", "description": "Crew member records"},
+            {"id": "passengers", "label": "Passengers", "description": "Passenger records"},
+            {"id": "trips", "label": "Trips", "description": "Trips, crew allocations, logs, and passengers"},
+            {"id": "documents", "label": "Documents", "description": "Document records"},
+            {"id": "risk_assessment", "label": "Risk Assessment", "description": "Risk assessments"},
+            {"id": "maintenance", "label": "Maintenance", "description": "Maintenance records"},
+            {"id": "incidents", "label": "Incidents", "description": "Incident reports"},
+            {"id": "emergency", "label": "Emergency", "description": "Emergency contacts, procedures, and drills"},
+            {"id": "compliance", "label": "Compliance", "description": "Certificates and requirements"},
+            {"id": "users", "label": "Users", "description": "User accounts"},
+            {"id": "logs", "label": "Activity Logs", "description": "Activity and audit logs"},
+            {"id": "settings", "label": "Settings", "description": "System settings and configuration"}
+        ]
+    }
+
+@api_router.post("/backup/export-selective")
+async def export_selective(
+    modules: List[str] = Body(..., embed=True),
+    current_user: dict = Depends(get_current_user)
+):
+    """Export selected modules as JSON backup"""
+    if current_user.get("access_level") != AccessLevel.FULL:
+        raise HTTPException(status_code=403, detail="Only users with Full access can export backups")
+    
+    try:
+        backup_data = {
+            "backup_date": datetime.now(timezone.utc).isoformat(),
+            "backup_version": "1.0",
+            "export_type": "selective",
+            "exported_modules": modules,
+            "collections": {}
+        }
+        
+        # Get collections for selected modules
+        collections_to_export = set()
+        for module in modules:
+            if module in MODULE_COLLECTIONS:
+                collections_to_export.update(MODULE_COLLECTIONS[module])
+        
+        if not collections_to_export:
+            raise HTTPException(status_code=400, detail="No valid modules selected")
+        
+        for collection_name in collections_to_export:
+            try:
+                collection = db[collection_name]
+                documents = await collection.find({}, {"_id": 0}).to_list(None)
+                backup_data["collections"][collection_name] = documents
+            except Exception as col_err:
+                logger.warning(f"Could not export collection {collection_name}: {col_err}")
+                backup_data["collections"][collection_name] = []
+        
+        # Convert to JSON
+        json_str = json.dumps(backup_data, indent=2, default=str)
+        
+        # Create filename with timestamp and modules
+        timestamp = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
+        module_suffix = "_".join(modules[:3])  # First 3 modules in filename
+        if len(modules) > 3:
+            module_suffix += "_etc"
+        filename = f"amsa_backup_{module_suffix}_{timestamp}.json"
+        
+        # Return as downloadable file
+        return StreamingResponse(
+            io.BytesIO(json_str.encode()),
+            media_type="application/json",
+            headers={"Content-Disposition": f"attachment; filename={filename}"}
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Selective backup export error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error creating backup: {str(e)}")
+
 @api_router.get("/backup/export")
 async def export_database(current_user: dict = Depends(get_current_user)):
     """Export all database collections as JSON backup"""
