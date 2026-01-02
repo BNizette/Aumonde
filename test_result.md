@@ -39,15 +39,18 @@
 ### Frontend Tests
 - task: "Export Module Selection Dialog"
   implemented: true
-  working: NA
+  working: true
   file: "frontend/src/components/BackupManagement.jsx"
   stuck_count: 0
   priority: "high"
-  needs_retesting: true
+  needs_retesting: false
   status_history:
     - working: "NA"
       agent: "main"
       comment: "Added dialog with module toggles for selective backup export"
+    - working: true
+      agent: "testing"
+      comment: "✅ EXPORT MODULE SELECTION DIALOG FULLY FUNCTIONAL: Successfully tested all components - dialog opens with 'Select Modules to Export' title, 'Select All Modules' toggle works correctly (found 14 total switches), individual module toggles function properly and affect Select All state, Export button shows selection count (e.g., 'Export (12)'), Cancel button closes dialog and resets selections, Scheduled Backups section visible with Create Schedule button. All user interactions work as expected."
 
 ## Incorporate User Feedback
 - User reported scheduled backup runs twice - implemented scheduler fix with coalesce and misfire settings
