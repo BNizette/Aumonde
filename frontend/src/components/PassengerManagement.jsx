@@ -766,6 +766,20 @@ const PassengerManagement = () => {
           mode="edit"
         />
       )}
+
+      {/* Trip Details/Log Dialog */}
+      <TripDetailsDialog
+        open={tripDetailsOpen}
+        onClose={() => {
+          setTripDetailsOpen(false);
+          setSelectedTripForDetails(null);
+        }}
+        trip={selectedTripForDetails}
+        onRefresh={() => {}}
+        onEditCrew={(crewId) => navigate(`/crew?edit_id=${crewId}`)}
+        onEditPassenger={(passengerId) => navigate(`/passengers?edit_id=${passengerId}`)}
+        onViewIncident={(incidentId) => navigate(`/incidents?edit_id=${incidentId}`)}
+      />
     </div>
   );
 };
