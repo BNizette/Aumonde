@@ -390,11 +390,10 @@ const RunningLogForm = ({ open, onClose, onSave, log, tripId, vesselId, vesselNa
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="log_datetime">Date & Time *</Label>
-              <Input
+              <DateTimeInput
                 id="log_datetime"
-                type="datetime-local"
                 value={formData.log_datetime}
-                onChange={(e) => handleChange('log_datetime', e.target.value)}
+                onChange={(value) => handleChange('log_datetime', value)}
               />
             </div>
 
