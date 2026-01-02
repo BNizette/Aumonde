@@ -12,7 +12,19 @@ import { exportMultiSheetExcel, formatDate, safeValue, safeArrayJoin } from '../
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-const VesselDetailsDialog = ({ open, onClose, vessel, onMessage, onEdit, onEditTrip, onEditPassenger, onNavigateWithFilter }) => {
+const VesselDetailsDialog = ({ 
+  open, 
+  onClose, 
+  vessel, 
+  onMessage, 
+  onEdit, 
+  onEditTrip, 
+  onEditPassenger, 
+  onNavigateWithFilter,
+  onViewTripLog,
+  onAddTrip,
+  onNavigateToModule
+}) => {
   const [loading, setLoading] = useState(false);
   const [selectedView, setSelectedView] = useState('details');
   const [trips, setTrips] = useState([]);
