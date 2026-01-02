@@ -63,3 +63,5 @@
 ## Agent Communication
 - agent: "testing"
   message: "✅ BACKUP MODULE SELECTION TESTING COMPLETE: Both backup module selection API and scheduler configuration are working correctly. GET /api/backup/modules returns 13 available modules with proper structure. POST /api/backup/export-selective successfully filters and exports only requested modules (tested with vessels/crew combinations). Scheduler is properly configured and running with coalesce/max_instances settings to prevent duplicate runs. All critical functionality verified. Ready for frontend integration testing."
+- agent: "testing"
+  message: "✅ EXPORT MODULE SELECTION DIALOG TESTING COMPLETE: Successfully tested the new Export Module Selection Dialog in Backup & Restore section. All functionality working correctly: Dialog opens with proper title, Select All toggle controls all 14 modules, individual module toggles work and update Select All state appropriately, Export button shows selection count, Cancel resets selections, and Scheduled Backups section is visible with Create Schedule button. Frontend integration with backend API is fully functional."
