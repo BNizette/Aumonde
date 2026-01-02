@@ -961,6 +961,36 @@ const VesselManagement = () => {
         }}
         onEditTrip={handleEditTrip}
         onNavigateWithFilter={handleNavigateWithFilter}
+        onViewTripLog={(trip) => {
+          setSelectedTripForDetails(trip);
+          setTripDetailsOpen(true);
+        }}
+        onAddTrip={(vessel) => {
+          setLogsDialogOpen(false);
+          navigate(`/trips?add=true&vessel_id=${vessel.id}`);
+        }}
+        onNavigateToModule={(path, view, editId) => {
+          setLogsDialogOpen(false);
+          let url = path;
+          if (view) url += `?view=${view}`;
+          if (editId) url += `${view ? '&' : '?'}edit_id=${editId}`;
+          navigate(url);
+        }}
+        onEditPassenger={(passengerId) => navigate(`/passengers?edit_id=${passengerId}`)}
+      />
+
+      {/* Trip Details/Log Dialog */}
+      <TripDetailsDialog
+        open={tripDetailsOpen}
+        onClose={() => {
+          setTripDetailsOpen(false);
+          setSelectedTripForDetails(null);
+        }}
+        trip={selectedTripForDetails}
+        onRefresh={() => {}}
+        onEditCrew={(crewId) => navigate(`/crew?edit_id=${crewId}`)}
+        onEditPassenger={(passengerId) => navigate(`/passengers?edit_id=${passengerId}`)}
+        onViewIncident={(incidentId) => navigate(`/incidents?edit_id=${incidentId}`)}
       />
 
       {/* Trip Edit Dialog */}
