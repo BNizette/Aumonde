@@ -6457,10 +6457,11 @@ async def forgot_password(request: ForgotPasswordRequest):
         msg['To'] = request.email
         msg['Subject'] = "AMSA Safety Management - Password Reset Request"
         
-        # Get the frontend URL from environment variable (required for deployment)
-        frontend_url = os.environ.get('FRONTEND_URL')
+        # Get the frontend URL - priority: branding.site_url > FRONTEND_URL env var
+        branding = await db.branding.find_one({}, {"_id": 0, "site_url": 1})
+        frontend_url = branding.get("site_url") if branding and branding.get("site_url") else os.environ.get('FRONTEND_URL')
         if not frontend_url:
-            raise HTTPException(status_code=500, detail="FRONTEND_URL environment variable not configured")
+            raise HTTPException(status_code=500, detail="Site URL not configured. Please set it in Admin Panel → Branding Settings.")
         reset_link = f"{frontend_url}/reset-password?token={reset_token}"
         
         body = f"""
