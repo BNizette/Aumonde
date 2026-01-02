@@ -56,3 +56,7 @@
 ## Test Credentials
 - Email: admin@test.com
 - Password: Admin123!
+
+## Agent Communication
+- agent: "testing"
+  message: "✅ BACKUP MODULE SELECTION TESTING COMPLETE: Both backup module selection API and scheduler configuration are working correctly. GET /api/backup/modules returns 13 available modules with proper structure. POST /api/backup/export-selective successfully filters and exports only requested modules (tested with vessels/crew combinations). Scheduler is properly configured and running with coalesce/max_instances settings to prevent duplicate runs. All critical functionality verified. Ready for frontend integration testing."
