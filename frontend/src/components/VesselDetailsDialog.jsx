@@ -1022,6 +1022,14 @@ const VesselDetailsDialog = ({
               <p className="text-sm text-gray-500">
                 {emergencyContacts.length} emergency contact{emergencyContacts.length !== 1 ? 's' : ''} for this vessel
               </p>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => onNavigateToModule ? onNavigateToModule('/emergency', 'contacts') : window.location.href = '/emergency?view=contacts'}
+              >
+                <ExternalLink className="h-4 w-4 mr-1" />
+                Manage in Emergency Contacts
+              </Button>
             </div>
             {emergencyContacts.length > 0 ? (
               <Table>
@@ -1060,6 +1068,14 @@ const VesselDetailsDialog = ({
               <p className="text-sm text-gray-500">
                 {emergencyProcedures.length} emergency procedure{emergencyProcedures.length !== 1 ? 's' : ''} for this vessel
               </p>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => onNavigateToModule ? onNavigateToModule('/emergency', 'procedures') : window.location.href = '/emergency?view=procedures'}
+              >
+                <ExternalLink className="h-4 w-4 mr-1" />
+                Manage in Emergency Procedures
+              </Button>
             </div>
             {emergencyProcedures.length > 0 ? (
               <Table>
