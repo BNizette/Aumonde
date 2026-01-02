@@ -1397,7 +1397,7 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh, onEditCrew, onEditP
                         <Button size="sm" onClick={() => setNewPassengerFormOpen(true)}>
                           <Plus className="h-4 w-4 mr-1" />
                           Add New
-                        <Button>
+                        </Button>
                       )}
                     </div>
                   </div>
