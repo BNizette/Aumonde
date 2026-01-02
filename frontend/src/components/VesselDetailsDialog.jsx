@@ -912,6 +912,14 @@ const VesselDetailsDialog = ({
               <p className="text-sm text-gray-500">
                 {requirements.length} compliance requirement{requirements.length !== 1 ? 's' : ''} applicable to this vessel
               </p>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => onNavigateToModule ? onNavigateToModule('/compliance', 'requirements') : window.location.href = '/compliance?view=requirements'}
+              >
+                <ExternalLink className="h-4 w-4 mr-1" />
+                Manage in Compliance Requirements
+              </Button>
             </div>
             {requirements.length > 0 ? (
               <Table>
