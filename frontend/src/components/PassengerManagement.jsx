@@ -46,6 +46,8 @@ const PassengerManagement = () => {
   // Trip editing state
   const [tripFormOpen, setTripFormOpen] = useState(false);
   const [selectedTrip, setSelectedTrip] = useState(null);
+  const [tripDetailsOpen, setTripDetailsOpen] = useState(false);
+  const [selectedTripForDetails, setSelectedTripForDetails] = useState(null);
 
   useEffect(() => {
     fetchPassengers();
