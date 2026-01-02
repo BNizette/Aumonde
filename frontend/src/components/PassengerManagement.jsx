@@ -628,7 +628,10 @@ const PassengerManagement = () => {
                       <TableCell className="font-medium">
                         <button
                           className="text-blue-600 hover:text-blue-800 hover:underline cursor-pointer text-left"
-                          onClick={() => handleEditTrip(trip)}
+                          onClick={() => {
+                            setSelectedTripForDetails({ id: trip.trip_id, trip_name: trip.trip_name, vessel_id: trip.vessel_id, vessel_name: trip.vessel_name });
+                            setTripDetailsOpen(true);
+                          }}
                         >
                           {trip.trip_name}
                         </button>
