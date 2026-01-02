@@ -6,13 +6,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { FileSpreadsheet, Activity, FileText, ExternalLink } from 'lucide-react';
+import { FileSpreadsheet, Activity, FileText, ExternalLink, Settings } from 'lucide-react';
 import { exportMultiSheetExcel, formatDate, safeValue } from '../utils/excelExport';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-const CrewDetailsDialog = ({ open, onClose, crew, onMessage, onEditTrip }) => {
+const CrewDetailsDialog = ({ open, onClose, crew, onMessage, onEditTrip, onViewTripLog, onViewDrill, onEditCrewTraining }) => {
   const [loading, setLoading] = useState(false);
   const [selectedView, setSelectedView] = useState('details');
   const [trips, setTrips] = useState([]);
