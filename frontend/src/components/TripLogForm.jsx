@@ -406,11 +406,10 @@ const TripLogForm = ({ open, onClose, onSave, log, tripId, vesselId, vesselName,
           <div className="grid grid-cols-4 gap-4">
             <div className="space-y-2">
               <Label htmlFor="shift_start_datetime">Shift Start *</Label>
-              <Input
+              <DateTimeInput
                 id="shift_start_datetime"
-                type="datetime-local"
                 value={formData.shift_start_datetime}
-                onChange={(e) => handleChange('shift_start_datetime', e.target.value)}
+                onChange={(value) => handleChange('shift_start_datetime', value)}
               />
             </div>
 
@@ -428,11 +427,10 @@ const TripLogForm = ({ open, onClose, onSave, log, tripId, vesselId, vesselName,
 
             <div className="space-y-2">
               <Label htmlFor="shift_stop_datetime">Shift Stop</Label>
-              <Input
+              <DateTimeInput
                 id="shift_stop_datetime"
-                type="datetime-local"
                 value={formData.shift_stop_datetime}
-                onChange={(e) => handleChange('shift_stop_datetime', e.target.value)}
+                onChange={(value) => handleChange('shift_stop_datetime', value)}
               />
             </div>
 
