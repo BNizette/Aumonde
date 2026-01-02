@@ -643,6 +643,14 @@ const VesselDetailsDialog = ({
               <p className="text-sm text-gray-500">
                 {drills.length} drill{drills.length !== 1 ? 's' : ''} for this vessel
               </p>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => onNavigateToModule ? onNavigateToModule('/emergency', 'drills') : window.location.href = '/emergency?view=drills'}
+              >
+                <ExternalLink className="h-4 w-4 mr-1" />
+                Manage in Drills
+              </Button>
             </div>
             {drills.length > 0 ? (
           <Table>
@@ -659,7 +667,14 @@ const VesselDetailsDialog = ({
             <TableBody>
               {drills.map((d) => (
                 <TableRow key={d.id}>
-                  <TableCell className="font-medium">{d.drill_type || '-'}</TableCell>
+                  <TableCell className="font-medium">
+                    <button
+                      className="text-blue-600 hover:text-blue-800 hover:underline cursor-pointer text-left"
+                      onClick={() => onNavigateToModule ? onNavigateToModule('/emergency', 'drills', d.id) : window.location.href = `/emergency?view=drills&edit_id=${d.id}`}
+                    >
+                      {d.drill_type || '-'}
+                    </button>
+                  </TableCell>
                   <TableCell>{d.drill_date ? new Date(d.drill_date).toLocaleString() : 'N/A'}</TableCell>
                   <TableCell className="max-w-xs truncate">{Array.isArray(d.participants) ? d.participants.join(', ') : (d.participants || '-')}</TableCell>
                   <TableCell><Badge variant={d.outcome === 'Pass' ? 'default' : d.outcome === 'Fail' ? 'destructive' : 'secondary'}>{d.outcome || '-'}</Badge></TableCell>
