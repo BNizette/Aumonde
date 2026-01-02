@@ -164,6 +164,26 @@ const BrandingSettings = () => {
     return url.startsWith('http') ? url : `${BACKEND_URL}${url}`;
   };
 
+  const handleSaveSiteUrl = async () => {
+    setSaving(true);
+    setError('');
+    try {
+      const token = localStorage.getItem('token');
+      await axios.post(`${API}/branding`, {
+        ...branding
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setMessage('Site URL saved successfully');
+      setTimeout(() => setMessage(''), 3000);
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Failed to save site URL');
+      setTimeout(() => setError(''), 5000);
+    } finally {
+      setSaving(false);
+    }
+  };
+
   if (loading) {
     return (
       <Card>
