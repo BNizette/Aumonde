@@ -578,6 +578,9 @@ const TripManagement = () => {
         onClose={() => setDetailsOpen(false)}
         trip={selectedTrip}
         onRefresh={fetchTrips}
+        onEditCrew={(crewId) => navigate(`/crew?edit_id=${crewId}`)}
+        onEditPassenger={(passengerId) => navigate(`/passengers?edit_id=${passengerId}`)}
+        onViewIncident={(incidentId) => navigate(`/incidents?edit_id=${incidentId}`)}
       />
 
       {/* Duplicate Warning Dialog */}
