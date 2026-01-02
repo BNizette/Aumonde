@@ -73,14 +73,14 @@ const Layout = ({ children, user, onLogout }) => {
 
   const menuItems = [
     { path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-    { path: '/vessels', icon: Ship, label: 'Vessels' },
-    { path: '/crew', icon: Users, label: 'Crew' },
-    { path: '/passengers', icon: UserPlus, label: 'Passengers' },
     { path: '/trips', icon: MapPin, label: 'Trips' },
+    { path: '/passengers', icon: UserPlus, label: 'Passengers' },
+    { path: '/crew', icon: Users, label: 'Crew' },
+    { path: '/vessels', icon: Ship, label: 'Vessels' },
     { path: '/maintenance', icon: Wrench, label: 'Maintenance' },
-    { path: '/risk-assessment', icon: AlertTriangle, label: 'Risk Assessment' },
     { path: '/incidents', icon: AlertCircle, label: 'Incidents' },
     { path: '/emergency', icon: ShieldAlert, label: 'Emergency' },
+    { path: '/risk-assessment', icon: AlertTriangle, label: 'Risk Assessment' },
     { path: '/compliance', icon: CheckSquare, label: 'Compliance' },
     { path: '/documents', icon: FileText, label: 'Documents' },
     { path: '/ai-assistant', icon: Bot, label: 'AI Assistant' },
