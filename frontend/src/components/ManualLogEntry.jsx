@@ -145,7 +145,7 @@ const ManualLogEntry = ({ open, onClose, type = 'running' }) => {
           crew_id: formData.crew_id,
           crew_name: formData.crew_name,
           vessel_id: formData.vessel_id || null,
-          log_datetime: formData.log_datetime,
+          log_datetime: new Date(formData.log_datetime).toISOString(),
           category: formData.category || null,
           activity: formData.activity,
           activity_details: formData.activity_details || null
