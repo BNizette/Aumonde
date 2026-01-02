@@ -4602,8 +4602,14 @@ import asyncio
 BACKUPS_DIR = Path("/app/backend/backups")
 BACKUPS_DIR.mkdir(exist_ok=True)
 
-# Initialize scheduler
-backup_scheduler = BackgroundScheduler()
+# Initialize scheduler with job defaults to prevent duplicate runs
+backup_scheduler = BackgroundScheduler(
+    job_defaults={
+        'coalesce': True,  # Coalesce missed runs into a single run
+        'max_instances': 1,  # Only one instance of each job at a time
+        'misfire_grace_time': 60  # Only run job if within 60 seconds of scheduled time
+    }
+)
 backup_scheduler.start()
 
 # Helper function to run async jobs in sync context
