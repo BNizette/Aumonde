@@ -4378,6 +4378,8 @@ class AMSAComprehensiveTester:
             self.test_email_configuration_backend_apis, # NEW TEST: Email Configuration APIs
             self.test_forgot_password_backend_apis,     # NEW TEST: Forgot Password APIs
             self.test_backup_management_backend_apis,   # NEW TEST: Backup Management APIs
+            self.test_backup_module_selection,          # NEW TEST: Backup Module Selection
+            self.test_scheduler_configuration,          # NEW TEST: Scheduler Configuration
             self.test_settings_backend_apis,           # NEW TEST: Settings APIs
             self.test_branding_settings,               # NEW TEST: Branding Settings APIs
         ]
