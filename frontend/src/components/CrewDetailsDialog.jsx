@@ -250,7 +250,7 @@ const CrewDetailsDialog = ({ open, onClose, crew, onMessage, onEditTrip, onViewT
                   <TableCell className="font-medium">
                     <button
                       className="text-blue-600 hover:text-blue-800 hover:underline cursor-pointer text-left"
-                      onClick={() => onEditTrip && onEditTrip(t)}
+                      onClick={() => onViewTripLog ? onViewTripLog(t) : (onEditTrip && onEditTrip(t))}
                     >
                       {t.trip_name || 'N/A'}
                     </button>
