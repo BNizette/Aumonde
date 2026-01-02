@@ -14,10 +14,12 @@ const BrandingSettings = () => {
   const [branding, setBranding] = useState({
     favicon_url: null,
     logo_url: null,
-    app_name: 'AMSA Safety Management'
+    app_name: 'AMSA Safety Management',
+    site_url: ''
   });
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState({ favicon: false, logo: false });
+  const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   
