@@ -10,7 +10,7 @@ import sys
 
 def test_user_response_validation():
     """Test UserResponse Pydantic validation fix"""
-    base_url = "https://seaflow.preview.emergentagent.com"
+    base_url = "https://fleetflow-10.preview.emergentagent.com"
     api_url = f"{base_url}/api"
     
     print("🔍 Testing UserResponse Pydantic Validation Fix")
