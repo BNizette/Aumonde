@@ -1807,7 +1807,7 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh, onEditCrew, onEditP
                             <TableCell>
                               <button
                                 className="text-blue-600 hover:text-blue-800 hover:underline cursor-pointer text-left font-medium"
-                                onClick={() => window.location.href = `/incidents?edit_id=${incident.id}`}
+                                onClick={() => onViewIncident ? onViewIncident(incident.id) : window.location.href = `/incidents?edit_id=${incident.id}`}
                               >
                                 {incident.title || incident.incident_number}
                               </button>
