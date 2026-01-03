@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -24,8 +25,9 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
 const Emergency = () => {
+  const navigate = useNavigate();
   const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
-  const isAdmin = currentUser.access_level === 'Admin';
+  const isAdmin = currentUser.access_level === 'Admin' || currentUser.access_level === 'Full';
   const [contacts, setContacts] = useState([]);
   const [procedures, setProcedures] = useState([]);
   const [drills, setDrills] = useState([]);
