@@ -25,8 +25,9 @@ const API = `${BACKEND_URL}/api`;
 
 const Incidents = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
-  const isAdmin = currentUser.access_level === 'Admin';
+  const isAdmin = currentUser.access_level === 'Admin' || currentUser.access_level === 'Full';
   const [incidents, setIncidents] = useState([]);
   const [vessels, setVessels] = useState([]);
   const [loading, setLoading] = useState(true);
