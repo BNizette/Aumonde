@@ -17,6 +17,7 @@ import BackupManagement from './BackupManagement';
 import Settings from './Settings';
 import BrandingSettings from './BrandingSettings';
 import RolesSettings from './RolesSettings';
+import ChecklistTemplatesEditor from './ChecklistTemplatesEditor';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
