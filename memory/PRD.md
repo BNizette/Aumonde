@@ -74,10 +74,14 @@ A comprehensive vessel and crew safety management system for maritime operations
 
 ### Backend (FastAPI + MongoDB)
 - `/app/backend/server.py` - Main server file
-- Key changes:
+- Key changes this session:
+  - **FILE STORAGE: Now uses MongoDB instead of local filesystem**
+    - Files stored as base64 in `file_storage` collection
+    - Persists across Kubernetes deployments
+    - Served via `/api/files/{file_id}` endpoint
   - Dashboard stats include passengers count
   - MODULE_COLLECTIONS fixed for passengers export
-  - Backup import now only imports non-existing items
+  - Backup import only imports non-existing items
 
 ### Database (MongoDB)
 - Collections: users, vessels, crew, trips, passengers, trip_passengers, documents, incidents, maintenance, emergency_contacts, emergency_procedures, emergency_drills, compliance_certificates, compliance_requirements, risk_assessments, activity_logs, audit_logs, sessions, settings, roles, etc.
