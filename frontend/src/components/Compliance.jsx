@@ -1245,6 +1245,55 @@ const Compliance = () => {
                       </PopoverContent>
                     </Popover>
                   </div>
+
+                  {/* Vessel Multi-Select */}
+                  <div>
+                    <Label>Vessel</Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button variant="outline" className="w-full justify-between">
+                          <span className="truncate">
+                            {reqFilters.vessels.length === 0
+                              ? 'All Vessels'
+                              : reqFilters.vessels.length === 1
+                              ? vessels.find(v => v.id === reqFilters.vessels[0])?.vessel_name || reqFilters.vessels[0]
+                              : `${reqFilters.vessels.length} selected`}
+                          </span>
+                          <ChevronDown className="h-4 w-4 ml-2 shrink-0" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-64 p-0" align="start">
+                        <div className="p-2">
+                          <div className="flex items-center justify-between px-2 py-1.5 mb-1">
+                            <span className="text-sm font-medium">Select Vessels</span>
+                            {reqFilters.vessels.length > 0 && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => clearReqFilterType('vessels')}
+                                className="h-auto p-1 text-xs"
+                              >
+                                Clear
+                              </Button>
+                            )}
+                          </div>
+                          {vessels.map(vessel => (
+                            <div
+                              key={vessel.id}
+                              className="flex items-center space-x-2 px-2 py-2 hover:bg-gray-100 rounded cursor-pointer"
+                              onClick={() => toggleReqFilter('vessels', vessel.vessel_name)}
+                            >
+                              <Checkbox
+                                checked={reqFilters.vessels.includes(vessel.vessel_name)}
+                                onCheckedChange={() => toggleReqFilter('vessels', vessel.vessel_name)}
+                              />
+                              <span className="text-sm">{vessel.vessel_name}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+                  </div>
                 </div>
 
                 {/* Date Range Filters */}
