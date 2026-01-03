@@ -4471,7 +4471,7 @@ async def get_ai_suggestions(current_user: dict = Depends(get_current_user)):
 MODULE_COLLECTIONS = {
     "vessels": ["vessels"],
     "crew": ["crew"],
-    "passengers": ["trip_passengers"],
+    "passengers": ["passengers"],
     "trips": ["trips", "allocated_crew", "trip_logs", "running_logs", "engine_running_logs", "trip_passengers"],
     "documents": ["documents"],
     "risk_assessment": ["risk_assessments"],
