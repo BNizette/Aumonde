@@ -1031,12 +1031,27 @@ const VesselDetailsDialog = ({
         );
 
       case 'emergency_contacts':
+        const displayedContacts = includeGlobalContacts 
+          ? [...emergencyContacts, ...globalContacts] 
+          : emergencyContacts;
         return (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <p className="text-sm text-gray-500">
-                {emergencyContacts.length} emergency contact{emergencyContacts.length !== 1 ? 's' : ''} for this vessel
-              </p>
+              <div className="flex items-center gap-4">
+                <p className="text-sm text-gray-500">
+                  {displayedContacts.length} emergency contact{displayedContacts.length !== 1 ? 's' : ''}
+                </p>
+                <div className="flex items-center gap-2">
+                  <Checkbox 
+                    id="include-global-contacts" 
+                    checked={includeGlobalContacts}
+                    onCheckedChange={setIncludeGlobalContacts}
+                  />
+                  <Label htmlFor="include-global-contacts" className="text-sm text-gray-600 cursor-pointer">
+                    Include global contacts
+                  </Label>
+                </div>
+              </div>
               <Button 
                 variant="outline" 
                 size="sm"
@@ -1046,7 +1061,7 @@ const VesselDetailsDialog = ({
                 Manage in Emergency Contacts
               </Button>
             </div>
-            {emergencyContacts.length > 0 ? (
+            {displayedContacts.length > 0 ? (
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -1054,22 +1069,28 @@ const VesselDetailsDialog = ({
                     <TableHead>Phone</TableHead>
                     <TableHead>Type</TableHead>
                     <TableHead>Email</TableHead>
+                    <TableHead>Scope</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {emergencyContacts.map(contact => (
+                  {displayedContacts.map(contact => (
                     <TableRow key={contact.id}>
                       <TableCell className="font-medium">{contact.name}</TableCell>
                       <TableCell>{contact.phone || contact.contact_number || '-'}</TableCell>
                       <TableCell><Badge variant="outline">{contact.contact_type || contact.type || '-'}</Badge></TableCell>
                       <TableCell>{contact.email || '-'}</TableCell>
+                      <TableCell>
+                        <Badge variant={contact.vessel_id ? 'secondary' : 'default'}>
+                          {contact.vessel_id ? 'Vessel' : 'Global'}
+                        </Badge>
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
             ) : (
               <div className="text-center py-8 text-gray-500">
-                <p>No emergency contacts for this vessel.</p>
+                <p>No emergency contacts found.</p>
                 <p className="text-xs mt-1">Add contacts from the Emergency module</p>
               </div>
             )}
