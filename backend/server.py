@@ -843,6 +843,7 @@ async def get_dashboard_stats(current_user: dict = Depends(get_current_user)):
     total_crew = await db.crew.count_documents({})
     total_documents = await db.documents.count_documents({})
     total_trips = await db.trips.count_documents({})
+    total_passengers = await db.passengers.count_documents({})
     
     # Active trips (trips with arrival date in the future or null)
     now = datetime.now(timezone.utc)
