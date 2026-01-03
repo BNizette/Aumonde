@@ -309,12 +309,10 @@ const VesselDetailsDialog = ({
     { value: 'incidents', label: `Incidents (${incidents.length})` },
     { value: 'certificates', label: `Compliance Certificates (${certificates.length})` },
     { value: 'requirements', label: `Compliance Requirements (${requirements.length})` },
-    { value: 'induction', label: `Induction (${inductionRecords.length})` },
     { value: 'emergency_contacts', label: `Emergency Contacts (${emergencyContacts.length})` },
     { value: 'emergency_procedures', label: `Emergency Procedures (${emergencyProcedures.length})` },
     { value: 'drills', label: `Drill Logs (${drills.length})` },
     { value: 'vessel_documents', label: `Vessel Documents (${vesselDocuments.length})` },
-    { value: 'global_documents', label: `Global Documents (${globalDocuments.length})` },
   ];
 
   const renderContent = () => {
