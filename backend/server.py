@@ -2631,6 +2631,114 @@ SAFETY_BRIEFING_TEMPLATE = {
     ]
 }
 
+# ============================================================================
+# CHECKLIST TEMPLATE ADMIN ENDPOINTS
+# ============================================================================
+
+class ChecklistTemplateItem(BaseModel):
+    item_id: str
+    label: str
+    checked: bool = False
+    remarks: str = ""
+
+class ChecklistTemplateSection(BaseModel):
+    section_id: str
+    section_name: str
+    items: List[ChecklistTemplateItem]
+
+class ChecklistTemplate(BaseModel):
+    checklist_type: str  # "pre_departure" or "safety_briefing"
+    sections: List[ChecklistTemplateSection]
+
+@api_router.get("/admin/checklist-templates")
+async def get_checklist_templates(current_user: dict = Depends(require_access_level(AccessLevel.FULL))):
+    """Get all checklist templates for admin editing"""
+    # Check if custom templates exist in database
+    pre_departure = await db.checklist_templates.find_one({"checklist_type": "pre_departure"}, {"_id": 0})
+    safety_briefing = await db.checklist_templates.find_one({"checklist_type": "safety_briefing"}, {"_id": 0})
+    
+    return {
+        "pre_departure": pre_departure or {"checklist_type": "pre_departure", "sections": PRE_DEPARTURE_TEMPLATE["sections"]},
+        "safety_briefing": safety_briefing or {"checklist_type": "safety_briefing", "sections": SAFETY_BRIEFING_TEMPLATE["sections"]}
+    }
+
+@api_router.get("/admin/checklist-templates/{checklist_type}")
+async def get_checklist_template(checklist_type: str, current_user: dict = Depends(require_access_level(AccessLevel.FULL))):
+    """Get a specific checklist template"""
+    if checklist_type not in ["pre_departure", "safety_briefing"]:
+        raise HTTPException(status_code=400, detail="Invalid checklist type")
+    
+    template = await db.checklist_templates.find_one({"checklist_type": checklist_type}, {"_id": 0})
+    
+    if not template:
+        # Return default template
+        default = PRE_DEPARTURE_TEMPLATE if checklist_type == "pre_departure" else SAFETY_BRIEFING_TEMPLATE
+        return {"checklist_type": checklist_type, "sections": default["sections"]}
+    
+    return template
+
+@api_router.put("/admin/checklist-templates/{checklist_type}")
+async def update_checklist_template(
+    checklist_type: str, 
+    template: ChecklistTemplate,
+    current_user: dict = Depends(require_access_level(AccessLevel.FULL))
+):
+    """Update a checklist template"""
+    if checklist_type not in ["pre_departure", "safety_briefing"]:
+        raise HTTPException(status_code=400, detail="Invalid checklist type")
+    
+    template_data = template.model_dump()
+    template_data["checklist_type"] = checklist_type
+    template_data["updated_at"] = datetime.now(timezone.utc).isoformat()
+    template_data["updated_by"] = current_user["id"]
+    
+    await db.checklist_templates.update_one(
+        {"checklist_type": checklist_type},
+        {"$set": template_data},
+        upsert=True
+    )
+    
+    await log_audit(
+        current_user["id"],
+        current_user["full_name"],
+        "update",
+        "checklist_template",
+        checklist_type,
+        f"Updated {checklist_type.replace('_', ' ').title()} template"
+    )
+    
+    return {"message": f"{checklist_type.replace('_', ' ').title()} template updated successfully"}
+
+@api_router.post("/admin/checklist-templates/{checklist_type}/reset")
+async def reset_checklist_template(
+    checklist_type: str,
+    current_user: dict = Depends(require_access_level(AccessLevel.FULL))
+):
+    """Reset a checklist template to default"""
+    if checklist_type not in ["pre_departure", "safety_briefing"]:
+        raise HTTPException(status_code=400, detail="Invalid checklist type")
+    
+    await db.checklist_templates.delete_one({"checklist_type": checklist_type})
+    
+    await log_audit(
+        current_user["id"],
+        current_user["full_name"],
+        "reset",
+        "checklist_template",
+        checklist_type,
+        f"Reset {checklist_type.replace('_', ' ').title()} template to default"
+    )
+    
+    return {"message": f"{checklist_type.replace('_', ' ').title()} template reset to default"}
+
+# Helper function to get template (checks database first, then defaults)
+async def get_active_template(checklist_type: str) -> dict:
+    """Get the active template for a checklist type (custom or default)"""
+    custom = await db.checklist_templates.find_one({"checklist_type": checklist_type}, {"_id": 0})
+    if custom:
+        return custom
+    return {"sections": PRE_DEPARTURE_TEMPLATE["sections"]} if checklist_type == "pre_departure" else {"sections": SAFETY_BRIEFING_TEMPLATE["sections"]}
+
 @api_router.get("/trips/{trip_id}/checklists/{checklist_type}")
 async def get_trip_checklist(trip_id: str, checklist_type: str, current_user: dict = Depends(get_current_user)):
     """Get a trip's checklist (pre_departure or safety_briefing)"""
