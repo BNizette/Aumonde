@@ -1049,7 +1049,28 @@ const Incidents = () => {
                       {incident.activity && Array.isArray(incident.activity) && incident.activity.length > 0 && (
                         <p><strong>Activity:</strong> {incident.activity.join(', ')}</p>
                       )}
-                      {incident.vessel_name && <p><strong>Vessel:</strong> {incident.vessel_name}</p>}
+                      {incident.vessel_name && (
+                        <p>
+                          <strong>Vessel:</strong>{' '}
+                          <button 
+                            onClick={(e) => { e.stopPropagation(); navigate(`/vessels?vessel=${incident.vessel_id}`); }}
+                            className="text-blue-600 hover:underline"
+                          >
+                            {incident.vessel_name}
+                          </button>
+                        </p>
+                      )}
+                      {incident.linked_trip_name && (
+                        <p>
+                          <strong>Linked Trip:</strong>{' '}
+                          <button 
+                            onClick={(e) => { e.stopPropagation(); navigate(`/trips?trip=${incident.linked_trip_id}`); }}
+                            className="text-blue-600 hover:underline"
+                          >
+                            {incident.linked_trip_name}
+                          </button>
+                        </p>
+                      )}
                       {incident.pilot_on_board && <p><strong>🧑‍✈️ Pilot on Board</strong></p>}
                       {incident.cargo_on_board && <p><strong>📦 Cargo on Board</strong></p>}
                       {incident.injuries && <p className="text-red-600"><strong>⚠️ Injuries Reported</strong></p>}
