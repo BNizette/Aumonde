@@ -497,7 +497,17 @@ const RiskAssessment = () => {
                     </div>
                     <CardDescription>
                       {risk.location && `Location: ${risk.location}`}
-                      {risk.vessel_name && ` • Vessel: ${risk.vessel_name}`}
+                      {risk.vessel_name && (
+                        <span>
+                          {risk.location && ' • '}Vessel:{' '}
+                          <button 
+                            onClick={(e) => { e.stopPropagation(); navigate(`/vessels?vessel=${risk.vessel_id}`); }}
+                            className="text-blue-600 hover:underline"
+                          >
+                            {risk.vessel_name}
+                          </button>
+                        </span>
+                      )}
                     </CardDescription>
                   </div>
                   <div className="flex gap-2">
