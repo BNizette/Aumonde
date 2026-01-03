@@ -488,7 +488,17 @@ const Maintenance = () => {
                     </div>
                     <CardDescription>
                       {record.equipment_system && `Equipment: ${record.equipment_system}`}
-                      {record.vessel_name && ` • Vessel: ${record.vessel_name}`}
+                      {record.vessel_name && (
+                        <span>
+                          {record.equipment_system && ' • '}Vessel:{' '}
+                          <button 
+                            onClick={(e) => { e.stopPropagation(); navigate(`/vessels?vessel=${record.vessel_id}`); }}
+                            className="text-blue-600 hover:underline"
+                          >
+                            {record.vessel_name}
+                          </button>
+                        </span>
+                      )}
                     </CardDescription>
                   </div>
                   <div className="flex gap-2">
