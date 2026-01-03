@@ -987,7 +987,17 @@ const Compliance = () => {
                                   Expired {Math.abs(daysUntilExpiry)} days ago
                                 </p>
                               )}
-                              {cert.vessel_name && <p><strong>Vessel:</strong> {cert.vessel_name}</p>}
+                              {cert.vessel_name && (
+                                <p>
+                                  <strong>Vessel:</strong>{' '}
+                                  <button 
+                                    onClick={(e) => { e.stopPropagation(); navigate(`/vessels?vessel=${cert.vessel_id}`); }}
+                                    className="text-blue-600 hover:underline"
+                                  >
+                                    {cert.vessel_name}
+                                  </button>
+                                </p>
+                              )}
                               {cert.crew_name && <p><strong>Crew:</strong> {cert.crew_name}</p>}
                             </div>
                           </div>
