@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Ship, Users, FileText, AlertCircle, MapPin, Wrench, AlertTriangle, Phone, Shield } from 'lucide-react';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { Ship, Users, FileText, AlertCircle, MapPin, Wrench, AlertTriangle, Phone, Shield, UserPlus, Bot, UserCog, Plus, ChevronRight, ExternalLink, Link as LinkIcon } from 'lucide-react';
+import HelpDialog from './HelpDialog';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
