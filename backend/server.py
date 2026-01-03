@@ -4494,8 +4494,8 @@ async def get_backup_modules(current_user: dict = Depends(get_current_user)):
         "modules": [
             {"id": "vessels", "label": "Vessels", "description": "Vessel records"},
             {"id": "crew", "label": "Crew", "description": "Crew member records"},
-            {"id": "passengers", "label": "Passengers", "description": "Passenger records"},
-            {"id": "trips", "label": "Trips", "description": "Trips, crew allocations, logs, and passengers"},
+            {"id": "passengers", "label": "Passengers", "description": "Passenger records from Passengers module"},
+            {"id": "trips", "label": "Trips", "description": "Trips, crew allocations, logs, and trip passengers"},
             {"id": "documents", "label": "Documents", "description": "Document records"},
             {"id": "risk_assessment", "label": "Risk Assessment", "description": "Risk assessments"},
             {"id": "maintenance", "label": "Maintenance", "description": "Maintenance records"},
