@@ -2779,12 +2779,12 @@ async def get_trip_checklist(trip_id: str, checklist_type: str, current_user: di
         
         return checklist
     
-    # Return template if no checklist exists
+    # Return active template if no checklist exists
     return {
         "id": "",
         "trip_id": trip_id,
         "checklist_type": checklist_type,
-        "sections": template["sections"],
+        "sections": template_sections,
         "authorized_by": None,
         "authorized_by_name": None,
         "authorized_at": None,
