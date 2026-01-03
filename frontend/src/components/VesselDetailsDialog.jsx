@@ -6,6 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
 import { FileSpreadsheet, ExternalLink, Plus } from 'lucide-react';
 import { exportMultiSheetExcel, formatDate, safeValue, safeArrayJoin } from '../utils/excelExport';
 
@@ -44,6 +46,11 @@ const VesselDetailsDialog = ({
   const [emergencyProcedures, setEmergencyProcedures] = useState([]);
   const [vesselDocuments, setVesselDocuments] = useState([]);
   const [globalDocuments, setGlobalDocuments] = useState([]);
+  const [globalContacts, setGlobalContacts] = useState([]);
+  
+  // Checkbox states for including global items
+  const [includeGlobalDocuments, setIncludeGlobalDocuments] = useState(false);
+  const [includeGlobalContacts, setIncludeGlobalContacts] = useState(false);
 
   useEffect(() => {
     if (open && vessel) {
