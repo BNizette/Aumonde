@@ -676,7 +676,7 @@ const PassengerForm = ({ open, onClose, onSave, passenger, mode = 'create' }) =>
               <input
                 id="photo-input"
                 type="file"
-                accept="image/*"
+                accept="image/*,image/heic,image/heif,.heic,.heif"
                 className="hidden"
                 onChange={(e) => e.target.files?.[0] && handlePhotoUpload(e.target.files[0])}
               />

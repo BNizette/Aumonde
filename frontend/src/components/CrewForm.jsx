@@ -1709,7 +1709,7 @@ const CrewForm = ({ open, onClose, onSave, crew, mode = 'create', prefilledData 
                     <input
                       id="crew-photo-upload-input"
                       type="file"
-                      accept="image/jpeg,image/jpg,image/png,image/webp,image/gif"
+                      accept="image/jpeg,image/jpg,image/png,image/webp,image/gif,image/heic,image/heif,.heic,.heif"
                       className="hidden"
                       onChange={handlePhotoSelect}
                       disabled={uploadingPhoto}
