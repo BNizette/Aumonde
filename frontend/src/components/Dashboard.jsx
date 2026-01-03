@@ -9,6 +9,48 @@ import HelpDialog from './HelpDialog';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
+const getIconTitle = (icon) => {
+  switch (icon) {
+    case '+': return 'Add, modify or delete';
+    case '>': return 'Hyperlink to module';
+    case '=': return 'Hyperlink to record';
+    case '^': return 'Open in new tab';
+    default: return '';
+  }
+};
+
+// Menu item component with icon indicators - moved outside Dashboard
+const MenuItem = ({ label, path, icons = [], navigate }) => (
+  <div 
+    className="flex items-center justify-between py-1.5 px-2 hover:bg-gray-100 rounded cursor-pointer text-sm"
+    onClick={() => navigate(path)}
+    data-testid={`menu-item-${label.toLowerCase().replace(/\s+/g, '-')}`}
+  >
+    <span className="text-gray-700">{label}</span>
+    <span className="flex items-center gap-1 text-xs text-gray-500">
+      {icons.map((icon, idx) => (
+        <span key={idx} title={getIconTitle(icon)}>{icon}</span>
+      ))}
+    </span>
+  </div>
+);
+
+// Sub-menu item (nested under Edit/View) - moved outside Dashboard
+const SubMenuItem = ({ label, path, icons = [], navigate }) => (
+  <div 
+    className="flex items-center justify-between py-1 px-3 hover:bg-gray-50 rounded cursor-pointer text-sm ml-4"
+    onClick={() => navigate(path)}
+    data-testid={`submenu-item-${label.toLowerCase().replace(/\s+/g, '-')}`}
+  >
+    <span className="text-gray-600">{label}</span>
+    <span className="flex items-center gap-1 text-xs text-gray-400">
+      {icons.map((icon, idx) => (
+        <span key={idx}>{icon}</span>
+      ))}
+    </span>
+  </div>
+);
+
 const Dashboard = () => {
   const navigate = useNavigate();
   const [stats, setStats] = useState(null);
@@ -125,48 +167,6 @@ const Dashboard = () => {
       link: '/documents'
     }
   ];
-
-  // Menu item component with icon indicators
-  const MenuItem = ({ label, path, icons = [] }) => (
-    <div 
-      className="flex items-center justify-between py-1.5 px-2 hover:bg-gray-100 rounded cursor-pointer text-sm"
-      onClick={() => navigate(path)}
-      data-testid={`menu-item-${label.toLowerCase().replace(/\s+/g, '-')}`}
-    >
-      <span className="text-gray-700">{label}</span>
-      <span className="flex items-center gap-1 text-xs text-gray-500">
-        {icons.map((icon, idx) => (
-          <span key={idx} title={getIconTitle(icon)}>{icon}</span>
-        ))}
-      </span>
-    </div>
-  );
-
-  const getIconTitle = (icon) => {
-    switch (icon) {
-      case '+': return 'Add, modify or delete';
-      case '>': return 'Hyperlink to module';
-      case '=': return 'Hyperlink to record';
-      case '^': return 'Open in new tab';
-      default: return '';
-    }
-  };
-
-  // Sub-menu item (nested under Edit/View)
-  const SubMenuItem = ({ label, path, icons = [] }) => (
-    <div 
-      className="flex items-center justify-between py-1 px-3 hover:bg-gray-50 rounded cursor-pointer text-sm ml-4"
-      onClick={() => navigate(path)}
-      data-testid={`submenu-item-${label.toLowerCase().replace(/\s+/g, '-')}`}
-    >
-      <span className="text-gray-600">{label}</span>
-      <span className="flex items-center gap-1 text-xs text-gray-400">
-        {icons.map((icon, idx) => (
-          <span key={idx}>{icon}</span>
-        ))}
-      </span>
-    </div>
-  );
 
   return (
     <div className="space-y-6">
