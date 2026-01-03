@@ -56,7 +56,7 @@ const Dashboard = () => {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
-  const isAdmin = currentUser.access_level === 'Admin';
+  const isAdmin = currentUser.access_level === 'Admin' || currentUser.access_level === 'Full';
 
   useEffect(() => {
     fetchStats();
