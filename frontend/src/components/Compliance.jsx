@@ -289,6 +289,11 @@ const Compliance = () => {
       filtered = filtered.filter(req => reqFilters.statuses.includes(req.compliance_status));
     }
 
+    // Apply multi-select vessel filter
+    if (reqFilters.vessels.length > 0) {
+      filtered = filtered.filter(req => reqFilters.vessels.includes(req.vessel_name) || reqFilters.vessels.includes(req.vessel_id));
+    }
+
     filtered.sort((a, b) => {
       switch (reqSort) {
         case 'category':
