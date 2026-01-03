@@ -89,7 +89,8 @@ const Compliance = () => {
     updateFilters: updateReqFilters
   } = useAdvancedFilters({
     categories: [],
-    statuses: []
+    statuses: [],
+    vessels: []
   });
 
   const [certForm, setCertForm] = useState({
