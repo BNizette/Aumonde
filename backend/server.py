@@ -2220,32 +2220,80 @@ async def upload_document_file(
     file: UploadFile = File(...),
     current_user: dict = Depends(require_access_level(AccessLevel.EDIT))
 ):
-    """Upload a file and return the file URL"""
+    """Upload a file and store it in MongoDB for persistence across deployments"""
     try:
-        # Create uploads directory if it doesn't exist
-        upload_dir = Path("/app/backend/uploads")
-        upload_dir.mkdir(exist_ok=True)
+        # Read file content
+        file_content = await file.read()
+        file_size = len(file_content)
         
-        # Generate unique filename
-        file_extension = Path(file.filename).suffix
-        unique_filename = f"{uuid.uuid4()}{file_extension}"
-        file_path = upload_dir / unique_filename
+        # Limit file size to 16MB (MongoDB document limit)
+        if file_size > 16 * 1024 * 1024:
+            raise HTTPException(status_code=400, detail="File size exceeds 16MB limit")
         
-        # Save file
-        with file_path.open("wb") as buffer:
-            shutil.copyfileobj(file.file, buffer)
+        # Generate unique file ID
+        file_id = str(uuid.uuid4())
+        file_extension = Path(file.filename).suffix.lower()
         
-        # Return file URL
-        file_url = f"/api/uploads/{unique_filename}"
+        # Store file in MongoDB
+        file_doc = {
+            "id": file_id,
+            "filename": file.filename,
+            "content_type": file.content_type or "application/octet-stream",
+            "file_extension": file_extension,
+            "file_data": base64.b64encode(file_content).decode('utf-8'),
+            "size": file_size,
+            "uploaded_by": current_user["id"],
+            "uploaded_at": datetime.now(timezone.utc).isoformat()
+        }
+        
+        await db.file_storage.insert_one(file_doc)
+        
+        # Return file URL that serves from MongoDB
+        file_url = f"/api/files/{file_id}{file_extension}"
         
         return {
             "file_url": file_url,
             "filename": file.filename,
             "file_type": file.content_type,
-            "size": file_path.stat().st_size
+            "size": file_size
         }
+    except HTTPException:
+        raise
     except Exception as e:
+        logger.error(f"File upload failed: {str(e)}")
         raise HTTPException(status_code=500, detail=f"File upload failed: {str(e)}")
+
+
+@api_router.get("/files/{file_id}")
+async def get_file(file_id: str):
+    """Serve a file from MongoDB storage"""
+    try:
+        # Extract file ID without extension
+        actual_id = file_id.rsplit('.', 1)[0] if '.' in file_id else file_id
+        
+        # Find file in MongoDB
+        file_doc = await db.file_storage.find_one({"id": actual_id})
+        
+        if not file_doc:
+            raise HTTPException(status_code=404, detail="File not found")
+        
+        # Decode file content
+        file_content = base64.b64decode(file_doc["file_data"])
+        
+        # Return file with proper content type
+        return Response(
+            content=file_content,
+            media_type=file_doc.get("content_type", "application/octet-stream"),
+            headers={
+                "Content-Disposition": f'inline; filename="{file_doc["filename"]}"',
+                "Cache-Control": "public, max-age=31536000"  # Cache for 1 year
+            }
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error serving file: {str(e)}")
+        raise HTTPException(status_code=500, detail="Error serving file")
 
 # ============================================================================
 # TRIP ENDPOINTS
