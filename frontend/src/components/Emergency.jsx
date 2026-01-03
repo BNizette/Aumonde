@@ -3089,7 +3089,28 @@ const Emergency = () => {
                   <div><strong>Drill Type:</strong> {viewingDrill.drill_type}</div>
                   <div><strong>Duration:</strong> {viewingDrill.duration_minutes ? `${viewingDrill.duration_minutes} min` : 'N/A'}</div>
                   <div className="col-span-2"><strong>Date:</strong> {new Date(viewingDrill.drill_date).toLocaleString()}</div>
-                  {viewingDrill.vessel_name && <div className="col-span-2"><strong>Vessel:</strong> {viewingDrill.vessel_name}</div>}
+                  {viewingDrill.vessel_name && (
+                    <div className="col-span-2">
+                      <strong>Vessel:</strong>{' '}
+                      <button 
+                        onClick={() => { setDrillViewDialogOpen(false); navigate(`/vessels?vessel=${viewingDrill.vessel_id}`); }}
+                        className="text-blue-600 hover:underline"
+                      >
+                        {viewingDrill.vessel_name}
+                      </button>
+                    </div>
+                  )}
+                  {viewingDrill.procedure_name && (
+                    <div className="col-span-2">
+                      <strong>Procedure:</strong>{' '}
+                      <button 
+                        onClick={() => { setDrillViewDialogOpen(false); setActiveTab('procedures'); }}
+                        className="text-blue-600 hover:underline"
+                      >
+                        {viewingDrill.procedure_name}
+                      </button>
+                    </div>
+                  )}
                   {viewingDrill.crew_participants && viewingDrill.crew_participants.length > 0 && (
                     <div className="col-span-2"><strong>Crew Participants:</strong> {viewingDrill.crew_participants.join(', ')}</div>
                   )}
