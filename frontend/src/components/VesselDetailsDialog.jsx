@@ -116,7 +116,9 @@ const VesselDetailsDialog = ({
       setInductionTasks(taskOptions);
       
       // Filter emergency contacts and procedures by vessel
-      setEmergencyContacts((contactsRes.data || []).filter(c => c.vessel_ids?.includes(vesselId) || c.vessel_id === vesselId));
+      const allContacts = contactsRes.data || [];
+      setEmergencyContacts(allContacts.filter(c => c.vessel_ids?.includes(vesselId) || c.vessel_id === vesselId));
+      setGlobalContacts(allContacts.filter(c => (!c.vessel_ids || c.vessel_ids.length === 0) && !c.vessel_id));
       setEmergencyProcedures((proceduresRes.data || []).filter(p => 
         p.vessel_ids?.includes(vesselId) || 
         p.vessel_id === vesselId || 
