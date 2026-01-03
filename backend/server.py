@@ -889,7 +889,8 @@ async def get_dashboard_stats(current_user: dict = Depends(get_current_user)):
         "emergency_contacts": emergency_contacts,
         "emergency_procedures": emergency_procedures,
         "certificates": total_certificates,
-        "expiring_certificates": expiring_soon
+        "expiring_certificates": expiring_soon,
+        "passengers": total_passengers
     }
 
 # ============================================================================
