@@ -590,10 +590,17 @@ const Compliance = () => {
   };
 
   const handleViewDocument = (docId) => {
-    const doc = documents.find(d => d.id === docId);
+    if (!docId) {
+      setError('No document linked');
+      return;
+    }
+    const doc = documents.find(d => d.id === docId || d._id === docId);
     if (doc) {
       setViewingDocument(doc);
       setViewDocumentDialogOpen(true);
+    } else {
+      setError('Document not found. It may have been deleted or the link is broken.');
+      setTimeout(() => setError(''), 5000);
     }
   };
 
