@@ -1964,6 +1964,11 @@ const AdminPanel = () => {
         {activeView === 'roles' && (
           <RolesSettings />
         )}
+
+        {/* TRIP TEMPLATES VIEW */}
+        {activeView === 'trip-templates' && (
+          <ChecklistTemplatesEditor />
+        )}
       </div>
 
       {/* Edit User Dialog */}
