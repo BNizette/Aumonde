@@ -4614,7 +4614,7 @@ async def import_database(
     file: UploadFile = File(...),
     current_user: dict = Depends(get_current_user)
 ):
-    """Import database from JSON backup file"""
+    """Import database from JSON backup file - only imports non-existing items"""
     if current_user.get("access_level") != AccessLevel.FULL:
         raise HTTPException(status_code=403, detail="Only users with Full access can import backups")
     
@@ -4627,18 +4627,62 @@ async def import_database(
             raise HTTPException(status_code=400, detail="Invalid backup file format")
         
         restored_counts = {}
+        skipped_counts = {}
         
-        # Restore each collection
+        # Restore each collection - only insert non-existing items
         for collection_name, documents in backup_data["collections"].items():
             if documents:
                 collection = db[collection_name]
-                # Clear existing data (optional - be careful!)
-                # await collection.delete_many({})
+                inserted_count = 0
+                skipped_count = 0
                 
-                # Insert backup data
-                if documents:
-                    await collection.insert_many(documents)
-                    restored_counts[collection_name] = len(documents)
+                for doc in documents:
+                    # Check if document exists by _id
+                    doc_id = doc.get('_id')
+                    if doc_id:
+                        # Convert string _id back to ObjectId if needed
+                        if isinstance(doc_id, str) and len(doc_id) == 24:
+                            try:
+                                from bson import ObjectId
+                                existing = await collection.find_one({"_id": ObjectId(doc_id)})
+                            except Exception:
+                                existing = await collection.find_one({"_id": doc_id})
+                        else:
+                            existing = await collection.find_one({"_id": doc_id})
+                        
+                        if existing:
+                            skipped_count += 1
+                            continue
+                    
+                    # Also check by unique identifiers based on collection type
+                    unique_check = None
+                    if collection_name == 'users' and doc.get('email'):
+                        unique_check = {"email": doc['email']}
+                    elif collection_name == 'vessels' and doc.get('vessel_name'):
+                        unique_check = {"vessel_name": doc['vessel_name']}
+                    elif collection_name == 'crew' and doc.get('email'):
+                        unique_check = {"email": doc['email']}
+                    
+                    if unique_check:
+                        existing = await collection.find_one(unique_check)
+                        if existing:
+                            skipped_count += 1
+                            continue
+                    
+                    # Insert if not exists
+                    try:
+                        # Remove _id to let MongoDB generate a new one
+                        doc_to_insert = {k: v for k, v in doc.items() if k != '_id'}
+                        await collection.insert_one(doc_to_insert)
+                        inserted_count += 1
+                    except Exception as e:
+                        logger.warning(f"Error inserting document in {collection_name}: {str(e)}")
+                        skipped_count += 1
+                
+                if inserted_count > 0:
+                    restored_counts[collection_name] = inserted_count
+                if skipped_count > 0:
+                    skipped_counts[collection_name] = skipped_count
         
         # Log audit trail
         await log_audit(
@@ -4648,13 +4692,14 @@ async def import_database(
             target_type="system",
             target_id="backup_restore",
             target_name=f"Backup from {backup_data.get('backup_date', 'unknown date')}",
-            details={"restored_collections": restored_counts}
+            details={"restored_collections": restored_counts, "skipped_existing": skipped_counts}
         )
         
         return {
-            "message": "Database restored successfully",
+            "message": "Database restored successfully (only new items imported)",
             "backup_date": backup_data.get("backup_date"),
-            "collections_restored": restored_counts
+            "collections_restored": restored_counts,
+            "items_skipped_existing": skipped_counts
         }
     except json.JSONDecodeError:
         raise HTTPException(status_code=400, detail="Invalid JSON file")
