@@ -12,6 +12,12 @@ A comprehensive vessel and crew safety management system for maritime operations
 
 ### Completed in This Session
 
+#### File Storage Fix (CRITICAL FOR DEPLOYMENT)
+✅ **MongoDB-based file storage** - Files now stored in `file_storage` collection
+- Photos and documents persist across Kubernetes deployments
+- Served via `/api/files/{file_id}` endpoint
+- Base64 encoded in MongoDB (up to 16MB per file)
+
 #### Phase 1 - Dashboard & Navigation (DONE)
 1. ✅ **Help Dialog pencil edit** - Fixed isAdmin check to include 'Full' access level
 2. ✅ **Dashboard Quick Links** - Converted to accordion-style menu with complete structure
@@ -33,13 +39,18 @@ A comprehensive vessel and crew safety management system for maritime operations
 14. ✅ **Compliance module** - Added vessel hyperlinks in certificates, vessel filter in requirements tab
 15. ✅ **Documents module** - Added vessel hyperlinks in document list
 
-#### Phase 4 - Admin Panel Fixes (DONE)
+#### Phase 4 - Admin Panel (DONE)
 16. ✅ **Backup passengers export** - Fixed to export from passengers collection
 17. ✅ **Backup restore** - Updated to only import non-existing items (checks by _id and unique fields)
 18. ✅ **Compliance document view error** - Added proper error handling when document not found
+19. ✅ **Trip Checklist Templates** - NEW Admin Panel view to edit Pre-departure and Safety Briefing templates
+    - Editable sections and items
+    - Move items up/down
+    - Reset to default option
+    - Changes apply to new trip checklists
 
 #### Other Fixes
-19. ✅ **Fixed isAdmin check** - Updated across multiple components (Emergency, Compliance, etc.) to include 'Full' access level
+20. ✅ **Fixed isAdmin check** - Updated across multiple components (Emergency, Compliance, etc.) to include 'Full' access level
 
 ### Pending Tasks
 
