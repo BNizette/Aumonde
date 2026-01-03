@@ -417,7 +417,7 @@ const Compliance = () => {
   };
 
   const hasActiveCertFilters = certSearch || certFilters.types.length > 0 || certFilters.statuses.length > 0 || certFilters.vessels.length > 0;
-  const hasActiveReqFilters = reqSearch || reqFilters.categories.length > 0 || reqFilters.statuses.length > 0;
+  const hasActiveReqFilters = reqSearch || reqFilters.categories.length > 0 || reqFilters.statuses.length > 0 || reqFilters.vessels.length > 0;
 
   const handleCertSubmit = async () => {
     if (!certForm.certificate_name || !certForm.expiry_date) {
