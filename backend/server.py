@@ -6307,20 +6307,38 @@ async def upload_branding_image(
         raise HTTPException(status_code=400, detail=f"File type not allowed. Allowed: {', '.join(allowed_extensions)}")
     
     try:
-        # Create branding uploads directory
-        upload_dir = Path("/app/backend/uploads/branding")
-        upload_dir.mkdir(parents=True, exist_ok=True)
+        # Read file content
+        file_content = await file.read()
+        file_size = len(file_content)
         
-        # Use fixed filename for favicon/logo (overwrite previous)
-        unique_filename = f"{type}{file_extension}"
-        file_path = upload_dir / unique_filename
+        # Limit file size to 5MB for branding images
+        if file_size > 5 * 1024 * 1024:
+            raise HTTPException(status_code=400, detail="File size exceeds 5MB limit")
         
-        # Save file
-        with file_path.open("wb") as buffer:
-            shutil.copyfileobj(file.file, buffer)
+        # Generate unique file ID
+        file_id = f"branding_{type}_{uuid.uuid4()}"
         
-        # Return file URL
-        file_url = f"/api/uploads/branding/{unique_filename}"
+        # Store file in MongoDB
+        file_doc = {
+            "id": file_id,
+            "filename": file.filename,
+            "content_type": file.content_type or "application/octet-stream",
+            "file_extension": file_extension,
+            "file_data": base64.b64encode(file_content).decode('utf-8'),
+            "size": file_size,
+            "uploaded_by": current_user["id"],
+            "uploaded_at": datetime.now(timezone.utc).isoformat(),
+            "branding_type": type
+        }
+        
+        # Remove old branding file of same type
+        await db.file_storage.delete_many({"branding_type": type})
+        
+        # Insert new file
+        await db.file_storage.insert_one(file_doc)
+        
+        # Return file URL that serves from MongoDB
+        file_url = f"/api/files/{file_id}{file_extension}"
         
         # Update branding settings with new URL
         field = f"{type}_url"
@@ -6344,7 +6362,10 @@ async def upload_branding_image(
             "filename": file.filename,
             "type": type
         }
+    except HTTPException:
+        raise
     except Exception as e:
+        logger.error(f"Branding upload failed: {str(e)}")
         raise HTTPException(status_code=500, detail=f"File upload failed: {str(e)}")
 
 # ============================================================================
