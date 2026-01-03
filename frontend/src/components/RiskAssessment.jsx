@@ -25,6 +25,7 @@ const API = `${BACKEND_URL}/api`;
 
 const RiskAssessment = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [risks, setRisks] = useState([]);
   const [filteredRisks, setFilteredRisks] = useState([]);
   const [loading, setLoading] = useState(false);
