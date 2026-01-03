@@ -978,60 +978,6 @@ const VesselDetailsDialog = ({
           </div>
         );
 
-      case 'induction':
-        return (
-          <div className="p-4 space-y-4">
-            <div className="flex items-center justify-between">
-              <p className="text-sm text-gray-500">
-                {inductionRecords.length} crew member{inductionRecords.length !== 1 ? 's' : ''} with induction records
-              </p>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  onClose();
-                  // Trigger edit mode for this vessel with induction tab
-                  if (onEdit) {
-                    onEdit(vessel, 'induction');
-                  }
-                }}
-              >
-                <ExternalLink className="h-4 w-4 mr-2" />
-                Manage in Vessel
-              </Button>
-            </div>
-            {inductionRecords.length > 0 ? (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Crew Name</TableHead>
-                    <TableHead>Date of Induction</TableHead>
-                    <TableHead>Tasks Completed</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {inductionRecords.map(record => (
-                    <TableRow key={record.id}>
-                      <TableCell className="font-medium">{record.crew_name}</TableCell>
-                      <TableCell>{record.date_signed ? formatDate(record.date_signed) : (record.updated_at ? formatDate(record.updated_at) : '-')}</TableCell>
-                      <TableCell>
-                        <Badge variant="outline">
-                          {(record.completed_tasks || []).length} / {inductionTasks.length}
-                        </Badge>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            ) : (
-              <div className="text-center py-8 text-gray-500">
-                <p>No induction records for this vessel.</p>
-                <p className="text-xs mt-1">Use the &quot;Manage in Vessel&quot; button above to add crew inductions</p>
-              </div>
-            )}
-          </div>
-        );
-
       case 'emergency_contacts':
         const displayedContacts = includeGlobalContacts 
           ? [...emergencyContacts, ...globalContacts] 
