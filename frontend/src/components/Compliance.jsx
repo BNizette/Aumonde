@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -27,8 +27,9 @@ const API = `${BACKEND_URL}/api`;
 
 const Compliance = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
-  const isAdmin = currentUser.access_level === 'Admin';
+  const isAdmin = currentUser.access_level === 'Admin' || currentUser.access_level === 'Full';
   const [certificates, setCertificates] = useState([]);
   const [requirements, setRequirements] = useState([]);
   const [vessels, setVessels] = useState([]);
