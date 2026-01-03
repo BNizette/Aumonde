@@ -1584,7 +1584,28 @@ const Incidents = () => {
                 )}
                 {viewingIncident.pilot_on_board && <div><strong>🧑‍✈️ Pilot on Board:</strong> Yes</div>}
                 {viewingIncident.cargo_on_board && <div><strong>📦 Cargo on Board:</strong> Yes</div>}
-                {viewingIncident.vessel_name && <div><strong>Vessel:</strong> {viewingIncident.vessel_name}</div>}
+                {viewingIncident.vessel_name && (
+                  <div>
+                    <strong>Vessel:</strong>{' '}
+                    <button 
+                      onClick={() => { setViewDialogOpen(false); navigate(`/vessels?vessel=${viewingIncident.vessel_id}`); }}
+                      className="text-blue-600 hover:underline font-medium"
+                    >
+                      {viewingIncident.vessel_name}
+                    </button>
+                  </div>
+                )}
+                {viewingIncident.linked_trip_name && (
+                  <div>
+                    <strong>Linked Trip:</strong>{' '}
+                    <button 
+                      onClick={() => { setViewDialogOpen(false); navigate(`/trips?trip=${viewingIncident.linked_trip_id}`); }}
+                      className="text-blue-600 hover:underline font-medium"
+                    >
+                      {viewingIncident.linked_trip_name}
+                    </button>
+                  </div>
+                )}
                 <div><strong>Reported By:</strong> {viewingIncident.reported_by_name}</div>
               </div>
 
