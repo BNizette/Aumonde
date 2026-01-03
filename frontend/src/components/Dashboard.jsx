@@ -245,19 +245,19 @@ const Dashboard = () => {
               </AccordionTrigger>
               <AccordionContent>
                 <div className="space-y-1">
-                  <MenuItem label="Edit Summary details" path="/trips" icons={['+']} />
+                  <MenuItem navigate={navigate} label="Edit Summary details" path="/trips" icons={['+']} />
                   <div className="ml-2 border-l pl-2 space-y-1">
                     <div className="text-xs font-medium text-gray-500 py-1">View logs</div>
-                    <SubMenuItem label="Crew" path="/trips" icons={['+', '=']} />
-                    <SubMenuItem label="Shifts" path="/trips" icons={['+', '^']} />
-                    <SubMenuItem label="Passengers" path="/trips" icons={['=', '+']} />
-                    <SubMenuItem label="Expenditure APA" path="/trips" icons={['+', '^']} />
-                    <SubMenuItem label="Pre-departure checklist" path="/trips" icons={['+']} />
-                    <SubMenuItem label="Safety Briefing" path="/trips" icons={['+']} />
-                    <SubMenuItem label="Running Logs" path="/trips" icons={['+', '^']} />
-                    <SubMenuItem label="Engine Logs" path="/trips" icons={['+', '^']} />
-                    <SubMenuItem label="Incidents" path="/trips" icons={['=']} />
-                    <SubMenuItem label="Drills" path="/trips" icons={['=']} />
+                    <SubMenuItem navigate={navigate} label="Crew" path="/trips" icons={['+', '=']} />
+                    <SubMenuItem navigate={navigate} label="Shifts" path="/trips" icons={['+', '^']} />
+                    <SubMenuItem navigate={navigate} label="Passengers" path="/trips" icons={['=', '+']} />
+                    <SubMenuItem navigate={navigate} label="Expenditure APA" path="/trips" icons={['+', '^']} />
+                    <SubMenuItem navigate={navigate} label="Pre-departure checklist" path="/trips" icons={['+']} />
+                    <SubMenuItem navigate={navigate} label="Safety Briefing" path="/trips" icons={['+']} />
+                    <SubMenuItem navigate={navigate} label="Running Logs" path="/trips" icons={['+', '^']} />
+                    <SubMenuItem navigate={navigate} label="Engine Logs" path="/trips" icons={['+', '^']} />
+                    <SubMenuItem navigate={navigate} label="Incidents" path="/trips" icons={['=']} />
+                    <SubMenuItem navigate={navigate} label="Drills" path="/trips" icons={['=']} />
                   </div>
                 </div>
               </AccordionContent>
@@ -275,13 +275,13 @@ const Dashboard = () => {
                 <div className="space-y-1">
                   <div className="ml-2 border-l pl-2 space-y-1">
                     <div className="text-xs font-medium text-gray-500 py-1">Edit</div>
-                    <SubMenuItem label="Details" path="/passengers" icons={['+']} />
-                    <SubMenuItem label="Medical & Dietary" path="/passengers" icons={['+']} />
-                    <SubMenuItem label="Preferences" path="/passengers" icons={['+']} />
-                    <SubMenuItem label="Entertainment" path="/passengers" icons={['+']} />
-                    <SubMenuItem label="Photo" path="/passengers" icons={['+']} />
+                    <SubMenuItem navigate={navigate} label="Details" path="/passengers" icons={['+']} />
+                    <SubMenuItem navigate={navigate} label="Medical & Dietary" path="/passengers" icons={['+']} />
+                    <SubMenuItem navigate={navigate} label="Preferences" path="/passengers" icons={['+']} />
+                    <SubMenuItem navigate={navigate} label="Entertainment" path="/passengers" icons={['+']} />
+                    <SubMenuItem navigate={navigate} label="Photo" path="/passengers" icons={['+']} />
                   </div>
-                  <MenuItem label="View Trip History" path="/passengers" icons={['+']} />
+                  <MenuItem navigate={navigate} label="View Trip History" path="/passengers" icons={['+']} />
                 </div>
               </AccordionContent>
             </AccordionItem>
@@ -298,14 +298,14 @@ const Dashboard = () => {
                 <div className="space-y-1">
                   <div className="ml-2 border-l pl-2 space-y-1">
                     <div className="text-xs font-medium text-gray-500 py-1">Edit</div>
-                    <SubMenuItem label="Details" path="/crew" icons={['+']} />
-                    <SubMenuItem label="Qualifications" path="/crew" icons={['+']} />
-                    <SubMenuItem label="Training" path="/crew" icons={['+']} />
-                    <SubMenuItem label="Induction per Vessel" path="/crew" icons={['+']} />
-                    <SubMenuItem label="Medical & Dietary" path="/crew" icons={['+']} />
-                    <SubMenuItem label="Preferences" path="/crew" icons={['+']} />
-                    <SubMenuItem label="Entertainment" path="/crew" icons={['+']} />
-                    <SubMenuItem label="Photo" path="/crew" icons={['+']} />
+                    <SubMenuItem navigate={navigate} label="Details" path="/crew" icons={['+']} />
+                    <SubMenuItem navigate={navigate} label="Qualifications" path="/crew" icons={['+']} />
+                    <SubMenuItem navigate={navigate} label="Training" path="/crew" icons={['+']} />
+                    <SubMenuItem navigate={navigate} label="Induction per Vessel" path="/crew" icons={['+']} />
+                    <SubMenuItem navigate={navigate} label="Medical & Dietary" path="/crew" icons={['+']} />
+                    <SubMenuItem navigate={navigate} label="Preferences" path="/crew" icons={['+']} />
+                    <SubMenuItem navigate={navigate} label="Entertainment" path="/crew" icons={['+']} />
+                    <SubMenuItem navigate={navigate} label="Photo" path="/crew" icons={['+']} />
                   </div>
                 </div>
               </AccordionContent>
@@ -323,31 +323,31 @@ const Dashboard = () => {
                 <div className="space-y-1">
                   <div className="ml-2 border-l pl-2 space-y-1">
                     <div className="text-xs font-medium text-gray-500 py-1">Edit</div>
-                    <SubMenuItem label="Basic & Specs" path="/vessels" icons={['+']} />
-                    <SubMenuItem label="Certificates" path="/vessels" icons={['>']} />
-                    <SubMenuItem label="Emergency" path="/vessels" icons={['>']} />
-                    <SubMenuItem label="Induction" path="/vessels" icons={['+']} />
-                    <SubMenuItem label="Photo" path="/vessels" icons={['+']} />
+                    <SubMenuItem navigate={navigate} label="Basic & Specs" path="/vessels" icons={['+']} />
+                    <SubMenuItem navigate={navigate} label="Certificates" path="/vessels" icons={['>']} />
+                    <SubMenuItem navigate={navigate} label="Emergency" path="/vessels" icons={['>']} />
+                    <SubMenuItem navigate={navigate} label="Induction" path="/vessels" icons={['+']} />
+                    <SubMenuItem navigate={navigate} label="Photo" path="/vessels" icons={['+']} />
                   </div>
                   <div className="ml-2 border-l pl-2 space-y-1">
                     <div className="text-xs font-medium text-gray-500 py-1">View</div>
-                    <SubMenuItem label="Details" path="/vessels" icons={[]} />
-                    <SubMenuItem label="Trips" path="/vessels" icons={['+', '=']} />
-                    <SubMenuItem label="Passengers" path="/vessels" icons={['=']} />
-                    <SubMenuItem label="Shift Logs" path="/vessels" icons={['=']} />
-                    <SubMenuItem label="Running Logs" path="/vessels" icons={['=']} />
-                    <SubMenuItem label="Engine Logs" path="/vessels" icons={['=']} />
-                    <SubMenuItem label="Maintenance" path="/vessels" icons={['>']} />
-                    <SubMenuItem label="Risk Assessment" path="/vessels" icons={['>']} />
-                    <SubMenuItem label="Incidents" path="/vessels" icons={['>']} />
-                    <SubMenuItem label="Compliance Certificates" path="/vessels" icons={['>']} />
-                    <SubMenuItem label="Compliance Requirements" path="/vessels" icons={[]} />
-                    <SubMenuItem label="Induction" path="/vessels" icons={[]} />
-                    <SubMenuItem label="Emergency Contacts" path="/vessels" icons={['>']} />
-                    <SubMenuItem label="Emergency Procedures" path="/vessels" icons={['>']} />
-                    <SubMenuItem label="Drill Logs" path="/vessels" icons={['>']} />
-                    <SubMenuItem label="Vessel Documents" path="/vessels" icons={['>']} />
-                    <SubMenuItem label="Global Documents" path="/vessels" icons={['>']} />
+                    <SubMenuItem navigate={navigate} label="Details" path="/vessels" icons={[]} />
+                    <SubMenuItem navigate={navigate} label="Trips" path="/vessels" icons={['+', '=']} />
+                    <SubMenuItem navigate={navigate} label="Passengers" path="/vessels" icons={['=']} />
+                    <SubMenuItem navigate={navigate} label="Shift Logs" path="/vessels" icons={['=']} />
+                    <SubMenuItem navigate={navigate} label="Running Logs" path="/vessels" icons={['=']} />
+                    <SubMenuItem navigate={navigate} label="Engine Logs" path="/vessels" icons={['=']} />
+                    <SubMenuItem navigate={navigate} label="Maintenance" path="/vessels" icons={['>']} />
+                    <SubMenuItem navigate={navigate} label="Risk Assessment" path="/vessels" icons={['>']} />
+                    <SubMenuItem navigate={navigate} label="Incidents" path="/vessels" icons={['>']} />
+                    <SubMenuItem navigate={navigate} label="Compliance Certificates" path="/vessels" icons={['>']} />
+                    <SubMenuItem navigate={navigate} label="Compliance Requirements" path="/vessels" icons={[]} />
+                    <SubMenuItem navigate={navigate} label="Induction" path="/vessels" icons={[]} />
+                    <SubMenuItem navigate={navigate} label="Emergency Contacts" path="/vessels" icons={['>']} />
+                    <SubMenuItem navigate={navigate} label="Emergency Procedures" path="/vessels" icons={['>']} />
+                    <SubMenuItem navigate={navigate} label="Drill Logs" path="/vessels" icons={['>']} />
+                    <SubMenuItem navigate={navigate} label="Vessel Documents" path="/vessels" icons={['>']} />
+                    <SubMenuItem navigate={navigate} label="Global Documents" path="/vessels" icons={['>']} />
                   </div>
                 </div>
               </AccordionContent>
@@ -363,8 +363,8 @@ const Dashboard = () => {
               </AccordionTrigger>
               <AccordionContent>
                 <div className="space-y-1">
-                  <MenuItem label="Edit" path="/maintenance" icons={['+']} />
-                  <MenuItem label="View" path="/maintenance" icons={[]} />
+                  <MenuItem navigate={navigate} label="Edit" path="/maintenance" icons={['+']} />
+                  <MenuItem navigate={navigate} label="View" path="/maintenance" icons={[]} />
                 </div>
               </AccordionContent>
             </AccordionItem>
@@ -379,8 +379,8 @@ const Dashboard = () => {
               </AccordionTrigger>
               <AccordionContent>
                 <div className="space-y-1">
-                  <MenuItem label="Edit" path="/incidents" icons={['+']} />
-                  <MenuItem label="View" path="/incidents" icons={[]} />
+                  <MenuItem navigate={navigate} label="Edit" path="/incidents" icons={['+']} />
+                  <MenuItem navigate={navigate} label="View" path="/incidents" icons={[]} />
                 </div>
               </AccordionContent>
             </AccordionItem>
@@ -395,23 +395,23 @@ const Dashboard = () => {
               </AccordionTrigger>
               <AccordionContent>
                 <div className="space-y-1">
-                  <MenuItem label="Contacts" path="/emergency" icons={['+']} />
+                  <MenuItem navigate={navigate} label="Contacts" path="/emergency" icons={['+']} />
                   <div className="ml-2 border-l pl-2 space-y-1">
                     <div className="text-xs font-medium text-gray-500 py-1">Procedures</div>
-                    <SubMenuItem label="Edit" path="/emergency" icons={['+']} />
+                    <SubMenuItem navigate={navigate} label="Edit" path="/emergency" icons={['+']} />
                     <div className="ml-4 border-l pl-2 space-y-1">
                       <div className="text-xs font-medium text-gray-400 py-1">View</div>
-                      <SubMenuItem label="Details" path="/emergency" icons={[]} />
-                      <SubMenuItem label="Drills" path="/emergency" icons={['+']} />
+                      <SubMenuItem navigate={navigate} label="Details" path="/emergency" icons={[]} />
+                      <SubMenuItem navigate={navigate} label="Drills" path="/emergency" icons={['+']} />
                     </div>
                   </div>
                   <div className="ml-2 border-l pl-2 space-y-1">
                     <div className="text-xs font-medium text-gray-500 py-1">Drills</div>
-                    <SubMenuItem label="Edit" path="/emergency" icons={[]} />
+                    <SubMenuItem navigate={navigate} label="Edit" path="/emergency" icons={[]} />
                     <div className="ml-4 border-l pl-2 space-y-1">
                       <div className="text-xs font-medium text-gray-400 py-1">View</div>
-                      <SubMenuItem label="Details" path="/emergency" icons={[]} />
-                      <SubMenuItem label="Records" path="/emergency" icons={['+']} />
+                      <SubMenuItem navigate={navigate} label="Details" path="/emergency" icons={[]} />
+                      <SubMenuItem navigate={navigate} label="Records" path="/emergency" icons={['+']} />
                     </div>
                   </div>
                 </div>
@@ -428,8 +428,8 @@ const Dashboard = () => {
               </AccordionTrigger>
               <AccordionContent>
                 <div className="space-y-1">
-                  <MenuItem label="Edit" path="/risk-assessment" icons={['+']} />
-                  <MenuItem label="View" path="/risk-assessment" icons={[]} />
+                  <MenuItem navigate={navigate} label="Edit" path="/risk-assessment" icons={['+']} />
+                  <MenuItem navigate={navigate} label="View" path="/risk-assessment" icons={[]} />
                 </div>
               </AccordionContent>
             </AccordionItem>
@@ -446,10 +446,10 @@ const Dashboard = () => {
                 <div className="space-y-1">
                   <div className="ml-2 border-l pl-2 space-y-1">
                     <div className="text-xs font-medium text-gray-500 py-1">Certificates</div>
-                    <SubMenuItem label="Edit" path="/compliance" icons={['+']} />
-                    <SubMenuItem label="View Cert" path="/compliance" icons={['^']} />
+                    <SubMenuItem navigate={navigate} label="Edit" path="/compliance" icons={['+']} />
+                    <SubMenuItem navigate={navigate} label="View Cert" path="/compliance" icons={['^']} />
                   </div>
-                  <MenuItem label="Requirements" path="/compliance" icons={['+']} />
+                  <MenuItem navigate={navigate} label="Requirements" path="/compliance" icons={['+']} />
                 </div>
               </AccordionContent>
             </AccordionItem>
@@ -464,7 +464,7 @@ const Dashboard = () => {
               </AccordionTrigger>
               <AccordionContent>
                 <div className="space-y-1">
-                  <MenuItem label="Manage Documents" path="/documents" icons={['+', '^']} />
+                  <MenuItem navigate={navigate} label="Manage Documents" path="/documents" icons={['+', '^']} />
                 </div>
               </AccordionContent>
             </AccordionItem>
@@ -479,8 +479,8 @@ const Dashboard = () => {
               </AccordionTrigger>
               <AccordionContent>
                 <div className="space-y-1">
-                  <MenuItem label="Smart Suggestions" path="/ai-assistant" icons={[]} />
-                  <MenuItem label="AI Chat" path="/ai-assistant" icons={[]} />
+                  <MenuItem navigate={navigate} label="Smart Suggestions" path="/ai-assistant" icons={[]} />
+                  <MenuItem navigate={navigate} label="AI Chat" path="/ai-assistant" icons={[]} />
                 </div>
               </AccordionContent>
             </AccordionItem>
@@ -495,36 +495,36 @@ const Dashboard = () => {
               </AccordionTrigger>
               <AccordionContent>
                 <div className="space-y-1">
-                  <MenuItem label="Users" path="/admin" icons={['+']} />
-                  <MenuItem label="Activity Logs" path="/admin" icons={[]} />
-                  <MenuItem label="Audit Trail" path="/admin" icons={[]} />
-                  <MenuItem label="Sessions" path="/admin" icons={[]} />
-                  <MenuItem label="SMS Revisions" path="/admin" icons={['+']} />
+                  <MenuItem navigate={navigate} label="Users" path="/admin" icons={['+']} />
+                  <MenuItem navigate={navigate} label="Activity Logs" path="/admin" icons={[]} />
+                  <MenuItem navigate={navigate} label="Audit Trail" path="/admin" icons={[]} />
+                  <MenuItem navigate={navigate} label="Sessions" path="/admin" icons={[]} />
+                  <MenuItem navigate={navigate} label="SMS Revisions" path="/admin" icons={['+']} />
                   <div className="ml-2 border-l pl-2 space-y-1">
                     <div className="text-xs font-medium text-gray-500 py-1">Email Config</div>
-                    <SubMenuItem label="Config" path="/admin" icons={[]} />
-                    <SubMenuItem label="Test" path="/admin" icons={[]} />
-                    <SubMenuItem label="Email Templates" path="/admin" icons={[]} />
+                    <SubMenuItem navigate={navigate} label="Config" path="/admin" icons={[]} />
+                    <SubMenuItem navigate={navigate} label="Test" path="/admin" icons={[]} />
+                    <SubMenuItem navigate={navigate} label="Email Templates" path="/admin" icons={[]} />
                   </div>
                   <div className="ml-2 border-l pl-2 space-y-1">
                     <div className="text-xs font-medium text-gray-500 py-1">Backup & Restore</div>
-                    <SubMenuItem label="Create" path="/admin" icons={['+']} />
-                    <SubMenuItem label="Restore" path="/admin" icons={['+']} />
-                    <SubMenuItem label="Export" path="/admin" icons={['+']} />
-                    <SubMenuItem label="Schedule" path="/admin" icons={['+']} />
-                    <SubMenuItem label="History" path="/admin" icons={[]} />
+                    <SubMenuItem navigate={navigate} label="Create" path="/admin" icons={['+']} />
+                    <SubMenuItem navigate={navigate} label="Restore" path="/admin" icons={['+']} />
+                    <SubMenuItem navigate={navigate} label="Export" path="/admin" icons={['+']} />
+                    <SubMenuItem navigate={navigate} label="Schedule" path="/admin" icons={['+']} />
+                    <SubMenuItem navigate={navigate} label="History" path="/admin" icons={[]} />
                   </div>
                   <div className="ml-2 border-l pl-2 space-y-1">
                     <div className="text-xs font-medium text-gray-500 py-1">Branding</div>
-                    <SubMenuItem label="Favicon" path="/admin" icons={[]} />
-                    <SubMenuItem label="Logo" path="/admin" icons={[]} />
-                    <SubMenuItem label="Live URL" path="/admin" icons={[]} />
+                    <SubMenuItem navigate={navigate} label="Favicon" path="/admin" icons={[]} />
+                    <SubMenuItem navigate={navigate} label="Logo" path="/admin" icons={[]} />
+                    <SubMenuItem navigate={navigate} label="Live URL" path="/admin" icons={[]} />
                   </div>
                   <div className="ml-2 border-l pl-2 space-y-1">
                     <div className="text-xs font-medium text-gray-500 py-1">Settings</div>
-                    <SubMenuItem label="Dropdown lists by module" path="/admin" icons={['+']} />
+                    <SubMenuItem navigate={navigate} label="Dropdown lists by module" path="/admin" icons={['+']} />
                   </div>
-                  <MenuItem label="Roles & Permissions" path="/admin" icons={['+']} />
+                  <MenuItem navigate={navigate} label="Roles & Permissions" path="/admin" icons={['+']} />
                 </div>
               </AccordionContent>
             </AccordionItem>
