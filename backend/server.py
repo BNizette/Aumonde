@@ -2745,12 +2745,13 @@ async def get_trip_checklist(trip_id: str, checklist_type: str, current_user: di
     if checklist_type not in ["pre_departure", "safety_briefing"]:
         raise HTTPException(status_code=400, detail="Invalid checklist type. Use 'pre_departure' or 'safety_briefing'")
     
-    # Get the template for this checklist type
-    template = PRE_DEPARTURE_TEMPLATE if checklist_type == "pre_departure" else SAFETY_BRIEFING_TEMPLATE
+    # Get the active template for this checklist type (custom or default)
+    active_template = await get_active_template(checklist_type)
+    template_sections = active_template.get("sections", [])
     
     # Build a lookup map: section_id -> item_id -> label
     template_labels = {}
-    for section in template["sections"]:
+    for section in template_sections:
         template_labels[section["section_id"]] = {
             "section_name": section["section_name"],
             "items": {item["item_id"]: item["label"] for item in section["items"]}
