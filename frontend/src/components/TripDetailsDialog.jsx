@@ -1145,10 +1145,6 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh, onEditCrew, onEditP
                       <SelectItem value="shift">Shifts ({shiftLogs.length})</SelectItem>
                       <SelectItem value="passengers">Passengers ({tripPassengers.length})</SelectItem>
                       <SelectItem value="expenditure">Expenditure APA ({expenditures.length})</SelectItem>
-                      <SelectItem value="running">Running Logs ({runningLogs.length})</SelectItem>
-                      <SelectItem value="engine">Engine Logs ({engineLogs.length})</SelectItem>
-                      <SelectItem value="incidents">Incidents ({tripIncidents.length})</SelectItem>
-                      <SelectItem value="drills">Drills ({tripDrills.length})</SelectItem>
                       <SelectItem value="pre_departure">
                         <span className="flex items-center gap-2">
                           <ClipboardCheck className="h-4 w-4" />
@@ -1161,6 +1157,10 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh, onEditCrew, onEditP
                           Safety Briefing
                         </span>
                       </SelectItem>
+                      <SelectItem value="running">Running Logs ({runningLogs.length})</SelectItem>
+                      <SelectItem value="engine">Engine Logs ({engineLogs.length})</SelectItem>
+                      <SelectItem value="incidents">Incidents ({tripIncidents.length})</SelectItem>
+                      <SelectItem value="drills">Drills ({tripDrills.length})</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
