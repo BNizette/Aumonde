@@ -374,9 +374,12 @@ const DocumentManagement = () => {
                       {doc.document_name}
                     </div>
                     {doc.vessel_name && (
-                      <div className="text-xs text-blue-600 font-medium mt-0.5">
+                      <button 
+                        onClick={(e) => { e.stopPropagation(); navigate(`/vessels?vessel=${doc.vessel_id}`); }}
+                        className="text-xs text-blue-600 font-medium mt-0.5 hover:underline text-left"
+                      >
                         🚢 {doc.vessel_name}
-                      </div>
+                      </button>
                     )}
                     {!doc.vessel_id && !doc.vessel_name && (
                       <div className="text-xs text-gray-400 mt-0.5">
