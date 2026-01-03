@@ -25,6 +25,7 @@ const API = `${BACKEND_URL}/api`;
 
 const Maintenance = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [maintenanceRecords, setMaintenanceRecords] = useState([]);
   const [filteredRecords, setFilteredRecords] = useState([]);
   const [loading, setLoading] = useState(false);
