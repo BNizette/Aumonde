@@ -1066,6 +1066,12 @@ const AdminPanel = () => {
                 Roles & Permissions
               </span>
             </SelectItem>
+            <SelectItem value="trip-templates">
+              <span className="flex items-center gap-2">
+                <FileSpreadsheet className="h-4 w-4" />
+                Trip Checklist Templates
+              </span>
+            </SelectItem>
           </SelectContent>
         </Select>
       </div>
