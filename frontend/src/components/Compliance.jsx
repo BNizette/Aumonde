@@ -342,7 +342,7 @@ const Compliance = () => {
       }
       setMessage(`Import complete: ${successCount} certificates added${errorCount > 0 ? `, ${errorCount} failed` : ''}`);
       setTimeout(() => setMessage(''), 5000);
-      fetchCertificates();
+      fetchData();
     } catch (err) { setError('Error importing: ' + err.message); setTimeout(() => setError(''), 5000); }
   };
 
@@ -368,7 +368,7 @@ const Compliance = () => {
       }
       setMessage(`Import complete: ${successCount} requirements added${errorCount > 0 ? `, ${errorCount} failed` : ''}`);
       setTimeout(() => setMessage(''), 5000);
-      fetchRequirements();
+      fetchData();
     } catch (err) { setError('Error importing: ' + err.message); setTimeout(() => setError(''), 5000); }
   };
 
