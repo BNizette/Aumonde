@@ -2312,7 +2312,28 @@ const Emergency = () => {
                           <p className="text-sm text-gray-600">
                             <strong>Date:</strong> {new Date(drill.drill_date).toLocaleString()}
                           </p>
-                          {drill.vessel_name && <p className="text-sm"><strong>Vessel:</strong> {drill.vessel_name}</p>}
+                          {drill.vessel_name && (
+                            <p className="text-sm">
+                              <strong>Vessel:</strong>{' '}
+                              <button 
+                                onClick={(e) => { e.stopPropagation(); navigate(`/vessels?vessel=${drill.vessel_id}`); }}
+                                className="text-blue-600 hover:underline"
+                              >
+                                {drill.vessel_name}
+                              </button>
+                            </p>
+                          )}
+                          {drill.procedure_name && (
+                            <p className="text-sm">
+                              <strong>Procedure:</strong>{' '}
+                              <button 
+                                onClick={(e) => { e.stopPropagation(); setActiveTab('procedures'); }}
+                                className="text-blue-600 hover:underline"
+                              >
+                                {drill.procedure_name}
+                              </button>
+                            </p>
+                          )}
                           {drill.crew_participants && drill.crew_participants.length > 0 && (
                             <p className="text-sm"><strong>Crew:</strong> {drill.crew_participants.join(', ')}</p>
                           )}
