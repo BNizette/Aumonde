@@ -1144,12 +1144,27 @@ const VesselDetailsDialog = ({
         );
 
       case 'vessel_documents':
+        const displayedDocuments = includeGlobalDocuments 
+          ? [...vesselDocuments, ...globalDocuments] 
+          : vesselDocuments;
         return (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <p className="text-sm text-gray-500">
-                {vesselDocuments.length} document{vesselDocuments.length !== 1 ? 's' : ''} for this vessel
-              </p>
+              <div className="flex items-center gap-4">
+                <p className="text-sm text-gray-500">
+                  {displayedDocuments.length} document{displayedDocuments.length !== 1 ? 's' : ''}
+                </p>
+                <div className="flex items-center gap-2">
+                  <Checkbox 
+                    id="include-global-documents" 
+                    checked={includeGlobalDocuments}
+                    onCheckedChange={setIncludeGlobalDocuments}
+                  />
+                  <Label htmlFor="include-global-documents" className="text-sm text-gray-600 cursor-pointer">
+                    Include global documents
+                  </Label>
+                </div>
+              </div>
               <Button 
                 variant="outline" 
                 size="sm"
@@ -1159,7 +1174,7 @@ const VesselDetailsDialog = ({
                 Manage in Documents
               </Button>
             </div>
-            {vesselDocuments.length > 0 ? (
+            {displayedDocuments.length > 0 ? (
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -1168,19 +1183,23 @@ const VesselDetailsDialog = ({
                     <TableHead>Category</TableHead>
                     <TableHead>Version</TableHead>
                     <TableHead>Issue Date</TableHead>
-                    <TableHead>Review Date</TableHead>
+                    <TableHead>Scope</TableHead>
                     <TableHead>Status</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {vesselDocuments.map(doc => (
+                  {displayedDocuments.map(doc => (
                     <TableRow key={doc.id}>
                       <TableCell className="font-medium">{doc.title || '-'}</TableCell>
                       <TableCell><Badge variant="outline">{doc.document_type || '-'}</Badge></TableCell>
                       <TableCell>{doc.category || '-'}</TableCell>
                       <TableCell>{doc.version || '-'}</TableCell>
                       <TableCell>{doc.issue_date ? formatDate(doc.issue_date) : '-'}</TableCell>
-                      <TableCell>{doc.review_date ? formatDate(doc.review_date) : '-'}</TableCell>
+                      <TableCell>
+                        <Badge variant={doc.vessel_id ? 'secondary' : 'default'}>
+                          {doc.vessel_id ? 'Vessel' : 'Global'}
+                        </Badge>
+                      </TableCell>
                       <TableCell><Badge variant={doc.status === 'Current' ? 'default' : 'secondary'}>{doc.status || '-'}</Badge></TableCell>
                     </TableRow>
                   ))}
@@ -1188,7 +1207,7 @@ const VesselDetailsDialog = ({
               </Table>
             ) : (
               <div className="text-center py-8 text-gray-500">
-                <p>No documents for this vessel.</p>
+                <p>No documents found.</p>
                 <p className="text-xs mt-1">Add documents from the Documents module</p>
               </div>
             )}
