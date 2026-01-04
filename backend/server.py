@@ -2295,6 +2295,29 @@ async def get_file(file_id: str):
         logger.error(f"Error serving file: {str(e)}")
         raise HTTPException(status_code=500, detail="Error serving file")
 
+
+# ============================================================================
+# OCR ENDPOINT (Receipt scanning)
+# ============================================================================
+
+class OCRRequest(BaseModel):
+    file_url: str
+
+@api_router.post("/ocr/receipt")
+async def ocr_receipt(request: OCRRequest, current_user: dict = Depends(get_current_user)):
+    """
+    OCR endpoint for scanning receipts. 
+    Currently returns a stub response - can be enhanced with actual OCR service.
+    """
+    # This is a stub that can be enhanced with actual OCR (e.g., AWS Textract, Google Vision)
+    # For now, return empty result so the frontend can handle gracefully
+    return {
+        "date": None,
+        "description": None,
+        "amount": None,
+        "message": "OCR service not configured. Please enter details manually."
+    }
+
 # ============================================================================
 # TRIP ENDPOINTS
 # ============================================================================
