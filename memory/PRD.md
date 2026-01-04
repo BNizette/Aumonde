@@ -65,23 +65,8 @@ A comprehensive vessel and crew safety management system for maritime operations
 
 ### Pending Tasks
 
-#### From Latest User Request - Partially Done:
-- [x] Admin Users view - removed access_level column and filter
-- [x] Admin Users view - role filter now uses database roles
-- [x] Document filters - fixed type, vessel, and sort filters
-- [x] Email templates - added {{site_url}} variable documentation
-- [x] Trip shift dialog - crew dropdown now filters to allocated crew
-- [x] Trip summary - crew count now uses allocatedCrew.length
-- [x] Trip passenger view - added dietary and medical info display
-- [x] Trip incidents view - added "Manage in Incidents" button
-- [x] Expenditure dialog - moved receipt to top, added image support
-- [x] Expenditure OCR - added stub endpoint (needs actual OCR service)
-- [ ] Allocate passenger view - needs investigation (checkbox selection)
-- [ ] Engine log view CRUD with view option - needs review
-- [ ] Admin Roles view CRUD - needs implementation
-
-#### From Previous Session (Lower Priority):
-- [ ] Test Crew & Vessel Module UI Enhancements
+#### Lower Priority (Future):
+- [ ] Test Crew & Vessel Module UI Enhancements (from previous session)
 - [ ] Verify "Set to Now" Button Visibility in Date Fields
 - [ ] Fix Potential Duplicate Vessel Entries in Dropdowns
 - [ ] Refactor `require_access_level` decorator
