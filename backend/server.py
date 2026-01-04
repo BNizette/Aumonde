@@ -2297,7 +2297,7 @@ async def get_file(file_id: str):
 
 
 # ============================================================================
-# OCR ENDPOINT (Receipt scanning)
+# OCR ENDPOINT (Receipt scanning using Gemini Vision)
 # ============================================================================
 
 class OCRRequest(BaseModel):
@@ -2306,17 +2306,114 @@ class OCRRequest(BaseModel):
 @api_router.post("/ocr/receipt")
 async def ocr_receipt(request: OCRRequest, current_user: dict = Depends(get_current_user)):
     """
-    OCR endpoint for scanning receipts. 
-    Currently returns a stub response - can be enhanced with actual OCR service.
+    OCR endpoint for scanning receipts using Gemini Vision.
+    Extracts date, description, and amount from receipt images.
     """
-    # This is a stub that can be enhanced with actual OCR (e.g., AWS Textract, Google Vision)
-    # For now, return empty result so the frontend can handle gracefully
-    return {
-        "date": None,
-        "description": None,
-        "amount": None,
-        "message": "OCR service not configured. Please enter details manually."
-    }
+    try:
+        from emergentintegrations.llm.chat import LlmChat, UserMessage, ImageContent
+        
+        # Get the file from MongoDB storage
+        file_id = request.file_url.split('/api/files/')[-1].rsplit('.', 1)[0] if '/api/files/' in request.file_url else None
+        
+        if not file_id:
+            return {
+                "date": None,
+                "description": None,
+                "amount": None,
+                "message": "Invalid file URL format"
+            }
+        
+        # Fetch the file from MongoDB
+        file_doc = await db.file_storage.find_one({"id": file_id})
+        
+        if not file_doc:
+            return {
+                "date": None,
+                "description": None,
+                "amount": None,
+                "message": "File not found"
+            }
+        
+        # Get base64 image data
+        image_base64 = file_doc.get("file_data")
+        
+        if not image_base64:
+            return {
+                "date": None,
+                "description": None,
+                "amount": None,
+                "message": "No image data found"
+            }
+        
+        # Initialize Gemini chat with vision capabilities
+        api_key = os.environ.get("EMERGENT_LLM_KEY")
+        if not api_key:
+            return {
+                "date": None,
+                "description": None,
+                "amount": None,
+                "message": "OCR service not configured"
+            }
+        
+        chat = LlmChat(
+            api_key=api_key,
+            session_id=f"ocr-{uuid.uuid4()}",
+            system_message="You are a receipt OCR assistant. Extract information from receipt images and return structured data."
+        ).with_model("gemini", "gemini-2.5-flash")
+        
+        # Create image content
+        image_content = ImageContent(image_base64=image_base64)
+        
+        # Create the prompt for extraction
+        extraction_prompt = """Analyze this receipt image and extract the following information:
+1. Date - The transaction date (format: YYYY-MM-DD if possible)
+2. Description - The merchant/vendor name or main item description
+3. Amount - The total amount (just the number, no currency symbol)
+
+Return ONLY a JSON object in this exact format, nothing else:
+{"date": "YYYY-MM-DD or null", "description": "merchant name or null", "amount": 123.45 or null}
+
+If you cannot determine a field, use null for that field."""
+
+        # Send message with image
+        user_message = UserMessage(
+            text=extraction_prompt,
+            file_contents=[image_content]
+        )
+        
+        response = await chat.send_message(user_message)
+        
+        # Parse the response
+        try:
+            # Try to extract JSON from response
+            import re
+            json_match = re.search(r'\{[^}]+\}', response)
+            if json_match:
+                result = json.loads(json_match.group())
+                return {
+                    "date": result.get("date"),
+                    "description": result.get("description"),
+                    "amount": float(result.get("amount")) if result.get("amount") else None,
+                    "message": "Receipt scanned successfully"
+                }
+        except (json.JSONDecodeError, ValueError) as e:
+            logger.warning(f"Failed to parse OCR response: {response}")
+        
+        return {
+            "date": None,
+            "description": None,
+            "amount": None,
+            "message": "Could not parse receipt data. Please enter details manually."
+        }
+        
+    except Exception as e:
+        logger.error(f"OCR error: {str(e)}")
+        return {
+            "date": None,
+            "description": None,
+            "amount": None,
+            "message": f"OCR processing failed: {str(e)}"
+        }
 
 # ============================================================================
 # TRIP ENDPOINTS
