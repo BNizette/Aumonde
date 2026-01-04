@@ -41,16 +41,27 @@ A comprehensive vessel and crew safety management system for maritime operations
 
 #### Phase 4 - Admin Panel (DONE)
 16. ✅ **Backup passengers export** - Fixed to export from passengers collection
-17. ✅ **Backup restore** - Updated to only import non-existing items (checks by _id and unique fields)
+17. ✅ **Backup restore** - Updated to only import non-existing items (checks _id, email, vessel_name)
 18. ✅ **Compliance document view error** - Added proper error handling when document not found
 19. ✅ **Trip Checklist Templates** - NEW Admin Panel view to edit Pre-departure and Safety Briefing templates
-    - Editable sections and items
-    - Move items up/down
-    - Reset to default option
-    - Changes apply to new trip checklists
+20. ✅ **Admin Users view** - Removed access_level column and filter, role filter uses database roles
+
+#### Phase 5 - Trip Module Enhancements (DONE)
+21. ✅ **Shift dialog crew dropdown** - Now filters to crew allocated to the trip
+22. ✅ **Trip summary crew count** - Uses actual allocatedCrew.length
+23. ✅ **Trip passenger view** - Shows dietary requirements, medical notes & allergies
+24. ✅ **Trip incidents view** - Added "Manage in Incidents" button
+25. ✅ **Expenditure dialog** - Receipt upload moved to top, accepts images, OCR integration
+26. ✅ **Passenger allocation** - Fixed checkbox click propagation
+27. ✅ **Log view buttons** - Added View button to Engine, Running, and Shift logs with detail dialogs
+
+#### Phase 6 - OCR & Filters (DONE)
+28. ✅ **Receipt OCR** - Integrated Gemini Vision via Emergent LLM Key for auto-extracting date, description, amount
+29. ✅ **Document filters** - Fixed type, vessel, and sort filters
+30. ✅ **Email templates** - Added {{site_url}} variable documentation
 
 #### Other Fixes
-20. ✅ **Fixed isAdmin check** - Updated across multiple components (Emergency, Compliance, etc.) to include 'Full' access level
+31. ✅ **Fixed isAdmin check** - Updated across multiple components to include 'Full' access level
 
 ### Pending Tasks
 
