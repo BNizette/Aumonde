@@ -1411,7 +1411,7 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh, onEditCrew, onEditP
                     <div className="space-y-2">
                       {tripPassengers.map(passenger => (
                         <div key={passenger.id} className="p-3 border rounded-lg bg-gray-50 flex items-center justify-between">
-                          <div>
+                          <div className="flex-1">
                             <div className="flex items-center gap-2">
                               {onEditPassenger && passenger.passenger_id ? (
                                 <button
@@ -1430,6 +1430,24 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh, onEditCrew, onEditP
                             {passenger.comment && (
                               <p className="text-sm text-gray-500 mt-1">{passenger.comment}</p>
                             )}
+                            {/* Show dietary and medical info if available */}
+                            <div className="flex flex-wrap gap-2 mt-1">
+                              {passenger.dietary_requirements && (
+                                <span className="inline-flex items-center px-2 py-0.5 text-xs bg-amber-100 text-amber-800 rounded">
+                                  🍽️ {passenger.dietary_requirements}
+                                </span>
+                              )}
+                              {passenger.medical_notes && (
+                                <span className="inline-flex items-center px-2 py-0.5 text-xs bg-red-100 text-red-800 rounded">
+                                  ⚕️ {passenger.medical_notes}
+                                </span>
+                              )}
+                              {passenger.allergies && (
+                                <span className="inline-flex items-center px-2 py-0.5 text-xs bg-purple-100 text-purple-800 rounded">
+                                  ⚠️ Allergies: {passenger.allergies}
+                                </span>
+                              )}
+                            </div>
                           </div>
                           <div className="flex gap-1">
                             {/* Edit full passenger details from Passenger module */}
