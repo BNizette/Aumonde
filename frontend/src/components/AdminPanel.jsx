@@ -467,7 +467,7 @@ const AdminPanel = () => {
     setSessionSort('date');
   };
 
-  const hasActiveUserFilters = userSearch || userRoleFilter !== 'all' || userAccessFilter !== 'all' || userStatusFilter !== 'all' || userSort !== 'name';
+  const hasActiveUserFilters = userSearch || userRoleFilter !== 'all' || userStatusFilter !== 'all' || userSort !== 'name';
   const hasActiveActivityFilters = activitySearch || activityUserFilter !== 'all' || activitySort !== 'date';
   const hasActiveAuditFilters = auditSearch || auditActionFilter !== 'all' || auditUserFilter !== 'all' || auditSort !== 'date';
   const hasActiveSessionFilters = sessionSearch || sessionUserFilter !== 'all' || sessionStatusFilter !== 'all' || sessionSort !== 'date';
