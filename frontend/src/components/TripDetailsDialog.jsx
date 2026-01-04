@@ -1318,12 +1318,22 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh, onEditCrew, onEditP
                                           className={`flex items-center gap-2 p-2 hover:bg-gray-50 cursor-pointer border-b last:border-b-0 ${
                                             isAlreadyAllocated ? 'opacity-50 cursor-not-allowed bg-gray-100' : ''
                                           } ${isSelected ? 'bg-blue-50' : ''}`}
-                                          onClick={() => !isAlreadyAllocated && togglePassengerForAllocation(passenger.id)}
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            if (!isAlreadyAllocated) {
+                                              togglePassengerForAllocation(passenger.id);
+                                            }
+                                          }}
                                         >
                                           <Checkbox
                                             checked={isSelected}
                                             disabled={isAlreadyAllocated}
-                                            onCheckedChange={() => !isAlreadyAllocated && togglePassengerForAllocation(passenger.id)}
+                                            onClick={(e) => e.stopPropagation()}
+                                            onCheckedChange={() => {
+                                              if (!isAlreadyAllocated) {
+                                                togglePassengerForAllocation(passenger.id);
+                                              }
+                                            }}
                                           />
                                           <div className="flex-1">
                                             <div className="font-medium text-sm">{passenger.name}</div>
