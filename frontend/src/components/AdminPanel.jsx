@@ -1130,25 +1130,11 @@ const AdminPanel = () => {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">All Roles</SelectItem>
-                        <SelectItem value="Owner">Owner</SelectItem>
-                        <SelectItem value="Master">Master</SelectItem>
-                        <SelectItem value="Crew">Crew</SelectItem>
-                        <SelectItem value="Designated Person">Designated Person</SelectItem>
-                        <SelectItem value="Inspector">Inspector</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="w-full md:w-48">
-                    <Select value={userAccessFilter} onValueChange={setUserAccessFilter}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Access Level" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Access</SelectItem>
-                        <SelectItem value="View">View</SelectItem>
-                        <SelectItem value="Edit">Edit</SelectItem>
-                        <SelectItem value="Full">Full</SelectItem>
+                        {availableRoles.map(role => (
+                          <SelectItem key={role.id || role.name} value={role.name}>
+                            {role.name}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </div>
