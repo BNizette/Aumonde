@@ -1871,7 +1871,10 @@ const AdminPanel = () => {
                   <h3 className="font-medium mb-3">Welcome Email Templates</h3>
                   <p className="text-sm text-gray-600 mb-4">
                     Customize the welcome email sent to new users based on their role. 
-                    Available placeholders: {"{{full_name}}"}, {"{{email}}"}, {"{{password}}"}, {"{{role}}"}
+                    Available placeholders: {"{{full_name}}"}, {"{{email}}"}, {"{{password}}"}, {"{{role}}"}, {"{{site_url}}"}
+                  </p>
+                  <p className="text-xs text-gray-500 mb-4">
+                    Note: {"{{site_url}}"} will be replaced with the Live Site URL from Branding settings.
                   </p>
                   
                   <div className="space-y-4">
