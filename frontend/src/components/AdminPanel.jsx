@@ -302,10 +302,6 @@ const AdminPanel = () => {
       filtered = filtered.filter(user => user.role === userRoleFilter);
     }
 
-    if (userAccessFilter !== 'all') {
-      filtered = filtered.filter(user => user.access_level === userAccessFilter);
-    }
-
     if (userStatusFilter !== 'all') {
       filtered = filtered.filter(user => user.account_status === userStatusFilter);
     }
