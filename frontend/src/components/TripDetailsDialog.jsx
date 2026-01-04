@@ -1127,7 +1127,7 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh, onEditCrew, onEditP
                   </div>
                   <div>
                     <span className="font-semibold">Passengers / Crew:</span>
-                    <p className="text-gray-600">{trip.number_of_passengers || 0} / {trip.number_of_crew || 0}</p>
+                    <p className="text-gray-600">{tripPassengers.length || trip.number_of_passengers || 0} / {allocatedCrew.length || trip.number_of_crew || 0}</p>
                   </div>
                 </CardContent>
               </Card>
