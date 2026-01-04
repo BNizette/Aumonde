@@ -403,13 +403,16 @@ const TripLogForm = ({ open, onClose, onSave, log, tripId, vesselId, vesselName,
                 <SelectValue placeholder="Select crew member" />
               </SelectTrigger>
               <SelectContent>
-                {crew.map((member) => (
+                {(filteredCrew.length > 0 ? filteredCrew : crew).map((member) => (
                   <SelectItem key={member.id} value={member.id}>
                     {member.staff_name} - {member.default_position || 'Crew'}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
+            {allocatedCrewIds.length > 0 && filteredCrew.length === 0 && (
+              <p className="text-xs text-amber-600 mt-1">No crew allocated to this trip yet. Showing all crew.</p>
+            )}
           </div>
 
           <div className="grid grid-cols-4 gap-4">
