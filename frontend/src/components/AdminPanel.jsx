@@ -1191,7 +1191,7 @@ const AdminPanel = () => {
                   <TableBody>
                     {filteredUsers.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={7} className="text-center text-gray-500 py-8">
+                        <TableCell colSpan={6} className="text-center text-gray-500 py-8">
                           {users.length === 0 ? 'No users found' : 'No users match your filters'}
                         </TableCell>
                       </TableRow>
