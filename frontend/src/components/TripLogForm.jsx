@@ -13,8 +13,9 @@ import { MapPin, Navigation, Ship, Anchor } from 'lucide-react';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-const TripLogForm = ({ open, onClose, onSave, log, tripId, vesselId, vesselName, mode = 'create' }) => {
+const TripLogForm = ({ open, onClose, onSave, log, tripId, vesselId, vesselName, mode = 'create', allocatedCrewIds = [] }) => {
   const [crew, setCrew] = useState([]);
+  const [filteredCrew, setFilteredCrew] = useState([]);
   const [vessels, setVessels] = useState([]);
   const [trips, setTrips] = useState([]);
   const [error, setError] = useState('');
