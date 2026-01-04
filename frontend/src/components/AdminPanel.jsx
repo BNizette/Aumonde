@@ -1201,7 +1201,6 @@ const AdminPanel = () => {
                         <TableCell className="font-medium">{user.full_name}</TableCell>
                         <TableCell>{user.email}</TableCell>
                         <TableCell>{user.role}</TableCell>
-                        <TableCell>{getAccessBadge(user.access_level)}</TableCell>
                         <TableCell>{getStatusBadge(user.account_status)}</TableCell>
                         <TableCell className="text-sm">{formatDateTime(user.last_login)}</TableCell>
                         <TableCell>
