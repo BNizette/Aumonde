@@ -2048,6 +2048,7 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh, onEditCrew, onEditP
         vesselId={trip?.vessel_id}
         vesselName={trip?.vessel_name}
         mode={shiftFormMode}
+        allocatedCrewIds={allocatedCrew.map(c => c.crew_id)}
       />
 
       <RunningLogForm
