@@ -56,7 +56,15 @@ const TripLogForm = ({ open, onClose, onSave, log, tripId, vesselId, vesselName,
       const response = await axios.get(`${API}/crew`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setCrew(response.data);
+      const allCrew = response.data;
+      setCrew(allCrew);
+      
+      // Filter to allocated crew if provided
+      if (allocatedCrewIds && allocatedCrewIds.length > 0) {
+        setFilteredCrew(allCrew.filter(c => allocatedCrewIds.includes(c.id)));
+      } else {
+        setFilteredCrew(allCrew);
+      }
     } catch (err) {
       console.error('Error fetching crew:', err);
     }
