@@ -2457,6 +2457,137 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh, onEditCrew, onEditP
         </DialogContent>
       </Dialog>
 
+      {/* Running Log View Dialog */}
+      <Dialog open={!!viewingRunningLog} onOpenChange={(open) => !open && setViewingRunningLog(null)}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Running Log Details</DialogTitle>
+            <DialogDescription>
+              {viewingRunningLog && formatDateTime(viewingRunningLog.log_datetime)}
+            </DialogDescription>
+          </DialogHeader>
+          {viewingRunningLog && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="p-3 bg-blue-50 rounded-lg">
+                  <Label className="text-sm text-blue-600">Speed</Label>
+                  <p className="text-lg font-semibold">{viewingRunningLog.speed || '-'} knots</p>
+                </div>
+                <div className="p-3 bg-green-50 rounded-lg">
+                  <Label className="text-sm text-green-600">Heading</Label>
+                  <p className="text-lg font-semibold">{viewingRunningLog.heading || '-'}°</p>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div className="p-3 bg-gray-50 rounded-lg">
+                  <Label className="text-sm text-gray-600">Distance</Label>
+                  <p className="font-medium">{viewingRunningLog.distance || '-'} nm</p>
+                </div>
+                <div className="p-3 bg-gray-50 rounded-lg">
+                  <Label className="text-sm text-gray-600">Fuel Used</Label>
+                  <p className="font-medium">{viewingRunningLog.fuel_used || '-'} L</p>
+                </div>
+              </div>
+
+              {viewingRunningLog.position && (
+                <div className="p-3 bg-gray-50 rounded-lg">
+                  <Label className="text-sm text-gray-600">Position</Label>
+                  <p className="font-medium">{viewingRunningLog.position}</p>
+                </div>
+              )}
+
+              {viewingRunningLog.remarks && (
+                <div className="p-3 bg-gray-50 rounded-lg">
+                  <Label className="text-sm text-gray-600">Remarks</Label>
+                  <p className="text-sm mt-1">{viewingRunningLog.remarks}</p>
+                </div>
+              )}
+
+              <div className="grid grid-cols-2 gap-4 pt-2 border-t text-sm">
+                <div>
+                  <span className="text-gray-500">Recorded By:</span> <span className="font-medium">{viewingRunningLog.recorded_by_name || '-'}</span>
+                </div>
+                <div>
+                  <span className="text-gray-500">Created:</span> <span className="font-medium">{viewingRunningLog.created_at ? new Date(viewingRunningLog.created_at).toLocaleString() : '-'}</span>
+                </div>
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setViewingRunningLog(null)}>Close</Button>
+            {canEdit && (
+              <Button onClick={() => {
+                handleEditRunningLog(viewingRunningLog);
+                setViewingRunningLog(null);
+              }}>Edit</Button>
+            )}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Shift Log View Dialog */}
+      <Dialog open={!!viewingShiftLog} onOpenChange={(open) => !open && setViewingShiftLog(null)}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Shift Log Details</DialogTitle>
+            <DialogDescription>
+              {viewingShiftLog?.crew_name || 'Crew Member'}
+            </DialogDescription>
+          </DialogHeader>
+          {viewingShiftLog && (
+            <div className="space-y-4">
+              <div className="p-4 bg-blue-50 rounded-lg">
+                <div className="flex items-center gap-2 mb-2">
+                  <User className="h-5 w-5 text-blue-600" />
+                  <span className="font-semibold text-lg">{viewingShiftLog.crew_name}</span>
+                </div>
+                <Badge variant="outline">{viewingShiftLog.position || 'Crew'}</Badge>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="p-3 bg-gray-50 rounded-lg">
+                  <Label className="text-sm text-gray-600">Shift Start</Label>
+                  <p className="font-medium">{formatDateTime(viewingShiftLog.shift_start_datetime)}</p>
+                </div>
+                <div className="p-3 bg-gray-50 rounded-lg">
+                  <Label className="text-sm text-gray-600">Shift End</Label>
+                  <p className="font-medium">{viewingShiftLog.shift_stop_datetime ? formatDateTime(viewingShiftLog.shift_stop_datetime) : 'Ongoing'}</p>
+                </div>
+              </div>
+
+              {viewingShiftLog.task_performed && (
+                <div className="p-3 bg-gray-50 rounded-lg">
+                  <Label className="text-sm text-gray-600">Task Performed</Label>
+                  <p className="text-sm mt-1">{viewingShiftLog.task_performed}</p>
+                </div>
+              )}
+
+              {viewingShiftLog.notes && (
+                <div className="p-3 bg-gray-50 rounded-lg">
+                  <Label className="text-sm text-gray-600">Notes</Label>
+                  <p className="text-sm mt-1">{viewingShiftLog.notes}</p>
+                </div>
+              )}
+
+              <div className="pt-2 border-t text-sm">
+                <span className="text-gray-500">Created:</span>{' '}
+                <span className="font-medium">{viewingShiftLog.created_at ? new Date(viewingShiftLog.created_at).toLocaleString() : '-'}</span>
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setViewingShiftLog(null)}>Close</Button>
+            {canEdit && (
+              <Button onClick={() => {
+                handleEditShiftLog(viewingShiftLog);
+                setViewingShiftLog(null);
+              }}>Edit</Button>
+            )}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       {/* Engine Log View Dialog */}
       <Dialog open={!!viewingEngineLog} onOpenChange={(open) => !open && setViewingEngineLog(null)}>
         <DialogContent className="max-w-2xl">
