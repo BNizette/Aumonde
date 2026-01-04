@@ -1802,6 +1802,14 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh, onEditCrew, onEditP
                     <p className="text-sm text-gray-500">
                       {tripIncidents.length} incident{tripIncidents.length !== 1 ? 's' : ''} linked to this trip
                     </p>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => window.location.href = `/incidents?trip=${trip.id}`}
+                    >
+                      <ExternalLink className="h-4 w-4 mr-1" />
+                      Manage in Incidents
+                    </Button>
                   </div>
                   {tripIncidents.length === 0 ? (
                     <div className="text-center py-8 text-gray-500">
