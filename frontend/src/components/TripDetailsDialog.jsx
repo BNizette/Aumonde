@@ -2237,6 +2237,41 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh, onEditCrew, onEditP
           </DialogHeader>
           <div className="space-y-4">
             <div className="space-y-2">
+              <Label>Receipt (PDF/Image) - Upload first to auto-populate fields</Label>
+              <FileUploadZone
+                value={expenditureForm.receipt_url}
+                onChange={async (url) => {
+                  setExpenditureForm({...expenditureForm, receipt_url: url});
+                  // Attempt OCR if image uploaded
+                  if (url && (url.endsWith('.jpg') || url.endsWith('.jpeg') || url.endsWith('.png') || url.endsWith('.pdf'))) {
+                    try {
+                      const token = localStorage.getItem('token');
+                      const ocrResponse = await axios.post(`${API}/ocr/receipt`, { file_url: url }, {
+                        headers: { Authorization: `Bearer ${token}` }
+                      });
+                      if (ocrResponse.data) {
+                        setExpenditureForm(prev => ({
+                          ...prev,
+                          expense_date: ocrResponse.data.date || prev.expense_date,
+                          description: ocrResponse.data.description || prev.description,
+                          amount: ocrResponse.data.amount || prev.amount
+                        }));
+                        setMessage('Receipt scanned - please verify the extracted data');
+                      }
+                    } catch (ocrErr) {
+                      // OCR failed silently - user can still fill manually
+                      console.log('OCR not available or failed:', ocrErr.message);
+                    }
+                  }
+                }}
+                accept=".pdf,.jpg,.jpeg,.png"
+                label="Click or drag to upload receipt (PDF/Image)"
+                description="Max 10MB - Images will be scanned for date, description and amount"
+                onError={(msg) => setError(msg)}
+                onSuccess={(msg) => setMessage(msg)}
+              />
+            </div>
+            <div className="space-y-2">
               <Label>Date *</Label>
               <Input
                 type="date"
@@ -2260,18 +2295,6 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh, onEditCrew, onEditP
                 value={expenditureForm.amount}
                 onChange={(e) => setExpenditureForm({...expenditureForm, amount: e.target.value})}
                 placeholder="0.00"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label>Receipt (PDF)</Label>
-              <FileUploadZone
-                value={expenditureForm.receipt_url}
-                onChange={(url) => setExpenditureForm({...expenditureForm, receipt_url: url})}
-                accept=".pdf"
-                label="Click or drag to upload receipt PDF"
-                description="Max 10MB"
-                onError={(msg) => setError(msg)}
-                onSuccess={(msg) => setMessage(msg)}
               />
             </div>
           </div>
