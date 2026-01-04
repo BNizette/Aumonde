@@ -81,6 +81,11 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh, onEditCrew, onEditP
   const [allCrew, setAllCrew] = useState([]); // For checklist authorization
   const [availableRoles, setAvailableRoles] = useState([]); // For add passenger with user
   
+  // View dialogs for log entries
+  const [viewingEngineLog, setViewingEngineLog] = useState(null);
+  const [viewingRunningLog, setViewingRunningLog] = useState(null);
+  const [viewingShiftLog, setViewingShiftLog] = useState(null);
+  
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [user, setUser] = useState(null);
