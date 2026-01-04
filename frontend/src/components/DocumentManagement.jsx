@@ -54,27 +54,29 @@ const DocumentManagement = () => {
 
     // Apply search filter
     if (searchQuery) {
+      const query = searchQuery.toLowerCase();
       filtered = filtered.filter(doc =>
-        doc.document_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        doc.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        doc.file_type?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        doc.vessel_name?.toLowerCase().includes(searchQuery.toLowerCase())
+        doc.document_name?.toLowerCase().includes(query) ||
+        doc.description?.toLowerCase().includes(query) ||
+        doc.file_type?.toLowerCase().includes(query) ||
+        doc.vessel_name?.toLowerCase().includes(query) ||
+        doc.category?.toLowerCase().includes(query)
       );
     }
 
     // Apply category filter
-    if (categoryFilter !== 'all') {
+    if (categoryFilter && categoryFilter !== 'all') {
       filtered = filtered.filter(doc => 
         doc.category?.toLowerCase() === categoryFilter.toLowerCase()
       );
     }
 
     // Apply vessel filter
-    if (vesselFilter !== 'all') {
+    if (vesselFilter && vesselFilter !== 'all') {
       if (vesselFilter === 'global') {
         filtered = filtered.filter(doc => !doc.vessel_id);
       } else {
-        filtered = filtered.filter(doc => doc.vessel_id === vesselFilter);
+        filtered = filtered.filter(doc => doc.vessel_id === vesselFilter || doc.vessel_name === vesselFilter);
       }
     }
 
@@ -86,9 +88,8 @@ const DocumentManagement = () => {
         case 'category':
           return (a.category || '').localeCompare(b.category || '');
         case 'date':
-          return (b.upload_date || '').localeCompare(a.upload_date || '');
         default:
-          return 0;
+          return new Date(b.upload_date || b.created_at || 0) - new Date(a.upload_date || a.created_at || 0);
       }
     });
 
