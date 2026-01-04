@@ -2450,6 +2450,84 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh, onEditCrew, onEditP
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Engine Log View Dialog */}
+      <Dialog open={!!viewingEngineLog} onOpenChange={(open) => !open && setViewingEngineLog(null)}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Engine Log Details</DialogTitle>
+            <DialogDescription>
+              {viewingEngineLog && formatDateTime(viewingEngineLog.log_datetime)}
+            </DialogDescription>
+          </DialogHeader>
+          {viewingEngineLog && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-6">
+                {/* Port Engine */}
+                <div className="space-y-2 p-4 bg-teal-50 rounded-lg">
+                  <h4 className="font-semibold text-teal-800 border-b border-teal-200 pb-2">Port Engine</h4>
+                  <div className="grid grid-cols-2 gap-2 text-sm">
+                    <div><span className="text-gray-600">RPM:</span> <span className="font-medium">{viewingEngineLog.engine1_rpm || '-'}</span></div>
+                    <div><span className="text-gray-600">Water Temp:</span> <span className="font-medium">{viewingEngineLog.engine1_water_temp ? `${viewingEngineLog.engine1_water_temp}°C` : '-'}</span></div>
+                    <div><span className="text-gray-600">Oil Temp:</span> <span className="font-medium">{viewingEngineLog.engine1_oil_temp ? `${viewingEngineLog.engine1_oil_temp}°C` : '-'}</span></div>
+                    <div><span className="text-gray-600">Oil Pressure:</span> <span className="font-medium">{viewingEngineLog.engine1_oil_pressure ? `${viewingEngineLog.engine1_oil_pressure} PSI` : '-'}</span></div>
+                    <div><span className="text-gray-600">Gearbox Temp:</span> <span className="font-medium">{viewingEngineLog.engine1_gearbox_temp ? `${viewingEngineLog.engine1_gearbox_temp}°C` : '-'}</span></div>
+                    <div><span className="text-gray-600">GB Pressure:</span> <span className="font-medium">{viewingEngineLog.engine1_gearbox_pressure ? `${viewingEngineLog.engine1_gearbox_pressure} PSI` : '-'}</span></div>
+                    <div><span className="text-gray-600">Pyrometers:</span> <span className="font-medium">{viewingEngineLog.engine1_pyrometers ? `${viewingEngineLog.engine1_pyrometers}°C` : '-'}</span></div>
+                    <div><span className="text-gray-600">Battery:</span> <span className="font-medium">{viewingEngineLog.engine1_battery_volts ? `${viewingEngineLog.engine1_battery_volts}V` : '-'}</span></div>
+                    <div><span className="text-gray-600">Aux Volts:</span> <span className="font-medium">{viewingEngineLog.engine1_aux_volts ? `${viewingEngineLog.engine1_aux_volts}V` : '-'}</span></div>
+                    <div><span className="text-gray-600">Fuel Level:</span> <span className="font-medium">{viewingEngineLog.engine1_fuel_level ? `${viewingEngineLog.engine1_fuel_level}%` : '-'}</span></div>
+                    <div className="col-span-2"><span className="text-gray-600">Engine Hours:</span> <span className="font-medium">{viewingEngineLog.engine1_engine_hrs_start || '-'} → {viewingEngineLog.engine1_engine_hrs_end || '-'}</span></div>
+                  </div>
+                </div>
+
+                {/* Starboard Engine */}
+                <div className="space-y-2 p-4 bg-blue-50 rounded-lg">
+                  <h4 className="font-semibold text-blue-800 border-b border-blue-200 pb-2">Starboard Engine</h4>
+                  <div className="grid grid-cols-2 gap-2 text-sm">
+                    <div><span className="text-gray-600">RPM:</span> <span className="font-medium">{viewingEngineLog.engine2_rpm || '-'}</span></div>
+                    <div><span className="text-gray-600">Water Temp:</span> <span className="font-medium">{viewingEngineLog.engine2_water_temp ? `${viewingEngineLog.engine2_water_temp}°C` : '-'}</span></div>
+                    <div><span className="text-gray-600">Oil Temp:</span> <span className="font-medium">{viewingEngineLog.engine2_oil_temp ? `${viewingEngineLog.engine2_oil_temp}°C` : '-'}</span></div>
+                    <div><span className="text-gray-600">Oil Pressure:</span> <span className="font-medium">{viewingEngineLog.engine2_oil_pressure ? `${viewingEngineLog.engine2_oil_pressure} PSI` : '-'}</span></div>
+                    <div><span className="text-gray-600">Gearbox Temp:</span> <span className="font-medium">{viewingEngineLog.engine2_gearbox_temp ? `${viewingEngineLog.engine2_gearbox_temp}°C` : '-'}</span></div>
+                    <div><span className="text-gray-600">GB Pressure:</span> <span className="font-medium">{viewingEngineLog.engine2_gearbox_pressure ? `${viewingEngineLog.engine2_gearbox_pressure} PSI` : '-'}</span></div>
+                    <div><span className="text-gray-600">Pyrometers:</span> <span className="font-medium">{viewingEngineLog.engine2_pyrometers ? `${viewingEngineLog.engine2_pyrometers}°C` : '-'}</span></div>
+                    <div><span className="text-gray-600">Battery:</span> <span className="font-medium">{viewingEngineLog.engine2_battery_volts ? `${viewingEngineLog.engine2_battery_volts}V` : '-'}</span></div>
+                    <div><span className="text-gray-600">Aux Volts:</span> <span className="font-medium">{viewingEngineLog.engine2_aux_volts ? `${viewingEngineLog.engine2_aux_volts}V` : '-'}</span></div>
+                    <div><span className="text-gray-600">Fuel Level:</span> <span className="font-medium">{viewingEngineLog.engine2_fuel_level ? `${viewingEngineLog.engine2_fuel_level}%` : '-'}</span></div>
+                    <div className="col-span-2"><span className="text-gray-600">Engine Hours:</span> <span className="font-medium">{viewingEngineLog.engine2_engine_hrs_start || '-'} → {viewingEngineLog.engine2_engine_hrs_end || '-'}</span></div>
+                  </div>
+                </div>
+              </div>
+
+              {viewingEngineLog.notes && (
+                <div className="p-3 bg-gray-50 rounded-lg">
+                  <Label className="text-sm text-gray-600">Notes</Label>
+                  <p className="text-sm mt-1">{viewingEngineLog.notes}</p>
+                </div>
+              )}
+
+              <div className="grid grid-cols-2 gap-4 pt-2 border-t text-sm">
+                <div>
+                  <span className="text-gray-500">Recorded By:</span> <span className="font-medium">{viewingEngineLog.recorded_by_name || '-'}</span>
+                </div>
+                <div>
+                  <span className="text-gray-500">Created:</span> <span className="font-medium">{viewingEngineLog.created_at ? new Date(viewingEngineLog.created_at).toLocaleString() : '-'}</span>
+                </div>
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setViewingEngineLog(null)}>Close</Button>
+            {canEdit && (
+              <Button onClick={() => {
+                handleEditEngineLog(viewingEngineLog);
+                setViewingEngineLog(null);
+              }}>Edit</Button>
+            )}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };
