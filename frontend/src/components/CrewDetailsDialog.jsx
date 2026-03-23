@@ -362,7 +362,7 @@ const CrewDetailsDialog = ({ open, onClose, crew, onMessage, onEditTrip, onViewT
                     )}
                   </TableCell>
                   <TableCell>{new Date(r.record_date).toLocaleString()}</TableCell>
-                  <TableCell><Badge variant={r.status === 'Pass' ? 'default' : 'destructive'}>{r.status}</Badge></TableCell>
+                  <TableCell><Badge variant={r.status === 'Pass' ? 'default' : r.status === 'Participated' ? 'secondary' : 'destructive'}>{r.status}</Badge></TableCell>
                   <TableCell>{r.authorized_by}</TableCell>
                   <TableCell className="max-w-xs truncate">{r.notes || '-'}</TableCell>
                 </TableRow>

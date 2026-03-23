@@ -4344,20 +4344,50 @@ async def delete_training_record(record_id: str, current_user: dict = Depends(re
 # Get crew member's drill and training records
 @api_router.get("/crew/{crew_name}/drill-records")
 async def get_crew_drill_records(crew_name: str, current_user: dict = Depends(get_current_user)):
-    # Find all drill records where crew member participated
+    results = []
+    seen_ids = set()
+    
+    # Source 1: Explicit drill records from drill_records collection
     records = await db.drill_records.find(
         {"crew_members": crew_name}, 
         {"_id": 0}
     ).sort("record_date", -1).to_list(1000)
     
-    # Enrich with drill information
     for record in records:
         drill = await db.emergency_drills.find_one({"id": record["drill_id"]}, {"_id": 0})
         if drill:
             record["drill_type"] = drill.get("drill_type", "Unknown")
             record["drill_date"] = drill.get("drill_date")
+        seen_ids.add(record.get("drill_id"))
+        results.append(record)
     
-    return records
+    # Source 2: Emergency drills where crew member is in crew_participants
+    drills_as_participant = await db.emergency_drills.find(
+        {"crew_participants": crew_name},
+        {"_id": 0}
+    ).sort("drill_date", -1).to_list(1000)
+    
+    for drill in drills_as_participant:
+        if drill["id"] not in seen_ids:
+            # Create a synthetic drill record from the drill participation
+            results.append({
+                "id": f"drill-{drill['id']}",
+                "drill_id": drill["id"],
+                "drill_type": drill.get("drill_type", "Unknown"),
+                "drill_date": drill.get("drill_date"),
+                "record_date": drill.get("drill_date"),
+                "crew_members": drill.get("crew_participants", []),
+                "status": "Participated",
+                "authorized_by": drill.get("conducted_by_name", "N/A"),
+                "notes": drill.get("observations", ""),
+                "source": "drill_participation"
+            })
+            seen_ids.add(drill["id"])
+    
+    # Sort combined results by date
+    results.sort(key=lambda r: r.get("record_date") or r.get("drill_date") or "", reverse=True)
+    
+    return results
 
 @api_router.get("/crew/{crew_name}/training-records")
 async def get_crew_training_records(crew_name: str, current_user: dict = Depends(get_current_user)):
