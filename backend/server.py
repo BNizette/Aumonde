@@ -104,6 +104,16 @@ async def seed_default_admin():
         # Don't raise - allow app to start even if seeding fails
 
 @app.on_event("startup")
+async def ensure_indexes():
+    """Create unique indexes to prevent duplicate records."""
+    try:
+        await db.vessels.create_index("id", unique=True, sparse=True)
+        logger.info("Database indexes ensured.")
+    except Exception as e:
+        logger.warning(f"Index creation note: {str(e)}")
+
+
+@app.on_event("startup")
 async def seed_default_roles():
     """Create default system roles if they don't exist."""
     try:
@@ -1139,11 +1149,27 @@ async def get_vessels(current_user: dict = Depends(get_current_user)):
             vessel_ids = list(set(t["vessel_id"] for t in trips if t.get("vessel_id")))
             if vessel_ids:
                 vessels = await db.vessels.find({"id": {"$in": vessel_ids}}, {"_id": 0}).sort("vessel_name", 1).to_list(100)
-                return vessels
+                # Deduplicate by vessel id
+                seen_ids = set()
+                unique_vessels = []
+                for v in vessels:
+                    vid = v.get("id")
+                    if vid and vid not in seen_ids:
+                        seen_ids.add(vid)
+                        unique_vessels.append(v)
+                return unique_vessels
         return []
     
     vessels = await db.vessels.find({}, {"_id": 0}).sort("vessel_name", 1).to_list(1000)
-    return vessels
+    # Deduplicate by vessel id
+    seen_ids = set()
+    unique_vessels = []
+    for v in vessels:
+        vid = v.get("id")
+        if vid and vid not in seen_ids:
+            seen_ids.add(vid)
+            unique_vessels.append(v)
+    return unique_vessels
 
 @api_router.get("/vessels/{vessel_id}")
 async def get_vessel(vessel_id: str, current_user: dict = Depends(get_current_user)):

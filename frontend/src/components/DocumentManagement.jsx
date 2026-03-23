@@ -112,7 +112,7 @@ const DocumentManagement = () => {
         headers: { Authorization: `Bearer ${token}` }
       });
       setDocuments(response.data);
-      setFilteredDocuments(response.data);
+      // Don't set filteredDocuments directly - let the useEffect handle it via applyFiltersAndSort
     } catch (err) {
       setError('Error fetching documents');
       console.error(err);

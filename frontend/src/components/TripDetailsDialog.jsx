@@ -1511,9 +1511,18 @@ const TripDetailsDialog = ({ open, onClose, trip, onRefresh, onEditCrew, onEditP
                 {selectedLogView === 'shift' && (
                   <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <p className="text-sm text-gray-500">
+                    <div className="text-sm text-gray-500">
+                      <span>Trip: </span>
+                      <button 
+                        onClick={() => { window.open(`/trips?edit_id=${trip.id}`, '_blank'); }}
+                        className="text-blue-600 hover:underline font-medium"
+                        data-testid="shift-trip-hyperlink"
+                      >
+                        {trip.trip_name}
+                      </button>
+                      <span className="mx-2">•</span>
                       {shiftLogs.length} {shiftLogs.length === 1 ? 'entry' : 'entries'} • Total: {getTotalShiftHours()} hours
-                    </p>
+                    </div>
                     <div className="flex gap-2">
                       <Button 
                         variant="outline" 

@@ -39,6 +39,7 @@ const Incidents = () => {
   const [error, setError] = useState('');
   const [importDialogOpen, setImportDialogOpen] = useState(false);
   const [gpsLoading, setGpsLoading] = useState(false);
+  const [sortBy, setSortBy] = useState('date_desc');
 
   // Use custom hook for advanced filtering
   const {
@@ -136,7 +137,26 @@ const Incidents = () => {
   useEffect(() => {
     fetchData();
     fetchSettings();
-  }, [filters]);
+  }, [filters, sortBy]);
+
+  const sortIncidents = (list, sort) => {
+    return [...list].sort((a, b) => {
+      switch (sort) {
+        case 'name_asc':
+          return (a.title || '').localeCompare(b.title || '');
+        case 'name_desc':
+          return (b.title || '').localeCompare(a.title || '');
+        case 'severity':
+          const severityOrder = { 'Critical': 0, 'Serious': 1, 'Moderate': 2, 'Minor': 3 };
+          return (severityOrder[a.severity] ?? 4) - (severityOrder[b.severity] ?? 4);
+        case 'date_asc':
+          return new Date(a.incident_date || 0) - new Date(b.incident_date || 0);
+        case 'date_desc':
+        default:
+          return new Date(b.incident_date || 0) - new Date(a.incident_date || 0);
+      }
+    });
+  };
 
   // Handle URL parameters for pre-filtering
   useEffect(() => {
@@ -226,6 +246,9 @@ const Incidents = () => {
           return true;
         });
       }
+
+      // Apply sorting
+      filteredIncidents = sortIncidents(filteredIncidents, sortBy);
 
       setIncidents(filteredIncidents);
       setVessels(vesselsRes.data);
@@ -496,12 +519,12 @@ const Incidents = () => {
       // Ensure arrays are properly initialized to prevent undefined errors
       incident_type: Array.isArray(incident.incident_type) ? incident.incident_type : [],
       activity: Array.isArray(incident.activity) ? incident.activity : [],
-      incident_date: incident.incident_date ? new Date(incident.incident_date).toISOString().slice(0, 16) : '',
+      incident_date: incident.incident_date && !isNaN(new Date(incident.incident_date).getTime()) ? new Date(incident.incident_date).toISOString().slice(0, 16) : '',
       utc_offset: incident.utc_offset || calculatedOffset,
-      target_completion_date: incident.target_completion_date ? new Date(incident.target_completion_date).toISOString().slice(0, 16) : '',
-      date_closed: incident.date_closed ? new Date(incident.date_closed).toISOString().slice(0, 10) : '',
-      date_risk_assessment_performed: incident.date_risk_assessment_performed ? new Date(incident.date_risk_assessment_performed).toISOString().slice(0, 10) : '',
-      date_amsa_notified: incident.date_amsa_notified ? new Date(incident.date_amsa_notified).toISOString().slice(0, 10) : '',
+      target_completion_date: incident.target_completion_date && !isNaN(new Date(incident.target_completion_date).getTime()) ? new Date(incident.target_completion_date).toISOString().slice(0, 16) : '',
+      date_closed: incident.date_closed && !isNaN(new Date(incident.date_closed).getTime()) ? new Date(incident.date_closed).toISOString().slice(0, 10) : '',
+      date_risk_assessment_performed: incident.date_risk_assessment_performed && !isNaN(new Date(incident.date_risk_assessment_performed).getTime()) ? new Date(incident.date_risk_assessment_performed).toISOString().slice(0, 10) : '',
+      date_amsa_notified: incident.date_amsa_notified && !isNaN(new Date(incident.date_amsa_notified).getTime()) ? new Date(incident.date_amsa_notified).toISOString().slice(0, 10) : '',
       risk_creator: incident.risk_creator || '',
       linked_trip_id: incident.linked_trip_id || '',
       linked_trip_name: incident.linked_trip_name || ''
@@ -1003,6 +1026,28 @@ const Incidents = () => {
                 )}
               </div>
             </div>
+
+            {/* Sort and Results Count */}
+            <div className="flex items-center justify-between">
+              <div className="text-sm text-gray-500">
+                Showing {incidents.length} incident{incidents.length !== 1 ? 's' : ''}
+              </div>
+              <div className="flex items-center gap-2">
+                <Label className="text-sm text-gray-500 whitespace-nowrap">Sort by:</Label>
+                <Select value={sortBy} onValueChange={setSortBy}>
+                  <SelectTrigger className="w-48" data-testid="incident-sort-select">
+                    <SelectValue placeholder="Sort by" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="date_desc">Date (Newest)</SelectItem>
+                    <SelectItem value="date_asc">Date (Oldest)</SelectItem>
+                    <SelectItem value="name_asc">Name (A-Z)</SelectItem>
+                    <SelectItem value="name_desc">Name (Z-A)</SelectItem>
+                    <SelectItem value="severity">Severity (Highest)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -1036,10 +1081,12 @@ const Incidents = () => {
                       <p><strong>Incident #:</strong> {incident.incident_number}</p>
                       <p><strong>Type:</strong> {Array.isArray(incident.incident_type) ? incident.incident_type.join(', ') : incident.incident_type}</p>
                       <p>
-                        <strong>Date:</strong> {new Date(incident.incident_date).toLocaleString()}
-                        <span className="text-xs text-gray-500 ml-2">
-                          (UTC: {new Date(incident.incident_date).toISOString().replace('T', ' ').slice(0, 19)})
-                        </span>
+                        <strong>Date:</strong> {incident.incident_date ? new Date(incident.incident_date).toLocaleString() : 'N/A'}
+                        {incident.incident_date && !isNaN(new Date(incident.incident_date).getTime()) && (
+                          <span className="text-xs text-gray-500 ml-2">
+                            (UTC: {new Date(incident.incident_date).toISOString().replace('T', ' ').slice(0, 19)})
+                          </span>
+                        )}
                       </p>
                       <p><strong>Location:</strong> {incident.location}</p>
                       {(incident.trip_from || incident.trip_to) && (
@@ -1198,7 +1245,7 @@ const Incidents = () => {
                   value={formData.incident_date}
                   onChange={(e) => handleIncidentDateChange(e.target.value)}
                 />
-                {formData.incident_date && (
+                {formData.incident_date && !isNaN(new Date(formData.incident_date).getTime()) && (
                   <p className="text-xs text-gray-500 mt-1">
                     UTC: {new Date(formData.incident_date).toISOString().replace('T', ' ').slice(0, 19)}
                   </p>
@@ -1591,10 +1638,12 @@ const Incidents = () => {
                 <div><strong>Incident #:</strong> {viewingIncident.incident_number}</div>
                 <div><strong>Type:</strong> {Array.isArray(viewingIncident.incident_type) ? viewingIncident.incident_type.join(', ') : viewingIncident.incident_type}</div>
                 <div className="col-span-2">
-                  <strong>Date:</strong> {new Date(viewingIncident.incident_date).toLocaleString()}
-                  <span className="text-xs text-gray-500 ml-2">
-                    (UTC: {new Date(viewingIncident.incident_date).toISOString().replace('T', ' ').slice(0, 19)})
-                  </span>
+                  <strong>Date:</strong> {viewingIncident.incident_date ? new Date(viewingIncident.incident_date).toLocaleString() : 'N/A'}
+                  {viewingIncident.incident_date && !isNaN(new Date(viewingIncident.incident_date).getTime()) && (
+                    <span className="text-xs text-gray-500 ml-2">
+                      (UTC: {new Date(viewingIncident.incident_date).toISOString().replace('T', ' ').slice(0, 19)})
+                    </span>
+                  )}
                 </div>
                 <div><strong>Location:</strong> {viewingIncident.location}</div>
                 {viewingIncident.gps_location && <div><strong>GPS:</strong> {viewingIncident.gps_location}</div>}

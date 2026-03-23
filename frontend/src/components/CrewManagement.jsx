@@ -89,14 +89,37 @@ const CrewManagement = () => {
     fetchCrew();
   }, []);
 
-  // Handle navigation from Admin Panel
+  // Handle navigation from Admin Panel or URL query params (e.g. /crew?edit_id=xxx&section=training)
   useEffect(() => {
-    if (location.state?.editCrewId && crewList.length > 0) {
+    if (crewList.length === 0) return;
+
+    // Check URL query params first
+    const params = new URLSearchParams(location.search);
+    const editId = params.get('edit_id');
+    const section = params.get('section');
+
+    if (editId) {
+      const crew = crewList.find(c => c.id === editId);
+      if (crew) {
+        if (section === 'training') {
+          // Open the crew details dialog to the training view
+          setViewingCrew(crew);
+          setViewDialogOpen(true);
+        } else {
+          handleEdit(crew);
+        }
+      }
+      // Clear URL params without full reload
+      navigate('/crew', { replace: true });
+      return;
+    }
+
+    // Check React Router state
+    if (location.state?.editCrewId) {
       const crew = crewList.find(c => c.id === location.state.editCrewId);
       if (crew) {
         handleEdit(crew);
       }
-      // Clear state
       window.history.replaceState({}, document.title);
     } else if (location.state?.createWithEmail) {
       setPrefilledData({
@@ -106,10 +129,9 @@ const CrewManagement = () => {
       setFormMode('create');
       setSelectedCrew(null);
       setFormOpen(true);
-      // Clear state
       window.history.replaceState({}, document.title);
     }
-  }, [location.state, crewList]);
+  }, [location.state, location.search, crewList]);
 
   useEffect(() => {
     applyFiltersAndSort();
