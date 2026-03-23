@@ -63,13 +63,21 @@ A comprehensive vessel and crew safety management system for maritime operations
 #### Other Fixes
 31. ✅ **Fixed isAdmin check** - Updated across multiple components to include 'Full' access level
 
+#### Session 2 Fixes (December 2025)
+32. ✅ **"Manage in Crew" button** - Navigates to /crew?edit_id=xxx and opens crew details dialog
+33. ✅ **Trip hyperlink in Shift view** - Shift log view shows clickable trip name link
+34. ✅ **Incidents sort dropdown** - Sort by Date (Newest/Oldest), Name (A-Z/Z-A), Severity
+35. ✅ **Incidents date crash fix** - Safe date handling for invalid dates (toISOString guard)
+36. ✅ **Document filters race condition** - Removed direct setFilteredDocuments to let useEffect handle it
+37. ✅ **"Set to Now" button verified** - DateTimeInput clock icon visible and functional
+38. ✅ **Duplicate vessel entries** - Backend dedup + unique index on vessels.id
+
 ### Pending Tasks
 
 #### Lower Priority (Future):
-- [ ] Test Crew & Vessel Module UI Enhancements (from previous session)
-- [ ] Verify "Set to Now" Button Visibility in Date Fields
-- [ ] Fix Potential Duplicate Vessel Entries in Dropdowns
-- [ ] Refactor `require_access_level` decorator
+- [ ] Refactor `require_access_level` decorator to align with RBAC
+- [ ] Break down monolithic `server.py` (~7000+ lines) into routers/services
+- [ ] Break down large frontend components (AdminPanel.jsx, TripDetailsDialog.jsx)
 
 ## Technical Architecture
 
@@ -78,14 +86,15 @@ A comprehensive vessel and crew safety management system for maritime operations
 - Key components modified this session:
   - `Dashboard.jsx` - Accordion menu, reordered stat cards
   - `VesselDetailsDialog.jsx` - Global documents/contacts checkboxes
-  - `TripDetailsDialog.jsx` - Reordered views
-  - `Incidents.jsx` - Hyperlinks added
+  - `TripDetailsDialog.jsx` - Reordered views, shift view trip hyperlink
+  - `Incidents.jsx` - Hyperlinks, sort dropdown, safe date handling
   - `Maintenance.jsx` - Hyperlinks added
   - `Emergency.jsx` - Hyperlinks added, isAdmin fix
   - `RiskAssessment.jsx` - Hyperlinks added
   - `Compliance.jsx` - Vessel filter, hyperlinks, document error fix
-  - `DocumentManagement.jsx` - Hyperlinks added
+  - `DocumentManagement.jsx` - Hyperlinks, filter race condition fix
   - `CrewForm.jsx`, `PassengerForm.jsx` - HEIC support
+  - `CrewManagement.jsx` - URL query param handling for edit_id
 
 ### Backend (FastAPI + MongoDB)
 - `/app/backend/server.py` - Main server file
@@ -97,14 +106,17 @@ A comprehensive vessel and crew safety management system for maritime operations
   - Dashboard stats include passengers count
   - MODULE_COLLECTIONS fixed for passengers export
   - Backup import only imports non-existing items
+  - **Vessels deduplication** - Unique index on vessel id, dedup in query results
 
 ### Database (MongoDB)
 - Collections: users, vessels, crew, trips, passengers, trip_passengers, documents, incidents, maintenance, emergency_contacts, emergency_procedures, emergency_drills, compliance_certificates, compliance_requirements, risk_assessments, activity_logs, audit_logs, sessions, settings, roles, etc.
+- **Indexes**: Unique index on `vessels.id`
 
 ## API Endpoints Modified
 - `GET /api/dashboard/stats` - Added passengers count
 - `GET /api/backup/modules` - Updated passengers description
 - `POST /api/backup/import` - Now only imports non-existing items
+- `GET /api/vessels` - Returns deduplicated vessel list
 
 ## Test Credentials
 - Username: admin@test.com
@@ -113,10 +125,9 @@ A comprehensive vessel and crew safety management system for maritime operations
 
 ## Known Issues
 - Email sending unreliable (deprioritized by user)
-- Duplicate vessel entries in dropdowns (recurring, not fixed)
 
 ## Third Party Integrations
 - react-beautiful-dnd
 - xlsx
-- emergentintegrations (for OpenAI GPT-4) — uses Emergent LLM Key
+- emergentintegrations (for Gemini Vision OCR) — uses Emergent LLM Key
 - apscheduler
