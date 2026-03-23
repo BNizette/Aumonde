@@ -308,7 +308,7 @@ Login as admin, go to Admin Panel → Users
 
 ## 🚀 LOGIN URL
 
-**Preview:** https://nautical-hub-4.preview.emergentagent.com
+**Preview:** https://crew-trip-system.preview.emergentagent.com
 
 ---
 
